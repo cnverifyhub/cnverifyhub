@@ -1,0 +1,24 @@
+﻿src/store/cartStore.ts(24,5): error TS2345: Argument of type 'StateCreator<{ items: never[]; isOpen: false; addItem: (productId: any, quantity: any) => void; removeItem: (productId: any) => void; updateQuantity: (productId: any, quantity: any) => void; clearCart: () => any; toggleCart: () => any; setIsOpen: (isOpen: any) => any; getTotal: () => any; getItemCount: () => any; },...' is not assignable to parameter of type 'StateCreator<CartState, [], [["zustand/persist", { items: any; }]]>'.
+  Type 'StateCreator<{ items: never[]; isOpen: false; addItem: (productId: any, quantity: any) => void; removeItem: (productId: any) => void; updateQuantity: (productId: any, quantity: any) => void; clearCart: () => any; toggleCart: () => any; setIsOpen: (isOpen: any) => any; getTotal: () => any; getItemCount: () => any; },...' is not assignable to type '(setState: { (partial: CartState | Partial<CartState> | ((state: CartState) => CartState | Partial<CartState>), replace?: false | undefined): void; (state: CartState | ((state: CartState) => CartState), replace: true): void; }, getState: () => CartState, store: StoreApi<...>) => CartState'.
+    Types of parameters 'getState' and 'getState' are incompatible.
+      Type '() => CartState' is not assignable to type '() => { items: never[]; isOpen: false; addItem: (productId: any, quantity: any) => void; removeItem: (productId: any) => void; updateQuantity: (productId: any, quantity: any) => void; clearCart: () => any; toggleCart: () => any; setIsOpen: (isOpen: any) => any; getTotal: () => any; getItemCount: () => any; }'.
+        Call signature return types 'CartState' and '{ items: never[]; isOpen: false; addItem: (productId: any, quantity: any) => void; removeItem: (productId: any) => void; updateQuantity: (productId: any, quantity: any) => void; clearCart: () => any; toggleCart: () => any; setIsOpen: (isOpen: any) => any; getTotal: () => any; getItemCount: () => any; }' are incompatible.
+          The types of 'items' are incompatible between these types.
+            Type 'CartItem[]' is not assignable to type 'never[]'.
+              Type 'CartItem' is not assignable to type 'never'.
+src/store/cartStore.ts(29,23): error TS7006: Parameter 'productId' implicitly has an 'any' type.
+src/store/cartStore.ts(29,34): error TS7006: Parameter 'quantity' implicitly has an 'any' type.
+src/store/cartStore.ts(30,22): error TS7006: Parameter 'state' implicitly has an 'any' type.
+src/store/cartStore.ts(31,59): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/store/cartStore.ts(34,52): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/store/cartStore.ts(46,26): error TS7006: Parameter 'productId' implicitly has an 'any' type.
+src/store/cartStore.ts(47,22): error TS7006: Parameter 'state' implicitly has an 'any' type.
+src/store/cartStore.ts(48,47): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/store/cartStore.ts(52,30): error TS7006: Parameter 'productId' implicitly has an 'any' type.
+src/store/cartStore.ts(52,41): error TS7006: Parameter 'quantity' implicitly has an 'any' type.
+src/store/cartStore.ts(53,22): error TS7006: Parameter 'state' implicitly has an 'any' type.
+src/store/cartStore.ts(54,44): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/store/cartStore.ts(64,36): error TS7006: Parameter 'state' implicitly has an 'any' type.
+src/store/cartStore.ts(66,25): error TS7006: Parameter 'isOpen' implicitly has an 'any' type.
+src/store/cartStore.ts(70,44): error TS7006: Parameter 'total' implicitly has an 'any' type.
+src/store/cartStore.ts(70,51): error TS7006: Parameter 'item' implicitly has an 'any' type.
