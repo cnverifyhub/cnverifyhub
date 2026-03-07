@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ShieldCheck, MessageCircle, Send, Wallet } from 'lucide-react';
 import { t, getLangFromPath, getLocalizedPath } from '@/lib/i18n';
 import { categories } from '@/data/products';
+import Image from 'next/image';
 
 export default function Footer() {
     const pathname = usePathname() || '/';
@@ -13,15 +14,13 @@ export default function Footer() {
 
     return (
         <footer className="bg-slate-50 dark:bg-dark-950 border-t border-slate-200 dark:border-slate-800 pb-20 md:pb-0">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 md:pt-16 pb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 lg:gap-8">
 
                     {/* Brand & Intro */}
                     <div className="space-y-6">
                         <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
-                                CN
-                            </div>
+                            <Image src="/logo.png" alt="CNWePro Logo" width={32} height={32} className="w-8 h-8 object-contain drop-shadow-sm" />
                             <span className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">
                                 CNWePro
                             </span>
@@ -90,13 +89,33 @@ export default function Footer() {
                         <ul className="space-y-4">
                             <li>
                                 <a
-                                    href={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME}` : '#'}
+                                    href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@cnwepro.com'}`}
+                                    className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                                >
+                                    <Send className="w-5 h-5 text-primary-500" />
+                                    {process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@cnwepro.com'}
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href={process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL || 'https://t.me/cnwepro'}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-colors"
                                 >
                                     <Send className="w-5 h-5 text-sky-500" />
-                                    Telegram (@{process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'cnwepro'})
+                                    Channel (t.me/cnwepro)
+                                </a>
+                            </li>
+                            <li>
+                                <a
+                                    href={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME}` : 'https://t.me/Minsheng0'}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-colors"
+                                >
+                                    <MessageCircle className="w-5 h-5 text-sky-500" />
+                                    Telegram (@{process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'Minsheng0'})
                                 </a>
                             </li>
                             <li>
@@ -119,7 +138,7 @@ export default function Footer() {
                 </div>
 
                 {/* Bottom */}
-                <div className="mt-16 pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div className="mt-10 md:mt-16 pt-6 md:pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-slate-500 dark:text-slate-400 text-xs">
                         {t('footer.copyright', lang).replace('2025', currentYear.toString())}
                     </p>

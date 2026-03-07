@@ -12,6 +12,13 @@ interface CartDrawerProps {
     lang: Lang;
 }
 
+const iconMap: Record<string, string> = {
+    wechat: "https://play-lh.googleusercontent.com/QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ",
+    alipay: "https://play-lh.googleusercontent.com/quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY",
+    douyin: "https://play-lh.googleusercontent.com/xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw=w600-h300-pc0xffffff-pd",
+    qq: "https://play-lh.googleusercontent.com/2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0"
+};
+
 export function CartDrawer({ lang }: CartDrawerProps) {
     const { items, isOpen, setIsOpen, removeItem, updateQuantity, getTotal } = useCartStore();
     const router = useRouter();
@@ -88,8 +95,12 @@ export function CartDrawer({ lang }: CartDrawerProps) {
 
                                 return (
                                     <div key={item.productId} className="flex gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
-                                        <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${category?.gradient || 'from-slate-400 to-slate-500'} flex items-center justify-center shrink-0`}>
-                                            <span className="text-white font-bold text-2xl">{category?.icon ? category.icon.charAt(0).toUpperCase() : 'A'}</span>
+                                        <div className={`w-16 h-16 rounded-xl bg-white border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center shrink-0 overflow-hidden`}>
+                                            <img
+                                                src={category ? (iconMap[category.id] || iconMap.wechat) : iconMap.wechat}
+                                                alt={category?.name[lang] || 'Platform icon'}
+                                                className="w-full h-full object-cover"
+                                            />
                                         </div>
 
                                         <div className="flex-1 flex flex-col justify-between">

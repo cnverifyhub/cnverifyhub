@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Globe, Moon, Sun, ChevronDown, ShoppingCart, User } from 'lucide-react';
 import { t, getLangFromPath, getLocalizedPath } from '@/lib/i18n';
@@ -65,11 +66,9 @@ export default function Header() {
                 <div className="flex justify-between items-center h-16 md:h-18">
 
                     {/* Logo */}
-                    <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 group">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-600 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:shadow-primary-500/30 transition-shadow">
-                            CN
-                        </div>
-                        <span className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">
+                    <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-1.5 sm:gap-2 group shrink-0">
+                        <Image src="/logo.png" alt="CNWePro Logo" width={40} height={40} className="w-8 h-8 sm:w-10 sm:h-10 object-contain drop-shadow-sm group-hover:scale-105 transition-transform" />
+                        <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white">
                             CNWePro
                         </span>
                     </Link>
@@ -164,10 +163,10 @@ export default function Header() {
                     </div>
 
                     {/* Mobile Menu Toggle & Cart */}
-                    <div className="flex md:hidden items-center gap-2">
+                    <div className="flex md:hidden items-center gap-1 sm:gap-2 shrink-0">
                         <button
                             onClick={() => setIsOpen(true)}
-                            className="p-2 text-slate-600 dark:text-slate-300 relative"
+                            className="p-1.5 sm:p-2 text-slate-600 dark:text-slate-300 relative"
                         >
                             <ShoppingCart className="w-5 h-5" />
                             {mounted && items.length > 0 && (
@@ -178,13 +177,13 @@ export default function Header() {
                         </button>
                         <button
                             onClick={toggleTheme}
-                            className="p-2 text-slate-600 dark:text-slate-300"
+                            className="p-1.5 sm:p-2 text-slate-600 dark:text-slate-300"
                         >
                             {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                         </button>
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="p-2 text-slate-900 dark:text-white"
+                            className="p-1.5 sm:p-2 text-slate-900 dark:text-white"
                         >
                             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                         </button>

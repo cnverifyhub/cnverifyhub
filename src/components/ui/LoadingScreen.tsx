@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 export default function LoadingScreen() {
     const [show, setShow] = useState(true);
@@ -22,9 +23,7 @@ export default function LoadingScreen() {
                 <div className="absolute inset-4 border-4 border-transparent border-t-gold-500 rounded-full animate-spin-slow" style={{ animationDuration: '4s' }}></div>
 
                 {/* Logo */}
-                <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-accent-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg animate-pulse-slow">
-                    CN
-                </div>
+                <Image src="/logo.png" alt="CNWePro Logo" width={48} height={48} className="w-12 h-12 object-contain drop-shadow-lg animate-pulse-slow" />
             </div>
             <p className="mt-8 text-slate-500 dark:text-slate-400 font-medium tracking-widest uppercase text-sm animate-pulse">
                 Loading...

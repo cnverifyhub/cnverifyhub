@@ -302,7 +302,7 @@ export function Hero({ lang }: { lang: Lang }) {
                             </span>
                         </h1>
 
-                        <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mb-6 sm:mb-8 leading-relaxed px-2 sm:px-0 animate-fade-in-up text-balance" style={{ animationDelay: '200ms' }}>
+                        <p className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mb-6 sm:mb-8 leading-relaxed px-2 sm:px-0 animate-fade-in-up text-balance" style={{ animationDelay: '200ms' }}>
                             {t('hero.subtitle', lang)}
                         </p>
 
@@ -314,10 +314,10 @@ export function Hero({ lang }: { lang: Lang }) {
                                 <span className="absolute inset-0 hero-shine" />
                             </Link>
                             <a
-                                href={process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL || '#'}
+                                href={process.env.NEXT_PUBLIC_TELEGRAM_SUPPORT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_SUPPORT_USERNAME}` : 'https://t.me/Minsheng0'}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="btn-outline w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur"
+                                className="btn-outline w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
                             >
                                 {t('hero.cta.secondary', lang)}
                             </a>

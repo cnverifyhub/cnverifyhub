@@ -21,6 +21,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
     const [step, setStep] = useState<1 | 2 | 3>(1);
 
     const [contactInfo, setContactInfo] = useState({ telegram: '', email: '' });
+    const [isProcessingPayment, setIsProcessingPayment] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [countdown, setCountdown] = useState(15 * 60); // 15 minutes in seconds
     const [showConfetti, setShowConfetti] = useState(false);
@@ -104,23 +105,29 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
     };
 
     const handlePaymentConfirm = (txHash: string) => {
-        addOrder({
-            id: orderId,
-            email: contactInfo.email || contactInfo.telegram || 'Anonymous',
-            cryptoType: "USDT", // Assuming TRC20/USDT as default for now
-            txid: txHash,
-            createdAt: new Date().toISOString(),
-            items: items.map(i => ({
-                productId: i.productId,
-                quantity: i.quantity,
-                priceAtTime: 0
-            })),
-            totalAmount: totalPrice
-        });
-        clearCart();
+        setIsProcessingPayment(true);
         setStep(3);
-        setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 5000);
+        
+        // Simulate Alipay-style risk control and network validation delay
+        setTimeout(() => {
+            setIsProcessingPayment(false);
+            addOrder({
+                id: orderId,
+                email: contactInfo.email || contactInfo.telegram || 'Anonymous',
+                cryptoType: "USDT", // Assuming TRC20/USDT as default for now
+                txid: txHash,
+                createdAt: new Date().toISOString(),
+                items: items.map(i => ({
+                    productId: i.productId,
+                    quantity: i.quantity,
+                    priceAtTime: 0
+                })),
+                totalAmount: totalPrice
+            });
+            clearCart();
+            setShowConfetti(true);
+            setTimeout(() => setShowConfetti(false), 5000);
+        }, 3000);
     };
 
     return (
@@ -388,10 +395,26 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                 {/* Step 3: Success */}
                 {step === 3 && (
                     <div className="text-center animate-fade-in py-12 max-w-lg mx-auto">
-                        <div className="w-24 h-24 rounded-full bg-success-50 dark:bg-success-500/10 text-success-500 flex items-center justify-center mx-auto mb-8 relative">
-                            <div className="absolute inset-0 border-4 border-success-500/20 rounded-full animate-ping"></div>
-                            <Check className="w-12 h-12" />
-                        </div>
+                        {isProcessingPayment ? (
+                            <div className="flex flex-col items-center justify-center space-y-6">
+                                {/* Alipay style blue loading spinner */}
+                                <div className="relative w-24 h-24 mb-4">
+                                    <svg className="animate-spin w-full h-full text-[#1677ff]" viewBox="0 0 50 50">
+                                       <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="4" stroke="currentColor" strokeDasharray="90,150"></circle>
+                                    </svg>
+                                    <div className="absolute inset-0 flex items-center justify-center text-[#1677ff]">
+                                       <ShieldCheck className="w-10 h-10 animate-pulse" />
+                                    </div>
+                                </div>
+                                <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{lang === 'zh' ? '正在安全处理付款...' : 'Processing secure payment...'}</h2>
+                                <p className="text-slate-500 text-sm">{lang === 'zh' ? 'CNWePro资金安全由企业级风控引擎保障' : 'Secured by CNWePro enterprise risk control engine'}</p>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="w-24 h-24 rounded-full bg-[#1677ff]/10 text-[#1677ff] flex items-center justify-center mx-auto mb-8 relative">
+                                    <div className="absolute inset-0 border-4 border-[#1677ff]/20 rounded-full animate-ping"></div>
+                                    <Check className="w-12 h-12" />
+                                </div>
                         <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
                             {t('checkout.orderPlaced', lang)}
                         </h2>
@@ -406,17 +429,19 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
                             <button
                                 onClick={() => router.push(getLocalizedPath(`/track?id=${orderId}`, lang))}
-                                className="btn-primary px-8"
+                                className="w-full sm:w-auto px-8 py-3 bg-[#1677ff] hover:bg-[#1677ff]/90 text-white font-bold rounded-xl shadow-lg shadow-[#1677ff]/30 transition-all"
                             >
                                 {t('nav.track', lang)}
                             </button>
                             <button
                                 onClick={() => router.push(getLocalizedPath('/', lang))}
-                                className="btn-outline px-8"
+                                className="w-full sm:w-auto px-8 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl transition-all"
                             >
                                 {t('common.backToHome', lang)}
                             </button>
                         </div>
+                            </>
+                        )}
                     </div>
                 )}
 

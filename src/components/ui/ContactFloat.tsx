@@ -78,26 +78,46 @@ export function ContactFloat({ lang }: ContactFloatProps) {
                 className={`mb-4 overflow-hidden transition-all duration-300 origin-bottom-right ${isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0 pointer-events-none'
                     }`}
             >
-                <div className="glass-card p-4 rounded-2xl shadow-glass flex flex-col gap-3 w-48">
+                <div className="glass-card p-4 rounded-2xl shadow-glass flex flex-col gap-3 w-56">
                     <a
-                        href={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME}` : '#'}
+                        href={process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL || 'https://t.me/cnwepro'}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-3 p-3 rounded-xl hover:bg-sky-50 dark:hover:bg-sky-500/10 text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 transition-colors font-medium"
                     >
-                        <div className="w-8 h-8 rounded-full bg-sky-100 dark:bg-sky-500/20 flex items-center justify-center text-sky-500">
+                        <div className="w-8 h-8 rounded-full bg-sky-100 dark:bg-sky-500/20 flex items-center justify-center text-sky-500 shrink-0">
                             <Send className="w-4 h-4 ml-0.5" />
                         </div>
-                        Telegram
+                        <div className="flex flex-col">
+                            <span className="text-sm">Telegram Channel</span>
+                            <span className="text-xs text-slate-500">Updates & News</span>
+                        </div>
+                    </a>
+                    <a
+                        href={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME}` : 'https://t.me/Minsheng0'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 p-3 rounded-xl hover:bg-sky-50 dark:hover:bg-sky-500/10 text-slate-700 dark:text-slate-200 hover:text-sky-600 dark:hover:text-sky-400 transition-colors font-medium"
+                    >
+                        <div className="w-8 h-8 rounded-full bg-sky-100 dark:bg-sky-500/20 flex items-center justify-center text-sky-500 shrink-0">
+                            <MessageCircle className="w-4 h-4" />
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-sm">Telegram Support</span>
+                            <span className="text-xs text-slate-500">24/7 Live Help</span>
+                        </div>
                     </a>
                     <a
                         href="mailto:support@cnwepro.com"
                         className="flex items-center gap-3 p-3 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-slate-700 dark:text-slate-200 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-medium"
                     >
-                        <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-500">
+                        <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-500/20 flex items-center justify-center text-emerald-500 shrink-0">
                             <MessageCircle className="w-4 h-4" />
                         </div>
-                        {lang === 'zh' ? '在线留言' : 'Email Us'}
+                        <div className="flex flex-col">
+                            <span className="text-sm">{lang === 'zh' ? '在线留言' : 'Email Us'}</span>
+                            <span className="text-xs text-slate-500">support@cnwepro.com</span>
+                        </div>
                     </a>
                 </div>
             </div>

@@ -19,18 +19,15 @@ interface PaymentDisplayProps {
 export function PaymentDisplay({ amount, orderId, lang, onConfirm }: PaymentDisplayProps) {
     const [txHash, setTxHash] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const walletAddress = process.env.NEXT_PUBLIC_TRC20_WALLET || 'TRC20_WALLET_ADDRESS_NOT_CONFIGURED';
+    const walletAddress = process.env.NEXT_PUBLIC_TRC20_WALLET || 'TQofpQffADyHpv25EBZPcQD7scx8AZV5or';
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!txHash.trim()) return;
 
         setIsSubmitting(true);
-        // Simulate API call
-        setTimeout(() => {
-            onConfirm(txHash);
-            setIsSubmitting(false);
-        }, 1500);
+        // Delegate to parent to handle loading screen
+        onConfirm(txHash);
     };
 
     return (
