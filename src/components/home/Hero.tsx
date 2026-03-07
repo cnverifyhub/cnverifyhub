@@ -219,7 +219,7 @@ function GoldSeal({ lang }: { lang: Lang }) {
    ============================================ */
 export function Hero({ lang }: { lang: Lang }) {
     return (
-        <section className="relative overflow-hidden pt-24 pb-16 lg:pt-32 lg:pb-24">
+        <section className="relative overflow-hidden pt-16 sm:pt-24 pb-12 sm:pb-16 lg:pt-32 lg:pb-24 px-4 sm:px-0">
             {/* Background gradients */}
             <div className="absolute inset-0 bg-white dark:bg-dark-950 -z-20"></div>
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-100/50 dark:bg-primary-900/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 -z-10 animate-pulse-slow"></div>
@@ -279,12 +279,13 @@ export function Hero({ lang }: { lang: Lang }) {
                     {/* ===== Center: Main Hero Content ===== */}
                     <div className="flex-1 flex flex-col items-center text-center relative">
                         {/* Marquee Announcement */}
-                        <div className="w-full max-w-2xl mx-auto mb-8 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 border border-red-100 dark:border-red-900/30 rounded-full py-1.5 px-3 flex items-center gap-3 overflow-hidden shadow-inner animate-fade-in-up">
-                            <span className="bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] text-white text-[10px] sm:text-xs font-black px-2.5 py-0.5 rounded-full shrink-0 shadow-sm pr-3 flex items-center gap-1">
+                        <div className="w-full max-w-2xl mx-auto mb-6 sm:mb-8 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 border border-red-100 dark:border-red-900/30 rounded-full py-1 sm:py-1.5 px-2 sm:px-3 flex items-center gap-2 sm:gap-3 overflow-hidden shadow-inner animate-fade-in-up">
+                            <span className="bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] text-white text-[9px] sm:text-xs font-black px-2 sm:px-2.5 py-0.5 rounded-full shrink-0 shadow-sm pr-2 sm:pr-3 flex items-center gap-1">
                                 <Zap className="w-3 h-3 fill-current" />
-                                {lang === 'zh' ? '最新限时福利' : 'LATEST DEAL'}
+                                <span className="hidden sm:inline">{lang === 'zh' ? '最新限时福利' : 'LATEST DEAL'}</span>
+                                <span className="sm:hidden">{lang === 'zh' ? '福利' : 'DEAL'}</span>
                             </span>
-                            <div className="flex-1 relative h-5 overflow-hidden text-xs sm:text-sm text-red-600 dark:text-red-400 font-bold whitespace-nowrap flex items-center">
+                            <div className="flex-1 relative h-5 overflow-hidden text-[10px] sm:text-sm text-red-600 dark:text-red-400 font-bold whitespace-nowrap flex items-center">
                                 <div className="animate-[pulse_3s_ease-in-out_infinite]">
                                     {lang === 'zh'
                                         ? '🔥 特惠狂欢开启！首单限量直降20U，库存有限，先到先得！平台全线支持担保交易，购买更放心！'
@@ -293,7 +294,7 @@ export function Hero({ lang }: { lang: Lang }) {
                             </div>
                         </div>
 
-                        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-6 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4 sm:mb-6 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
                             {t('hero.title.line1', lang)}{' '}
                             <br className="hidden md:block" />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-600">
@@ -301,13 +302,13 @@ export function Hero({ lang }: { lang: Lang }) {
                             </span>
                         </h1>
 
-                        <p className="text-base md:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mb-8 leading-relaxed animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+                        <p className="text-base sm:text-lg md:text-xl text-slate-600 dark:text-slate-400 max-w-2xl mb-6 sm:mb-8 leading-relaxed px-2 sm:px-0 animate-fade-in-up text-balance" style={{ animationDelay: '200ms' }}>
                             {t('hero.subtitle', lang)}
                         </p>
 
                         {/* CTA Buttons with Bounce on Primary */}
-                        <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-                            <Link href="#pricing" className="hero-cta-bounce w-full sm:w-auto px-10 py-4 text-lg font-black rounded-2xl transition-all duration-300 bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] hover:from-[#ff2a2d] hover:to-[#cc0000] text-white shadow-[0_8px_20px_rgba(255,42,45,0.3)] hover:shadow-[0_12px_30px_rgba(255,42,45,0.45)] active:scale-95 border-b-4 border-[#cc0000] flex justify-center items-center relative overflow-hidden">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+                            <Link href="#pricing" className="hero-cta-bounce w-full sm:w-auto px-6 sm:px-10 py-3.5 sm:py-4 text-base sm:text-lg font-black rounded-2xl transition-all duration-300 bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] hover:from-[#ff2a2d] hover:to-[#cc0000] text-white shadow-[0_8px_20px_rgba(255,42,45,0.3)] hover:shadow-[0_12px_30px_rgba(255,42,45,0.45)] active:scale-95 border-b-4 border-[#cc0000] flex justify-center items-center relative overflow-hidden">
                                 <span className="relative z-10">{t('hero.cta.primary', lang)}</span>
                                 {/* Shine sweep effect */}
                                 <span className="absolute inset-0 hero-shine" />
@@ -316,7 +317,7 @@ export function Hero({ lang }: { lang: Lang }) {
                                 href={process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL || '#'}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="btn-outline w-full sm:w-auto px-8 py-4 text-lg border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur"
+                                className="btn-outline w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur"
                             >
                                 {t('hero.cta.secondary', lang)}
                             </a>
@@ -336,8 +337,8 @@ export function Hero({ lang }: { lang: Lang }) {
                         </div>
 
                         {/* ===== Journey Stepper (交易流程) ===== */}
-                        <div className="w-full max-w-xl mx-auto mt-10 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-                            <div className="flex items-center justify-between bg-white/60 dark:bg-slate-800/40 backdrop-blur-sm rounded-2xl px-4 py-3 border border-slate-100 dark:border-slate-700/50 shadow-sm">
+                        <div className="w-full max-w-xl mx-auto mt-8 sm:mt-10 px-2 sm:px-0 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+                            <div className="flex items-center justify-between bg-white/60 dark:bg-slate-800/40 backdrop-blur-sm rounded-2xl px-3 sm:px-4 py-2 sm:py-3 border border-slate-100 dark:border-slate-700/50 shadow-sm overflow-x-auto scrolbar-hide">
                                 {[
                                     { icon: <Star className="w-4 h-4" />, label: lang === 'zh' ? '选择账号' : 'Select', num: '1' },
                                     { icon: <Lock className="w-4 h-4" />, label: lang === 'zh' ? 'USDT支付' : 'Pay USDT', num: '2' },
@@ -349,12 +350,12 @@ export function Hero({ lang }: { lang: Lang }) {
                                             <div className="w-6 h-6 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-[10px] font-black shadow-sm">
                                                 {step.num}
                                             </div>
-                                            <div className="text-left hidden sm:block">
-                                                <p className="text-[10px] font-bold text-slate-700 dark:text-slate-300 leading-none">{step.label}</p>
+                                            <div className="text-left hidden text-[9px] sm:text-[10px] md:block">
+                                                <p className="font-bold text-slate-700 dark:text-slate-300 leading-none whitespace-nowrap">{step.label}</p>
                                             </div>
                                         </div>
                                         {i < 3 && (
-                                            <div className="flex-shrink-0 w-6 sm:w-8 lg:w-12 h-[1px] bg-gradient-to-r from-red-300 to-orange-300 dark:from-red-800 dark:to-orange-800 mx-1" />
+                                            <div className="flex-shrink-0 w-3 sm:w-6 lg:w-12 h-[1px] bg-gradient-to-r from-red-300 to-orange-300 dark:from-red-800 dark:to-orange-800 mx-1 sm:mx-2" />
                                         )}
                                     </div>
                                 ))}
@@ -379,26 +380,26 @@ export function Hero({ lang }: { lang: Lang }) {
                         </div>
 
                         {/* Stats Bar */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 mt-12 pt-8 border-t border-slate-100 dark:border-slate-800/50 w-full animate-fade-in-up" style={{ animationDelay: '500ms' }}>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-12 mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-slate-100 dark:border-slate-800/50 w-full px-4 sm:px-0 animate-fade-in-up" style={{ animationDelay: '500ms' }}>
                             <div>
-                                <p className="text-3xl font-extrabold text-slate-900 dark:text-white">
+                                <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
                                     <AnimatedCounter end={50} suffix="K+" duration={2500} />
                                 </p>
-                                <p className="text-sm text-slate-500 mt-1">{t('hero.stat.orders', lang)}</p>
+                                <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.orders', lang)}</p>
                             </div>
                             <div>
-                                <p className="text-3xl font-extrabold text-slate-900 dark:text-white">
+                                <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
                                     <AnimatedCounter end={10} suffix="K+" duration={2500} />
                                 </p>
-                                <p className="text-sm text-slate-500 mt-1">{t('hero.stat.customers', lang)}</p>
+                                <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.customers', lang)}</p>
                             </div>
                             <div>
-                                <p className="text-3xl font-extrabold text-slate-900 dark:text-white">30 min</p>
-                                <p className="text-sm text-slate-500 mt-1">{t('hero.stat.delivery', lang)}</p>
+                                <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">30 min</p>
+                                <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.delivery', lang)}</p>
                             </div>
                             <div>
-                                <p className="text-3xl font-extrabold text-slate-900 dark:text-white">24/7</p>
-                                <p className="text-sm text-slate-500 mt-1">{t('hero.stat.support', lang)}</p>
+                                <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">24/7</p>
+                                <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.support', lang)}</p>
                             </div>
                         </div>
 
