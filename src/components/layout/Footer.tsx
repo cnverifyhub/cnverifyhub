@@ -18,7 +18,7 @@ export default function Footer() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 lg:gap-8">
 
                     {/* Brand & Intro */}
-                    <div className="space-y-6">
+                    <div className="space-y-6 flex flex-col items-center sm:items-start text-center sm:text-left">
                         <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2">
                             <Image src="/logo.png" alt="CNWePro Logo" width={32} height={32} className="w-8 h-8 object-contain drop-shadow-sm" />
                             <span className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">
@@ -28,7 +28,7 @@ export default function Footer() {
                         <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
                             {t('site.description', lang)}
                         </p>
-                        <div className="flex items-center gap-4 text-slate-400">
+                        <div className="flex justify-center sm:justify-start items-center gap-4 text-slate-400">
                             {/* Payment Methods */}
                             <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-dark-900 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                                 <Wallet className="w-4 h-4" />
@@ -38,11 +38,11 @@ export default function Footer() {
                     </div>
 
                     {/* Accounts */}
-                    <div>
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-6">
+                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-6 text-center sm:text-left">
                             {t('footer.accounts', lang)}
                         </h3>
-                        <ul className="space-y-4">
+                        <ul className="space-y-4 flex flex-col items-center sm:items-start">
                             {categories.map((c) => (
                                 <li key={c.id}>
                                     <Link
@@ -58,11 +58,11 @@ export default function Footer() {
                     </div>
 
                     {/* Quick Links */}
-                    <div>
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-6">
+                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left pt-6 sm:pt-0">
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-6 text-center sm:text-left">
                             {t('footer.quickLinks', lang)}
                         </h3>
-                        <ul className="space-y-4">
+                        <ul className="space-y-4 flex flex-col items-center sm:items-start">
                             <li>
                                 <Link href={getLocalizedPath('/pricing', lang)} className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-sm">
                                     {t('nav.pricing', lang)}
@@ -87,11 +87,11 @@ export default function Footer() {
                     </div>
 
                     {/* Support */}
-                    <div>
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-6">
+                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left pt-6 sm:pt-0">
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-6 text-center sm:text-left">
                             {t('footer.support', lang)}
                         </h3>
-                        <ul className="space-y-4">
+                        <ul className="space-y-4 flex flex-col items-center sm:items-start">
                             <li>
                                 <a
                                     href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@cnwepro.com'}`}
@@ -143,11 +143,11 @@ export default function Footer() {
                 </div>
 
                 {/* Bottom */}
-                <div className="mt-10 md:mt-16 pt-6 md:pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-slate-500 dark:text-slate-400 text-xs">
+                <div className="mt-10 md:mt-16 pt-6 md:pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col items-center gap-4 text-center">
+                    <p className="text-slate-500 dark:text-slate-400 text-xs text-center">
                         {t('footer.copyright', lang).replace('2025', currentYear.toString())}
                     </p>
-                    <p className="text-slate-400 dark:text-slate-500 text-xs max-w-xl text-center md:text-right">
+                    <p className="text-slate-400 dark:text-slate-500 text-xs max-w-xl text-center">
                         {t('footer.disclaimer', lang)}
                     </p>
                 </div>

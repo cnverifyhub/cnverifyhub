@@ -243,7 +243,7 @@ export default function RootLayout({
                     }}
                 />
             </head>
-            <body className={`min-h-screen flex flex-col pt-16 md:pt-20 ${inter.variable} ${notoSansSC.variable}`}>
+            <body className={`min-h-screen flex flex-col pt-16 md:pt-20 overflow-x-hidden ${inter.variable} ${notoSansSC.variable}`}>
                 <Header />
 
                 <main className="flex-grow">

@@ -299,7 +299,7 @@ export function Hero({ lang }: { lang: Lang }) {
                                 <span className="hidden sm:inline">{lang === 'zh' ? '最新限时福利' : 'LATEST DEAL'}</span>
                                 <span className="sm:hidden">{lang === 'zh' ? '福利' : 'DEAL'}</span>
                             </span>
-                            <div className="flex-1 relative h-5 overflow-hidden text-[10px] sm:text-sm text-red-600 dark:text-red-400 font-bold whitespace-nowrap flex items-center">
+                            <div className="flex-1 min-w-0 relative h-5 overflow-hidden text-[10px] sm:text-sm text-red-600 dark:text-red-400 font-bold whitespace-nowrap flex items-center">
                                 <div className="animate-[pulse_3s_ease-in-out_infinite]">
                                     {lang === 'zh'
                                         ? '🔥 特惠狂欢开启！首单限量直降20U，库存有限，先到先得！平台全线支持担保交易，购买更放心！'
@@ -351,8 +351,8 @@ export function Hero({ lang }: { lang: Lang }) {
                         </div>
 
                         {/* ===== Journey Stepper (交易流程) ===== */}
-                        <div className="w-full max-w-xl mx-auto mt-8 sm:mt-10 px-2 sm:px-0 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
-                            <div className="flex items-center justify-between bg-white/60 dark:bg-slate-800/40 backdrop-blur-sm rounded-2xl px-3 sm:px-4 py-2 sm:py-3 border border-slate-100 dark:border-slate-700/50 shadow-sm overflow-x-auto scrolbar-hide">
+                        <div className="w-full max-w-xl mx-auto mt-8 sm:mt-10 px-2 sm:px-0 animate-fade-in-up flex min-w-0" style={{ animationDelay: '400ms' }}>
+                            <div className="flex-1 min-w-0 flex items-center justify-between bg-white/60 dark:bg-slate-800/40 backdrop-blur-sm rounded-2xl px-3 sm:px-4 py-2 sm:py-3 border border-slate-100 dark:border-slate-700/50 shadow-sm overflow-x-auto scrolbar-hide">
                                 {[
                                     { icon: <Star className="w-4 h-4" />, label: lang === 'zh' ? '选择账号' : 'Select', num: '1' },
                                     { icon: <Lock className="w-4 h-4" />, label: lang === 'zh' ? 'USDT支付' : 'Pay USDT', num: '2' },
