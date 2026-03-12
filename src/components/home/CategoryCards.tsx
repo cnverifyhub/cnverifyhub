@@ -93,19 +93,20 @@ export function CategoryCards({ lang }: { lang: Lang }) {
                                             <span className="font-bold text-slate-900 dark:text-white">{stock} {lang === 'zh' ? '个' : 'units'}</span>
                                         </div>
 
-                                        <div className="flex items-center justify-between bg-slate-50 dark:bg-dark-900 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 group-hover:bg-red-50 group-hover:border-red-100 dark:group-hover:bg-red-900/10 dark:group-hover:border-red-900/30 transition-colors">
+                                        <div className="flex items-center justify-between bg-slate-50 dark:bg-dark-900 p-2.5 rounded-xl border border-slate-100 dark:border-slate-800 transition-colors group-hover:bg-red-50 group-hover:border-red-100 dark:group-hover:bg-red-900/10 dark:group-hover:border-red-900/30">
                                             <div className="flex flex-col">
                                                 <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 mb-0.5">起售价 / Starting at</span>
                                                 <div className="flex items-baseline gap-0.5">
                                                     <span className="text-sm font-bold text-red-600 dark:text-red-500">USDT</span>
-                                                    <span className={`text-2xl font-black ${category.color} tracking-tighter drop-shadow-sm group-hover:text-red-600 transition-colors`}>
+                                                    <span className={`text-2xl font-black ${category.color} tracking-tighter drop-shadow-sm transition-colors group-hover:text-red-600`}>
                                                         {formatUsdt(lowestPrice).replace(' USDT', '')}
                                                     </span>
                                                 </div>
                                             </div>
 
-                                            <div className={`w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center group-hover:bg-gradient-to-r group-hover:from-red-500 group-hover:to-orange-500 transition-all duration-300 shadow-sm group-hover:shadow-red-500/30`}>
-                                                <ArrowRight className={`w-4 h-4 text-slate-500 group-hover:text-white transition-colors`} />
+                                            {/* The arrow button now triggers its hover state when ANY part of the card (group) is hovered */}
+                                            <div className={`w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center transition-all duration-300 shadow-sm group-hover:bg-gradient-to-r group-hover:from-red-500 group-hover:to-orange-500 group-hover:shadow-red-500/30 group-hover:scale-110`}>
+                                                <ArrowRight className={`w-4 h-4 text-slate-500 transition-colors group-hover:text-white group-hover:translate-x-0.5`} />
                                             </div>
                                         </div>
                                     </div>
