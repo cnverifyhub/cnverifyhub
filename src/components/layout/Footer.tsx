@@ -78,6 +78,11 @@ export default function Footer() {
                                     {t('nav.faq', lang)}
                                 </Link>
                             </li>
+                            <li>
+                                <Link href={getLocalizedPath('/terms', lang)} className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-sm">
+                                    {lang === 'zh' ? '服务条款' : 'Terms & Policy'}
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 
@@ -90,10 +95,10 @@ export default function Footer() {
                             <li>
                                 <a
                                     href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@cnwepro.com'}`}
-                                    className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                                    className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
                                 >
-                                    <Send className="w-5 h-5 text-primary-500" />
-                                    {process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@cnwepro.com'}
+                                    <Send className="w-5 h-5 text-primary-500 shrink-0 mt-0.5" />
+                                    <span className="break-all">{process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@cnwepro.com'}</span>
                                 </a>
                             </li>
                             <li>
@@ -101,10 +106,10 @@ export default function Footer() {
                                     href={process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL || 'https://t.me/cnwepro'}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-colors"
+                                    className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-colors"
                                 >
-                                    <Send className="w-5 h-5 text-sky-500" />
-                                    Channel (t.me/cnwepro)
+                                    <Send className="w-5 h-5 text-sky-500 shrink-0 mt-0.5" />
+                                    <span className="break-words">Channel (t.me/cnwepro)</span>
                                 </a>
                             </li>
                             <li>
@@ -112,10 +117,10 @@ export default function Footer() {
                                     href={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME}` : 'https://t.me/Minsheng0'}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-colors"
+                                    className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-colors"
                                 >
-                                    <MessageCircle className="w-5 h-5 text-sky-500" />
-                                    Telegram (@{process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'Minsheng0'})
+                                    <MessageCircle className="w-5 h-5 text-sky-500 shrink-0 mt-0.5" />
+                                    <span className="break-words">Telegram (@{process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'Minsheng0'})</span>
                                 </a>
                             </li>
                             <li>

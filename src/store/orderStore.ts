@@ -15,6 +15,15 @@ export interface Order {
     cryptoType: string;
     txid: string; // Transaction Hash
     status: OrderStatus;
+    txVerified: boolean; // Whether blockchain verification passed
+    verificationDetails?: {
+        amount: string;
+        from: string;
+        to: string;
+        token: string;
+        timestamp: number;
+        confirmed: boolean;
+    };
     createdAt: string;
     items: OrderItem[];
     totalAmount: number;
@@ -23,7 +32,7 @@ export interface Order {
 
 interface OrderState {
     orders: Order[];
-    addOrder: (order: Omit<Order, 'status' | 'deliveredAccounts'>) => void;
+    addOrder: (order: Omit<Order, 'status' | 'deliveredAccounts' | 'txVerified'> & { txVerified?: boolean; verificationDetails?: Order['verificationDetails'] }) => void;
     updateOrderStatus: (orderId: string, status: OrderStatus) => void;
     deliverAccountsToOrder: (orderId: string, accounts: string[]) => void;
     getOrderById: (orderId: string, email?: string) => Order | undefined;
@@ -47,7 +56,8 @@ export const useOrderStore = create<OrderState>()(
             addOrder: (orderData) => {
                 const newOrder: Order = {
                     ...orderData,
-                    status: 'pending',
+                    status: orderData.txVerified ? 'paid' : 'pending',
+                    txVerified: orderData.txVerified || false,
                     deliveredAccounts: []
                 };
                 set((state: OrderState) => ({

@@ -1,36 +1,164 @@
 import type { Metadata } from 'next';
+import { Inter, Noto_Sans_SC } from 'next/font/google';
+import Script from 'next/script';
 import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import MobileNav from '@/components/layout/MobileNav';
 import { CartDrawer } from '@/components/cart/CartDrawer';
+import { GsapAnimations } from '@/components/ui/GsapAnimations';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.netlify.app';
+
+// Font Optimization: Zero CLS Loading via Google Fonts (Downloaded at build time)
+const inter = Inter({
+    subsets: ['latin'],
+    weight: ['400', '500', '700', '900'],
+    display: 'swap',
+    variable: '--font-inter',
+});
+
+const notoSansSC = Noto_Sans_SC({
+    subsets: ['latin'], // Noto_Sans_SC auto-includes Chinese glyphs
+    weight: ['400', '500', '700', '900'],
+    display: 'swap',
+    variable: '--font-noto',
+});
 
 export const metadata: Metadata = {
+    metadataBase: new URL(SITE_URL),
     title: {
-        template: '%s | CNWePro',
-        default: 'CNWePro - 专业中国数字账号交易平台',
+        template: '%s | CNWePro - 专业中国数字账号交易平台',
+        default: 'CNWePro - 专业中国数字账号交易平台 | Buy WeChat, Alipay, Douyin Accounts',
     },
-    description: '安全可靠的微信、支付宝、抖音、QQ账号交易平台。实名认证号、绑卡号、白号、老号应有尽有。USDT支付，即时发货。',
-    keywords: '海外充值,微信号购买,支付宝账号出售,抖音号批发,QQ号购买,实名微信号,USDT购买微信号,微信企业号出售',
+    description: '专业中国数字账号批发平台。微信号、支付宝账号、抖音号、QQ号现货供应。实名认证号、绑卡号、老号、白号应有尽有。USDT匿名支付，5分钟极速发货，72小时售后质保。Professional Chinese digital account marketplace — WeChat, Alipay, Douyin, QQ accounts with instant USDT delivery.',
+    keywords: [
+        // Chinese keywords (Baidu)
+        '微信号购买', '买微信号', '微信账号出售', '微信号批发', '微信老号购买',
+        '支付宝账号购买', '支付宝实名号', '支付宝企业号',
+        '抖音号购买', '抖音账号出售', '抖音万粉号', '抖音蓝V号',
+        'QQ号购买', 'QQ靓号', 'QQ太阳号',
+        '海外充值', '中国账号购买', 'USDT购买微信号', '加密货币购买中国账号',
+        '数字账号交易平台', '账号批发', '实名微信号出售',
+        // English keywords (Google)
+        'buy wechat account', 'wechat account for sale', 'buy chinese wechat',
+        'buy alipay account', 'verified alipay account',
+        'buy douyin account', 'tiktok china account', 'buy douyin followers',
+        'buy qq account', 'qq number for sale',
+        'chinese social media accounts', 'buy chinese accounts with crypto',
+        'USDT payment chinese accounts', 'instant delivery wechat',
+    ].join(', '),
+    authors: [{ name: 'CNWePro', url: SITE_URL }],
+    creator: 'CNWePro',
+    publisher: 'CNWePro',
+    formatDetection: {
+        telephone: false,
+        email: false,
+    },
     openGraph: {
         type: 'website',
         siteName: 'CNWePro',
-        title: 'CNWePro - 专业中国数字账号交易平台',
-        description: '安全可靠的微信、支付宝、抖音、QQ账号交易平台。USDT支付，即时发货。',
+        locale: 'zh_CN',
+        alternateLocale: 'en_US',
+        title: 'CNWePro - 专业中国数字账号交易平台 | Chinese Digital Accounts',
+        description: '微信、支付宝、抖音、QQ账号现货供应。USDT支付，5分钟发货，72小时质保。Buy verified Chinese social media accounts with instant crypto delivery.',
+        url: SITE_URL,
+        images: [
+            {
+                url: `${SITE_URL}/og-image.png`,
+                width: 1200,
+                height: 630,
+                alt: 'CNWePro - 中国数字账号交易平台',
+            }
+        ],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'CNWePro - 专业中国数字账号交易平台',
-        description: '安全可靠的微信、支付宝、抖音、QQ账号交易平台。USDT支付，即时发货。',
+        title: 'CNWePro - Buy WeChat, Alipay, Douyin & QQ Accounts',
+        description: 'Professional Chinese digital account marketplace. Instant USDT delivery, 72hr warranty. 微信号、支付宝、抖音、QQ账号批发平台。',
+        images: [`${SITE_URL}/og-image.png`],
     },
     alternates: {
-        canonical: process.env.NEXT_PUBLIC_SITE_URL,
+        canonical: SITE_URL,
         languages: {
-            'zh-CN': process.env.NEXT_PUBLIC_SITE_URL,
-            'en': `${process.env.NEXT_PUBLIC_SITE_URL}/en`,
+            'zh-CN': SITE_URL,
+            'en': `${SITE_URL}/en`,
         }
     },
-    robots: 'index, follow',
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+        },
+    },
+    verification: {
+        google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || '',
+        // Baidu verification is handled via meta tag below
+    },
+    other: {
+        // Baidu SEO specific meta
+        'baidu-site-verification': process.env.NEXT_PUBLIC_BAIDU_VERIFICATION || '',
+        'applicable-device': 'pc,mobile',
+        'mobile-agent': `format=html5; url=${SITE_URL}`,
+        // Sogou & 360 search
+        'sogou_site_verification': process.env.NEXT_PUBLIC_SOGOU_VERIFICATION || '',
+        // Content language for search engines
+        'content-language': 'zh-CN, en',
+    },
+};
+
+// JSON-LD Structured Data
+const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'CNWePro',
+    url: SITE_URL,
+    logo: `${SITE_URL}/icon.png`,
+    description: '专业中国数字账号交易平台 - Professional Chinese digital account marketplace',
+    contactPoint: [
+        {
+            '@type': 'ContactPoint',
+            contactType: 'customer service',
+            url: 'https://t.me/Minsheng0',
+            email: 'support@cnwepro.com',
+            availableLanguage: ['Chinese', 'English'],
+        }
+    ],
+    sameAs: [
+        'https://t.me/cnwepro',
+        'https://t.me/Minsheng0',
+    ],
+};
+
+const websiteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'CNWePro',
+    url: SITE_URL,
+    description: '专业中国数字账号交易平台',
+    inLanguage: ['zh-CN', 'en'],
+    potentialAction: {
+        '@type': 'SearchAction',
+        target: `${SITE_URL}/track/?id={search_term_string}`,
+        'query-input': 'required name=search_term_string',
+    },
+};
+
+const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+        { '@type': 'ListItem', position: 1, name: '首页', item: SITE_URL },
+        { '@type': 'ListItem', position: 2, name: '微信账号', item: `${SITE_URL}/wechat/` },
+        { '@type': 'ListItem', position: 3, name: '支付宝账号', item: `${SITE_URL}/alipay/` },
+        { '@type': 'ListItem', position: 4, name: '抖音账号', item: `${SITE_URL}/douyin/` },
+        { '@type': 'ListItem', position: 5, name: 'QQ账号', item: `${SITE_URL}/qq/` },
+    ],
 };
 
 export default function RootLayout({
@@ -44,6 +172,25 @@ export default function RootLayout({
                 {/* Preload critical fonts */}
                 <link rel="preload" href="/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
                 <link rel="preload" href="/fonts/noto-sans-sc-var.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+
+                {/* Canonical & hreflang for Baidu */}
+                <link rel="alternate" hrefLang="zh-CN" href={SITE_URL} />
+                <link rel="alternate" hrefLang="en" href={`${SITE_URL}/en`} />
+                <link rel="alternate" hrefLang="x-default" href={SITE_URL} />
+
+                {/* JSON-LD Structured Data */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+                />
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+                />
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+                />
 
                 {/* Theme script to prevent hydration mismatch */}
                 <script
@@ -76,8 +223,27 @@ export default function RootLayout({
                         }}
                     />
                 )}
+
+                {/* Baidu auto-push for faster indexing */}
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+              (function(){
+                var bp = document.createElement('script');
+                var curProtocol = window.location.protocol.split(':')[0];
+                if (curProtocol === 'https') {
+                  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+                } else {
+                  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+                }
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(bp, s);
+              })();
+            `,
+                    }}
+                />
             </head>
-            <body className="min-h-screen flex flex-col pt-16 md:pt-20">
+            <body className={`min-h-screen flex flex-col pt-16 md:pt-20 ${inter.variable} ${notoSansSC.variable}`}>
                 <Header />
 
                 <main className="flex-grow">
@@ -87,6 +253,7 @@ export default function RootLayout({
                 <CartDrawer lang="zh" />
                 <Footer />
                 <MobileNav />
+                <GsapAnimations />
             </body>
         </html>
     );

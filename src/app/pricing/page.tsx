@@ -1,5 +1,15 @@
+import type { Metadata } from 'next';
 import { PopularProducts } from '@/components/home/PopularProducts';
 import { getLocalizedPath } from '@/lib/i18n';
+
+export const metadata: Metadata = {
+    title: '价格总览 - 全网最低价 | Pricing',
+    description: '微信号、支付宝账号、抖音号、QQ号全品类价格一览表。单买·10件·50件·200件批量阶梯定价。USDT支付，量大从优。Compare prices for WeChat, Alipay, Douyin & QQ accounts — bulk pricing from $18.',
+    alternates: {
+        canonical: 'https://cnwepro.netlify.app/pricing/',
+        languages: { 'zh-CN': 'https://cnwepro.netlify.app/pricing/', 'en': 'https://cnwepro.netlify.app/en/pricing/' },
+    },
+};
 
 export default function PricingPage() {
     return (

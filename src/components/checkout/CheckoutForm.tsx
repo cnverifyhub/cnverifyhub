@@ -104,18 +104,29 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
         }
     };
 
-    const handlePaymentConfirm = (txHash: string) => {
+    const handlePaymentConfirm = (txHash: string, verificationData?: any) => {
         setIsProcessingPayment(true);
         setStep(3);
+
+        const isVerified = verificationData?.verified || false;
         
-        // Simulate Alipay-style risk control and network validation delay
+        // Brief delay for the Alipay-style processing animation
         setTimeout(() => {
             setIsProcessingPayment(false);
             addOrder({
                 id: orderId,
                 email: contactInfo.email || contactInfo.telegram || 'Anonymous',
-                cryptoType: "USDT", // Assuming TRC20/USDT as default for now
+                cryptoType: "USDT",
                 txid: txHash,
+                txVerified: isVerified,
+                verificationDetails: isVerified ? {
+                    amount: verificationData.amount,
+                    from: verificationData.from,
+                    to: verificationData.to,
+                    token: verificationData.token,
+                    timestamp: verificationData.timestamp,
+                    confirmed: verificationData.confirmed,
+                } : undefined,
                 createdAt: new Date().toISOString(),
                 items: items.map(i => ({
                     productId: i.productId,
@@ -127,7 +138,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
             clearCart();
             setShowConfetti(true);
             setTimeout(() => setShowConfetti(false), 5000);
-        }, 3000);
+        }, 1500);
     };
 
     return (

@@ -1,14 +1,16 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { MessageSquare, ShoppingBag, Video, UserCircle2, ArrowRight, Zap, Flame } from 'lucide-react';
 import { categories, getTotalStock, getLowestPrice } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { formatUsdt } from '@/lib/utils';
 
+// Configured width/height specifically for next/image. priority=true since these are usually above the fold on load.
 const iconMap: Record<string, { icon: React.ReactNode, bgClass: string }> = {
-    wechat: { icon: <img src="https://play-lh.googleusercontent.com/QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ" alt="WeChat" className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
-    alipay: { icon: <img src="https://play-lh.googleusercontent.com/quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY" alt="Alipay" className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
-    douyin: { icon: <img src="https://play-lh.googleusercontent.com/xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw=w600-h300-pc0xffffff-pd" alt="Douyin" className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
-    qq: { icon: <img src="https://play-lh.googleusercontent.com/2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0" alt="QQ" className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
+    wechat: { icon: <Image src="https://play-lh.googleusercontent.com/QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ" alt="WeChat" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
+    alipay: { icon: <Image src="https://play-lh.googleusercontent.com/quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY" alt="Alipay" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
+    douyin: { icon: <Image src="https://play-lh.googleusercontent.com/xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw=w600-h300-pc0xffffff-pd" alt="Douyin" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
+    qq: { icon: <Image src="https://play-lh.googleusercontent.com/2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0" alt="QQ" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
 };
 
 export function CategoryCards({ lang }: { lang: Lang }) {

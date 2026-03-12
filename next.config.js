@@ -1,9 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // output: 'export', // Removed to enable Netlify Next.js Runtime
   trailingSlash: true,
   images: {
-    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'play-lh.googleusercontent.com',
+      },
+    ],
   },
   async headers() {
     return [

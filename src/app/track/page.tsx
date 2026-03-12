@@ -1,41 +1,69 @@
 'use client';
 
-import { useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { t, type Lang } from '@/lib/i18n';
-import { Search, Package, Clock, CheckCircle } from 'lucide-react';
+import { Search, Package, Clock, CheckCircle, ShieldCheck, AlertCircle, ExternalLink, Loader2 } from 'lucide-react';
+import { useOrderStore, type Order } from '@/store/orderStore';
+import { getProductById } from '@/data/products';
+
+const statusConfig: Record<string, { color: string; icon: any; labelZh: string; labelEn: string }> = {
+    pending: { color: 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20', icon: Clock, labelZh: '待付款', labelEn: 'Pending Payment' },
+    paid: { color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/20', icon: ShieldCheck, labelZh: '已付款 · 已验证', labelEn: 'Paid · Verified' },
+    completed: { color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20', icon: CheckCircle, labelZh: '已完成', labelEn: 'Completed' },
+    cancelled: { color: 'text-red-600 bg-red-50 dark:bg-red-900/20', icon: AlertCircle, labelZh: '已取消', labelEn: 'Cancelled' },
+};
 
 function TrackContent({ lang }: { lang: Lang }) {
     const searchParams = useSearchParams();
     const initialId = searchParams.get('id') || '';
     const [orderId, setOrderId] = useState(initialId);
     const [isSearching, setIsSearching] = useState(false);
-    const [result, setResult] = useState<any>(null);
+    const [result, setResult] = useState<Order | null>(null);
+    const [notFound, setNotFound] = useState(false);
+    const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+    const { getOrderById, getAllOrders } = useOrderStore();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (mounted) {
+            const all = getAllOrders();
+            setRecentOrders(all.slice(0, 5)); // Show max 5 recent orders
+        }
+    }, [mounted, getAllOrders]);
 
     const handleSearch = (e?: React.FormEvent) => {
         e?.preventDefault();
         if (!orderId.trim()) return;
 
         setIsSearching(true);
-        // Simulate API call
+        setNotFound(false);
+        setResult(null);
+
+        // Slight delay for UX
         setTimeout(() => {
-            setResult({
-                id: orderId,
-                status: 'processing', // mock status
-                date: new Date().toLocaleDateString(),
-                productName: lang === 'zh' ? '微信老号 (1年+)' : 'Aged WeChat (1yr+)',
-                telegram: 'user123'
-            });
+            const order = getOrderById(orderId.trim());
+            if (order) {
+                setResult(order);
+            } else {
+                setNotFound(true);
+            }
             setIsSearching(false);
-        }, 1000);
+        }, 600);
     };
 
     // Auto search if ID from URL
-    useState(() => {
-        if (initialId) {
+    useEffect(() => {
+        if (initialId && mounted) {
             handleSearch();
         }
-    });
+    }, [initialId, mounted]);
+
+    if (!mounted) return <div className="py-32 text-center"><Loader2 className="w-6 h-6 animate-spin mx-auto" /></div>;
 
     return (
         <div className="max-w-3xl mx-auto section-container py-12 md:py-24 min-h-[70vh]">
@@ -48,7 +76,7 @@ function TrackContent({ lang }: { lang: Lang }) {
                 </p>
             </div>
 
-            <form onSubmit={handleSearch} className="flex gap-4 mb-12 relative max-w-xl mx-auto">
+            <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 relative max-w-xl mx-auto">
                 <div className="relative flex-1">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                     <input
@@ -68,37 +96,180 @@ function TrackContent({ lang }: { lang: Lang }) {
                 </button>
             </form>
 
+            {/* Search Result */}
             {result && (
-                <div className="glass-card p-8 rounded-3xl border border-slate-200 dark:border-slate-800 animate-fade-in-up">
-                    <div className="flex justify-between items-start mb-8 pb-8 border-b border-slate-100 dark:border-slate-800">
+                <div className="glass-card p-6 sm:p-8 rounded-3xl border border-slate-200 dark:border-slate-800 animate-fade-in-up mb-8">
+                    <div className="flex flex-col sm:flex-row justify-between items-start mb-6 pb-6 border-b border-slate-100 dark:border-slate-800 gap-4">
                         <div>
                             <p className="text-sm font-medium text-slate-500 mb-1">{t('checkout.orderId', lang)}</p>
                             <h2 className="text-xl font-bold font-mono text-slate-900 dark:text-white">{result.id}</h2>
-                            <div className="mt-4">
-                                <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">
-                                    <span className="font-semibold text-slate-900 dark:text-white">{result.productName}</span> — {result.date}
+                            <div className="mt-3 space-y-1">
+                                <p className="text-sm text-slate-600 dark:text-slate-400">
+                                    {lang === 'zh' ? '下单时间' : 'Created'}: {new Date(result.createdAt).toLocaleString()}
                                 </p>
-                                <p className="text-sm text-slate-500">
-                                    Telegram: @{result.telegram}
+                                <p className="text-sm text-slate-600 dark:text-slate-400">
+                                    {lang === 'zh' ? '联系方式' : 'Contact'}: {result.email}
+                                </p>
+                                <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                                    {lang === 'zh' ? '总计' : 'Total'}: ${result.totalAmount.toFixed(2)} USDT
                                 </p>
                             </div>
                         </div>
-                        <div className="px-4 py-2 rounded-full bg-gold-50 dark:bg-gold-500/10 text-gold-600 font-bold text-sm flex items-center gap-2">
-                            <Clock className="w-4 h-4" />
-                            {t('track.status.processing', lang)}
+                        {(() => {
+                            const config = statusConfig[result.status] || statusConfig.pending;
+                            const Icon = config.icon;
+                            return (
+                                <div className={`px-4 py-2 rounded-full ${config.color} font-bold text-sm flex items-center gap-2 shrink-0`}>
+                                    <Icon className="w-4 h-4" />
+                                    {lang === 'zh' ? config.labelZh : config.labelEn}
+                                </div>
+                            );
+                        })()}
+                    </div>
+
+                    {/* Order Items */}
+                    <div className="mb-6">
+                        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                            {lang === 'zh' ? '订单商品' : 'Order Items'}
+                        </h3>
+                        <div className="space-y-2">
+                            {result.items.map((item, idx) => {
+                                const product = getProductById(item.productId);
+                                return (
+                                    <div key={idx} className="flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl">
+                                        <span className="text-sm text-slate-700 dark:text-slate-300">
+                                            {product
+                                                ? (lang === 'zh' ? product.tierName.zh : product.tierName.en)
+                                                : item.productId
+                                            }
+                                        </span>
+                                        <span className="text-sm font-mono text-slate-500">×{item.quantity}</span>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
 
+                    {/* Blockchain Verification */}
+                    {result.txid && (
+                        <div className="mb-6">
+                            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                                {lang === 'zh' ? '支付信息' : 'Payment Info'}
+                            </h3>
+                            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 space-y-2">
+                                <div className="flex items-center gap-2">
+                                    {result.txVerified ? (
+                                        <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+                                    ) : (
+                                        <Clock className="w-4 h-4 text-yellow-500 shrink-0" />
+                                    )}
+                                    <span className={`text-sm font-semibold ${result.txVerified ? 'text-emerald-600 dark:text-emerald-400' : 'text-yellow-600 dark:text-yellow-400'}`}>
+                                        {result.txVerified
+                                            ? (lang === 'zh' ? '区块链已验证 ✓' : 'Blockchain Verified ✓')
+                                            : (lang === 'zh' ? '待人工确认' : 'Pending Manual Confirmation')
+                                        }
+                                    </span>
+                                </div>
+                                <p className="text-xs font-mono text-slate-500 break-all">
+                                    TXID: {result.txid}
+                                </p>
+                                {result.verificationDetails && (
+                                    <div className="grid grid-cols-2 gap-2 mt-2 text-xs">
+                                        <div>
+                                            <span className="text-slate-400">{lang === 'zh' ? '金额' : 'Amount'}</span>
+                                            <p className="font-semibold text-slate-700 dark:text-slate-300">${result.verificationDetails.amount} USDT</p>
+                                        </div>
+                                        <div>
+                                            <span className="text-slate-400">{lang === 'zh' ? '代币' : 'Token'}</span>
+                                            <p className="font-semibold text-slate-700 dark:text-slate-300">{result.verificationDetails.token} (TRC20)</p>
+                                        </div>
+                                    </div>
+                                )}
+                                <a
+                                    href={`https://tronscan.org/#/transaction/${result.txid}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1 text-xs text-primary-500 hover:underline mt-1"
+                                >
+                                    <ExternalLink className="w-3 h-3" />
+                                    {lang === 'zh' ? '在TronScan上查看' : 'View on TronScan'}
+                                </a>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Status Message */}
                     <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 text-center border border-slate-100 dark:border-slate-700">
                         <Package className="w-12 h-12 text-slate-400 mx-auto mb-4" />
-                        <h3 className="font-bold text-slate-900 dark:text-white mb-2">
-                            {lang === 'zh' ? '正在准备您的账号' : 'Preparing your account'}
-                        </h3>
-                        <p className="text-slate-500 text-sm">
-                            {lang === 'zh'
-                                ? '我们已收到付款，系统正在提取账号信息。稍后将通过 Telegram 发送给您，请耐心等待 1-15 分钟。'
-                                : 'Payment received. The system is extracting account credentials. It will be sent via Telegram shortly, please allow 1-15 minutes.'}
-                        </p>
+                        {result.status === 'completed' && result.deliveredAccounts.length > 0 ? (
+                            <>
+                                <h3 className="font-bold text-emerald-600 dark:text-emerald-400 mb-2">
+                                    {lang === 'zh' ? '账号已交付 ✓' : 'Account Delivered ✓'}
+                                </h3>
+                                <p className="text-slate-500 text-sm mb-4">
+                                    {lang === 'zh' ? '账号信息已通过Telegram发送给您' : 'Account credentials have been sent via Telegram'}
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <h3 className="font-bold text-slate-900 dark:text-white mb-2">
+                                    {lang === 'zh' ? '正在准备您的账号' : 'Preparing your account'}
+                                </h3>
+                                <p className="text-slate-500 text-sm">
+                                    {lang === 'zh'
+                                        ? '我们已收到付款，系统正在提取账号信息。稍后将通过 Telegram 发送给您，请耐心等待 1-15 分钟。'
+                                        : 'Payment received. The system is extracting account credentials. It will be sent via Telegram shortly, please allow 1-15 minutes.'}
+                                </p>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Not Found */}
+            {notFound && (
+                <div className="text-center py-8 glass-card rounded-3xl border border-slate-200 dark:border-slate-800 animate-fade-in-up mb-8">
+                    <AlertCircle className="w-12 h-12 text-slate-400 mx-auto mb-4" />
+                    <h3 className="font-bold text-slate-900 dark:text-white mb-2">
+                        {lang === 'zh' ? '未找到订单' : 'Order Not Found'}
+                    </h3>
+                    <p className="text-slate-500 text-sm max-w-md mx-auto">
+                        {lang === 'zh'
+                            ? '请检查订单号是否正确。如果刚刚完成付款，请稍等片刻后再试。'
+                            : 'Please check if the order ID is correct. If you just completed payment, please wait a moment and try again.'}
+                    </p>
+                </div>
+            )}
+
+            {/* Recent Orders */}
+            {recentOrders.length > 0 && !result && !notFound && (
+                <div className="mt-8">
+                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">
+                        {lang === 'zh' ? '最近的订单' : 'Recent Orders'}
+                    </h3>
+                    <div className="space-y-3">
+                        {recentOrders.map((order) => {
+                            const config = statusConfig[order.status] || statusConfig.pending;
+                            const Icon = config.icon;
+                            return (
+                                <button
+                                    key={order.id}
+                                    onClick={() => { setOrderId(order.id); setResult(order); setNotFound(false); }}
+                                    className="w-full flex items-center justify-between p-4 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-left"
+                                >
+                                    <div>
+                                        <p className="font-mono text-sm font-bold text-slate-900 dark:text-white">{order.id}</p>
+                                        <p className="text-xs text-slate-500 mt-0.5">
+                                            ${order.totalAmount.toFixed(2)} USDT · {new Date(order.createdAt).toLocaleDateString()}
+                                        </p>
+                                    </div>
+                                    <div className={`px-3 py-1 rounded-full ${config.color} text-xs font-semibold flex items-center gap-1`}>
+                                        <Icon className="w-3 h-3" />
+                                        {lang === 'zh' ? config.labelZh : config.labelEn}
+                                    </div>
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
             )}
@@ -108,7 +279,7 @@ function TrackContent({ lang }: { lang: Lang }) {
 
 export default function TrackPage() {
     return (
-        <Suspense fallback={<div className="py-32 text-center">Loading...</div>}>
+        <Suspense fallback={<div className="py-32 text-center"><Loader2 className="w-6 h-6 animate-spin mx-auto" /></div>}>
             <TrackContent lang="zh" />
         </Suspense>
     );

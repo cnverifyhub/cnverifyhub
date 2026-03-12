@@ -2,10 +2,18 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ShieldCheck, Zap, Headset, Award, Lock, ChevronRight, Gift, X, Crown, TrendingUp, MessageSquare, Star, Truck, BadgeCheck } from 'lucide-react';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { categories } from '@/data/products';
+
+const logoUrls: Record<string, string> = {
+    wechat: 'https://play-lh.googleusercontent.com/QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ',
+    alipay: 'https://play-lh.googleusercontent.com/quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY',
+    douyin: 'https://play-lh.googleusercontent.com/xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw=w600-h300-pc0xffffff-pd',
+    qq: 'https://play-lh.googleusercontent.com/2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0',
+};
 
 /* ============================================
    Danmu (弹幕) floating comments
@@ -154,7 +162,7 @@ function FloatingCoupon({ lang }: { lang: Lang }) {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        const timer = setTimeout(() => setIsVisible(true), 2000);
+        const timer = setTimeout(() => setIsVisible(true), 30000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -249,9 +257,15 @@ export function Hero({ lang }: { lang: Lang }) {
                                     href={getLocalizedPath(cat.href, lang)}
                                     className="flex items-center gap-2.5 px-4 py-3 hover:bg-red-50/60 dark:hover:bg-red-900/10 transition-colors border-b border-slate-50 dark:border-slate-800/50 last:border-b-0 group"
                                 >
-                                    <span className={`w-7 h-7 rounded-lg bg-gradient-to-br ${cat.gradient} flex items-center justify-center text-white text-[10px] font-black shadow-sm`}>
-                                        {cat.name.zh.charAt(0)}
-                                    </span>
+                                    <div className="w-7 h-7 rounded-lg shadow-sm overflow-hidden bg-white border border-slate-100 dark:border-slate-800 shrink-0">
+                                        <Image
+                                            src={logoUrls[cat.icon as keyof typeof logoUrls]}
+                                            alt={cat.name.en}
+                                            width={28}
+                                            height={28}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
                                             {cat.name[lang]}
@@ -308,7 +322,7 @@ export function Hero({ lang }: { lang: Lang }) {
 
                         {/* CTA Buttons with Bounce on Primary */}
                         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-                            <Link href="#pricing" className="hero-cta-bounce w-full sm:w-auto px-6 sm:px-10 py-3.5 sm:py-4 text-base sm:text-lg font-black rounded-2xl transition-all duration-300 bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] hover:from-[#ff2a2d] hover:to-[#cc0000] text-white shadow-[0_8px_20px_rgba(255,42,45,0.3)] hover:shadow-[0_12px_30px_rgba(255,42,45,0.45)] active:scale-95 border-b-4 border-[#cc0000] flex justify-center items-center relative overflow-hidden">
+                            <Link href="#pricing" className="hero-cta-bounce text-center whitespace-normal break-words w-full sm:w-auto px-4 sm:px-10 py-3.5 sm:py-4 text-base sm:text-lg font-black rounded-2xl transition-all duration-300 bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] hover:from-[#ff2a2d] hover:to-[#cc0000] text-white shadow-[0_8px_20px_rgba(255,42,45,0.3)] hover:shadow-[0_12px_30px_rgba(255,42,45,0.45)] active:scale-95 border-b-4 border-[#cc0000] flex justify-center items-center relative overflow-hidden">
                                 <span className="relative z-10">{t('hero.cta.primary', lang)}</span>
                                 {/* Shine sweep effect */}
                                 <span className="absolute inset-0 hero-shine" />
@@ -317,7 +331,7 @@ export function Hero({ lang }: { lang: Lang }) {
                                 href={process.env.NEXT_PUBLIC_TELEGRAM_SUPPORT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_SUPPORT_USERNAME}` : 'https://t.me/Minsheng0'}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="btn-outline w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
+                                className="btn-outline w-full sm:w-auto px-4 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
                             >
                                 {t('hero.cta.secondary', lang)}
                             </a>

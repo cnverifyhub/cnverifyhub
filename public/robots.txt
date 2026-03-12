@@ -1,0 +1,22 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://cnwepro.netlify.app/sitemap.xml
+
+# Baidu Spider
+User-agent: Baiduspider
+Allow: /
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Block admin pages
+User-agent: *
+Disallow: /admin/
+Disallow: /api/
+Disallow: /gate/
+
+# Host
+Host: https://cnwepro.netlify.app

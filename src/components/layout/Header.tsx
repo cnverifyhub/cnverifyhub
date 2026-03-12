@@ -227,7 +227,7 @@ export default function Header() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 mt-4">
+                        <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 sm:gap-4 mt-4">
                             <Link
                                 href={getLocalizedPath('/contact', lang)}
                                 onClick={() => setMobileMenuOpen(false)}
@@ -241,7 +241,7 @@ export default function Header() {
                                 onClick={() => setMobileMenuOpen(false)}
                                 className="btn-outline w-full justify-center flex items-center gap-2"
                             >
-                                <Globe className="w-4 h-4" />
+                                <Globe className="w-4 h-4 shrink-0" />
                                 <span>{lang === 'zh' ? 'English' : '中文'}</span>
                             </Link>
                         </div>
