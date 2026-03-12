@@ -169,8 +169,8 @@ function FloatingCoupon({ lang }: { lang: Lang }) {
     if (dismissed || !isVisible) return null;
 
     return (
-        <div className="fixed right-3 top-1/3 z-40 animate-bounce-slow">
-            <div className="relative bg-gradient-to-b from-[#ff4d4f] to-[#cc0000] text-white rounded-2xl p-4 pb-5 shadow-2xl shadow-red-500/30 w-[72px] cursor-pointer group hover:scale-105 transition-transform"
+        <div className="fixed right-2 sm:right-3 top-1/3 sm:top-1/3 z-40 animate-bounce-slow scale-75 origin-right sm:scale-100">
+            <div className="relative bg-gradient-to-b from-[#ff4d4f] to-[#cc0000] text-white rounded-2xl p-4 pb-5 shadow-2xl shadow-red-500/30 w-[72px] cursor-pointer group sm:hover:scale-105 transition-transform"
                 onClick={() => window.location.href = '#pricing'}>
                 <button
                     onClick={(e) => { e.stopPropagation(); setDismissed(true); }}
@@ -227,7 +227,7 @@ function GoldSeal({ lang }: { lang: Lang }) {
    ============================================ */
 export function Hero({ lang }: { lang: Lang }) {
     return (
-        <section className="relative overflow-hidden pt-16 sm:pt-24 pb-12 sm:pb-16 lg:pt-32 lg:pb-24 px-4 sm:px-0">
+        <section className="relative overflow-hidden pt-16 sm:pt-24 pb-12 sm:pb-16 lg:pt-32 lg:pb-24">
             {/* Background gradients */}
             <div className="absolute inset-0 bg-white dark:bg-dark-950 -z-20"></div>
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-100/50 dark:bg-primary-900/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 -z-10 animate-pulse-slow"></div>
@@ -240,7 +240,7 @@ export function Hero({ lang }: { lang: Lang }) {
             <FloatingCoupon lang={lang} />
 
             <div className="section-container">
-                <div className="flex gap-6 xl:gap-10">
+                <div className="flex w-full min-w-0 gap-6 xl:gap-10">
 
                     {/* ===== Left: Taobao-Style Category Sidebar ===== */}
                     <div className="hidden lg:flex flex-col w-48 xl:w-52 shrink-0 pt-2">
@@ -291,7 +291,7 @@ export function Hero({ lang }: { lang: Lang }) {
                     </div>
 
                     {/* ===== Center: Main Hero Content ===== */}
-                    <div className="flex-1 flex flex-col items-center text-center relative">
+                    <div className="flex-1 min-w-0 w-full flex flex-col items-center text-center relative">
                         {/* Marquee Announcement */}
                         <div className="w-full max-w-2xl mx-auto mb-6 sm:mb-8 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 border border-red-100 dark:border-red-900/30 rounded-full py-1 sm:py-1.5 px-2 sm:px-3 flex items-center gap-2 sm:gap-3 overflow-hidden shadow-inner animate-fade-in-up">
                             <span className="bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] text-white text-[9px] sm:text-xs font-black px-2 sm:px-2.5 py-0.5 rounded-full shrink-0 shadow-sm pr-2 sm:pr-3 flex items-center gap-1">
@@ -308,15 +308,15 @@ export function Hero({ lang }: { lang: Lang }) {
                             </div>
                         </div>
 
-                        <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4 sm:mb-6 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+                        <h1 className="w-full text-[26px] leading-[1.2] sm:text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4 sm:mb-6 animate-fade-in-up whitespace-normal break-words sm:px-2" style={{ animationDelay: '100ms' }}>
                             {t('hero.title.line1', lang)}{' '}
                             <br className="hidden md:block" />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-600">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-600 inline-block">
                                 {t('hero.title.highlight', lang)}
                             </span>
                         </h1>
 
-                        <p className="text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mb-6 sm:mb-8 leading-relaxed px-2 sm:px-0 animate-fade-in-up text-balance" style={{ animationDelay: '200ms' }}>
+                        <p className="w-full max-w-[100vw] text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 mb-6 sm:mb-8 leading-relaxed px-4 animate-fade-in-up md:text-balance break-words" style={{ animationDelay: '200ms' }}>
                             {t('hero.subtitle', lang)}
                         </p>
 
@@ -338,7 +338,7 @@ export function Hero({ lang }: { lang: Lang }) {
                         </div>
 
                         {/* Dense Trust Cluster under CTA */}
-                        <div className="flex flex-wrap justify-center items-center gap-3 mt-5 animate-fade-in-up" style={{ animationDelay: '350ms' }}>
+                        <div className="w-full max-w-[100vw] flex flex-wrap justify-center items-center gap-2 sm:gap-3 mt-5 px-2 animate-fade-in-up" style={{ animationDelay: '350ms' }}>
                             <span className="flex items-center gap-1 text-[11px] font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-2.5 py-1 rounded">
                                 <ShieldCheck className="w-3.5 h-3.5" /> {lang === 'zh' ? '官方正品保护' : 'Official Verified'}
                             </span>
@@ -377,7 +377,7 @@ export function Hero({ lang }: { lang: Lang }) {
                         </div>
 
                         {/* ===== Trust Matrix (信任矩阵) ===== */}
-                        <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 mt-8 w-full max-w-lg animate-fade-in-up" style={{ animationDelay: '450ms' }}>
+                        <div className="w-full flex flex-wrap justify-center gap-2 sm:gap-3 mt-8 max-w-lg px-2 sm:px-0 animate-fade-in-up" style={{ animationDelay: '450ms' }}>
                             {[
                                 { icon: <Lock className="w-4 h-4" />, label: 'SSL', color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/30' },
                                 { icon: <ShieldCheck className="w-4 h-4" />, label: 'TRC-20', color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400 border-blue-100 dark:border-blue-800/30' },
@@ -386,7 +386,7 @@ export function Hero({ lang }: { lang: Lang }) {
                                 { icon: <MessageSquare className="w-4 h-4" />, label: lang === 'zh' ? '真实' : 'Legit', color: 'text-rose-600 bg-rose-50 dark:bg-rose-900/20 dark:text-rose-400 border-rose-100 dark:border-rose-800/30' },
                                 { icon: <BadgeCheck className="w-4 h-4" />, label: lang === 'zh' ? '正品' : 'Auth', color: 'text-teal-600 bg-teal-50 dark:bg-teal-900/20 dark:text-teal-400 border-teal-100 dark:border-teal-800/30' },
                             ].map((badge, i) => (
-                                <div key={i} className={`flex flex-col items-center gap-1 py-2 px-1 rounded-xl border ${badge.color} transition-transform hover:scale-105`}>
+                                <div key={i} className={`flex flex-col items-center gap-1 py-2 px-3 sm:px-1 rounded-xl border ${badge.color} transition-transform hover:scale-105 shrink-0`}>
                                     {badge.icon}
                                     <span className="text-[9px] font-black">{badge.label}</span>
                                 </div>
@@ -394,7 +394,7 @@ export function Hero({ lang }: { lang: Lang }) {
                         </div>
 
                         {/* Stats Bar */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-12 mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-slate-100 dark:border-slate-800/50 w-full px-4 sm:px-0 animate-fade-in-up" style={{ animationDelay: '500ms' }}>
+                        <div className="w-full grid grid-cols-1 min-[400px]:grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-12 mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-slate-100 dark:border-slate-800/50 px-2 sm:px-0 animate-fade-in-up min-w-0" style={{ animationDelay: '500ms' }}>
                             <div>
                                 <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
                                     <AnimatedCounter end={50} suffix="K+" duration={2500} />
