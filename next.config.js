@@ -8,6 +8,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'play-lh.googleusercontent.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
     ],
   },
   async headers() {
