@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Check, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
 
 export default function GatePage() {
@@ -10,6 +10,7 @@ export default function GatePage() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
     const router = useRouter();
 
     const handleSubmit = async (e?: React.FormEvent) => {
@@ -31,10 +32,11 @@ export default function GatePage() {
             const data = await res.json();
 
             if (data.success) {
-                // Refresh the router to trigger middleware check and let the user in
-                router.refresh();
-                // Optionally push to home if refresh isn't enough
-                router.push('/');
+                setIsSuccess(true);
+                // Fast redirect after showing the cool animation
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
             } else {
                 setError(true);
                 setPassword('');
@@ -127,8 +129,34 @@ export default function GatePage() {
                     .animate-shake {
                         animation: shake 0.3s ease-in-out;
                     }
+                    @keyframes bounce-short {
+                        0% { transform: scale(0.8); opacity: 0; }
+                        50% { transform: scale(1.1); opacity: 1; }
+                        100% { transform: scale(1); opacity: 1; }
+                    }
+                    .animate-bounce-short {
+                        animation: bounce-short 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+                    }
                 `}</style>
             </div>
+
+            {/* Cool Success Overlay */}
+            {isSuccess && (
+                <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/95 backdrop-blur-xl animate-fade-in text-white">
+                    <div className="w-24 h-24 bg-gradient-to-tr from-emerald-400 to-emerald-600 rounded-3xl flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(16,185,129,0.5)] animate-bounce-short">
+                        <ShieldCheck className="w-12 h-12 text-white" />
+                    </div>
+                    <div className="text-3xl font-black tracking-widest animate-fade-in-up">授权成功</div>
+                    <div className="text-sm opacity-60 mt-3 font-mono animate-pulse tracking-widest">
+                        ESTABLISHING SECURE CONNECTION...
+                    </div>
+                    
+                    {/* Fast Progress Bar */}
+                    <div className="w-48 h-1 bg-slate-800 rounded-full mt-6 overflow-hidden">
+                        <div className="h-full bg-emerald-500 rounded-full w-full animate-[slide-right_0.8s_ease-out_forwards]"></div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

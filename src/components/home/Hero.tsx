@@ -183,7 +183,7 @@ function FloatingCoupon({ lang }: { lang: Lang }) {
                     {lang === 'zh' ? '新人福利' : 'NEW USER'}
                 </p>
                 <div className="bg-yellow-400 text-red-700 rounded-lg py-1 mt-1.5 text-center">
-                    <span className="text-base font-black">20U</span>
+                    <span className="text-base font-black">15U</span>
                 </div>
                 <p className="text-center text-[8px] mt-1 opacity-80 font-bold">
                     {lang === 'zh' ? '点击领取' : 'CLAIM'}
@@ -302,8 +302,8 @@ export function Hero({ lang }: { lang: Lang }) {
                             <div className="flex-1 min-w-0 relative h-5 overflow-hidden text-[10px] sm:text-sm text-red-600 dark:text-red-400 font-bold whitespace-nowrap flex items-center">
                                 <div className="animate-[pulse_3s_ease-in-out_infinite]">
                                     {lang === 'zh'
-                                        ? '🔥 特惠狂欢开启！首单限量直降20U，库存有限，先到先得！平台全线支持担保交易，购买更放心！'
-                                        : '🔥 Shopping Festival! Flash sale running: Save up to 20U! Escrow protected payments enabled!'}
+                                        ? '🔥 特惠狂欢开启！满100U限时直降15U，库存有限，先到先得！平台全线支持担保交易，购买更放心！'
+                                        : '🔥 Shopping Festival! Orders over 100U save 15U! Escrow protected payments enabled!'}
                                 </div>
                             </div>
                         </div>
@@ -328,7 +328,7 @@ export function Hero({ lang }: { lang: Lang }) {
                                 <span className="absolute inset-0 hero-shine" />
                             </Link>
                             <a
-                                href={process.env.NEXT_PUBLIC_TELEGRAM_SUPPORT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_SUPPORT_USERNAME}` : 'https://t.me/Minsheng0'}
+                                href={process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL || 'https://t.me/cnwepro'}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="btn-outline w-full sm:w-auto px-4 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"

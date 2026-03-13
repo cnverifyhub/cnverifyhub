@@ -67,7 +67,7 @@ export const useCartStore = create<CartState>()(
 
             getTotal: () => {
                 const state = get();
-                return state.items.reduce((total: number, item: CartItem) => {
+                const subtotal = state.items.reduce((total: number, item: CartItem) => {
                     const product = getProductById(item.productId);
                     if (!product) return total;
 
@@ -79,6 +79,13 @@ export const useCartStore = create<CartState>()(
 
                     return total + (price * qty);
                 }, 0);
+
+                // Flash Sale Coupon: 15U discount on orders >= 100U
+                if (subtotal >= 100) {
+                    return subtotal - 15;
+                }
+
+                return subtotal;
             },
 
             getItemCount: () => {
