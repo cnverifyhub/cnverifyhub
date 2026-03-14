@@ -6,12 +6,13 @@ import { ShieldCheck, MessageCircle, Send, Wallet, Shield, Clock, Headphones, Aw
 import { t, getLangFromPath, getLocalizedPath } from '@/lib/i18n';
 import { categories } from '@/data/products';
 import Image from 'next/image';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon } from '@/components/ui/BrandIcons';
 
-const categoryIcons: Record<string, string> = {
-    wechat: '💬',
-    alipay: '💰',
-    douyin: '🎵',
-    qq: '🐧',
+const categoryIcons: Record<string, React.ReactNode> = {
+    wechat: <WeChatIcon className="w-5 h-5 text-emerald-500" />,
+    alipay: <AlipayIcon className="w-5 h-5 text-blue-500" />,
+    douyin: <DouyinIcon className="w-5 h-5 text-slate-800 dark:text-white" />,
+    qq: <QQIcon className="w-5 h-5 text-sky-500" />,
 };
 
 export default function Footer() {
@@ -98,8 +99,10 @@ export default function Footer() {
                                         href={getLocalizedPath(c.href, lang)}
                                         className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm flex items-center gap-2.5 group"
                                     >
-                                        <span className="text-sm">{categoryIcons[c.id]}</span>
-                                        <span className="group-hover:translate-x-0.5 transition-transform">{c.name[lang]}</span>
+                                        <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 group-hover:scale-110 transition-transform">
+                                            {categoryIcons[c.id]}
+                                        </div>
+                                        <span className="group-hover:translate-x-1 transition-transform font-medium">{c.name[lang]}</span>
                                     </Link>
                                 </li>
                             ))}
@@ -184,6 +187,28 @@ export default function Footer() {
                                 </div>
                             </li>
                         </ul>
+                    </div>
+                </div>
+
+                {/* Mobile Extra Support (Phone/Email) — Enhanced UX */}
+                <div className="md:hidden mt-8 p-6 rounded-3xl bg-white/50 dark:bg-white/[0.03] border border-white/20 dark:border-white/5 backdrop-blur-sm">
+                    <p className="text-center text-sm font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-widest">
+                        {lang === 'zh' ? '快速联系' : 'QUICK CONTACT'}
+                    </p>
+                    <div className="flex flex-col gap-3">
+                        <a
+                            href={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME}` : 'https://t.me/Minsheng0'}
+                            className="flex items-center justify-center gap-3 bg-[#24A1DE] text-white py-4 rounded-2xl font-black shadow-lg shadow-sky-500/20 active:scale-95 transition-transform"
+                        >
+                            <Send className="w-5 h-5" />
+                            {lang === 'zh' ? 'Telegram 咨询' : 'Telegram Support'}
+                        </a>
+                        <a
+                            href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@cnwepro.com'}`}
+                            className="flex items-center justify-center gap-3 border-2 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 py-4 rounded-2xl font-black active:scale-95 transition-transform"
+                        >
+                            {lang === 'zh' ? '邮件联系' : 'Email Us'}
+                        </a>
                     </div>
                 </div>
 

@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
 import { getProductsByCategory } from '@/data/products';
+import { RelatedCategories } from '@/components/category/RelatedCategories';
+import { FAQAccordion } from '@/components/ui/FAQAccordion';
+import { faqData } from '@/data/faq';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 

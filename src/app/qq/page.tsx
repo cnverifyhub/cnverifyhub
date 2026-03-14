@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
 import { getProductsByCategory } from '@/data/products';
+import { RelatedCategories } from '@/components/category/RelatedCategories';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -89,22 +90,8 @@ export default function QQPage() {
                 </div>
             </section>
 
-            <section className="section-container pb-16">
-                <div className="max-w-4xl mx-auto">
-                    <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300 mb-4">相关分类</h3>
-                    <div className="grid grid-cols-3 gap-3">
-                        <a href="/wechat/" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-center">
-                            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">微信账号</span>
-                        </a>
-                        <a href="/alipay/" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-center">
-                            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">支付宝账号</span>
-                        </a>
-                        <a href="/douyin/" className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-center">
-                            <span className="text-sm font-semibold text-slate-700 dark:text-slate-300">抖音账号</span>
-                        </a>
-                    </div>
-                </div>
-            </section>
+            {/* Related Categories */}
+            <RelatedCategories currentCategory="qq" lang="zh" />
         </>
     );
 }

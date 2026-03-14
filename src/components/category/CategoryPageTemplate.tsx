@@ -6,12 +6,20 @@ import { t, type Lang } from '@/lib/i18n';
 import type { CategoryId } from '@/types';
 import { Shield, ShieldCheck, CheckCircle2, Zap, Clock, Info, MessageCircle, Wallet, Music, Tv2 } from 'lucide-react';
 import { MobileStickyBuyBar } from '@/components/layout/MobileStickyBuyBar';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon } from '@/components/ui/BrandIcons';
 
-const iconMap: Record<string, string> = {
-    wechat: "https://play-lh.googleusercontent.com/QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ",
-    alipay: "https://play-lh.googleusercontent.com/quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY",
-    douyin: "https://play-lh.googleusercontent.com/xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw=w600-h300-pc0xffffff-pd",
-    qq: "https://play-lh.googleusercontent.com/2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0"
+const iconMap: Record<string, React.ElementType> = {
+    wechat: WeChatIcon,
+    alipay: AlipayIcon,
+    douyin: DouyinIcon,
+    qq: QQIcon
+};
+
+const iconColors: Record<string, string> = {
+    wechat: "text-emerald-500",
+    alipay: "text-blue-500",
+    douyin: "text-slate-800 dark:text-white",
+    qq: "text-sky-500"
 };
 
 const watermarkMap: Record<string, React.ElementType> = {
@@ -43,18 +51,22 @@ export function CategoryPageTemplate({ categoryId, lang }: CategoryPageTemplateP
                 <div className="absolute top-0 right-0 bottom-0 w-[55%] hidden sm:block pointer-events-none z-0 overflow-hidden">
                     <div className={`absolute inset-0 bg-gradient-to-r ${category.gradient} opacity-5 dark:opacity-10 skew-x-[-12deg] origin-top translate-x-16 rounded-l-3xl`}></div>
                     <div className="absolute -right-12 top-1/2 -translate-y-1/2 w-[280px] h-[280px] md:w-[400px] md:h-[400px] opacity-[0.06] dark:opacity-[0.15] mix-blend-multiply dark:mix-blend-screen pointer-events-none select-none z-10 rotate-12 transition-transform duration-1000 saturate-0">
-                        <img src={iconMap[category.id] || iconMap['wechat']} alt="" className="w-full h-full object-contain" />
+                        {(() => {
+                            const BrandIcon = iconMap[category.id] || MessageCircle;
+                            return <BrandIcon className="w-full h-full" />;
+                        })()}
                     </div>
                 </div>
 
                 <div className="section-container relative z-10">
                     <div className="max-w-4xl flex items-center gap-6 md:gap-8">
-                        {/* App Icon Container - Just the pure image natively rounded with a gorgeous drop shadow */}
-                        <img
-                            src={iconMap[category.id] || iconMap['wechat']}
-                            alt={category.name[lang]}
-                            className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-100/50 dark:border-slate-800 hidden sm:block transition-transform duration-500 hover:scale-105 shrink-0 bg-white"
-                        />
+                        {/* App Icon Container - Just the pure SVG natively rounded with a gorgeous drop shadow */}
+                        <div className={`w-24 h-24 md:w-32 md:h-32 flex items-center justify-center rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-slate-100/50 dark:border-white/5 hidden sm:flex transition-all duration-500 hover:scale-105 hover:rotate-3 shrink-0 bg-white dark:bg-dark-800 p-6 md:p-8 ${iconColors[category.id]}`}>
+                            {(() => {
+                                const BrandIcon = iconMap[category.id] || MessageCircle;
+                                return <BrandIcon className="w-full h-full" />;
+                            })()}
+                        </div>
 
                         <div>
                             <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-3 tracking-tight">

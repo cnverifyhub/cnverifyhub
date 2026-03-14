@@ -5,6 +5,7 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
+  transpilePackages: ['gsap'],
   images: {
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [

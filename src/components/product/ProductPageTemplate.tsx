@@ -13,12 +13,20 @@ import {
 import { StockBadge } from '../ui/StockBadge';
 import { SlashPriceModal } from '../ui/SlashPriceModal';
 import { useCartStore } from '@/store/cartStore';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon } from '@/components/ui/BrandIcons';
 
-const iconMap: Record<string, string> = {
-    wechat: "https://play-lh.googleusercontent.com/QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ",
-    alipay: "https://play-lh.googleusercontent.com/quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY",
-    douyin: "https://play-lh.googleusercontent.com/xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw=w600-h300-pc0xffffff-pd",
-    qq: "https://play-lh.googleusercontent.com/2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0"
+const iconMap: Record<string, React.ElementType> = {
+    wechat: WeChatIcon,
+    alipay: AlipayIcon,
+    douyin: DouyinIcon,
+    qq: QQIcon
+};
+
+const iconColors: Record<string, string> = {
+    wechat: "text-emerald-500",
+    alipay: "text-blue-500",
+    douyin: "text-slate-800 dark:text-white",
+    qq: "text-sky-500"
 };
 
 interface ProductPageTemplateProps {
@@ -181,14 +189,20 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                             <div className="absolute top-0 right-0 bottom-0 w-[55%] pointer-events-none z-0 overflow-hidden rounded-r-3xl">
                                 <div className={`absolute inset-0 bg-gradient-to-r ${category?.gradient} opacity-[0.06] dark:opacity-[0.12] skew-x-[-12deg] origin-top translate-x-8`}></div>
                                 <div className="absolute -right-8 top-1/2 -translate-y-1/2 w-[220px] h-[220px] opacity-[0.08] dark:opacity-[0.2] mix-blend-multiply dark:mix-blend-screen pointer-events-none z-10 rotate-12 transition-transform duration-1000 saturate-0">
-                                    <img src={categoryIconUrl} alt="" className="w-full h-full object-contain" />
+                                    {(() => {
+                                        const BrandIcon = (category && iconMap[category.id]) || MessageCircle;
+                                        return <BrandIcon className="w-full h-full" />;
+                                    })()}
                                 </div>
                             </div>
 
                             <div className="relative z-10 flex gap-4 items-start mb-6">
                                 {/* Clean Native Logo Container */}
-                                <div className="w-16 h-16 md:w-20 md:h-20 shrink-0 bg-white dark:bg-dark-800 rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.08)] border border-slate-100 dark:border-slate-800 overflow-hidden flex items-center justify-center">
-                                    <img src={categoryIconUrl} alt={category?.name[lang]} className="w-full h-full object-cover" />
+                                <div className={`w-16 h-16 md:w-20 md:h-20 shrink-0 bg-white dark:bg-dark-800 rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.08)] border border-slate-100 dark:border-slate-800 overflow-hidden flex items-center justify-center p-4 ${category ? iconColors[category.id] : ''}`}>
+                                    {(() => {
+                                        const BrandIcon = (category && iconMap[category.id]) || MessageCircle;
+                                        return <BrandIcon className="w-full h-full" />;
+                                    })()}
                                 </div>
                                 <div className="flex-1">
                                     <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight mb-2">
