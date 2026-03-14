@@ -11,12 +11,13 @@ interface PaymentDisplayProps {
     amount: number;
     orderId: string;
     lang: Lang;
+    orderDetails: any; // Full order payload for backend
     onConfirm: (txHash: string, verificationData?: any) => void;
 }
 
 type VerifyPhase = 'idle' | 'checking' | 'verified' | 'failed';
 
-export function PaymentDisplay({ amount, orderId, lang, onConfirm }: PaymentDisplayProps) {
+export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm }: PaymentDisplayProps) {
     const [txHash, setTxHash] = useState('');
     const [phase, setPhase] = useState<VerifyPhase>('idle');
     const [errorMsg, setErrorMsg] = useState('');
@@ -37,7 +38,8 @@ export function PaymentDisplay({ amount, orderId, lang, onConfirm }: PaymentDisp
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     txHash: txHash.trim(),
-                    expectedAmount: amount
+                    expectedAmount: amount,
+                    orderDetails // Send the full order data to the backend for DB insertion
                 })
             });
 

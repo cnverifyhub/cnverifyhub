@@ -2,55 +2,104 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShieldCheck, MessageCircle, Send, Wallet } from 'lucide-react';
+import { ShieldCheck, MessageCircle, Send, Wallet, Shield, Clock, Headphones, Award } from 'lucide-react';
 import { t, getLangFromPath, getLocalizedPath } from '@/lib/i18n';
 import { categories } from '@/data/products';
 import Image from 'next/image';
+
+const categoryIcons: Record<string, string> = {
+    wechat: '💬',
+    alipay: '💰',
+    douyin: '🎵',
+    qq: '🐧',
+};
 
 export default function Footer() {
     const pathname = usePathname() || '/';
     const lang = getLangFromPath(pathname);
     const currentYear = new Date().getFullYear();
 
+    const trustBadges = [
+        { icon: ShieldCheck, label: lang === 'zh' ? 'SSL安全加密' : 'SSL Encrypted', color: 'text-emerald-500' },
+        { icon: Headphones, label: lang === 'zh' ? '7×24在线客服' : '24/7 Support', color: 'text-blue-500' },
+        { icon: Clock, label: lang === 'zh' ? '72小时售后质保' : '72h Warranty', color: 'text-amber-500' },
+        { icon: Award, label: lang === 'zh' ? '50,000+订单完成' : '50K+ Orders Done', color: 'text-red-500' },
+    ];
+
     return (
-        <footer className="bg-slate-50 dark:bg-dark-950 border-t border-slate-200 dark:border-slate-800 pb-20 md:pb-0">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 md:pt-16 pb-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12 lg:gap-8">
+        <footer className="relative bg-slate-50 dark:bg-[#0a0a14] pb-20 md:pb-0 overflow-hidden">
+            {/* Gradient top border */}
+            <div className="h-[2px] bg-gradient-to-r from-red-600 via-orange-500 to-amber-400" />
+
+            {/* Trust Badges Row */}
+            <div className="border-b border-slate-200/60 dark:border-slate-800/60 bg-white/50 dark:bg-white/[0.02]">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+                        {trustBadges.map((badge) => {
+                            const Icon = badge.icon;
+                            return (
+                                <div key={badge.label} className="flex items-center gap-2.5 justify-center md:justify-start">
+                                    <div className={`p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 ${badge.color}`}>
+                                        <Icon className="w-4 h-4" />
+                                    </div>
+                                    <span className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
+                                        {badge.label}
+                                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Footer Content */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 md:pt-14 pb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-8">
 
                     {/* Brand & Intro */}
-                    <div className="space-y-6 flex flex-col items-center sm:items-start text-center sm:text-left">
-                        <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2">
-                            <Image src="/logo.png" alt="CNWePro Logo" width={32} height={32} className="w-8 h-8 object-contain drop-shadow-sm" />
-                            <span className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">
-                                CNWePro
-                            </span>
+                    <div className="space-y-5 flex flex-col items-center sm:items-start text-center sm:text-left">
+                        <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 group">
+                            <Image src="/logo.png" alt="CNWePro Logo" width={36} height={36} className="w-9 h-9 object-contain group-hover:scale-105 transition-transform" />
+                            <div className="flex flex-col">
+                                <span className="font-extrabold text-xl tracking-tight text-slate-900 dark:text-white leading-none">
+                                    CNWePro
+                                </span>
+                                <span className="text-[9px] font-semibold text-slate-400 dark:text-slate-500 tracking-widest uppercase mt-0.5">
+                                    {lang === 'zh' ? '专业账号平台' : 'ACCOUNT MARKETPLACE'}
+                                </span>
+                            </div>
                         </Link>
-                        <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-xs">
                             {t('site.description', lang)}
                         </p>
-                        <div className="flex justify-center sm:justify-start items-center gap-4 text-slate-400">
-                            {/* Payment Methods */}
-                            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-dark-900 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                                <Wallet className="w-4 h-4" />
+
+                        {/* Payment Method Badge */}
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50 dark:bg-emerald-950/20 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                                <Wallet className="w-3.5 h-3.5" />
                                 USDT TRC20
+                            </div>
+                            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-blue-200 dark:border-blue-900/40 bg-blue-50 dark:bg-blue-950/20 text-xs font-bold text-blue-600 dark:text-blue-400">
+                                <Shield className="w-3.5 h-3.5" />
+                                {lang === 'zh' ? '担保交易' : 'Escrow'}
                             </div>
                         </div>
                     </div>
 
                     {/* Accounts */}
                     <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-6 text-center sm:text-left">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-5">
                             {t('footer.accounts', lang)}
                         </h3>
-                        <ul className="space-y-4 flex flex-col items-center sm:items-start">
+                        <ul className="space-y-3 flex flex-col items-center sm:items-start">
                             {categories.map((c) => (
                                 <li key={c.id}>
                                     <Link
                                         href={getLocalizedPath(c.href, lang)}
-                                        className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-sm flex items-center gap-2"
+                                        className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm flex items-center gap-2.5 group"
                                     >
-                                        <span className={`w-1.5 h-1.5 rounded-full bg-current ${c.color}`}></span>
-                                        {c.name[lang]}
+                                        <span className="text-sm">{categoryIcons[c.id]}</span>
+                                        <span className="group-hover:translate-x-0.5 transition-transform">{c.name[lang]}</span>
                                     </Link>
                                 </li>
                             ))}
@@ -58,58 +107,48 @@ export default function Footer() {
                     </div>
 
                     {/* Quick Links */}
-                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left pt-6 sm:pt-0">
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-6 text-center sm:text-left">
+                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-5">
                             {t('footer.quickLinks', lang)}
                         </h3>
-                        <ul className="space-y-4 flex flex-col items-center sm:items-start">
-                            <li>
-                                <Link href={getLocalizedPath('/pricing', lang)} className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-sm">
-                                    {t('nav.pricing', lang)}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href={getLocalizedPath('/client', lang)} className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-sm">
-                                    {t('nav.track', lang)}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href={getLocalizedPath('/faq', lang)} className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-sm">
-                                    {t('nav.faq', lang)}
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href={getLocalizedPath('/terms', lang)} className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors text-sm">
-                                    {lang === 'zh' ? '服务条款' : 'Terms & Policy'}
-                                </Link>
-                            </li>
+                        <ul className="space-y-3 flex flex-col items-center sm:items-start">
+                            {[
+                                { href: '/pricing', label: t('nav.pricing', lang) },
+                                { href: '/client', label: t('nav.track', lang) },
+                                { href: '/faq', label: t('nav.faq', lang) },
+                                { href: '/terms', label: lang === 'zh' ? '服务条款' : 'Terms & Policy' },
+                                { href: '/account', label: lang === 'zh' ? '个人中心' : 'My Account' },
+                            ].map((link) => (
+                                <li key={link.href}>
+                                    <Link
+                                        href={getLocalizedPath(link.href, lang)}
+                                        className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm group flex items-center gap-1"
+                                    >
+                                        <span className="w-0 group-hover:w-2 h-0.5 bg-red-500 rounded-full transition-all duration-200" />
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 
                     {/* Support */}
-                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left pt-6 sm:pt-0">
-                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white uppercase tracking-wider mb-6 text-center sm:text-left">
+                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-5">
                             {t('footer.support', lang)}
                         </h3>
-                        <ul className="space-y-4 flex flex-col items-center sm:items-start">
-                            <li>
-                                <a
-                                    href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@cnwepro.com'}`}
-                                    className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
-                                >
-                                    <Send className="w-5 h-5 text-primary-500 shrink-0 mt-0.5" />
-                                    <span className="break-all">{process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@cnwepro.com'}</span>
-                                </a>
-                            </li>
+                        <ul className="space-y-3.5 flex flex-col items-center sm:items-start">
                             <li>
                                 <a
                                     href={process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL || 'https://t.me/cnwepro'}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-colors"
+                                    className="flex items-center gap-2.5 text-sm text-slate-500 dark:text-slate-400 hover:text-sky-500 transition-colors group"
                                 >
-                                    <Send className="w-5 h-5 text-sky-500 shrink-0 mt-0.5" />
-                                    <span className="break-words">Channel (t.me/cnwepro)</span>
+                                    <div className="p-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/20 text-sky-500 group-hover:scale-110 transition-transform">
+                                        <Send className="w-3.5 h-3.5" />
+                                    </div>
+                                    <span className="break-words">Channel</span>
                                 </a>
                             </li>
                             <li>
@@ -117,24 +156,30 @@ export default function Footer() {
                                     href={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME}` : 'https://t.me/Minsheng0'}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-colors"
+                                    className="flex items-center gap-2.5 text-sm text-slate-500 dark:text-slate-400 hover:text-sky-500 transition-colors group"
                                 >
-                                    <MessageCircle className="w-5 h-5 text-sky-500 shrink-0 mt-0.5" />
-                                    <span className="break-words">Telegram (@{process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'Minsheng0'})</span>
+                                    <div className="p-1.5 rounded-lg bg-sky-50 dark:bg-sky-950/20 text-sky-500 group-hover:scale-110 transition-transform">
+                                        <MessageCircle className="w-3.5 h-3.5" />
+                                    </div>
+                                    <span className="break-words">@{process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || 'Minsheng0'}</span>
                                 </a>
                             </li>
                             <li>
-                                <Link
-                                    href={getLocalizedPath('/contact', lang)}
-                                    className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+                                <a
+                                    href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@cnwepro.com'}`}
+                                    className="flex items-center gap-2.5 text-sm text-slate-500 dark:text-slate-400 hover:text-red-500 transition-colors group"
                                 >
-                                    <MessageCircle className="w-5 h-5 text-emerald-500" />
-                                    {t('nav.contact', lang)}
-                                </Link>
+                                    <div className="p-1.5 rounded-lg bg-red-50 dark:bg-red-950/20 text-red-500 group-hover:scale-110 transition-transform">
+                                        <Send className="w-3.5 h-3.5" />
+                                    </div>
+                                    <span className="break-all text-xs">{process.env.NEXT_PUBLIC_CONTACT_EMAIL || 'support@cnwepro.com'}</span>
+                                </a>
                             </li>
                             <li>
-                                <div className="flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
-                                    <ShieldCheck className="w-5 h-5 text-primary-500" />
+                                <div className="flex items-center gap-2.5 text-sm text-slate-500 dark:text-slate-400">
+                                    <div className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 text-emerald-500">
+                                        <ShieldCheck className="w-3.5 h-3.5" />
+                                    </div>
                                     <span>{t('contact.hours', lang)}</span>
                                 </div>
                             </li>
@@ -142,16 +187,19 @@ export default function Footer() {
                     </div>
                 </div>
 
-                {/* Bottom */}
-                <div className="mt-10 md:mt-16 pt-6 md:pt-8 border-t border-slate-200 dark:border-slate-800 flex flex-col items-center gap-4 text-center">
-                    <p className="text-slate-500 dark:text-slate-400 text-xs text-center">
+                {/* Bottom Bar */}
+                <div className="mt-10 md:mt-14 pt-6 border-t border-slate-200/60 dark:border-slate-800/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p className="text-slate-400 dark:text-slate-500 text-xs">
                         {t('footer.copyright', lang).replace('2025', currentYear.toString())}
                     </p>
-                    <p className="text-slate-400 dark:text-slate-500 text-xs max-w-xl text-center">
+                    <p className="text-slate-400 dark:text-slate-600 text-[10px] max-w-md text-center sm:text-right leading-relaxed">
                         {t('footer.disclaimer', lang)}
                     </p>
                 </div>
             </div>
+
+            {/* Subtle background decoration */}
+            <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-slate-100/50 dark:from-black/20 to-transparent pointer-events-none" />
         </footer>
     );
 }

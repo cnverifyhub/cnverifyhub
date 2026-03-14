@@ -6,19 +6,47 @@ import { Lock, LayoutDashboard, Package, Settings, LogOut, CheckCircle2, Clock, 
 import { getProductById } from '@/data/products';
 
 export default function AdminDashboardPage() {
-    const { isAdminAuthenticated, loginAdmin, logoutAdmin, orders, deliverAccountsToOrder, updateOrderStatus } = useOrderStore();
+    const { isAdminAuthenticated, loginAdmin, logoutAdmin } = useOrderStore();
 
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState('');
     const [isMounted, setIsMounted] = useState(false);
+    
+    // DB State
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Delivery Modal State
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [accountsInput, setAccountsInput] = useState('');
 
+    const fetchOrders = async () => {
+        if (!isAdminAuthenticated) return;
+        setIsLoading(true);
+        try {
+            const res = await fetch('/api/admin/orders', {
+                headers: { 'Authorization': 'Bearer admin888' } // We can securely pass pass in real app headers
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setOrders(data);
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
         setIsMounted(true);
     }, []);
+
+    useEffect(() => {
+        if (isAdminAuthenticated) {
+            fetchOrders();
+        }
+    }, [isAdminAuthenticated]);
 
     if (!isMounted) return <div className="min-h-screen bg-slate-50 dark:bg-dark-950"></div>;
 
@@ -32,7 +60,7 @@ export default function AdminDashboardPage() {
         }
     };
 
-    const handleDeliver = (e: React.FormEvent) => {
+    const handleDeliver = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!selectedOrder) return;
 
@@ -43,9 +71,26 @@ export default function AdminDashboardPage() {
             return;
         }
 
-        deliverAccountsToOrder(selectedOrder.id, parsedAccounts);
-        setSelectedOrder(null);
-        setAccountsInput('');
+        try {
+            const res = await fetch('/api/admin/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer admin888' },
+                body: JSON.stringify({
+                    orderPublicId: selectedOrder.id,
+                    accounts: parsedAccounts
+                })
+            });
+
+            if (res.ok) {
+                setSelectedOrder(null);
+                setAccountsInput('');
+                fetchOrders(); // Refresh table
+            } else {
+                alert('发货失败，请重试');
+            }
+        } catch (e) {
+            alert('发货出错，请检查网络');
+        }
     };
 
     const getStatusBadge = (status: string) => {
@@ -134,10 +179,20 @@ export default function AdminDashboardPage() {
                         <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-1">所有订单 (Orders)</h2>
                         <p className="text-slate-500 text-sm">共有 {orders.length} 笔交易记录待处理。</p>
                     </div>
+                    <button onClick={fetchOrders} className="btn-secondary rounded-xl px-4 py-2 text-sm flex gap-2 items-center text-slate-700 bg-white border border-slate-200">
+                        {isLoading ? <Clock className="w-4 h-4 animate-spin" /> : <Settings className="w-4 h-4" />} {/* Reusing icon for refresh */}
+                        刷新数据
+                    </button>
                 </header>
 
                 {/* Orders Data Table/Grid */}
                 <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden">
+                    {isLoading && orders.length === 0 ? (
+                        <div className="p-12 text-center text-slate-500 flex flex-col items-center">
+                             <Clock className="w-8 h-8 animate-spin mb-3 text-blue-500" />
+                             <p>正在拉取最新订单数据...</p>
+                        </div>
+                    ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
@@ -207,6 +262,7 @@ export default function AdminDashboardPage() {
                             </tbody>
                         </table>
                     </div>
+                    )}
                 </div>
             </main>
 

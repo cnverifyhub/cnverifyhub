@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Gift, X, Loader2 } from 'lucide-react';
 import type { Lang } from '@/lib/i18n';
 
@@ -13,6 +13,23 @@ export function LuckyWheel({ lang }: LuckyWheelProps) {
     const [isSpinning, setIsSpinning] = useState(false);
     const [result, setResult] = useState<string | null>(null);
     const [hasSpun, setHasSpun] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 300) {
+                setIsVisible(true);
+            } else {
+                setIsVisible(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        // Check initial position in case they are already scrolled
+        handleScroll();
+        
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     const rewards = [
         lang === 'zh' ? '10U 代金券' : '10U Voucher',
@@ -47,7 +64,7 @@ export function LuckyWheel({ lang }: LuckyWheelProps) {
             {/* Floating Trigger Widget */}
             <button
                 onClick={() => setIsOpen(true)}
-                className="fixed left-4 bottom-28 md:left-8 md:bottom-32 z-40 w-14 h-14 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-full shadow-[0_0_20px_rgba(234,179,8,0.5)] border-2 border-white flex flex-col items-center justify-center text-red-700 animate-[bounce-slow_3s_ease-in-out_infinite] hover:scale-110 transition-transform group"
+                className={`fixed left-4 bottom-28 md:left-8 md:bottom-32 z-40 w-14 h-14 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-full shadow-[0_0_20px_rgba(234,179,8,0.5)] border-2 border-white flex flex-col items-center justify-center text-red-700 animate-[bounce-slow_3s_ease-in-out_infinite] hover:scale-110 transition-all duration-500 group ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
             >
                 <div className="absolute inset-0 rounded-full animate-ping opacity-20 bg-yellow-400"></div>
                 <Gift className="w-6 h-6 animate-pulse" />

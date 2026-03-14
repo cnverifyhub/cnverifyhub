@@ -8,7 +8,7 @@ import { FAQSection } from '@/components/home/FAQSection';
 import { ContactFloat } from '@/components/ui/ContactFloat';
 import { LuckyWheel } from '@/components/home/LuckyWheel';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.netlify.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
 export const metadata: Metadata = {
     title: 'CNWePro - 专业中国数字账号交易平台 | Buy Chinese Accounts',

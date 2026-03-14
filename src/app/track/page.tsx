@@ -21,22 +21,13 @@ function TrackContent({ lang }: { lang: Lang }) {
     const [isSearching, setIsSearching] = useState(false);
     const [result, setResult] = useState<Order | null>(null);
     const [notFound, setNotFound] = useState(false);
-    const [recentOrders, setRecentOrders] = useState<Order[]>([]);
-    const { getOrderById, getAllOrders } = useOrderStore();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    useEffect(() => {
-        if (mounted) {
-            const all = getAllOrders();
-            setRecentOrders(all.slice(0, 5)); // Show max 5 recent orders
-        }
-    }, [mounted, getAllOrders]);
-
-    const handleSearch = (e?: React.FormEvent) => {
+    const handleSearch = async (e?: React.FormEvent) => {
         e?.preventDefault();
         if (!orderId.trim()) return;
 
@@ -44,16 +35,20 @@ function TrackContent({ lang }: { lang: Lang }) {
         setNotFound(false);
         setResult(null);
 
-        // Slight delay for UX
-        setTimeout(() => {
-            const order = getOrderById(orderId.trim());
-            if (order) {
-                setResult(order);
+        try {
+            const res = await fetch(`/api/orders/${orderId.trim()}`);
+            if (res.ok) {
+                const orderData = await res.json();
+                setResult(orderData);
             } else {
                 setNotFound(true);
             }
+        } catch (error) {
+            console.error(error);
+            setNotFound(true);
+        } finally {
             setIsSearching(false);
-        }, 600);
+        }
     };
 
     // Auto search if ID from URL
@@ -238,39 +233,6 @@ function TrackContent({ lang }: { lang: Lang }) {
                             ? '请检查订单号是否正确。如果刚刚完成付款，请稍等片刻后再试。'
                             : 'Please check if the order ID is correct. If you just completed payment, please wait a moment and try again.'}
                     </p>
-                </div>
-            )}
-
-            {/* Recent Orders */}
-            {recentOrders.length > 0 && !result && !notFound && (
-                <div className="mt-8">
-                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-4">
-                        {lang === 'zh' ? '最近的订单' : 'Recent Orders'}
-                    </h3>
-                    <div className="space-y-3">
-                        {recentOrders.map((order) => {
-                            const config = statusConfig[order.status] || statusConfig.pending;
-                            const Icon = config.icon;
-                            return (
-                                <button
-                                    key={order.id}
-                                    onClick={() => { setOrderId(order.id); setResult(order); setNotFound(false); }}
-                                    className="w-full flex items-center justify-between p-4 rounded-xl border border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors text-left"
-                                >
-                                    <div>
-                                        <p className="font-mono text-sm font-bold text-slate-900 dark:text-white">{order.id}</p>
-                                        <p className="text-xs text-slate-500 mt-0.5">
-                                            ${order.totalAmount.toFixed(2)} USDT · {new Date(order.createdAt).toLocaleDateString()}
-                                        </p>
-                                    </div>
-                                    <div className={`px-3 py-1 rounded-full ${config.color} text-xs font-semibold flex items-center gap-1`}>
-                                        <Icon className="w-3 h-3" />
-                                        {lang === 'zh' ? config.labelZh : config.labelEn}
-                                    </div>
-                                </button>
-                            );
-                        })}
-                    </div>
                 </div>
             )}
         </div>

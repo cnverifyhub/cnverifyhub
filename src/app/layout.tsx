@@ -8,7 +8,7 @@ import MobileNav from '@/components/layout/MobileNav';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { GsapAnimations } from '@/components/ui/GsapAnimations';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.netlify.app';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
 // Font Optimization: Zero CLS Loading via Google Fonts (Downloaded at build time)
 const inter = Inter({
@@ -109,6 +109,9 @@ export const metadata: Metadata = {
         'sogou_site_verification': process.env.NEXT_PUBLIC_SOGOU_VERIFICATION || '',
         // Content language for search engines
         'content-language': 'zh-CN, en',
+        // Force webkit rendering in 360/QQ/Sogou browsers (critical for Chinese market)
+        'renderer': 'webkit',
+        'force-rendering': 'webkit',
     },
 };
 
@@ -169,6 +172,12 @@ export default function RootLayout({
     return (
         <html lang="zh" className="scroll-smooth" suppressHydrationWarning>
             <head>
+                {/* Preconnect to external domains for China speed */}
+                <link rel="preconnect" href="https://otgewrynnrqmtsyvlzrj.supabase.co" />
+                <link rel="dns-prefetch" href="https://hm.baidu.com" />
+                <link rel="dns-prefetch" href="https://zz.bdstatic.com" />
+                <link rel="dns-prefetch" href="https://api.trongrid.io" />
+
                 {/* Preload critical fonts */}
                 <link rel="preload" href="/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
                 <link rel="preload" href="/fonts/noto-sans-sc-var.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
@@ -243,7 +252,7 @@ export default function RootLayout({
                     }}
                 />
             </head>
-            <body className={`min-h-screen flex flex-col pt-16 md:pt-20 overflow-x-hidden ${inter.variable} ${notoSansSC.variable}`}>
+            <body className={`min-h-screen flex flex-col pt-[66px] md:pt-[70px] overflow-x-hidden ${inter.variable} ${notoSansSC.variable}`}>
                 <Header />
 
                 <main className="flex-grow">

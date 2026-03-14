@@ -16,26 +16,43 @@ export default function ClientOrderTrackingPage() {
     const [isSearching, setIsSearching] = useState(false);
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
-    const handleSearch = (e: React.FormEvent) => {
+    const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setIsSearching(true);
 
-        setTimeout(() => {
-            if (!orderId || !email) {
-                setError('请输入订单号和邮箱');
+        if (!orderId || !email) {
+            setError('请输入订单号和邮箱');
+            setIsSearching(false);
+            return;
+        }
+
+        try {
+            // 1. First try local store (Zustand)
+            const foundOrder = getOrderById(orderId, email);
+            if (foundOrder) {
+                setOrder(foundOrder);
                 setIsSearching(false);
                 return;
             }
 
-            const foundOrder = getOrderById(orderId, email);
-            if (foundOrder) {
-                setOrder(foundOrder);
+            // 2. Fallback to Supabase API
+            const response = await fetch(`/api/orders/${orderId}?email=${encodeURIComponent(email)}`);
+            if (response.ok) {
+                const data = await response.json();
+                setOrder({
+                    ...data,
+                    deliveredAccounts: data.deliveredAccounts || []
+                });
             } else {
                 setError('未找到该订单，请检查订单号和邮箱是否正确');
             }
+        } catch (error) {
+            console.error('Search error:', error);
+            setError('查询出错，请稍后再试');
+        } finally {
             setIsSearching(false);
-        }, 600); // Simulate network request for realism
+        }
     };
 
     const copyToClipboard = (text: string, index: number) => {

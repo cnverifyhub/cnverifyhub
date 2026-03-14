@@ -104,37 +104,61 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
         }
     };
 
-    const handlePaymentConfirm = (txHash: string, verificationData?: any) => {
+    const handlePaymentConfirm = async (txHash: string, verificationData?: any) => {
         setIsProcessingPayment(true);
-        setStep(3);
-
+        
         const isVerified = verificationData?.verified || false;
         
+        const orderData = {
+            id: orderId,
+            email: contactInfo.email || contactInfo.telegram || 'Anonymous',
+            telegram: contactInfo.telegram,
+            cryptoType: "USDT",
+            txid: txHash,
+            txVerified: isVerified,
+            verificationDetails: isVerified ? {
+                amount: verificationData.amount,
+                from: verificationData.from,
+                to: verificationData.to,
+                token: verificationData.token,
+                timestamp: verificationData.timestamp,
+                confirmed: verificationData.confirmed,
+            } : undefined,
+            createdAt: new Date().toISOString(),
+            items: items.map(i => {
+                const product = getProductById(i.productId);
+                return {
+                    productId: i.productId,
+                    quantity: i.quantity,
+                    priceAtTime: product ? product.price.single : 0
+                };
+            }),
+            totalAmount: totalPrice
+        };
+
+        try {
+            // Persist to Supabase
+            const response = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    order: orderData,
+                    items: orderData.items
+                })
+            });
+
+            if (!response.ok) {
+                console.warn('Failed to save to Supabase, falling back to local storage only');
+            }
+        } catch (error) {
+            console.error('Order Persistence Error:', error);
+        }
+
         // Brief delay for the Alipay-style processing animation
         setTimeout(() => {
             setIsProcessingPayment(false);
-            addOrder({
-                id: orderId,
-                email: contactInfo.email || contactInfo.telegram || 'Anonymous',
-                cryptoType: "USDT",
-                txid: txHash,
-                txVerified: isVerified,
-                verificationDetails: isVerified ? {
-                    amount: verificationData.amount,
-                    from: verificationData.from,
-                    to: verificationData.to,
-                    token: verificationData.token,
-                    timestamp: verificationData.timestamp,
-                    confirmed: verificationData.confirmed,
-                } : undefined,
-                createdAt: new Date().toISOString(),
-                items: items.map(i => ({
-                    productId: i.productId,
-                    quantity: i.quantity,
-                    priceAtTime: 0
-                })),
-                totalAmount: totalPrice
-            });
+            setStep(3);
+            addOrder(orderData);
             clearCart();
             setShowConfetti(true);
             setTimeout(() => setShowConfetti(false), 5000);
@@ -399,6 +423,18 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                         amount={totalPrice}
                         orderId={orderId}
                         lang={lang}
+                        orderDetails={{
+                            id: orderId,
+                            email: contactInfo.email || contactInfo.telegram || 'Anonymous',
+                            telegram: contactInfo.telegram,
+                            cryptoType: "USDT",
+                            totalAmount: totalPrice,
+                            items: items.map(i => ({
+                                productId: i.productId,
+                                quantity: i.quantity,
+                                priceAtTime: 0 // Could compute real price here or backend
+                            }))
+                        }}
                         onConfirm={handlePaymentConfirm}
                     />
                 )}
