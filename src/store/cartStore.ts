@@ -22,12 +22,12 @@ interface CartState {
 
 export const useCartStore = create<CartState>()(
     persist(
-        ((set: any, get: any): CartState => ({
+        (set, get) => ({
             items: [],
             isOpen: false,
 
             addItem: (productId: string, quantity: number) => {
-                set((state: CartState) => {
+                set((state) => {
                     const existingItem = state.items.find((item: CartItem) => item.productId === productId);
                     if (existingItem) {
                         return {
@@ -44,13 +44,13 @@ export const useCartStore = create<CartState>()(
             },
 
             removeItem: (productId: string) => {
-                set((state: CartState) => ({
+                set((state) => ({
                     items: state.items.filter((item: CartItem) => item.productId !== productId)
                 }));
             },
 
             updateQuantity: (productId: string, quantity: number) => {
-                set((state: CartState) => ({
+                set((state) => ({
                     items: state.items.map((item: CartItem) =>
                         item.productId === productId
                             ? { ...item, quantity: Math.max(1, quantity) }
@@ -61,13 +61,12 @@ export const useCartStore = create<CartState>()(
 
             clearCart: () => set({ items: [] }),
 
-            toggleCart: () => set((state: CartState) => ({ isOpen: !state.isOpen })),
+            toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
 
             setIsOpen: (isOpen: boolean) => set({ isOpen }),
 
             getTotal: () => {
-                const state = get();
-                const subtotal = state.items.reduce((total: number, item: CartItem) => {
+                const subtotal = get().items.reduce((total: number, item: CartItem) => {
                     const product = getProductById(item.productId);
                     if (!product) return total;
 
@@ -80,7 +79,6 @@ export const useCartStore = create<CartState>()(
                     return total + (price * qty);
                 }, 0);
 
-                // Flash Sale Coupon: 15U discount on orders >= 100U
                 if (subtotal >= 100) {
                     return subtotal - 15;
                 }
@@ -89,13 +87,12 @@ export const useCartStore = create<CartState>()(
             },
 
             getItemCount: () => {
-                const state = get();
-                return state.items.reduce((count: number, item: CartItem) => count + item.quantity, 0);
+                return get().items.reduce((count: number, item: CartItem) => count + item.quantity, 0);
             }
-        })),
+        }),
         {
             name: 'cnwepro-cart',
-            partialize: (state: any) => ({ items: state.items })
+            partialize: (state) => ({ items: state.items })
         }
     )
 );
