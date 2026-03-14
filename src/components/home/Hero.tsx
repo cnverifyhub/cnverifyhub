@@ -359,17 +359,17 @@ export function Hero({ lang }: { lang: Lang }) {
                                     { icon: <Truck className="w-4 h-4" />, label: lang === 'zh' ? '自动发货' : 'Delivery', num: '3' },
                                     { icon: <ShieldCheck className="w-4 h-4" />, label: lang === 'zh' ? '验证使用' : 'Verify', num: '4' },
                                 ].map((step, i) => (
-                                    <div key={i} className="flex items-center gap-1">
+                                    <div key={i} className="flex items-center gap-1 shrink-0">
                                         <div className="flex items-center gap-1.5">
-                                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-[10px] font-black shadow-sm">
+                                            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-[9px] sm:text-[10px] font-black shadow-sm">
                                                 {step.num}
                                             </div>
-                                            <div className="text-left hidden text-[9px] sm:text-[10px] md:block">
+                                            <div className="text-left text-[8px] min-[400px]:text-[9px] sm:text-[10px] md:block">
                                                 <p className="font-bold text-slate-700 dark:text-slate-300 leading-none whitespace-nowrap">{step.label}</p>
                                             </div>
                                         </div>
                                         {i < 3 && (
-                                            <div className="flex-shrink-0 w-3 sm:w-6 lg:w-12 h-[1px] bg-gradient-to-r from-red-300 to-orange-300 dark:from-red-800 dark:to-orange-800 mx-1 sm:mx-2" />
+                                            <div className="flex-shrink-0 w-3 sm:w-6 lg:w-12 h-[1px] bg-gradient-to-r from-red-300 to-orange-300 dark:from-red-800 dark:to-orange-800 mx-0.5 sm:mx-2" />
                                         )}
                                     </div>
                                 ))}
