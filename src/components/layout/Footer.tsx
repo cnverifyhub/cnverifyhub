@@ -54,11 +54,11 @@ export default function Footer() {
             </div>
 
             {/* Main Footer Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 md:pt-14 pb-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10 lg:gap-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-14 pb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-8 md:gap-10 lg:gap-8">
 
                     {/* Brand & Intro */}
-                    <div className="space-y-5 flex flex-col items-center sm:items-start text-center sm:text-left">
+                    <div className="space-y-4 md:space-y-5 flex flex-col items-center sm:items-start text-center sm:text-left">
                         <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 group">
                             <Image src="/logo.png" alt="CNWePro Logo" width={36} height={36} className="w-9 h-9 object-contain group-hover:scale-105 transition-transform" />
                             <div className="flex flex-col">
@@ -88,8 +88,8 @@ export default function Footer() {
                     </div>
 
                     {/* Accounts */}
-                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-                        <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-5">
+                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left mt-2 md:mt-0">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 md:mb-5">
                             {t('footer.accounts', lang)}
                         </h3>
                         <ul className="space-y-3 flex flex-col items-center sm:items-start">
@@ -110,8 +110,8 @@ export default function Footer() {
                     </div>
 
                     {/* Quick Links */}
-                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-                        <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-5">
+                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left mt-2 md:mt-0">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 md:mb-5">
                             {t('footer.quickLinks', lang)}
                         </h3>
                         <ul className="space-y-3 flex flex-col items-center sm:items-start">
@@ -136,8 +136,8 @@ export default function Footer() {
                     </div>
 
                     {/* Support */}
-                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
-                        <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-5">
+                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left mt-2 md:mt-0">
+                        <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 md:mb-5">
                             {t('footer.support', lang)}
                         </h3>
                         <ul className="space-y-3.5 flex flex-col items-center sm:items-start">
