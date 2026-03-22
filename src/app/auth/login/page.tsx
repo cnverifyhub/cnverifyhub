@@ -1,13 +1,11 @@
-'use client';
-
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
 import { Eye, EyeOff, LogIn, Mail, Lock, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function LoginPage() {
+function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const redirectTo = searchParams.get('redirect') || '/account';
@@ -182,3 +180,16 @@ export default function LoginPage() {
         </div>
     );
 }
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-[85vh] flex items-center justify-center">
+                <div className="animate-spin w-10 h-10 border-4 border-red-500 border-t-transparent rounded-full" />
+            </div>
+        }>
+            <LoginForm />
+        </Suspense>
+    );
+}
+
