@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -13,10 +13,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon } from '@/components/ui/BrandIcons';
 
 const categoryIcons: Record<string, React.ReactNode> = {
-    wechat: <WeChatIcon className="w-5 h-5 text-emerald-500" />,
-    alipay: <AlipayIcon className="w-5 h-5 text-blue-500" />,
-    douyin: <DouyinIcon className="w-5 h-5 text-slate-800 dark:text-white" />,
-    qq: <QQIcon className="w-5 h-5 text-sky-500" />,
+    wechat: <Image src="/images/categories/wechat.webp" alt="WeChat" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
+    alipay: <Image src="/images/categories/alipay.webp" alt="Alipay" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
+    douyin: <Image src="/images/categories/douyin.webp" alt="Douyin" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
+    qq: <Image src="/images/categories/qq.webp" alt="QQ" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
+    xianyu: <Image src="/images/categories/xianyu.png" alt="Xianyu" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
+    taobao: <Image src="/images/categories/taobao.png" alt="Taobao" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
+    xiaohongshu: <Image src="/images/categories/xiaohongshu.png" alt="Xiaohongshu" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
 };
 
 export default function Header() {
@@ -28,11 +31,25 @@ export default function Header() {
     const [mounted, setMounted] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [theme, setTheme] = useState<'light' | 'dark'>('light');
+    const headerRef = useRef<HTMLElement>(null);
+    const [headerHeight, setHeaderHeight] = useState(96);
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 10);
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    // Measure header height dynamically
+    useEffect(() => {
+        const measure = () => {
+            if (headerRef.current) {
+                setHeaderHeight(headerRef.current.offsetHeight);
+            }
+        };
+        measure();
+        window.addEventListener('resize', measure);
+        return () => window.removeEventListener('resize', measure);
     }, []);
 
     useEffect(() => {
@@ -70,7 +87,7 @@ export default function Header() {
     const switchLangPath = lang === 'zh' ? `/en${pathname}` : pathname.replace(/^\/en/, '') || '/';
 
     return (
-        <header className="fixed top-0 inset-x-0 z-50">
+        <header ref={headerRef} className="fixed top-0 inset-x-0 z-50">
             {/* Gradient accent line */}
             <div className="h-[2px] bg-gradient-to-r from-red-600 via-orange-500 to-amber-400" />
 
@@ -129,14 +146,14 @@ export default function Header() {
                                 </button>
 
                                 <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-72">
-                                    <div className="bg-white dark:bg-dark-900 rounded-2xl border border-slate-200/80 dark:border-slate-700/80 overflow-hidden shadow-2xl shadow-black/10 dark:shadow-black/40 p-2">
+                                    <div className="bg-white/95 dark:bg-dark-900/95 backdrop-blur-xl rounded-2xl border border-slate-200/80 dark:border-slate-700/80 overflow-hidden shadow-2xl shadow-black/10 dark:shadow-black/40 p-2">
                                         {categories.map((c) => (
                                             <Link
                                                 key={c.id}
                                                 href={getLocalizedPath(c.href, lang)}
                                                 className="flex items-center gap-3 px-3 py-3 hover:bg-slate-50 dark:hover:bg-white/5 rounded-xl transition-colors group/item"
                                             >
-                                                <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 dark:bg-white/5 group-hover/item:scale-110 transition-transform">
+                                                <div className="w-9 h-9 flex items-center justify-center rounded-xl overflow-hidden bg-white border border-slate-200 dark:border-slate-800 shadow-sm shrink-0 group-hover/item:scale-110 transition-transform">
                                                     {categoryIcons[c.id]}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
@@ -264,32 +281,33 @@ export default function Header() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-md z-40"
+                            transition={{ duration: 0.2 }}
+                            className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-md z-[90]"
                             onClick={() => setMobileMenuOpen(false)}
-                            style={{ top: 'calc(2px + 64px)' }}
+                            style={{ top: `${headerHeight}px` }}
                         />
 
                         {/* Menu Panel */}
                         <motion.div
-                            initial={{ y: -20, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            exit={{ y: -20, opacity: 0 }}
-                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="md:hidden fixed left-4 right-4 z-50 bg-white/95 dark:bg-dark-900/95 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/5 shadow-2xl overflow-hidden mt-2"
-                            style={{ top: 'calc(2px + 64px)', maxHeight: 'calc(100vh - 100px)' }}
+                            initial={{ y: -30, opacity: 0, scale: 0.97 }}
+                            animate={{ y: 0, opacity: 1, scale: 1 }}
+                            exit={{ y: -20, opacity: 0, scale: 0.97 }}
+                            transition={{ type: 'spring', damping: 30, stiffness: 300, mass: 0.8 }}
+                            className="md:hidden fixed left-3 right-3 z-[100] bg-white/95 dark:bg-dark-900/95 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/5 shadow-2xl overflow-hidden"
+                            style={{ top: `${headerHeight + 4}px`, maxHeight: `calc(100vh - ${headerHeight + 16}px)`, overflowY: 'auto' }}
                         >
-                            <div className="p-6 space-y-1">
+                            <div className="p-5 space-y-1">
                                 {navLinks.map((link, i) => (
                                     <motion.div
                                         key={link.href}
-                                        initial={{ x: -20, opacity: 0 }}
+                                        initial={{ x: -30, opacity: 0 }}
                                         animate={{ x: 0, opacity: 1 }}
-                                        transition={{ delay: i * 0.05 }}
+                                        transition={{ type: 'spring', damping: 25, stiffness: 250, delay: i * 0.04 }}
                                     >
                                         <Link
                                             href={getLocalizedPath(link.href, lang)}
                                             onClick={() => setMobileMenuOpen(false)}
-                                            className={`block px-5 py-4 rounded-2xl text-lg font-bold transition-all ${pathname === getLocalizedPath(link.href, lang)
+                                            className={`block px-5 py-4 rounded-2xl text-lg font-bold transition-all active:scale-[0.97] ${pathname === getLocalizedPath(link.href, lang)
                                                 ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg shadow-red-500/30'
                                                 : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5'
                                                 }`}
@@ -299,36 +317,51 @@ export default function Header() {
                                     </motion.div>
                                 ))}
 
-                                {/* Category Grid */}
-                                <div className="mt-8 pt-6 border-t border-slate-200/50 dark:border-white/5">
-                                    <p className="px-5 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-4">
+                                {/* Category Grid — Chinese e-commerce style */}
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.15, duration: 0.3 }}
+                                    className="mt-6 pt-5 border-t border-slate-200/50 dark:border-white/5"
+                                >
+                                    <p className="px-3 text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-4">
                                         {t('footer.accounts', lang)}
                                     </p>
-                                    <div className="grid grid-cols-2 gap-3">
+                                    <div className="grid grid-cols-4 gap-2">
                                         {categories.map((c, i) => (
                                             <motion.div
                                                 key={c.id}
-                                                initial={{ scale: 0.9, opacity: 0 }}
+                                                initial={{ scale: 0.5, opacity: 0 }}
                                                 animate={{ scale: 1, opacity: 1 }}
-                                                transition={{ delay: 0.2 + (i * 0.05) }}
+                                                transition={{
+                                                    type: 'spring',
+                                                    damping: 20,
+                                                    stiffness: 300,
+                                                    delay: 0.2 + (i * 0.04)
+                                                }}
                                             >
                                                 <Link
                                                     href={getLocalizedPath(c.href, lang)}
                                                     onClick={() => setMobileMenuOpen(false)}
-                                                    className="flex flex-col gap-2 p-4 rounded-3xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 transition-all border border-transparent hover:border-slate-200 dark:hover:border-white/10"
+                                                    className="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 transition-all active:scale-90 border border-transparent hover:border-slate-200 dark:hover:border-white/10"
                                                 >
-                                                    <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-white dark:bg-dark-800 shadow-sm">
+                                                    <div className="w-11 h-11 flex items-center justify-center rounded-xl overflow-hidden bg-white border border-slate-200 dark:border-slate-800 shadow-md shrink-0">
                                                         {categoryIcons[c.id]}
                                                     </div>
-                                                    <span className={`font-bold text-sm ${c.color}`}>{c.name[lang]}</span>
+                                                    <span className="font-bold text-[11px] text-slate-600 dark:text-slate-300 text-center leading-tight line-clamp-1">{c.name[lang].replace('账号', '')}</span>
                                                 </Link>
                                             </motion.div>
                                         ))}
                                     </div>
-                                </div>
+                                </motion.div>
 
-                                {/* Bottom Buttons */}
-                                <div className="grid grid-cols-1 gap-3 mt-8 pt-6 border-t border-slate-200/50 dark:border-white/5">
+                                {/* Bottom CTA */}
+                                <motion.div
+                                    initial={{ y: 20, opacity: 0 }}
+                                    animate={{ y: 0, opacity: 1 }}
+                                    transition={{ delay: 0.35 }}
+                                    className="grid grid-cols-1 gap-3 mt-6 pt-5 border-t border-slate-200/50 dark:border-white/5"
+                                >
                                     <Link
                                         href={getLocalizedPath('/contact', lang)}
                                         onClick={() => setMobileMenuOpen(false)}
@@ -336,7 +369,7 @@ export default function Header() {
                                     >
                                         {t('nav.contact', lang)}
                                     </Link>
-                                </div>
+                                </motion.div>
                             </div>
                         </motion.div>
                     </>

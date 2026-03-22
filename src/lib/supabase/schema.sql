@@ -1,17 +1,45 @@
 -- Core E-commerce Schema for CNWePro
+-- Updated with user profiles and RLS
+
+-- 0. Profiles Table (linked to Supabase auth.users)
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    email VARCHAR(255),
+    telegram VARCHAR(255),
+    display_name VARCHAR(255),
+    total_spent NUMERIC(10, 2) DEFAULT 0,
+    vip_tier VARCHAR(20) DEFAULT 'bronze',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Auto-create profile on signup
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+    INSERT INTO public.profiles (id, email)
+    VALUES (new.id, new.email);
+    RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE TRIGGER on_auth_user_created
+    AFTER INSERT ON auth.users
+    FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
 
 -- 1. Orders Table
 CREATE TABLE IF NOT EXISTS public.orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     public_id VARCHAR(50) NOT NULL UNIQUE, -- e.g. CNW-123456
+    user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL, -- auth user link
     email VARCHAR(255) NOT NULL,
     telegram VARCHAR(255),
     crypto_type VARCHAR(50) DEFAULT 'USDT',
     txid VARCHAR(255) UNIQUE,
-    status VARCHAR(50) DEFAULT 'pending', -- pending, paid, completed, cancelled
+    status VARCHAR(50) DEFAULT 'pending', -- pending, paid, processing, completed, cancelled
     tx_verified BOOLEAN DEFAULT false,
     total_amount NUMERIC(10, 2) NOT NULL,
-    verification_details JSONB, -- stores TronScan payload
+    verification_details JSONB, -- stores TronScan/BSCScan/Etherscan payload
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -36,7 +64,32 @@ CREATE TABLE IF NOT EXISTS public.vault_accounts (
     sold_at TIMESTAMP WITH TIME ZONE
 );
 
--- Note: RLS is disabled by default, meaning all tables are accessible via the Data API.
--- For production security against malicious client-side writes:
--- We should enable RLS on orders and vault_accounts, and strictly manage them via Server environment (Service Role Key).
--- For now, the MVP relies on rapid deployment.
+-- 4. Row Level Security (RLS)
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
+
+-- Users can read their own profile
+CREATE POLICY "Users can view own profile" ON public.profiles
+    FOR SELECT USING (auth.uid() = id);
+
+-- Users can update their own profile
+CREATE POLICY "Users can update own profile" ON public.profiles
+    FOR UPDATE USING (auth.uid() = id);
+
+-- Users can view their own orders
+CREATE POLICY "Users can view own orders" ON public.orders
+    FOR SELECT USING (auth.uid() = user_id);
+
+-- Anon/service can insert orders (for checkout)
+CREATE POLICY "Anyone can create orders" ON public.orders
+    FOR INSERT WITH CHECK (true);
+
+-- Users can view their order items
+CREATE POLICY "Users can view own order items" ON public.order_items
+    FOR SELECT USING (
+        EXISTS (SELECT 1 FROM public.orders WHERE orders.id = order_items.order_id AND orders.user_id = auth.uid())
+    );
+
+-- Service role can do everything (admin panel)
+-- Note: Service role key bypasses RLS automatically

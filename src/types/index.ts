@@ -3,9 +3,7 @@
    ============================================ */
 
 export type Lang = 'zh' | 'en';
-
-export type CategoryId = 'wechat' | 'alipay' | 'douyin' | 'qq';
-
+export type CategoryId = 'wechat' | 'alipay' | 'douyin' | 'qq' | 'xianyu' | 'taobao' | 'xiaohongshu';
 export interface Category {
     id: CategoryId;
     name: { zh: string; en: string };

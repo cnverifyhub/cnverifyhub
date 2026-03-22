@@ -16,19 +16,33 @@ export function LuckyWheel({ lang }: LuckyWheelProps) {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 300) {
-                setIsVisible(true);
-            } else {
-                setIsVisible(false);
+        // Only show once per session
+        if (sessionStorage.getItem('luckywheel_shown') === 'true') return;
+
+        // Delay 30s before enabling scroll-triggered visibility
+        const timer = setTimeout(() => {
+            const handleScroll = () => {
+                if (window.scrollY > 600) {
+                    setIsVisible(true);
+                    sessionStorage.setItem('luckywheel_shown', 'true');
+                    window.removeEventListener('scroll', handleScroll);
+                }
+            };
+
+            window.addEventListener('scroll', handleScroll);
+            handleScroll(); // Check if already scrolled
+
+            // Store cleanup ref
+            (window as any).__luckyWheelCleanup = () => window.removeEventListener('scroll', handleScroll);
+        }, 30000);
+
+        return () => {
+            clearTimeout(timer);
+            if ((window as any).__luckyWheelCleanup) {
+                (window as any).__luckyWheelCleanup();
+                delete (window as any).__luckyWheelCleanup;
             }
         };
-
-        window.addEventListener('scroll', handleScroll);
-        // Check initial position in case they are already scrolled
-        handleScroll();
-        
-        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const rewards = [

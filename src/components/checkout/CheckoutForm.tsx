@@ -1,14 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { PaymentDisplay } from './PaymentDisplay';
 import { getProductById } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { formatUsdt } from '@/lib/utils';
-import { ChevronRight, ShieldCheck, Check, ShoppingBag, Shield, Timer, PartyPopper } from 'lucide-react';
+import { ChevronRight, ShieldCheck, Check, ShoppingBag, Shield, Timer, PartyPopper, Lock, Loader2 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useOrderStore } from '@/store/orderStore';
+import { supabase } from '@/lib/supabase/client';
 
 interface CheckoutFormProps {
     lang: Lang;
@@ -104,13 +105,29 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
         }
     };
 
+    const [processingPhase, setProcessingPhase] = useState(0);
+
     const handlePaymentConfirm = async (txHash: string, verificationData?: any) => {
         setIsProcessingPayment(true);
+        setProcessingPhase(0);
+
+        // Get auth user ID if logged in
+        let authUserId: string | null = null;
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) authUserId = session.user.id;
+        } catch {}
+
+        // 3-phase progression animation
+        setTimeout(() => setProcessingPhase(1), 800);
+        setTimeout(() => setProcessingPhase(2), 1800);
+        setTimeout(() => setProcessingPhase(3), 2800);
         
         const isVerified = verificationData?.verified || false;
         
         const orderData = {
             id: orderId,
+            userId: authUserId,
             email: contactInfo.email || contactInfo.telegram || 'Anonymous',
             telegram: contactInfo.telegram,
             cryptoType: "USDT",
@@ -154,15 +171,16 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
             console.error('Order Persistence Error:', error);
         }
 
-        // Brief delay for the Alipay-style processing animation
+        // Wait for the full 3-phase animation to complete
         setTimeout(() => {
             setIsProcessingPayment(false);
+            setProcessingPhase(0);
             setStep(3);
             addOrder(orderData);
             clearCart();
             setShowConfetti(true);
             setTimeout(() => setShowConfetti(false), 5000);
-        }, 1500);
+        }, 3800);
     };
 
     return (
@@ -441,52 +459,218 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
 
                 {/* Step 3: Success */}
                 {step === 3 && (
-                    <div className="text-center animate-fade-in py-12 max-w-lg mx-auto">
+                    <div className="text-center animate-fade-in py-8 max-w-lg mx-auto">
                         {isProcessingPayment ? (
-                            <div className="flex flex-col items-center justify-center space-y-6">
-                                {/* Alipay style blue loading spinner */}
-                                <div className="relative w-24 h-24 mb-4">
-                                    <svg className="animate-spin w-full h-full text-[#1677ff]" viewBox="0 0 50 50">
-                                       <circle className="path" cx="25" cy="25" r="20" fill="none" strokeWidth="4" stroke="currentColor" strokeDasharray="90,150"></circle>
-                                    </svg>
-                                    <div className="absolute inset-0 flex items-center justify-center text-[#1677ff]">
-                                       <ShieldCheck className="w-10 h-10 animate-pulse" />
+                            /* ========== WECHAT/ALIPAY-STYLE 3-PHASE PROCESSING OVERLAY ========== */
+                            <div className="fixed inset-0 z-[200] flex items-center justify-center" style={{
+                                background: processingPhase >= 3
+                                    ? 'linear-gradient(160deg, #07C160 0%, #06AD56 50%, #059B4C 100%)'
+                                    : 'linear-gradient(160deg, #1677ff 0%, #0958d9 50%, #003eb3 100%)',
+                                transition: 'background 0.8s ease-in-out'
+                            }}>
+                                {/* Subtle radial glow */}
+                                <div className="absolute inset-0" style={{
+                                    backgroundImage: `radial-gradient(circle at 50% 40%, rgba(255,255,255,0.12) 0%, transparent 60%)`,
+                                }} />
+
+                                <div className="relative flex flex-col items-center text-white px-6 w-full max-w-sm">
+                                    {/* Animated Circle + Icon */}
+                                    <div className="relative w-32 h-32 mb-10">
+                                        {/* Background glow pulse */}
+                                        <div className={`absolute inset-0 rounded-full transition-all duration-700 ${
+                                            processingPhase >= 3 ? 'bg-white/10 scale-150 animate-ping' : 'bg-white/5 scale-100'
+                                        }`} style={{ animationDuration: '2s' }} />
+                                        
+                                        {/* SVG animated circle-draw */}
+                                        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 120 120">
+                                            {/* Background track */}
+                                            <circle cx="60" cy="60" r="54" fill="none" strokeWidth="3" stroke="rgba(255,255,255,0.15)" />
+                                            {/* Progress arc */}
+                                            <circle
+                                                cx="60" cy="60" r="54"
+                                                fill="none"
+                                                strokeWidth="4"
+                                                stroke="white"
+                                                strokeLinecap="round"
+                                                strokeDasharray="339.292"
+                                                strokeDashoffset={339.292 - (339.292 * Math.min(processingPhase, 3) / 3)}
+                                                style={{ transition: 'stroke-dashoffset 0.8s ease-in-out' }}
+                                            />
+                                        </svg>
+
+                                        {/* Center icon — transitions from spinner to check */}
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            {processingPhase < 3 ? (
+                                                <div className="w-16 h-16 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                                                    <svg className="animate-spin w-8 h-8 text-white" style={{ animationDuration: '2s' }} viewBox="0 0 24 24" fill="none">
+                                                        <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                                                        <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                                                    </svg>
+                                                </div>
+                                            ) : (
+                                                <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center animate-[scale-bounce_0.5s_ease-out]">
+                                                    <svg className="w-10 h-10 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                                        <polyline
+                                                            points="6 12 10 16 18 8"
+                                                            strokeDasharray="24"
+                                                            strokeDashoffset="0"
+                                                            style={{ animation: 'draw-check 0.4s ease-out forwards' }}
+                                                        />
+                                                    </svg>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Amount Display */}
+                                    <div className="text-center mb-6">
+                                        <p className="text-white/60 text-sm mb-1">
+                                            {lang === 'zh' ? '支付金额' : 'Payment Amount'}
+                                        </p>
+                                        <p className="text-4xl font-black tracking-tight drop-shadow-md">
+                                            ${totalPrice.toFixed(2)}
+                                        </p>
+                                    </div>
+
+                                    {/* Status Title */}
+                                    <h2 className="text-xl sm:text-2xl font-black mb-6 tracking-tight drop-shadow-md text-center transition-all duration-500">
+                                        {processingPhase >= 3
+                                            ? (lang === 'zh' ? '支付成功！' : 'Payment Successful!')
+                                            : (lang === 'zh' ? '正在安全处理付款...' : 'Processing Payment...')
+                                        }
+                                    </h2>
+
+                                    {/* 3-Phase Status Lines */}
+                                    <div className="space-y-3 w-full max-w-xs">
+                                        {[
+                                            { zh: '已连接区块链网络', en: 'Connected to blockchain network', phase: 1 },
+                                            { zh: '正在验证交易记录', en: 'Verifying transaction record', phase: 2 },
+                                            { zh: '订单确认完成', en: 'Order confirmed', phase: 3 },
+                                        ].map((item, i) => (
+                                            <div
+                                                key={i}
+                                                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-500 ${
+                                                    processingPhase >= item.phase
+                                                        ? 'bg-white/15 backdrop-blur-sm'
+                                                        : processingPhase === item.phase - 1
+                                                            ? 'bg-white/5'
+                                                            : 'opacity-40'
+                                                }`}
+                                            >
+                                                {processingPhase >= item.phase ? (
+                                                    <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center shrink-0 animate-[scale-bounce_0.3s_ease-out]">
+                                                        <Check className="w-3 h-3 text-emerald-500" strokeWidth={3} />
+                                                    </div>
+                                                ) : processingPhase === item.phase - 1 ? (
+                                                    <Loader2 className="w-5 h-5 animate-spin shrink-0" />
+                                                ) : (
+                                                    <div className="w-5 h-5 rounded-full border-2 border-white/30 shrink-0" />
+                                                )}
+                                                <span className="text-sm font-medium">
+                                                    {lang === 'zh' ? item.zh : item.en}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Bottom trust bar */}
+                                    <div className="mt-10 flex items-center gap-2 text-white/40 text-xs">
+                                        <Lock className="w-3 h-3" />
+                                        <span>{lang === 'zh' ? 'CNWePro 企业级风控引擎保障' : 'Secured by CNWePro risk engine'}</span>
                                     </div>
                                 </div>
-                                <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{lang === 'zh' ? '正在安全处理付款...' : 'Processing secure payment...'}</h2>
-                                <p className="text-slate-500 text-sm">{lang === 'zh' ? 'CNWePro资金安全由企业级风控引擎保障' : 'Secured by CNWePro enterprise risk control engine'}</p>
+
+                                {/* Keyframe for check draw animation */}
+                                <style jsx>{`
+                                    @keyframes draw-check {
+                                        from { stroke-dashoffset: 24; }
+                                        to { stroke-dashoffset: 0; }
+                                    }
+                                    @keyframes scale-bounce {
+                                        0% { transform: scale(0); }
+                                        60% { transform: scale(1.15); }
+                                        100% { transform: scale(1); }
+                                    }
+                                `}</style>
                             </div>
                         ) : (
                             <>
-                                <div className="w-24 h-24 rounded-full bg-[#1677ff]/10 text-[#1677ff] flex items-center justify-center mx-auto mb-8 relative">
-                                    <div className="absolute inset-0 border-4 border-[#1677ff]/20 rounded-full animate-ping"></div>
-                                    <Check className="w-12 h-12" />
-                                </div>
-                        <h2 className="text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
-                            {t('checkout.orderPlaced', lang)}
-                        </h2>
-                        <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 mb-8">
-                            <p className="text-base text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
-                                {lang === 'zh'
-                                    ? `您的付款已收到！订单 ${orderId} 正在处理中。我们会尽快将账号信息发送至您的通讯软件 (@${contactInfo.telegram})。期间资金由平台全额担保，请放心等待。`
-                                    : `Payment received! Your order ${orderId} is processing. We will send credentials to your contact (@${contactInfo.telegram}) shortly. Funds are held in escrow for your safety.`}
-                            </p>
-                        </div>
+                                {/* ========== SUCCESS SCREEN — WECHAT/ALIPAY STYLE ========== */}
+                                <div className="relative">
+                                    {/* Green checkmark with animated rings */}
+                                    <div className="relative w-28 h-28 mx-auto mb-8">
+                                        {/* Outer pulse ring */}
+                                        <div className="absolute inset-0 rounded-full bg-emerald-500/10 animate-ping" style={{ animationDuration: '2s' }} />
+                                        {/* Middle ring */}
+                                        <div className="absolute inset-2 rounded-full border-4 border-emerald-400/30 animate-pulse" />
+                                        {/* Inner circle with check */}
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-2xl shadow-emerald-500/40 flex items-center justify-center">
+                                                <Check className="w-10 h-10 text-white drop-shadow-md" strokeWidth={3} />
+                                            </div>
+                                        </div>
+                                    </div>
 
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <button
-                                onClick={() => router.push(getLocalizedPath(`/track?id=${orderId}`, lang))}
-                                className="w-full sm:w-auto px-8 py-3 bg-[#1677ff] hover:bg-[#1677ff]/90 text-white font-bold rounded-xl shadow-lg shadow-[#1677ff]/30 transition-all"
-                            >
-                                {t('nav.track', lang)}
-                            </button>
-                            <button
-                                onClick={() => router.push(getLocalizedPath('/', lang))}
-                                className="w-full sm:w-auto px-8 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl transition-all"
-                            >
-                                {t('common.backToHome', lang)}
-                            </button>
-                        </div>
+                                    <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">
+                                        {lang === 'zh' ? '支付成功！' : 'Payment Successful!'}
+                                    </h2>
+                                    <p className="text-emerald-600 dark:text-emerald-400 font-bold text-lg mb-8">
+                                        {t('checkout.orderPlaced', lang)}
+                                    </p>
+                                </div>
+
+                                {/* Order Summary Card */}
+                                <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800 overflow-hidden mb-8 text-left">
+                                    <div className="bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-3">
+                                        <p className="text-white text-xs font-black tracking-wider uppercase">
+                                            {lang === 'zh' ? '订单确认' : 'ORDER CONFIRMED'}
+                                        </p>
+                                    </div>
+                                    <div className="p-5 space-y-3">
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-slate-500">{lang === 'zh' ? '订单号' : 'Order ID'}</span>
+                                            <span className="font-mono font-bold text-sm text-slate-900 dark:text-white">{orderId}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-slate-500">{lang === 'zh' ? '接收方式' : 'Delivery to'}</span>
+                                            <span className="font-bold text-sm text-slate-900 dark:text-white">@{contactInfo.telegram}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center">
+                                            <span className="text-sm text-slate-500">{lang === 'zh' ? '状态' : 'Status'}</span>
+                                            <span className="flex items-center gap-1.5 text-emerald-600 font-bold text-sm">
+                                                <span className="relative flex h-2 w-2">
+                                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                                                </span>
+                                                {lang === 'zh' ? '处理中 · 即将发货' : 'Processing · Delivering soon'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Info message */}
+                                <div className="bg-blue-50 dark:bg-blue-900/15 border border-blue-100 dark:border-blue-800/40 rounded-xl p-4 mb-8 text-left">
+                                    <p className="text-sm text-blue-700 dark:text-blue-300 leading-relaxed">
+                                        {lang === 'zh'
+                                            ? `您的付款已确认！我们会尽快将账号信息发送至 @${contactInfo.telegram}。资金由平台全额担保，请放心等待。`
+                                            : `Payment confirmed! We will send credentials to @${contactInfo.telegram} shortly. Funds are held in escrow for your safety.`}
+                                    </p>
+                                </div>
+
+                                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                    <button
+                                        onClick={() => router.push(getLocalizedPath(`/track?id=${orderId}`, lang))}
+                                        className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/30 transition-all hover:shadow-xl hover:-translate-y-0.5"
+                                    >
+                                        {t('nav.track', lang)}
+                                    </button>
+                                    <button
+                                        onClick={() => router.push(getLocalizedPath('/', lang))}
+                                        className="w-full sm:w-auto px-8 py-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl transition-all"
+                                    >
+                                        {t('common.backToHome', lang)}
+                                    </button>
+                                </div>
                             </>
                         )}
                     </div>

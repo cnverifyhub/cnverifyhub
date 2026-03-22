@@ -1,4 +1,5 @@
 import { getProductsByCategory, getCategoryById } from '@/data/products';
+import NextImage from 'next/image';
 import { PricingCard } from '@/components/ui/PricingCard';
 import { FAQAccordion } from '@/components/ui/FAQAccordion';
 import { faqData } from '@/data/faq';
@@ -60,12 +61,16 @@ export function CategoryPageTemplate({ categoryId, lang }: CategoryPageTemplateP
 
                 <div className="section-container relative z-10">
                     <div className="max-w-4xl flex items-center gap-6 md:gap-8">
-                        {/* App Icon Container - Just the pure SVG natively rounded with a gorgeous drop shadow */}
-                        <div className={`w-20 h-20 md:w-32 md:h-32 flex items-center justify-center rounded-[2rem] md:rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] border border-slate-100/50 dark:border-white/5 transition-all duration-500 hover:scale-105 hover:rotate-3 shrink-0 bg-white dark:bg-dark-800 p-5 md:p-8 ${iconColors[category.id]}`}>
-                            {(() => {
-                                const BrandIcon = iconMap[category.id] || MessageCircle;
-                                return <BrandIcon className="w-full h-full" />;
-                            })()}
+                        {/* App Icon Container - Matches homepage style */}
+                        <div className="w-20 h-20 md:w-32 md:h-32 flex items-center justify-center shrink-0 transition-transform duration-500 hover:scale-105 hover:rotate-3 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden bg-white border border-slate-200">
+                            <NextImage 
+                                src={`/images/categories/${category.id}.webp`} 
+                                alt={category.name[lang]} 
+                                width={128} 
+                                height={128} 
+                                priority 
+                                className="w-full h-full object-cover" 
+                            />
                         </div>
 
                         <div>

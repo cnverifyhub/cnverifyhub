@@ -61,6 +61,7 @@ export default function GatePage() {
                 <Image
                     src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2000&auto=format&fit=crop"
                     alt="Mountain Landscape"
+                    unoptimized
                     fill
                     className="object-cover opacity-80"
                     priority
@@ -92,24 +93,23 @@ export default function GatePage() {
                             } font-medium tracking-widest`}
                     />
 
-                    {/* Toggle Password Visibility / Submit */}
+                    {/* Toggle Visibility */}
                     <button
                         type="button"
-                        onClick={() => {
-                            if (password.length > 0) {
-                                // If there is a password, clicking the eye acts as a submit if they intend to, but usually it just toggles. 
-                                // To exactly match the reference, we let it toggle, but we can also auto-submit on icon click if we want.
-                                // Let's stick to standard behavior: click to toggle visibility.
-                                setShowPassword(!showPassword);
-                            }
-                        }}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center text-slate-800 hover:text-black transition-colors rounded-full"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-14 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors rounded-full"
                     >
-                        {showPassword ? (
-                            <EyeOff className="w-5 h-5" />
-                        ) : (
-                            <Eye className="w-5 h-5" />
-                        )}
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+
+                    {/* Submit Button */}
+                    <button
+                        type="button"
+                        onClick={() => handleSubmit()}
+                        disabled={loading || !password.trim()}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-slate-900 hover:bg-black text-white rounded-full transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-lg"
+                    >
+                        <Check className="w-4 h-4" />
                     </button>
 
                     {/* Ripple Loading Effect */}
@@ -118,6 +118,11 @@ export default function GatePage() {
                             <div className="w-5 h-5 border-2 border-slate-800 border-t-transparent rounded-full animate-spin"></div>
                         </div>
                     )}
+                </div>
+
+                {/* Telegram Hint */}
+                <div className="text-center mt-6 text-white/40 text-xs font-medium tracking-wide">
+                    关注 <a href="https://t.me/cnwepro" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white/80 underline underline-offset-2 transition-colors">@cnwepro</a> 获取访问密码
                 </div>
 
                 <style jsx>{`

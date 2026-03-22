@@ -1,16 +1,19 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { MessageSquare, ShoppingBag, Video, UserCircle2, ArrowRight, Zap, Flame } from 'lucide-react';
+import { ArrowRight, Zap, Flame } from 'lucide-react';
 import { categories, getTotalStock, getLowestPrice } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { formatUsdt } from '@/lib/utils';
 
-// Configured width/height specifically for next/image. priority=true since these are usually above the fold on load.
+// All 7 categories now use actual brand logos
 const iconMap: Record<string, { icon: React.ReactNode, bgClass: string }> = {
     wechat: { icon: <Image src="/images/categories/wechat.webp" alt="WeChat" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
     alipay: { icon: <Image src="/images/categories/alipay.webp" alt="Alipay" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
     douyin: { icon: <Image src="/images/categories/douyin.webp" alt="Douyin" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
     qq: { icon: <Image src="/images/categories/qq.webp" alt="QQ" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
+    xianyu: { icon: <Image src="/images/categories/xianyu.png" alt="Xianyu" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
+    taobao: { icon: <Image src="/images/categories/taobao.png" alt="Taobao" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
+    xiaohongshu: { icon: <Image src="/images/categories/xiaohongshu.png" alt="Xiaohongshu" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
 };
 
 export function CategoryCards({ lang }: { lang: Lang }) {

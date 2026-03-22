@@ -178,9 +178,7 @@ export default function RootLayout({
                 <link rel="dns-prefetch" href="https://zz.bdstatic.com" />
                 <link rel="dns-prefetch" href="https://api.trongrid.io" />
 
-                {/* Preload critical fonts */}
-                <link rel="preload" href="/fonts/inter-var-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-                <link rel="preload" href="/fonts/noto-sans-sc-var.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+                {/* Fonts loaded via next/font/google — no manual preload needed */}
 
                 {/* Canonical & hreflang for Baidu */}
                 <link rel="alternate" hrefLang="zh-CN" href={SITE_URL} />

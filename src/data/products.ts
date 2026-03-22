@@ -42,6 +42,33 @@ export const categories: Category[] = [
         gradient: 'from-sky-500 to-cyan-600',
         href: '/qq',
     },
+    {
+        id: 'xianyu',
+        name: { zh: '闲鱼账号', en: 'Xianyu Accounts' },
+        description: { zh: '高质量闲鱼实名账号', en: 'High-quality Xianyu verified accounts' },
+        icon: 'xianyu',
+        color: 'text-yellow-500',
+        gradient: 'from-amber-400 to-amber-600',
+        href: '/xianyu',
+    },
+    {
+        id: 'taobao',
+        name: { zh: '淘宝账号', en: 'Taobao Accounts' },
+        description: { zh: '淘宝优质买家白号、老号', en: 'Premium Taobao buyer accounts' },
+        icon: 'taobao',
+        color: 'text-orange-500',
+        gradient: 'from-orange-500 to-red-600',
+        href: '/taobao',
+    },
+    {
+        id: 'xiaohongshu',
+        name: { zh: '小红书账号', en: 'Xiaohongshu Accounts' },
+        description: { zh: '小红书老号、高权重种草营销号', en: 'Aged RED accounts for marketing' },
+        icon: 'xiaohongshu',
+        color: 'text-red-500',
+        gradient: 'from-red-500 to-rose-700',
+        href: '/xiaohongshu',
+    },
 ];
 
 /* ---------- WeChat Products ---------- */
@@ -479,12 +506,126 @@ const qqProducts: Product[] = [
     },
 ];
 
+/* ---------- Xianyu Products ---------- */
+const xianyuProducts: Product[] = [
+    {
+        id: 'xianyu-standard',
+        category: 'xianyu',
+        tierName: { zh: '闲鱼标准实名号', en: 'Xianyu Standard Verified' },
+        tierSlug: 'standard',
+        description: { zh: '标准闲鱼二手交易账号，安全可靠', en: 'Standard Xianyu account for second-hand trading' },
+        price: { single: 48.80, bulk10: 45.80, bulk50: 45.80, bulk200: 42.80, originalPrice: { single: 55.80, bulk10: 52.80, bulk50: 52.80, bulk200: 49.80 } },
+        features: [
+            { zh: '已实名认证', en: 'ID Verified' },
+            { zh: '支付宝关联', en: 'Alipay Linked' },
+        ],
+        warranty: { zh: '48小时质保', en: '48-hour warranty' },
+        deliveryTime: { zh: '1-4小时', en: '1-4 hours' },
+        stockCount: 15,
+        sortOrder: 1,
+    },
+    {
+        id: 'xianyu-aged',
+        category: 'xianyu',
+        tierName: { zh: '闲鱼优质老号', en: 'Xianyu Premium Aged' },
+        tierSlug: 'aged',
+        description: { zh: '高信誉分闲鱼老号', en: 'High credit score aged Xianyu account' },
+        price: { single: 68.80, bulk10: 65.80, bulk50: 65.80, bulk200: 62.80, originalPrice: { single: 75.80, bulk10: 72.80, bulk50: 72.80, bulk200: 69.80 } },
+        features: [
+            { zh: '高芝麻信用积分', en: 'High Zhima Credit' },
+            { zh: '历史交易好评', en: 'Good trade history' },
+        ],
+        warranty: { zh: '72小时质保', en: '72-hour warranty' },
+        deliveryTime: { zh: '2-6小时', en: '2-6 hours' },
+        stockCount: 8,
+        popular: true,
+        sortOrder: 2,
+    }
+];
+
+/* ---------- Taobao Products ---------- */
+const taobaoProducts: Product[] = [
+    {
+        id: 'taobao-basic',
+        category: 'taobao',
+        tierName: { zh: '淘宝基础买家号', en: 'Taobao Basic Buyer' },
+        tierSlug: 'basic',
+        description: { zh: '淘宝购物基础白号', en: 'Fresh Taobao shopping account' },
+        price: { single: 15.80, bulk10: 12.80, bulk50: 12.80, bulk200: 10.80, originalPrice: { single: 25.80, bulk10: 22.80, bulk50: 22.80, bulk200: 18.80 } },
+        features: [
+            { zh: '全新注册', en: 'Freshly registered' },
+            { zh: '正常购物', en: 'Normal shopping' },
+        ],
+        warranty: { zh: '24小时质保', en: '24-hour warranty' },
+        deliveryTime: { zh: '5-15分钟', en: '5-15 minutes' },
+        stockCount: 25,
+        sortOrder: 1,
+    },
+    {
+        id: 'taobao-vip',
+        category: 'taobao',
+        tierName: { zh: '淘宝VIP老号', en: 'Taobao VIP Aged Account' },
+        tierSlug: 'vip-aged',
+        description: { zh: '高等级淘气值老号', en: 'High Taoqi score aged account' },
+        price: { single: 48.80, bulk10: 42.80, bulk50: 42.80, bulk200: 38.80, originalPrice: { single: 58.80, bulk10: 52.80, bulk50: 52.80, bulk200: 48.80 } },
+        features: [
+            { zh: '高淘气值', en: 'High Taoqi value' },
+            { zh: '抗扫号风控', en: 'Strict Anti-ban' },
+        ],
+        warranty: { zh: '72小时质保', en: '72-hour warranty' },
+        deliveryTime: { zh: '1-4小时', en: '1-4 hours' },
+        stockCount: 12,
+        popular: true,
+        sortOrder: 2,
+    }
+];
+
+/* ---------- Xiaohongshu Products ---------- */
+const xiaohongshuProducts: Product[] = [
+    {
+        id: 'xiaohongshu-basic',
+        category: 'xiaohongshu',
+        tierName: { zh: '小红书基础号', en: 'Xiaohongshu Basic' },
+        tierSlug: 'basic',
+        description: { zh: '高质量新注册账号', en: 'High-quality freshly registered account' },
+        price: { single: 18.80, bulk10: 15.80, bulk50: 12.80, bulk200: 10.80, originalPrice: { single: 25.80, bulk10: 22.80, bulk50: 18.80, bulk200: 15.80 } },
+        features: [
+            { zh: '手机号注册', en: 'Phone registered' },
+            { zh: '可正常点赞评论', en: 'Can like & comment' },
+        ],
+        warranty: { zh: '24小时质保', en: '24-hour warranty' },
+        deliveryTime: { zh: '15-30分钟', en: '15-30 mins' },
+        stockCount: 30,
+        sortOrder: 1,
+    },
+    {
+        id: 'xiaohongshu-1k',
+        category: 'xiaohongshu',
+        tierName: { zh: '小红书千粉号', en: 'Xiaohongshu 1K+ Followers' },
+        tierSlug: '1k-followers',
+        description: { zh: '1000+真实粉丝种草号', en: '1000+ real followers account' },
+        price: { single: 68.80, bulk10: 62.80, bulk50: 58.80, bulk200: 52.80, originalPrice: { single: 78.80, bulk10: 72.80, bulk50: 68.80, bulk200: 62.80 } },
+        features: [
+            { zh: '高权重种草', en: 'High marketing auth' },
+            { zh: '直播功能', en: 'Live feature enabled' },
+        ],
+        warranty: { zh: '48小时质保', en: '48-hour warranty' },
+        deliveryTime: { zh: '4-8小时', en: '4-8 hours' },
+        stockCount: 6,
+        badge: { zh: '稀缺', en: 'Rare' },
+        sortOrder: 2,
+    }
+];
+
 /* ---------- All Products ---------- */
 export const allProducts: Product[] = [
     ...wechatProducts,
     ...alipayProducts,
     ...douyinProducts,
     ...qqProducts,
+    ...xianyuProducts,
+    ...taobaoProducts,
+    ...xiaohongshuProducts,
 ];
 
 /* ---------- Helpers ---------- */

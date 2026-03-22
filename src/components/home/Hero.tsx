@@ -13,6 +13,9 @@ const logoUrls: Record<string, string> = {
     alipay: '/images/categories/alipay.webp',
     douyin: '/images/categories/douyin.webp',
     qq: '/images/categories/qq.webp',
+    xianyu: '/images/categories/xianyu.webp',
+    taobao: '/images/categories/taobao.webp',
+    xiaohongshu: '/images/categories/xiaohongshu.webp',
 };
 
 /* ============================================
@@ -25,6 +28,8 @@ const danmuMessages = {
         '支付宝号秒发货', '抖音号粉丝数量真实', 'QQ号质量很好',
         '资金担保交易很安心', '老客户了，品质一直稳定', '推荐给朋友了',
         '第一次买就成功了', '客服回复很快', '价格比同行便宜很多',
+        '闲鱼号直接上架秒出单', '淘宝店铺号权重很高', '小红书号粉丝真实活跃',
+        '闲鱼芝麻信用号太好用了', '批量买淘宝号享大折扣',
     ],
     en: [
         'Account received, great quality!', 'Super fast delivery 👍', 'Third purchase, very reliable',
@@ -32,6 +37,8 @@ const danmuMessages = {
         'Alipay delivered instantly', 'Douyin followers are real', 'QQ account quality is solid',
         'Escrow payment feels safe', 'Regular customer, always consistent', 'Recommended to friends',
         'First buy was a success', 'Support replied fast', 'Prices much cheaper than competitors',
+        'Xianyu account listed items instantly', 'Taobao store has high weight score', 'Xiaohongshu followers are all real',
+        'Xianyu Zhima credit account is amazing', 'Bulk Taobao accounts huge discount',
     ],
 };
 
@@ -87,6 +94,9 @@ const purchasePool = {
         { user: '166****4419', item: '抖音万粉号', time: '10分钟前' },
         { user: '139****7755', item: 'QQ靓号', time: '12分钟前' },
         { user: '155****3301', item: '支付宝企业号', time: '15分钟前' },
+        { user: '182****5508', item: '闲鱼芝麻信用号', time: '17分钟前' },
+        { user: '176****9912', item: '淘宝皇冠店铺', time: '20分钟前' },
+        { user: '131****6643', item: '小红书万粉号', time: '22分钟前' },
     ],
     en: [
         { user: '138****9021', item: 'WeChat Verified', time: 'Just now' },
@@ -99,6 +109,9 @@ const purchasePool = {
         { user: '166****4419', item: 'Douyin 10K+', time: '10 min ago' },
         { user: '139****7755', item: 'QQ Premium', time: '12 min ago' },
         { user: '155****3301', item: 'Alipay Business', time: '15 min ago' },
+        { user: '182****5508', item: 'Xianyu Zhima Credit', time: '17 min ago' },
+        { user: '176****9912', item: 'Taobao Crown Store', time: '20 min ago' },
+        { user: '131****6643', item: 'Xiaohongshu 10K+', time: '22 min ago' },
     ],
 };
 
@@ -258,13 +271,19 @@ export function Hero({ lang }: { lang: Lang }) {
                                     className="flex items-center gap-2.5 px-4 py-3 hover:bg-red-50/60 dark:hover:bg-red-900/10 transition-colors border-b border-slate-50 dark:border-slate-800/50 last:border-b-0 group"
                                 >
                                     <div className="w-7 h-7 rounded-lg shadow-sm overflow-hidden bg-white border border-slate-100 dark:border-slate-800 shrink-0">
-                                        <Image
-                                            src={logoUrls[cat.icon as keyof typeof logoUrls]}
-                                            alt={cat.name.en}
-                                            width={28}
-                                            height={28}
-                                            className="w-full h-full object-cover"
-                                        />
+                                        {logoUrls[cat.icon as keyof typeof logoUrls] && ['wechat', 'alipay', 'douyin', 'qq'].includes(cat.id) ? (
+                                            <Image
+                                                src={logoUrls[cat.icon as keyof typeof logoUrls]}
+                                                alt={cat.name.en}
+                                                width={28}
+                                                height={28}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className={`w-full h-full flex items-center justify-center text-xs font-black ${cat.color}`}>
+                                                {cat.name.en.slice(0, 2)}
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">

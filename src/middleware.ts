@@ -1,44 +1,71 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { NextResponse, type NextRequest } from 'next/server';
 
-// Routes that don't require the password
-const publicPaths = ['/gate', '/api/auth', '/_next', '/favicon.ico', '/manifest.json'];
+export async function middleware(request: NextRequest) {
+    let response = NextResponse.next({
+        request: { headers: request.headers },
+    });
 
-export function middleware(request: NextRequest) {
-    const { pathname } = request.nextUrl;
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://otgewrynnrqmtsyvlzrj.supabase.co',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+        {
+            cookies: {
+                get(name: string) {
+                    return request.cookies.get(name)?.value;
+                },
+                set(name: string, value: string, options: CookieOptions) {
+                    request.cookies.set({ name, value, ...options });
+                    response = NextResponse.next({
+                        request: { headers: request.headers },
+                    });
+                    response.cookies.set({ name, value, ...options });
+                },
+                remove(name: string, options: CookieOptions) {
+                    request.cookies.set({ name, value: '', ...options });
+                    response = NextResponse.next({
+                        request: { headers: request.headers },
+                    });
+                    response.cookies.set({ name, value: '', ...options });
+                },
+            },
+        }
+    );
 
-    // Check if the current path is in the public paths list or matches static assets
-    const isPublicPath = publicPaths.some(path => pathname.startsWith(path)) ||
-        pathname.match(/\.(png|jpg|jpeg|svg|webp)$/);
+    // Refresh session if expired
+    const { data: { session } } = await supabase.auth.getSession();
 
-    // If it's a public path, let the request proceed normally
-    if (isPublicPath) {
-        return NextResponse.next();
+    // Protected routes — redirect to login if not authenticated
+    const protectedPaths = ['/account', '/en/account'];
+    const isProtected = protectedPaths.some(path =>
+        request.nextUrl.pathname.startsWith(path)
+    );
+
+    if (isProtected && !session) {
+        const loginUrl = new URL('/auth/login', request.url);
+        loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
+        return NextResponse.redirect(loginUrl);
     }
 
-    // Check for the access cookie
-    const hasAccess = request.cookies.has('cnwepro_access');
+    // If user is logged in and tries to access auth pages, redirect to account
+    const authPaths = ['/auth/login', '/auth/signup'];
+    const isAuthPage = authPaths.some(path =>
+        request.nextUrl.pathname.startsWith(path)
+    );
 
-    // If no access cookie, redirect to the gate page
-    if (!hasAccess) {
-        const url = new URL('/gate', request.url);
-        return NextResponse.redirect(url);
+    if (isAuthPage && session) {
+        return NextResponse.redirect(new URL('/account', request.url));
     }
 
-    // If authenticated, let the request proceed normally
-    return NextResponse.next();
+    return response;
 }
 
-// Configure the paths where the middleware should run
 export const config = {
     matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * This allows the middleware to be invoked on all pages and API routes.
-         */
-        '/((?!_next/static|_next/image|favicon.ico).*)',
+        '/account/:path*',
+        '/en/account/:path*',
+        '/auth/:path*',
+        '/admin/:path*',
+        '/en/admin/:path*',
     ],
 };

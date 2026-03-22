@@ -9,10 +9,13 @@ import Image from 'next/image';
 import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon } from '@/components/ui/BrandIcons';
 
 const categoryIcons: Record<string, React.ReactNode> = {
-    wechat: <WeChatIcon className="w-5 h-5 text-emerald-500" />,
-    alipay: <AlipayIcon className="w-5 h-5 text-blue-500" />,
-    douyin: <DouyinIcon className="w-5 h-5 text-slate-800 dark:text-white" />,
-    qq: <QQIcon className="w-5 h-5 text-sky-500" />,
+    wechat: <Image src="/images/categories/wechat.webp" alt="WeChat" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
+    alipay: <Image src="/images/categories/alipay.webp" alt="Alipay" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
+    douyin: <Image src="/images/categories/douyin.webp" alt="Douyin" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
+    qq: <Image src="/images/categories/qq.webp" alt="QQ" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
+    xianyu: <Image src="/images/categories/xianyu.png" alt="Xianyu" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
+    taobao: <Image src="/images/categories/taobao.png" alt="Taobao" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
+    xiaohongshu: <Image src="/images/categories/xiaohongshu.png" alt="Xiaohongshu" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
 };
 
 export default function Footer() {
@@ -55,10 +58,10 @@ export default function Footer() {
 
             {/* Main Footer Content */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 md:pt-14 pb-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-8 md:gap-10 lg:gap-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-y-8 gap-x-4 md:gap-y-10 md:gap-x-10 lg:gap-8">
 
                     {/* Brand & Intro */}
-                    <div className="space-y-4 md:space-y-5 flex flex-col items-center sm:items-start text-center sm:text-left">
+                    <div className="col-span-2 lg:col-span-1 space-y-4 md:space-y-5 flex flex-col items-start text-left">
                         <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 group">
                             <Image src="/logo.png" alt="CNWePro Logo" width={36} height={36} className="w-9 h-9 object-contain group-hover:scale-105 transition-transform" />
                             <div className="flex flex-col">
@@ -70,12 +73,12 @@ export default function Footer() {
                                 </span>
                             </div>
                         </Link>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-xs">
+                        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-xs md:max-w-sm">
                             {t('site.description', lang)}
                         </p>
 
                         {/* Payment Method Badge */}
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-wrap items-center gap-3">
                             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-900/40 bg-emerald-50 dark:bg-emerald-950/20 text-xs font-bold text-emerald-600 dark:text-emerald-400">
                                 <Wallet className="w-3.5 h-3.5" />
                                 USDT TRC20
@@ -88,21 +91,21 @@ export default function Footer() {
                     </div>
 
                     {/* Accounts */}
-                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left mt-2 md:mt-0">
+                    <div className="col-span-1 flex flex-col items-start text-left mt-2 md:mt-0">
                         <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 md:mb-5">
                             {t('footer.accounts', lang)}
                         </h3>
-                        <ul className="space-y-3 flex flex-col items-center sm:items-start">
+                        <ul className="space-y-2 flex flex-col items-start">
                             {categories.map((c) => (
                                 <li key={c.id}>
                                     <Link
                                         href={getLocalizedPath(c.href, lang)}
-                                        className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm flex items-center gap-2.5 group"
+                                        className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm flex items-center gap-2 group"
                                     >
-                                        <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 dark:bg-white/5 group-hover:scale-110 transition-transform">
+                                        <div className="w-6 h-6 flex items-center justify-center rounded-lg overflow-hidden bg-white border border-slate-200 dark:border-slate-800 group-hover:scale-110 transition-transform shadow-sm shrink-0">
                                             {categoryIcons[c.id]}
                                         </div>
-                                        <span className="group-hover:translate-x-1 transition-transform font-medium">{c.name[lang]}</span>
+                                        <span className="group-hover:translate-x-1 transition-transform font-medium line-clamp-1">{c.name[lang]}</span>
                                     </Link>
                                 </li>
                             ))}
@@ -110,11 +113,11 @@ export default function Footer() {
                     </div>
 
                     {/* Quick Links */}
-                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left mt-2 md:mt-0">
+                    <div className="col-span-1 flex flex-col items-start text-left mt-2 md:mt-0">
                         <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 md:mb-5">
                             {t('footer.quickLinks', lang)}
                         </h3>
-                        <ul className="space-y-3 flex flex-col items-center sm:items-start">
+                        <ul className="space-y-3 flex flex-col items-start">
                             {[
                                 { href: '/pricing', label: t('nav.pricing', lang) },
                                 { href: '/client', label: t('nav.track', lang) },
@@ -127,8 +130,8 @@ export default function Footer() {
                                         href={getLocalizedPath(link.href, lang)}
                                         className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors text-sm group flex items-center gap-1"
                                     >
-                                        <span className="w-0 group-hover:w-2 h-0.5 bg-red-500 rounded-full transition-all duration-200" />
-                                        {link.label}
+                                        <span className="w-0 group-hover:w-2 h-0.5 bg-red-500 rounded-full transition-all duration-200 shrink-0" />
+                                        <span className="line-clamp-1">{link.label}</span>
                                     </Link>
                                 </li>
                             ))}
@@ -136,11 +139,11 @@ export default function Footer() {
                     </div>
 
                     {/* Support */}
-                    <div className="flex flex-col items-center sm:items-start text-center sm:text-left mt-2 md:mt-0">
+                    <div className="col-span-2 lg:col-span-1 flex flex-col items-start text-left mt-6 md:mt-0">
                         <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider mb-4 md:mb-5">
                             {t('footer.support', lang)}
                         </h3>
-                        <ul className="space-y-3.5 flex flex-col items-center sm:items-start">
+                        <ul className="space-y-3.5 flex flex-col items-start">
                             <li>
                                 <a
                                     href={process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL || 'https://t.me/cnwepro'}
@@ -195,7 +198,7 @@ export default function Footer() {
                     <p className="text-center text-sm font-bold text-slate-900 dark:text-white mb-4 uppercase tracking-widest">
                         {lang === 'zh' ? '快速联系' : 'QUICK CONTACT'}
                     </p>
-                    <div className="flex flex-col gap-3">
+                    <div className="grid grid-cols-2 gap-3">
                         <a
                             href={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME}` : 'https://t.me/Minsheng0'}
                             className="flex items-center justify-center gap-3 bg-[#24A1DE] text-white py-4 rounded-2xl font-black shadow-lg shadow-sky-500/20 active:scale-95 transition-transform"
