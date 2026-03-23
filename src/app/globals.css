@@ -25,6 +25,7 @@
 
   body {
     @apply bg-white dark:bg-dark-950 text-slate-900 dark:text-slate-100 antialiased;
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Inter', system-ui, -apple-system, sans-serif;
     overflow-x: hidden;
   }
 
@@ -144,7 +145,7 @@
   }
 
   .btn-primary {
-    @apply btn px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-red-600 to-orange-500 hover:from-red-500 hover:to-orange-400 text-white shadow-lg shadow-red-500/25 hover:shadow-xl hover:-translate-y-0.5 focus:ring-red-500;
+    @apply btn px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-[#FF5000] to-[#FF8C00] hover:from-[#E64800] hover:to-[#FF7A00] text-white shadow-lg shadow-[#FF5000]/25 hover:shadow-xl hover:-translate-y-0.5 focus:ring-[#FF5000];
   }
 
   .btn-gold {

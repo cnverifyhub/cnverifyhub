@@ -6,7 +6,7 @@ import { PaymentDisplay } from './PaymentDisplay';
 import { getProductById } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { formatUsdt } from '@/lib/utils';
-import { ChevronRight, ShieldCheck, Check, ShoppingBag, Shield, Timer, PartyPopper, Lock, Loader2 } from 'lucide-react';
+import { ChevronRight, ShieldCheck, Check, ShoppingBag, Shield, Timer, PartyPopper, Lock, Loader2, AlertCircle } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useOrderStore } from '@/store/orderStore';
 import { supabase } from '@/lib/supabase/client';
@@ -20,6 +20,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
     const { items, getTotal, clearCart } = useCartStore();
     const { addOrder } = useOrderStore();
     const [step, setStep] = useState<1 | 2 | 3>(1);
+    const [agreedToAntiBan, setAgreedToAntiBan] = useState(false);
 
     const [contactInfo, setContactInfo] = useState({ telegram: '', email: '' });
     const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -648,27 +649,67 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                                     </div>
                                 </div>
 
-                                {/* Info message */}
-                                <div className="bg-blue-50 dark:bg-blue-900/15 border border-blue-100 dark:border-blue-800/40 rounded-xl p-4 mb-8 text-left">
-                                    <p className="text-sm text-blue-700 dark:text-blue-300 leading-relaxed">
-                                        {lang === 'zh'
-                                            ? `您的付款已确认！我们会尽快将账号信息发送至 @${contactInfo.telegram}。资金由平台全额担保，请放心等待。`
-                                            : `Payment confirmed! We will send credentials to @${contactInfo.telegram} shortly. Funds are held in escrow for your safety.`}
-                                    </p>
+                                {/* Golden 72 Hours Anti-Ban Protocol Portal */}
+                                <div className="mt-8 mb-8 text-left border-2 border-red-500 rounded-2xl overflow-hidden bg-white dark:bg-dark-900 shadow-xl shadow-red-500/10">
+                                    <div className="bg-gradient-to-r from-red-600 to-[#FF5000] px-5 py-4 flex items-center gap-3">
+                                        <AlertCircle className="w-6 h-6 text-white animate-pulse" />
+                                        <h3 className="text-white font-black text-lg tracking-wide shadow-sm">
+                                            {lang === 'zh' ? '【防封必读】黄金72小时安全守则' : 'MUST READ: Golden 72 Hours Anti-Ban Protocol'}
+                                        </h3>
+                                    </div>
+                                    <div className="p-5 sm:p-6 space-y-4">
+                                        <p className="text-sm font-bold text-gray-800 dark:text-gray-200 mb-2">
+                                            {lang === 'zh'
+                                                ? '为了保障您的账号安全并享有72小时质保，登录后前三天内【绝对禁止】以下操作：'
+                                                : 'To ensure account safety and keep your 72h warranty active, you MUST NOT do the following in the first 3 days:'}
+                                        </p>
+                                        <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
+                                            <li className="flex items-start gap-2">
+                                                <div className="bg-red-100 text-red-600 font-black rounded w-5 h-5 flex items-center justify-center shrink-0 mt-0.5">X</div>
+                                                <span><strong className="text-red-600 dark:text-red-400">{lang === 'zh' ? '禁止修改资料：' : 'DO NOT change info:'}</strong> {lang === 'zh' ? '不改密、不换绑手机/邮箱/微信号。' : 'Do not change password, linked phone, email, or ID.'}</span>
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <div className="bg-red-100 text-red-600 font-black rounded w-5 h-5 flex items-center justify-center shrink-0 mt-0.5">X</div>
+                                                <span><strong className="text-red-600 dark:text-red-400">{lang === 'zh' ? '禁止大额交易：' : 'DO NOT make instant payments:'}</strong> {lang === 'zh' ? '首次登录切勿立刻绑定新卡或转大额资金（先微小消费养号）。' : 'Do not bind new banks or make massive transfers immediately.'}</span>
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <div className="bg-red-100 text-red-600 font-black rounded w-5 h-5 flex items-center justify-center shrink-0 mt-0.5">X</div>
+                                                <span><strong className="text-red-600 dark:text-red-400">{lang === 'zh' ? '禁止营销加人：' : 'DO NOT spam:'}</strong> {lang === 'zh' ? '严禁主动群发、批量加好友、发营销朋友圈。' : 'Do not mass friend request or post spam ads.'}</span>
+                                            </li>
+                                            <li className="flex items-start gap-2">
+                                                <div className="bg-yellow-100 text-yellow-600 font-black rounded w-5 h-5 flex items-center justify-center shrink-0 mt-0.5">!</div>
+                                                <span><strong className="text-yellow-600 dark:text-yellow-400">{lang === 'zh' ? '注意网络环境：' : 'Watch IP address:'}</strong> {lang === 'zh' ? '使用干净静态独立IP登录，禁止频繁上下线。' : 'Use a static clean IP, avoid frequent logins/logouts.'}</span>
+                                            </li>
+                                        </ul>
+                                        <div className="mt-6 pt-5 border-t border-gray-100 dark:border-gray-800">
+                                            <label className="flex items-center gap-3 cursor-pointer group">
+                                                <div className="relative flex items-center justify-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="w-6 h-6 rounded border-2 border-gray-300 dark:border-gray-600 text-[#FF5000] focus:ring-[#FF5000] focus:ring-offset-0 transition-colors cursor-pointer"
+                                                        checked={agreedToAntiBan}
+                                                        onChange={(e) => setAgreedToAntiBan(e.target.checked)}
+                                                    />
+                                                </div>
+                                                <span className={`text-sm sm:text-base font-bold select-none transition-colors ${agreedToAntiBan ? 'text-green-600 dark:text-green-400' : 'text-gray-900 dark:text-white'}`}>
+                                                    {lang === 'zh' ? '我已阅读并理解《72小时防封守则》，违规操作将导致质保失效。' : 'I understand the Anti-Ban Protocol. Violating these rules voids my warranty.'}
+                                                </span>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                                     <button
+                                        disabled={!agreedToAntiBan}
                                         onClick={() => router.push(getLocalizedPath(`/track?id=${orderId}`, lang))}
-                                        className="w-full sm:w-auto px-8 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/30 transition-all hover:shadow-xl hover:-translate-y-0.5"
+                                        className={`w-full sm:w-auto px-8 py-3.5 font-bold rounded-xl shadow-lg transition-all text-lg ${
+                                            agreedToAntiBan
+                                                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white shadow-emerald-500/30 hover:shadow-xl hover:-translate-y-0.5 animate-pulse'
+                                                : 'bg-gray-200 dark:bg-gray-800 text-gray-400 cursor-not-allowed shadow-none'
+                                        }`}
                                     >
-                                        {t('nav.track', lang)}
-                                    </button>
-                                    <button
-                                        onClick={() => router.push(getLocalizedPath('/', lang))}
-                                        className="w-full sm:w-auto px-8 py-3.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl transition-all"
-                                    >
-                                        {t('common.backToHome', lang)}
+                                        {lang === 'zh' ? (agreedToAntiBan ? '去查看我的账号 (提取)' : '请先勾选上方同意守则') : (agreedToAntiBan ? 'View Account Details ->' : 'Agree to rules first')}
                                     </button>
                                 </div>
                             </>

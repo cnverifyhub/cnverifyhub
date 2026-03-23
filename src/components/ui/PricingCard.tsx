@@ -42,156 +42,126 @@ export function PricingCard({ product, lang }: PricingCardProps) {
     };
 
     return (
-        <div
-            className={`glass-card relative flex flex-col h-full overflow-hidden transition-all duration-300 border-t-4 ${product.popular ? 'border-red-500 shadow-xl shadow-red-500/10 -translate-y-2' : 'border-t-slate-200 dark:border-t-slate-700 hover:-translate-y-1'
-                }`}
-        >
-            {/* Popular/Badge Tag */}
-            {product.badge && (
-                <div className="absolute top-0 right-0">
-                    <div className="bg-gradient-to-r from-primary-500 to-accent-600 text-white text-[10px] font-bold px-3 py-1 pb-1.5 rounded-bl-lg tracking-wider uppercase shadow-md">
+        <div className="bg-white dark:bg-[#1c1c1e] rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col h-full border border-gray-100 dark:border-gray-800">
+            {/* Visual Header Block (Simulating Product Image) */}
+            <Link href={getLocalizedPath(`/product/${product.id}`, lang)} className="relative aspect-[4/3] w-full block overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
+                {product.badge && (
+                    <div className="absolute top-2 left-0 bg-gradient-to-r from-[#FF5000] to-[#FF8C00] text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-r-full z-10 shadow-sm">
                         {product.badge[lang]}
                     </div>
-                </div>
-            )}
-            {product.popular && !product.badge && (
-                <div className="absolute top-0 right-0">
-                    <div className="bg-gradient-to-r from-gold-400 to-gold-600 text-white text-[10px] font-bold px-3 py-1 pb-1.5 rounded-bl-lg tracking-wider uppercase shadow-md">
+                )}
+                {product.popular && !product.badge && (
+                    <div className="absolute top-2 left-0 bg-gradient-to-r from-red-600 to-[#FF5000] text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-r-full z-10 shadow-sm">
                         {t('pricing.popular', lang)}
                     </div>
+                )}
+                
+                <div className="absolute inset-0 flex items-center justify-center p-6">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-white to-gray-50 dark:from-gray-700 dark:to-gray-600 shadow-sm flex items-center justify-center border border-gray-100 dark:border-gray-700">
+                         <span className="text-3xl sm:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-br from-[#FF5000] to-orange-400">
+                             {product.category.toUpperCase().slice(0, 1)}
+                         </span>
+                    </div>
                 </div>
-            )}
 
-            <Link href={getLocalizedPath(`/product/${product.id}`, lang)} className="block p-3 md:p-4 flex-grow flex flex-col group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors">
-                {/* Header */}
-                <div className="mb-2">
-                    <div className="flex items-start gap-1.5 mb-1">
-                        <span className="bg-gradient-to-r from-red-600 to-orange-500 text-white text-[10px] font-black tracking-wider px-1.5 py-0.5 rounded flex items-center shrink-0 shadow-sm mt-0.5">
+                {/* Simulated Stock / Sales banner at bottom of image */}
+                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/50 to-transparent pt-6 pb-1.5 px-3 flex justify-between items-center text-white">
+                    <span className="text-[10px] font-medium opacity-90">
+                        {lang === 'zh' ? `已售 ${100 + (product.id.charCodeAt(0) * 10)}+ 件` : `${100 + (product.id.charCodeAt(0) * 10)}+ sold`}
+                    </span>
+                    <StockBadge count={product.stockCount} lang={lang} />
+                </div>
+            </Link>
+
+            <div className="p-3 flex-grow flex flex-col group">
+                {/* Title Section */}
+                <Link href={getLocalizedPath(`/product/${product.id}`, lang)} className="mb-2 block">
+                    <div className="flex flex-wrap items-center gap-1 mb-1">
+                        <span className="bg-[#FF5000] text-white text-[10px] font-bold px-1 rounded-sm flex items-center">
                             {lang === 'zh' ? '官方自营' : 'Official'}
                         </span>
-                        <h3 className="text-base md:text-lg font-black text-slate-900 dark:text-white leading-snug line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                        <h3 className="text-sm sm:text-base font-bold text-gray-900 dark:text-gray-100 leading-snug line-clamp-2 group-hover:text-[#FF5000] transition-colors inline">
                             {product.tierName[lang]}
                         </h3>
                     </div>
-                    <div className="flex items-center justify-between mt-1.5">
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 flex-1 pr-2">
-                            {product.description[lang]}
-                        </p>
-                        <StockBadge count={product.stockCount} lang={lang} />
-                    </div>
+                    <p className="text-[11px] sm:text-xs text-gray-500 dark:text-gray-400 line-clamp-1">
+                        {product.description[lang]}
+                    </p>
+                </Link>
+
+                {/* Taobao Style Spec Tags (Pills) */}
+                <div className="flex flex-wrap gap-1 mb-3">
+                    {product.features.slice(0, 4).map((feature, i) => (
+                        <span key={i} className="text-[9px] sm:text-[10px] bg-[#FF5000]/10 text-[#FF5000] dark:bg-[#FF5000]/20 px-1.5 py-0.5 rounded-sm line-clamp-1 max-w-[100%] break-all">
+                            {feature[lang]}
+                        </span>
+                    ))}
+                    <span className="text-[9px] sm:text-[10px] border border-green-500 text-green-600 dark:text-green-400 px-1 rounded-sm line-clamp-1">
+                        {product.warranty[lang]} {lang === 'zh' ? '质保' : 'Warranty'}
+                    </span>
                 </div>
 
-                {/* Flash Sale Banner for Popular Items */}
+                {/* Flash Sale Banner */}
                 {product.popular && !isOutOfStock && (
-                    <div className="mb-2 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 border border-red-100 dark:border-red-900/30 rounded-lg p-2 flex items-center justify-between shadow-inner">
-                        <div className="flex items-center gap-1 text-red-600 dark:text-red-400 font-bold text-[11px]">
-                            <Zap className="w-3.5 h-3.5 fill-current animate-pulse" />
-                            {lang === 'zh' ? '全网特惠秒杀' : 'Flash Sale'}
+                    <div className="mb-2 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 rounded overflow-hidden flex items-stretch border border-red-100 dark:border-red-900/30">
+                        <div className="bg-gradient-to-r from-red-600 to-[#FF5000] text-white text-[10px] font-bold px-2 py-0.5 flex flex-col justify-center italic tracking-wide shrink-0">
+                            {lang === 'zh' ? '限时秒杀' : 'Flash Sale'}
                         </div>
-                        <div className="font-mono text-[10px] font-bold bg-white/60 dark:bg-dark-900/60 px-1.5 py-0.5 rounded text-red-600 dark:text-red-400 backdrop-blur-sm">
-                            {formatTime(timeLeft)}
+                        <div className="flex-1 px-2 py-0.5 flex items-center gap-1 text-[10px] text-red-600 font-medium justify-between font-mono bg-white/50 dark:bg-black/20">
+                            <span>{lang === 'zh' ? '距结束' : 'Ends in'}</span>
+                            <span className="font-bold">{formatTime(timeLeft)}</span>
                         </div>
                     </div>
                 )}
 
                 {/* Pricing Block */}
-                <div className="mb-3 bg-red-50/40 dark:bg-red-900/10 rounded-xl border border-red-100/50 dark:border-red-900/20 p-2.5 mt-0.5">
-                    <div className="flex items-baseline flex-wrap gap-x-1.5 gap-y-0.5 mb-1.5">
-                        <div className="flex items-baseline gap-0.5 text-red-600 dark:text-red-500">
-                            <span className="text-xs font-bold opacity-90">USDT</span>
-                            <span className="text-3xl font-black tracking-tight drop-shadow-sm font-sans leading-none">
-                                {formatUsdt(product.price.single).replace(' USDT', '')}
-                            </span>
-                        </div>
-
+                <div className="mt-auto pt-1">
+                    <div className="flex items-baseline gap-1 break-all flex-wrap">
+                        <span className="text-[#FF5000] text-xs font-bold leading-none">USDT</span>
+                        <span className="text-[#FF5000] text-xl sm:text-2xl font-black leading-none drop-shadow-sm flex-shrink-0">
+                            {formatUsdt(product.price.single).replace(' USDT', '')}
+                        </span>
+                        
                         {product.price.originalPrice && (
-                            <div className="flex items-center gap-1.5 text-slate-400 dark:text-slate-500 ml-1">
-                                <span className="line-through text-xs font-medium decoration-slate-300 dark:decoration-slate-600">
-                                    {formatUsdt(product.price.originalPrice.single)}
-                                </span>
-                                <span className="bg-red-500 text-white text-[9px] font-bold px-1 py-px rounded-sm">
-                                    {lang === 'zh' ? '立省' : 'SAVE'} {formatUsdt(product.price.originalPrice.single - product.price.single).replace(' USDT', '')}U
-                                </span>
-                            </div>
+                            <span className="text-gray-400 text-[10px] sm:text-xs line-through ml-1 shrink-0">
+                                {formatUsdt(product.price.originalPrice.single)}
+                            </span>
                         )}
                     </div>
-
-                    {/* Bulk Pricing Preview */}
-                    <div className="flex flex-wrap gap-1.5 mt-1 border-t border-red-100/50 dark:border-red-900/20 pt-1.5">
-                        <div className="text-[10px] font-bold bg-orange-100/50 dark:bg-orange-900/30 px-1.5 py-0.5 rounded text-orange-700 dark:text-orange-400 flex items-center gap-1">
-                            <span className="opacity-70">10件:</span> {formatUsdt(product.price.bulk10)}
-                        </div>
-                        <div className="text-[10px] font-bold bg-red-100/50 dark:bg-red-900/30 px-1.5 py-0.5 rounded text-red-700 dark:text-red-400 shadow-sm flex items-center gap-1">
-                            <span className="opacity-70">50件:</span> {formatUsdt(product.price.bulk50)}
-                        </div>
+                    {/* Multi-tier pricing inline indicator */}
+                    <div className="text-[9px] sm:text-[10px] text-gray-400 mt-1 pb-2 border-b border-gray-100 dark:border-gray-800 border-dashed">
+                        {lang === 'zh' ? '多件优惠:' : 'Bulk discount:'} <span className="text-[#FF5000] font-medium">10件 {formatUsdt(product.price.bulk10).replace(' USDT', 'U')} / 50件 {formatUsdt(product.price.bulk50).replace(' USDT', 'U')}</span>
                     </div>
                 </div>
+            </div>
 
-                {/* Features List (2 Column Grid) */}
-                <ul className="mb-4 grid grid-cols-2 gap-x-2 gap-y-1.5 flex-grow content-start">
-                    {product.features.map((feature, i) => (
-                        <li key={i} className="flex items-center gap-1.5">
-                            <div className="flex-shrink-0 w-3.5 h-3.5 rounded-full bg-success-50 dark:bg-success-500/10 flex items-center justify-center">
-                                <Check className="w-2.5 h-2.5 text-success-600 dark:text-success-400" />
-                            </div>
-                            <span className="text-[11px] font-medium text-slate-600 dark:text-slate-300 truncate">
-                                {feature[lang]}
-                            </span>
-                        </li>
-                    ))}
-                </ul>
-
-                {/* Info Rows */}
-                <div className="mb-3 bg-slate-50/80 dark:bg-slate-800/50 py-2 px-2.5 rounded flex flex-col gap-y-1 border border-slate-100 dark:border-slate-700/50 shadow-inner">
-                    <div className="flex items-center justify-between text-[10px] sm:text-[11px]">
-                        <div className="flex items-center gap-1">
-                            <ShieldCheck className="w-3 h-3 text-emerald-500 shrink-0" />
-                            <span className="text-slate-600 dark:text-slate-300">{t('pricing.warranty', lang)}</span>
-                        </div>
-                        <span className="text-slate-900 dark:text-slate-100 font-bold truncate max-w-[60%] text-right">{product.warranty[lang]}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-[10px] sm:text-[11px]">
-                        <div className="flex items-center gap-1">
-                            <Clock className="w-3 h-3 text-blue-500 shrink-0" />
-                            <span className="text-slate-600 dark:text-slate-300">{t('pricing.delivery', lang)}</span>
-                        </div>
-                        <span className="text-slate-900 dark:text-slate-100 font-bold truncate max-w-[60%] text-right">{product.deliveryTime[lang]}</span>
-                    </div>
-                </div>
-            </Link>
-
-            {/* CTA Button */}
-            <div className="mt-auto relative z-10 p-3 md:p-4 pt-0 border-t border-slate-100 dark:border-slate-800/50 mt-1">
+            {/* Action Buttons (Fixed Bottom) */}
+            <div className="px-3 pb-3 pt-1 bg-white dark:bg-[#1c1c1e]">
                 {isOutOfStock ? (
-                    <button
-                        disabled
-                        className="w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-base font-black transition-all duration-200 bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed"
-                    >
-                        <ShoppingCart className="w-4 h-4 ml-[-4px]" />
-                        <span className="tracking-widest">{lang === 'zh' ? '已售罄' : 'Sold Out'}</span>
+                    <button disabled className="w-full bg-gray-200 dark:bg-gray-800 text-gray-400 dark:text-gray-500 py-2 sm:py-2.5 rounded-full text-sm font-bold cursor-not-allowed">
+                        {lang === 'zh' ? '已售罄' : 'Sold Out'}
                     </button>
                 ) : (
-                    <div className="flex gap-2 w-full">
+                    <div className="flex gap-2">
                         <button
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 addItem(product.id, 1);
                             }}
-                            className="flex-[0.4] flex items-center justify-center py-3 px-3 rounded-xl transition-all duration-200 bg-orange-100 dark:bg-orange-500/20 hover:bg-orange-200 dark:hover:bg-orange-500/30 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/30 shadow-sm"
+                            className="flex-[0.35] bg-orange-100 dark:bg-[#FF5000]/20 text-[#FF5000] hover:bg-orange-200 dark:hover:bg-[#FF5000]/30 py-2 sm:py-2.5 rounded-full flex items-center justify-center transition-colors"
                             title={lang === 'zh' ? '加入购物车' : 'Add to cart'}
                         >
-                            <ShoppingCart className="w-5 h-5" />
+                            <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                         <Link
                             href={getLocalizedPath(`/product/${product.id}`, lang)}
-                            className="flex-1 w-full flex items-center justify-center gap-1.5 py-3 px-3 rounded-xl text-base font-black transition-all duration-200 bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] hover:from-[#ff2a2d] hover:to-[#e60000] text-white shadow-[0_6px_16px_rgba(255,42,45,0.25)] hover:shadow-[0_8px_20px_rgba(255,42,45,0.4)] hover:-translate-y-1 active:scale-95 border-b-2 border-[#cc0000] hover:border-b-0 translate-y-0.5 hover:translate-y-1 relative"
+                            className="flex-1 bg-gradient-to-r from-[#FF8C00] to-[#FF5000] hover:from-[#FF9D2E] hover:to-[#FF6B26] text-white py-2 sm:py-2.5 rounded-full flex items-center justify-center text-sm font-bold shadow-md shadow-[#FF5000]/20 transition-all hover:shadow-[#FF5000]/40"
                         >
-                            <span className="tracking-widest">{lang === 'zh' ? '立即抢购' : 'Buy Now'}</span>
+                            {lang === 'zh' ? '立即抢购' : 'Buy Now'}
                         </Link>
                     </div>
-                )
-                }
+                )}
             </div>
         </div>
     );
