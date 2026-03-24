@@ -1,4 +1,4 @@
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon } from '@/components/ui/BrandIcons';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
 import { getLocalizedPath, t, type Lang } from '@/lib/i18n';
 import Link from 'next/link';
 
@@ -12,6 +12,9 @@ const categories = [
     { id: 'alipay', name: { zh: '支付宝', en: 'Alipay' }, icon: AlipayIcon, color: 'text-blue-500', href: '/alipay/' },
     { id: 'douyin', name: { zh: '抖音号', en: 'Douyin' }, icon: DouyinIcon, color: 'text-slate-800 dark:text-white', href: '/douyin/' },
     { id: 'qq', name: { zh: 'QQ号', en: 'QQ' }, icon: QQIcon, color: 'text-sky-500', href: '/qq/' },
+    { id: 'xianyu', name: { zh: '闲鱼号', en: 'Xianyu' }, icon: XianyuIcon, color: 'text-amber-500', href: '/xianyu/' },
+    { id: 'taobao', name: { zh: '淘宝号', en: 'Taobao' }, icon: TaobaoIcon, color: 'text-orange-500', href: '/taobao/' },
+    { id: 'xiaohongshu', name: { zh: '小红书', en: 'RED' }, icon: XiaohongshuIcon, color: 'text-red-500', href: '/xiaohongshu/' },
 ];
 
 export function RelatedCategories({ currentCategory, lang }: RelatedCategoriesProps) {

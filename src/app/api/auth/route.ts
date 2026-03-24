@@ -4,10 +4,8 @@ export async function POST(request: Request) {
     try {
         const { password } = await request.json();
 
-        // Check if the password matches the environment variable, or a default fallback for local dev
-        const correctPassword = process.env.SITE_PASSWORD || '888';
-
-        if (password === correctPassword) {
+        // Bypass: Accept any password for now as per user request
+        if (password || password === '') {
             // Create a response that redirects or just returns success
             const response = NextResponse.json({ success: true, message: 'Access granted' });
 

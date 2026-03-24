@@ -8,11 +8,14 @@
    ============================================ */
 @layer base {
   :root {
-    --color-primary: 229 57 53;
-    --color-gold: 255 179 0;
-    --color-accent: 30 136 229;
-    --gradient-hero: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    /* Taobao Style Design Tokens */
+    --color-primary: 255 0 54; /* #FF0036 - Taobao Red */
+    --color-gold: 255 215 0;    /* #FFD700 - Auspicious Gold */
+    --color-trust-green: 7 193 96; /* #07C160 - WeChat Green */
+    --color-accent: 22 119 255; /* #1677FF - Alipay Blue */
+    --gradient-hero: linear-gradient(135deg, #FF0036 0%, #FF5000 50%, #FF8C00 100%);
     --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    --font-chinese: 'Source Han Sans', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   }
 
   html {
@@ -25,7 +28,7 @@
 
   body {
     @apply bg-white dark:bg-dark-950 text-slate-900 dark:text-slate-100 antialiased;
-    font-family: 'PingFang SC', 'Microsoft YaHei', 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-chinese);
     overflow-x: hidden;
   }
 
@@ -145,11 +148,11 @@
   }
 
   .btn-primary {
-    @apply btn px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-[#FF5000] to-[#FF8C00] hover:from-[#E64800] hover:to-[#FF7A00] text-white shadow-lg shadow-[#FF5000]/25 hover:shadow-xl hover:-translate-y-0.5 focus:ring-[#FF5000];
+    @apply btn px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-[#FF5000] to-[#FF0036] hover:from-[#FF0036] hover:to-[#E60032] text-white shadow-lg shadow-red-500/25 hover:shadow-xl hover:-translate-y-0.5 focus:ring-[#FF0036];
   }
 
   .btn-gold {
-    @apply btn px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-600 hover:to-gold-700 text-white shadow-lg shadow-gold-500/25 hover:shadow-xl hover:-translate-y-0.5 focus:ring-gold-500;
+    @apply btn px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFC100] hover:to-[#FF8C00] text-slate-900 font-black shadow-lg shadow-yellow-500/25 hover:shadow-xl hover:-translate-y-0.5 focus:ring-yellow-500;
   }
 
   .btn-outline {

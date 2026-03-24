@@ -41,6 +41,7 @@ export interface Product {
     popular?: boolean;
     badge?: { zh: string; en: string };
     sortOrder: number;
+    image?: string;
 }
 
 export type OrderStatus =

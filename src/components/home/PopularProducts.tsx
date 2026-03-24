@@ -1,31 +1,48 @@
-import { PricingCard } from '@/components/ui/PricingCard';
+import { MarketplaceProductCard } from '@/components/product/MarketplaceProductCard';
 import { Flame } from 'lucide-react';
 import { allProducts } from '@/data/products';
-import { t, type Lang } from '@/lib/i18n';
+import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
+import { useCartStore } from '@/store/cartStore';
+import { useRouter } from 'next/navigation';
 
 export function PopularProducts({ lang }: { lang: Lang }) {
+    const router = useRouter();
+    const addItem = useCartStore((state) => state.addItem);
+
     // Select top 4 popular products
     const popularProducts = allProducts
         .filter(p => p.popular)
+        .sort((a, b) => b.sortOrder - a.sortOrder)
         .slice(0, 4);
 
     return (
-        <section id="pricing" className="py-16 md:py-20 bg-slate-50 dark:bg-dark-900 border-t border-slate-200 dark:border-slate-800">
+        <section id="pricing" className="py-16 md:py-24 bg-slate-50 dark:bg-dark-950/50 border-t border-slate-200 dark:border-slate-800">
             <div className="section-container">
-                <div className="text-center mb-10 md:mb-12">
-                    <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-2 md:gap-3">
-                        <Flame className="w-8 h-8 md:w-10 md:h-10 text-orange-500 fill-orange-500 drop-shadow-[0_0_8px_rgba(249,115,22,0.6)] animate-pulse" />
+                <div className="text-center mb-10 md:mb-16">
+                    <h2 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-2 md:gap-3 font-['PingFang_SC','System-ui',sans-serif]">
+                        <Flame className="w-8 h-8 md:w-12 h-12 text-[#ff5000] fill-[#ff5000] drop-shadow-[0_0_12px_rgba(255,80,0,0.4)] animate-pulse" />
                         {t('home.popular.title', lang)}
-                        <Flame className="w-8 h-8 md:w-10 md:h-10 text-orange-500 fill-orange-500 drop-shadow-[0_0_8px_rgba(249,115,22,0.6)] animate-pulse scale-x-[-1]" />
+                        <Flame className="w-8 h-8 md:w-12 h-12 text-[#ff5000] fill-[#ff5000] drop-shadow-[0_0_12px_rgba(255,80,0,0.4)] animate-pulse scale-x-[-1]" />
                     </h2>
-                    <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                    <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto leading-[1.8]">
                         {t('home.popular.subtitle', lang)}
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:px-2">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:px-2">
                     {popularProducts.map((product) => (
-                        <PricingCard key={product.id} product={product} lang={lang} />
+                        <MarketplaceProductCard 
+                            key={product.id} 
+                            title={product.tierName[lang]}
+                            price={product.price.single}
+                            originalPrice={product.price.originalPrice?.single}
+                            stock={product.stockCount}
+                            category={product.category}
+                            onBuyNow={() => {
+                                addItem(product.id, 1);
+                                router.push(getLocalizedPath('/checkout', lang));
+                            }}
+                        />
                     ))}
                 </div>
             </div>

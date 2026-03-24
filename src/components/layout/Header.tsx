@@ -17,9 +17,9 @@ const categoryIcons: Record<string, React.ReactNode> = {
     alipay: <Image src="/images/categories/alipay.webp" alt="Alipay" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
     douyin: <Image src="/images/categories/douyin.webp" alt="Douyin" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
     qq: <Image src="/images/categories/qq.webp" alt="QQ" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
-    xianyu: <Image src="/images/categories/xianyu.png" alt="Xianyu" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
-    taobao: <Image src="/images/categories/taobao.png" alt="Taobao" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
-    xiaohongshu: <Image src="/images/categories/xiaohongshu.png" alt="Xiaohongshu" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
+    xianyu: <Image src="/images/categories/xianyu.webp" alt="Xianyu" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
+    taobao: <Image src="/images/categories/taobao.webp" alt="Taobao" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
+    xiaohongshu: <Image src="/images/categories/xiaohongshu.webp" alt="Xiaohongshu" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
 };
 
 export default function Header() {

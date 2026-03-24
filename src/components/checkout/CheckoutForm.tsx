@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { PaymentDisplay } from './PaymentDisplay';
+import { AlipayPaymentModal } from './AlipayPaymentModal';
 import { getProductById } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { formatUsdt } from '@/lib/utils';
@@ -295,6 +295,15 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                 ))}
             </div>
 
+            {/* Step 2 & 3: Payment Confirmation Modal */}
+            <AlipayPaymentModal 
+                isOpen={step === 2}
+                onClose={() => setStep(1)}
+                amount={totalPrice}
+                orderId={orderId}
+                onSuccess={() => handlePaymentConfirm("MANUAL_CONFIRM_VIA_ALIPAY_MODAL")}
+            />
+
             <div className="glass-card p-6 md:p-10 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 relative overflow-hidden">
                 {/* Background decorative blob */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/5 blur-3xl rounded-full pointer-events-none -z-10"></div>
@@ -434,28 +443,6 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                         </div>
 
                     </div>
-                )}
-
-                {/* Step 2: Payment */}
-                {step === 2 && (
-                    <PaymentDisplay
-                        amount={totalPrice}
-                        orderId={orderId}
-                        lang={lang}
-                        orderDetails={{
-                            id: orderId,
-                            email: contactInfo.email || contactInfo.telegram || 'Anonymous',
-                            telegram: contactInfo.telegram,
-                            cryptoType: "USDT",
-                            totalAmount: totalPrice,
-                            items: items.map(i => ({
-                                productId: i.productId,
-                                quantity: i.quantity,
-                                priceAtTime: 0 // Could compute real price here or backend
-                            }))
-                        }}
-                        onConfirm={handlePaymentConfirm}
-                    />
                 )}
 
                 {/* Step 3: Success */}

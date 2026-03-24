@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Eye, EyeOff, Check, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
 
+import { ChineseLoader } from '@/components/ui/ChineseLoader';
+
 export default function GatePage() {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -15,35 +17,41 @@ export default function GatePage() {
 
     const handleSubmit = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
-        if (!password.trim()) return;
-
+        // Any password or even empty will work now as requested
+        
         setLoading(true);
         setError(false);
 
         try {
+            // We still call the API to set the cookie, but the API is now permissive
             const res = await fetch('/api/auth', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ password }),
+                body: JSON.stringify({ password: password || 'bypass' }),
             });
 
             const data = await res.json();
 
             if (data.success) {
-                setIsSuccess(true);
-                // Fast redirect after showing the cool animation
+                // Show the cool Chinese loading animation first
                 setTimeout(() => {
-                    window.location.href = '/';
-                }, 1000);
+                    setLoading(false);
+                    setIsSuccess(true);
+                    
+                    // Final redirect after showing the success state
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1500);
+                }, 1200); // Give the Chinese loader some time to shine
             } else {
                 setError(true);
                 setPassword('');
+                setLoading(false);
             }
         } catch (err) {
             setError(true);
-        } finally {
             setLoading(false);
         }
     };
@@ -66,17 +74,14 @@ export default function GatePage() {
                     className="object-cover opacity-80"
                     priority
                 />
-                {/* Subtle blue/grey tint overlay to match the screenshot vibe */}
                 <div className="absolute inset-0 bg-slate-800/20 backdrop-blur-[2px]"></div>
-
-                {/* Vignette effect */}
                 <div className="absolute inset-0 shadow-[inset_0_0_150px_rgba(0,0,0,0.5)] z-10"></div>
             </div>
 
             {/* Centered Login Box */}
             <div className="relative z-20 w-full max-w-sm px-4">
                 <div
-                    className={`relative flex items-center bg-white/90 backdrop-blur-md rounded-full shadow-2xl overflow-hidden transition-all duration-300 border ${error ? 'border-red-400 max-w-sm mx-auto animate-shake' : 'border-white/20'
+                    className={`relative flex items-center bg-white/95 backdrop-blur-md rounded-full shadow-2xl overflow-hidden transition-all duration-300 border ${error ? 'border-red-400 max-w-sm mx-auto animate-shake' : 'border-emerald-400/30'
                         }`}
                 >
                     <input
@@ -87,42 +92,35 @@ export default function GatePage() {
                             setError(false);
                         }}
                         onKeyDown={handleKeyDown}
-                        placeholder={error ? "密码错误, 请重试" : "输入访问密码"}
+                        placeholder={error ? "密码错误, 请重试" : "系统已解锁, 点击进入"}
                         disabled={loading}
-                        className={`w-full bg-transparent border-none py-3.5 pl-6 pr-12 text-sm md:text-base outline-none disabled:opacity-50 transition-colors ${error ? 'text-red-500 placeholder:text-red-400/70' : 'text-slate-800 placeholder:text-emerald-600/60'
-                            } font-medium tracking-widest`}
+                        className={`w-full bg-transparent border-none py-4 pl-6 pr-12 text-base md:text-lg outline-none disabled:opacity-50 transition-colors ${error ? 'text-red-500 placeholder:text-red-400/70' : 'text-slate-800 placeholder:text-emerald-600/60'
+                            } font-bold tracking-widest`}
                     />
-
-                    {/* Toggle Visibility */}
-                    <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute right-14 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-700 transition-colors rounded-full"
-                    >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
 
                     {/* Submit Button */}
                     <button
                         type="button"
                         onClick={() => handleSubmit()}
-                        disabled={loading || !password.trim()}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-slate-900 hover:bg-black text-white rounded-full transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-lg"
+                        disabled={loading}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-emerald-600 hover:bg-emerald-500 text-white rounded-full transition-all shadow-lg active:scale-90"
                     >
-                        <Check className="w-4 h-4" />
+                        <Check className="w-5 h-5 stroke-[3px]" />
                     </button>
 
-                    {/* Ripple Loading Effect */}
+                    {/* Chinese Loading Overlay */}
                     {loading && (
-                        <div className="absolute inset-0 bg-white/50 backdrop-blur-sm flex items-center justify-center">
-                            <div className="w-5 h-5 border-2 border-slate-800 border-t-transparent rounded-full animate-spin"></div>
+                        <div className="absolute inset-0 bg-white/60 backdrop-blur-md flex items-center justify-center transition-all duration-500">
+                           <div className="scale-50">
+                               <ChineseLoader />
+                           </div>
                         </div>
                     )}
                 </div>
 
                 {/* Telegram Hint */}
-                <div className="text-center mt-6 text-white/40 text-xs font-medium tracking-wide">
-                    关注 <a href="https://t.me/cnwepro" target="_blank" rel="noopener noreferrer" className="text-white/60 hover:text-white/80 underline underline-offset-2 transition-colors">@cnwepro</a> 获取访问密码
+                <div className="text-center mt-6 text-white/50 text-xs font-bold tracking-widest uppercase">
+                    PROUDLY POWERED BY <span className="text-emerald-400">CNWEPRO</span>
                 </div>
 
                 <style jsx>{`
@@ -142,23 +140,26 @@ export default function GatePage() {
                     .animate-bounce-short {
                         animation: bounce-short 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
                     }
+                    @keyframes fade-in {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                    .animate-fade-in {
+                        animation: fade-in 0.5s ease-out forwards;
+                    }
                 `}</style>
             </div>
 
             {/* Cool Success Overlay */}
             {isSuccess && (
-                <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-900/95 backdrop-blur-xl animate-fade-in text-white">
-                    <div className="w-24 h-24 bg-gradient-to-tr from-emerald-400 to-emerald-600 rounded-3xl flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(16,185,129,0.5)] animate-bounce-short">
-                        <ShieldCheck className="w-12 h-12 text-white" />
-                    </div>
-                    <div className="text-3xl font-black tracking-widest animate-fade-in-up">授权成功</div>
-                    <div className="text-sm opacity-60 mt-3 font-mono animate-pulse tracking-widest">
-                        ESTABLISHING SECURE CONNECTION...
+                <div className="absolute inset-0 z-[110] flex flex-col items-center justify-center bg-slate-900/95 backdrop-blur-2xl animate-fade-in text-white">
+                    <div className="mb-12">
+                         <ChineseLoader />
                     </div>
                     
-                    {/* Fast Progress Bar */}
-                    <div className="w-48 h-1 bg-slate-800 rounded-full mt-6 overflow-hidden">
-                        <div className="h-full bg-emerald-500 rounded-full w-full animate-[slide-right_0.8s_ease-out_forwards]"></div>
+                    <div className="text-3xl font-black tracking-[0.5em] text-emerald-400 uppercase animate-pulse">授权成功</div>
+                    <div className="text-[10px] opacity-40 mt-4 font-mono tracking-[0.3em]">
+                        DATA DECRYPTION COMPLETE · REDIRECTING...
                     </div>
                 </div>
             )}

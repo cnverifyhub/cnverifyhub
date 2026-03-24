@@ -6,6 +6,7 @@ import { t, type Lang } from '@/lib/i18n';
 import { Search, Package, Clock, CheckCircle, ShieldCheck, AlertCircle, ExternalLink, Loader2, Check } from 'lucide-react';
 import { useOrderStore, type Order } from '@/store/orderStore';
 import { getProductById } from '@/data/products';
+import { OrderTimeline } from '@/components/track/OrderTimeline';
 
 const statusConfig: Record<string, { color: string; icon: any; labelZh: string; labelEn: string }> = {
     pending: { color: 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20', icon: Clock, labelZh: '待付款', labelEn: 'Pending Payment' },
@@ -193,85 +194,15 @@ function TrackContent({ lang }: { lang: Lang }) {
                         </div>
                     )}
 
-                    {/* Status Message (Taobao Style Logistics Timeline) */}
-                    <div className="bg-white dark:bg-[#1c1c1e] rounded-2xl p-6 border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden">
-                        <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#FF5000] to-orange-400"></div>
-                        <h3 className="font-bold text-gray-900 dark:text-white mb-6">
-                            {lang === 'zh' ? '订单物流追踪' : 'Order Logistics Tracking'}
+                    {/* Status Message (Order Timeline) */}
+                    <div className="bg-white dark:bg-[#1c1c1e] rounded-3xl p-6 sm:p-8 border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500"></div>
+                        <h3 className="font-extrabold text-xl text-gray-900 dark:text-white mb-8 flex items-center gap-2">
+                            <Package className="w-5 h-5 text-red-500" />
+                            {lang === 'zh' ? '订单实时追踪' : 'Order Live Tracking'}
                         </h3>
                         
-                        <div className="relative pl-6 space-y-8 before:absolute before:inset-0 before:ml-[11px] before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-300 dark:before:via-slate-700 before:to-transparent">
-                            {/* Step 1: Order Placed */}
-                            <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                                <div className="flex items-center justify-center w-6 h-6 rounded-full border-4 border-white dark:border-dark-900 bg-[#FF5000] shadow absolute left-0 -translate-x-1/2 md:translate-x-0 md:mx-auto">
-                                    <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
-                                </div>
-                                <div className="w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] p-4 rounded-xl bg-orange-50 dark:bg-[#FF5000]/10 border border-orange-100 dark:border-orange-500/20">
-                                    <div className="flex items-center justify-between">
-                                        <h4 className="font-bold text-[#FF5000]">
-                                            {lang === 'zh' ? '订单已揽件 (下单成功)' : 'Order Placed'}
-                                        </h4>
-                                        <time className="text-xs text-orange-500 dark:text-orange-400">{new Date(result.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</time>
-                                    </div>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                                        {lang === 'zh' ? '系统已接单，等待支付验证' : 'System received the order, awaiting payment validation'}
-                                    </p>
-                                </div>
-                            </div>
-                            
-                            {/* Step 2: Payment Validating */}
-                            <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                                <div className={`flex items-center justify-center w-6 h-6 rounded-full border-4 border-white dark:border-dark-900 absolute left-0 -translate-x-1/2 md:translate-x-0 md:mx-auto transition-colors ${result.txVerified || result.status === 'paid' || result.status === 'completed' ? 'bg-[#FF5000] shadow' : 'bg-gray-300 dark:bg-gray-700'}`}>
-                                    {(!result.txVerified && result.status === 'pending') && <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping"></div>}
-                                </div>
-                                <div className={`w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] p-4 rounded-xl transition-colors ${result.txVerified || result.status === 'paid' || result.status === 'completed' ? 'bg-orange-50 dark:bg-[#FF5000]/10 border border-orange-100 dark:border-orange-500/20' : 'bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800'}`}>
-                                    <div className="flex items-center justify-between">
-                                        <h4 className={`font-bold ${result.txVerified || result.status === 'paid' || result.status === 'completed' ? 'text-[#FF5000]' : 'text-gray-500 dark:text-gray-400'}`}>
-                                            {lang === 'zh' ? '运输中 (支付验证)' : 'Payment Validating'}
-                                        </h4>
-                                    </div>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                                        {lang === 'zh' ? '区块链USDT交易确认中' : 'Blockchain USDT transaction confirming'}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Step 3: Account Preparing */}
-                            <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                                <div className={`flex items-center justify-center w-6 h-6 rounded-full border-4 border-white dark:border-dark-900 absolute left-0 -translate-x-1/2 md:translate-x-0 md:mx-auto transition-colors ${result.status === 'paid' || result.status === 'completed' ? 'bg-[#FF5000] shadow' : 'bg-gray-300 dark:bg-gray-700'}`}>
-                                    {result.status === 'paid' && <div className="w-1.5 h-1.5 bg-white rounded-full animate-ping"></div>}
-                                </div>
-                                <div className={`w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] p-4 rounded-xl transition-colors ${result.status === 'paid' || result.status === 'completed' ? 'bg-orange-50 dark:bg-[#FF5000]/10 border border-orange-100 dark:border-orange-500/20' : 'bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800'}`}>
-                                    <div className="flex items-center justify-between">
-                                        <h4 className={`font-bold ${result.status === 'paid' || result.status === 'completed' ? 'text-[#FF5000]' : 'text-gray-500 dark:text-gray-400'}`}>
-                                            {lang === 'zh' ? '派送中 (提取账号)' : 'Account Preparing'}
-                                        </h4>
-                                    </div>
-                                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                                        {lang === 'zh' ? '系统正在从库存提取账号密码' : 'System is extracting credentials from inventory'}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Step 4: Completed & Warranty Active */}
-                            <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                                <div className={`flex items-center justify-center w-8 h-8 rounded-full border-4 border-white dark:border-dark-900 absolute left-[-4px] -translate-x-1/2 md:translate-x-0 md:mx-auto z-10 transition-colors duration-500 ${result.status === 'completed' ? 'bg-green-500 shadow-[0_0_15px_rgba(34,197,94,0.5)]' : 'bg-gray-300 dark:bg-gray-700 w-6 h-6 left-0'}`}>
-                                    {result.status === 'completed' && <Check className="w-4 h-4 text-white" strokeWidth={3} />}
-                                </div>
-                                <div className={`w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] p-4 rounded-xl transition-all duration-500 ${result.status === 'completed' ? 'bg-green-50 dark:bg-green-500/10 border border-green-200 dark:border-green-500/30 ring-2 ring-green-500/20' : 'bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800'}`}>
-                                    <div className="flex items-center justify-between">
-                                        <h4 className={`font-bold ${result.status === 'completed' ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
-                                            {lang === 'zh' ? '已签收 (72H质保生效)' : 'Completed & Warranty Active'}
-                                        </h4>
-                                    </div>
-                                    <p className={`text-xs mt-1 ${result.status === 'completed' ? 'text-green-700 dark:text-green-300' : 'text-gray-600 dark:text-gray-400'}`}>
-                                        {result.status === 'completed'
-                                            ? (lang === 'zh' ? '账号已通过Telegram发送，防封守则生效中。' : 'Account sent via Telegram. Anti-ban rules active.')
-                                            : (lang === 'zh' ? '等待交付完成' : 'Waiting for final delivery')}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        <OrderTimeline order={result} lang={lang} />
                     </div>
                 </div>
             )}

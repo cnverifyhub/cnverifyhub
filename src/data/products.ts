@@ -220,6 +220,7 @@ const wechatProducts: Product[] = [
         deliveryTime: { zh: '4-8小时', en: '4-8 hours' },
         stockCount: 10,
         sortOrder: 9,
+        image: "/images/common/premium-account.png",
     },
     {
         id: 'wechat-enterprise',

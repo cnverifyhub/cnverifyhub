@@ -5,65 +5,59 @@ interface BrandIconProps {
     className?: string;
 }
 
-const ICON_URLS = {
-    wechat: 'https://play-lh.googleusercontent.com/QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ',
-    alipay: 'https://play-lh.googleusercontent.com/quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY',
-    douyin: 'https://play-lh.googleusercontent.com/xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw=w600-h300-pc0xffffff-pd',
-    qq: 'https://play-lh.googleusercontent.com/2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0'
+/* Local premium 3D-rendered icons stored in /public/images/categories/ */
+const ICON_PATHS: Record<string, string> = {
+    wechat: '/images/categories/wechat.webp',
+    alipay: '/images/categories/alipay.webp',
+    douyin: '/images/categories/douyin.webp',
+    qq: '/images/categories/qq.webp',
+    xianyu: '/images/categories/xianyu.webp',
+    taobao: '/images/categories/taobao.webp',
+    xiaohongshu: '/images/categories/xiaohongshu.webp',
 };
 
-export function WeChatIcon({ className }: BrandIconProps) {
+function BrandIcon({ name, className }: { name: string; className?: string }) {
     return (
-        <div className={`relative overflow-hidden ${className}`}>
-            <Image 
-                src={ICON_URLS.wechat} 
-                alt="WeChat" 
-                fill 
-                className="object-contain"
-                sizes="(max-width: 768px) 100vw, 50vw"
+        <div className={`relative overflow-hidden rounded-[22%] aspect-square shadow-[0_4px_10px_rgba(0,0,0,0.1),inset_0_0_0_1px_rgba(255,255,255,0.2)] dark:shadow-[0_4px_12px_rgba(0,0,0,0.3),inset_0_0_0_1px_rgba(255,255,255,0.05)] bg-slate-100 dark:bg-slate-800 transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-0.5 ${className}`}>
+            <Image
+                src={ICON_PATHS[name] || ICON_PATHS.wechat}
+                alt={name}
+                fill
+                className="object-cover p-[2%]"
+                sizes="128px"
+                unoptimized
             />
+            {/* Glossy overlay */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 pointer-events-none" />
         </div>
     );
+}
+
+export function WeChatIcon({ className }: BrandIconProps) {
+    return <BrandIcon name="wechat" className={className} />;
 }
 
 export function AlipayIcon({ className }: BrandIconProps) {
-    return (
-        <div className={`relative overflow-hidden ${className}`}>
-            <Image 
-                src={ICON_URLS.alipay} 
-                alt="Alipay" 
-                fill 
-                className="object-contain"
-                sizes="(max-width: 768px) 100vw, 50vw"
-            />
-        </div>
-    );
+    return <BrandIcon name="alipay" className={className} />;
 }
 
 export function DouyinIcon({ className }: BrandIconProps) {
-    return (
-        <div className={`relative overflow-hidden ${className}`}>
-            <Image 
-                src={ICON_URLS.douyin} 
-                alt="Douyin" 
-                fill 
-                className="object-contain"
-                sizes="(max-width: 768px) 100vw, 50vw"
-            />
-        </div>
-    );
+    return <BrandIcon name="douyin" className={className} />;
 }
 
 export function QQIcon({ className }: BrandIconProps) {
-    return (
-        <div className={`relative overflow-hidden ${className}`}>
-            <Image 
-                src={ICON_URLS.qq} 
-                alt="QQ" 
-                fill 
-                className="object-contain"
-                sizes="(max-width: 768px) 100vw, 50vw"
-            />
-        </div>
-    );
+    return <BrandIcon name="qq" className={className} />;
 }
+
+export function XianyuIcon({ className }: BrandIconProps) {
+    return <BrandIcon name="xianyu" className={className} />;
+}
+
+export function TaobaoIcon({ className }: BrandIconProps) {
+    return <BrandIcon name="taobao" className={className} />;
+}
+
+export function XiaohongshuIcon({ className }: BrandIconProps) {
+    return <BrandIcon name="xiaohongshu" className={className} />;
+}
+

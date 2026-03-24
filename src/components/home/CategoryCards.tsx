@@ -11,9 +11,9 @@ const iconMap: Record<string, { icon: React.ReactNode, bgClass: string }> = {
     alipay: { icon: <Image src="/images/categories/alipay.webp" alt="Alipay" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
     douyin: { icon: <Image src="/images/categories/douyin.webp" alt="Douyin" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
     qq: { icon: <Image src="/images/categories/qq.webp" alt="QQ" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
-    xianyu: { icon: <Image src="/images/categories/xianyu.png" alt="Xianyu" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
-    taobao: { icon: <Image src="/images/categories/taobao.png" alt="Taobao" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
-    xiaohongshu: { icon: <Image src="/images/categories/xiaohongshu.png" alt="Xiaohongshu" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
+    xianyu: { icon: <Image src="/images/categories/xianyu.webp" alt="Xianyu" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
+    taobao: { icon: <Image src="/images/categories/taobao.webp" alt="Taobao" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
+    xiaohongshu: { icon: <Image src="/images/categories/xiaohongshu.webp" alt="Xiaohongshu" width={200} height={200} priority className="w-full h-full object-cover" />, bgClass: 'bg-white border border-slate-200 shadow-md' },
 };
 
 export function CategoryCards({ lang }: { lang: Lang }) {

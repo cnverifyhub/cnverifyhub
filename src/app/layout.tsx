@@ -7,6 +7,7 @@ import Footer from '@/components/layout/Footer';
 import MobileNav from '@/components/layout/MobileNav';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { GsapAnimations } from '@/components/ui/GsapAnimations';
+import { FloatingServiceButton } from '@/components/ui/FloatingServiceButton';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -261,6 +262,7 @@ export default function RootLayout({
                 <Footer />
                 <MobileNav />
                 <GsapAnimations />
+                <FloatingServiceButton />
             </body>
         </html>
     );

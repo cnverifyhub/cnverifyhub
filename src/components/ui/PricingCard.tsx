@@ -57,10 +57,12 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                 )}
                 
                 <div className="absolute inset-0 flex items-center justify-center p-6">
-                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-tr from-white to-gray-50 dark:from-gray-700 dark:to-gray-600 shadow-sm flex items-center justify-center border border-gray-100 dark:border-gray-700">
-                         <span className="text-3xl sm:text-4xl font-black bg-clip-text text-transparent bg-gradient-to-br from-[#FF5000] to-orange-400">
-                             {product.category.toUpperCase().slice(0, 1)}
-                         </span>
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-[1.5rem] overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 bg-white">
+                        <img 
+                            src={`/images/categories/${product.category}.webp`}
+                            alt={product.tierName[lang]}
+                            className="w-full h-full object-cover"
+                        />
                     </div>
                 </div>
 

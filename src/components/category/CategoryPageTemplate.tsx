@@ -5,29 +5,38 @@ import { FAQAccordion } from '@/components/ui/FAQAccordion';
 import { faqData } from '@/data/faq';
 import { t, type Lang } from '@/lib/i18n';
 import type { CategoryId } from '@/types';
-import { Shield, ShieldCheck, CheckCircle2, Zap, Clock, Info, MessageCircle, Wallet, Music, Tv2 } from 'lucide-react';
+import { Shield, ShieldCheck, CheckCircle2, Zap, Clock, Info, MessageCircle, Wallet, Music, Tv2, ShoppingBag, Store, Heart, Camera } from 'lucide-react';
 import { MobileStickyBuyBar } from '@/components/layout/MobileStickyBuyBar';
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon } from '@/components/ui/BrandIcons';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
 
 const iconMap: Record<string, React.ElementType> = {
     wechat: WeChatIcon,
     alipay: AlipayIcon,
     douyin: DouyinIcon,
-    qq: QQIcon
+    qq: QQIcon,
+    xianyu: XianyuIcon,
+    taobao: TaobaoIcon,
+    xiaohongshu: XiaohongshuIcon
 };
 
 const iconColors: Record<string, string> = {
     wechat: "text-emerald-500",
     alipay: "text-blue-500",
     douyin: "text-slate-800 dark:text-white",
-    qq: "text-sky-500"
+    qq: "text-sky-500",
+    xianyu: "text-amber-500",
+    taobao: "text-orange-500",
+    xiaohongshu: "text-red-500"
 };
 
 const watermarkMap: Record<string, React.ElementType> = {
     wechat: MessageCircle,
     alipay: Wallet,
     douyin: Music,
-    qq: Tv2
+    qq: Tv2,
+    xianyu: ShoppingBag,
+    taobao: Store,
+    xiaohongshu: Camera
 };
 
 interface CategoryPageTemplateProps {

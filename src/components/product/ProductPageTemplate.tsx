@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { getProductById, getCategoryById } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
@@ -13,20 +14,26 @@ import {
 import { StockBadge } from '../ui/StockBadge';
 import { SlashPriceModal } from '../ui/SlashPriceModal';
 import { useCartStore } from '@/store/cartStore';
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon } from '@/components/ui/BrandIcons';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
 
 const iconMap: Record<string, React.ElementType> = {
     wechat: WeChatIcon,
     alipay: AlipayIcon,
     douyin: DouyinIcon,
-    qq: QQIcon
+    qq: QQIcon,
+    xianyu: XianyuIcon,
+    taobao: TaobaoIcon,
+    xiaohongshu: XiaohongshuIcon,
 };
 
 const iconColors: Record<string, string> = {
     wechat: "text-emerald-500",
     alipay: "text-blue-500",
     douyin: "text-slate-800 dark:text-white",
-    qq: "text-sky-500"
+    qq: "text-sky-500",
+    xianyu: "text-amber-500",
+    taobao: "text-orange-500",
+    xiaohongshu: "text-red-500",
 };
 
 interface ProductPageTemplateProps {
@@ -183,47 +190,69 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                     {/* Left content: Images & Details */}
                     <div className="lg:col-span-7 space-y-6">
 
-                        {/* Main Product Card */}
-                        <div className="bg-white dark:bg-dark-900 rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden">
-                            {/* Slanted Image Watermark Background */}
-                            <div className="absolute top-0 right-0 bottom-0 w-[55%] pointer-events-none z-0 overflow-hidden rounded-r-3xl">
-                                <div className={`absolute inset-0 bg-gradient-to-r ${category?.gradient} opacity-[0.06] dark:opacity-[0.12] skew-x-[-12deg] origin-top translate-x-8`}></div>
-                                <div className="absolute -right-8 top-1/2 -translate-y-1/2 w-[220px] h-[220px] opacity-[0.08] dark:opacity-[0.2] mix-blend-multiply dark:mix-blend-screen pointer-events-none z-10 rotate-12 transition-transform duration-1000 saturate-0">
-                                    {(() => {
-                                        const BrandIcon = (category && iconMap[category.id]) || MessageCircle;
-                                        return <BrandIcon className="w-full h-full" />;
-                                    })()}
-                                </div>
-                            </div>
-
-                            <div className="relative z-10 flex gap-4 items-start mb-6">
-                                {/* Clean Native Logo Container */}
-                                <div className={`w-16 h-16 md:w-20 md:h-20 shrink-0 bg-white dark:bg-dark-800 rounded-2xl shadow-[0_4px_20px_rgb(0,0,0,0.08)] border border-slate-100 dark:border-slate-800 overflow-hidden flex items-center justify-center p-4 ${category ? iconColors[category.id] : ''}`}>
-                                    {(() => {
-                                        const BrandIcon = (category && iconMap[category.id]) || MessageCircle;
-                                        return <BrandIcon className="w-full h-full" />;
-                                    })()}
-                                </div>
-                                <div className="flex-1">
-                                    <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white leading-tight mb-2">
-                                        {product.tierName[lang]}
-                                    </h1>
-                                    <p className="text-slate-600 dark:text-slate-400 text-sm md:text-base">
+                        {/* Main Product Visual Block (Taobao High-Conversion Style) */}
+                        <div className="bg-white dark:bg-dark-900 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 relative overflow-hidden flex flex-col md:flex-row min-h-[300px]">
+                            
+                            {/* Left: Product Info / Logo */}
+                            <div className="flex-1 p-6 md:p-8 z-10 flex flex-col justify-center">
+                                <Link 
+                                    href={getLocalizedPath(`/${product.category}`, lang)}
+                                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest mb-4 border ${category ? iconColors[category.id].replace('text-', 'border-').replace('500', '500/30 font-bold bg-white/50 dark:bg-black/20') : ''}`}
+                                >
+                                    <ShieldCheck className="w-3 h-3" />
+                                    {category?.name[lang]} {lang === 'zh' ? '认证自营' : 'Verified'}
+                                </Link>
+                                
+                                <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white leading-tight mb-4">
+                                    {product.tierName[lang]}
+                                    <span className="block text-sm md:text-base font-medium text-slate-500 mt-2">
                                         {product.description[lang]}
-                                    </p>
+                                    </span>
+                                </h1>
+
+                                <div className="flex flex-wrap items-center gap-2 mt-auto">
+                                    <div className={`p-2 rounded-xl bg-white dark:bg-dark-800 shadow-sm border border-slate-100 dark:border-slate-800 ${category ? iconColors[category.id] : ''}`}>
+                                        {(() => {
+                                            const BrandIcon = (category && iconMap[category.id]) || MessageCircle;
+                                            return <BrandIcon className="w-8 h-8 md:w-10 md:h-10" />;
+                                        })()}
+                                    </div>
+                                    <div className="h-10 w-px bg-slate-200 dark:bg-slate-800 mx-2 hidden sm:block"></div>
+                                    <div className="flex flex-col text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                                        <span>Official CNWePro</span>
+                                        <span className="text-red-500">Premium Digital Good</span>
+                                    </div>
                                 </div>
                             </div>
 
+                            {/* Right: High-Resolution 3D Illustration / Custom Image */}
+                            <div className="w-full md:w-[45%] lg:w-[40%] h-[200px] md:h-auto relative overflow-hidden bg-slate-50 dark:bg-slate-800/20 group">
+                                <Image
+                                    src={product.image || "/images/common/premium-account.png"}
+                                    alt={product.tierName[lang]}
+                                    fill
+                                    className="object-cover md:object-contain p-4 group-hover:scale-105 transition-transform duration-700"
+                                    unoptimized
+                                />
+                                {/* Glossy Reflection */}
+                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 pointer-events-none" />
+                                {/* Bottom Shadow for 3D depth */}
+                                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white dark:from-dark-900 to-transparent md:hidden" />
+                            </div>
+                        </div>
+
+                        {/* Additional Product Info Card */}
+                        <div className="bg-white dark:bg-dark-900 rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200 dark:border-slate-800">
                             {/* Flash Sale Banner */}
                             {product.popular && !isOutOfStock && (
-                                <div className="mb-6 bg-gradient-to-r from-red-600 to-orange-500 rounded-xl p-3 md:p-4 flex items-center justify-between text-white shadow-md shadow-red-500/20">
-                                    <div className="flex items-center gap-2 font-bold text-sm md:text-base">
+                                <div className="mb-6 bg-gradient-to-r from-red-600 to-orange-500 rounded-xl p-3 md:p-4 flex items-center justify-between text-white shadow-md shadow-red-500/20 text-[12px]">
+                                    <div className="flex items-center gap-2 font-bold">
                                         <Zap className="w-5 h-5 fill-current animate-pulse" />
-                                        {lang === 'zh' ? '限时疯抢 · 历史最低价' : 'Flash Sale · Lowest Price'}
+                                        {lang === 'zh' ? '开启限时抢购' : 'Flash Sale Active'}
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <span className="text-xs md:text-sm font-medium opacity-90">{lang === 'zh' ? '距结束仅剩' : 'Ends in'}</span>
-                                        <div className="font-mono text-sm md:text-base font-bold bg-white/20 px-2 py-0.5 rounded backdrop-blur-sm tracking-wider">
+                                        <span className="font-medium opacity-90">{lang === 'zh' ? '距结束' : 'Ends in'}</span>
+                                        <div className="font-mono font-bold bg-white/20 px-2 py-0.5 rounded backdrop-blur-sm">
                                             {formatTime(timeLeft)}
                                         </div>
                                     </div>
@@ -242,7 +271,6 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                                 ))}
                             </div>
 
-                            {/* Meta Info */}
                             <div className="flex flex-wrap items-center gap-4 py-4 border-t border-slate-100 dark:border-slate-800">
                                 <div className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400">
                                     <ShieldCheck className="w-4 h-4 text-emerald-500" />

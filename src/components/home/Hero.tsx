@@ -183,28 +183,29 @@ function FloatingCoupon({ lang }: { lang: Lang }) {
 
     return (
         <div className="fixed right-2 sm:right-3 top-1/3 sm:top-1/3 z-40 animate-bounce-slow scale-75 origin-right sm:scale-100">
-            <div className="relative bg-gradient-to-b from-[#ff4d4f] to-[#cc0000] text-white rounded-2xl p-4 pb-5 shadow-2xl shadow-red-500/30 w-[72px] cursor-pointer group sm:hover:scale-105 transition-transform"
+            <div className="relative bg-gradient-to-b from-[#ff4d4f] to-[#FF0036] text-white rounded-2xl p-4 pb-5 shadow-[0_20px_40px_-10px_rgba(255,0,54,0.4)] w-[76px] cursor-pointer group sm:hover:scale-110 transition-transform active:scale-95"
                 onClick={() => window.location.href = '#pricing'}>
                 <button
                     onClick={(e) => { e.stopPropagation(); setDismissed(true); }}
-                    className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-white/90 text-slate-600 flex items-center justify-center text-[10px] shadow hover:bg-white"
+                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white text-[#FF0036] flex items-center justify-center text-[10px] shadow-xl hover:bg-[#FF0036] hover:text-white transition-colors border-2 border-[#FF0036]/10"
                 >
                     <X className="w-3 h-3" />
                 </button>
-                <Gift className="w-7 h-7 mx-auto mb-1.5 drop-shadow" />
-                <p className="text-center text-[10px] font-black leading-tight">
-                    {lang === 'zh' ? '新人福利' : 'NEW USER'}
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] opacity-10 pointer-events-none"></div>
+                <Gift className="w-8 h-8 mx-auto mb-2 drop-shadow-lg text-yellow-300" />
+                <p className="text-center text-[10px] font-black leading-tight uppercase tracking-tighter">
+                    {lang === 'zh' ? '新人红包' : 'NEW GIFT'}
                 </p>
-                <div className="bg-yellow-400 text-red-700 rounded-lg py-1 mt-1.5 text-center">
-                    <span className="text-base font-black">15U</span>
+                <div className="bg-gradient-to-b from-yellow-300 to-yellow-500 text-red-700 rounded-xl py-1.5 mt-2 text-center shadow-inner border border-yellow-200/50">
+                    <span className="text-lg font-black tracking-tighter">15U</span>
                 </div>
-                <p className="text-center text-[8px] mt-1 opacity-80 font-bold">
-                    {lang === 'zh' ? '点击领取' : 'CLAIM'}
+                <p className="text-center text-[9px] mt-2 opacity-90 font-black animate-pulse">
+                    {lang === 'zh' ? '立即抢' : 'GRAB IT'}
                 </p>
                 {/* Scalloped edge */}
-                <div className="absolute bottom-0 left-0 right-0 h-3 flex justify-between px-1 overflow-hidden translate-y-1.5">
-                    {[...Array(7)].map((_, i) => (
-                        <div key={i} className="w-2.5 h-2.5 rounded-full bg-white dark:bg-dark-950 -mb-1.5" />
+                <div className="absolute bottom-0 left-0 right-0 h-3 flex justify-between px-1.5 overflow-hidden translate-y-1.5">
+                    {[...Array(6)].map((_, i) => (
+                        <div key={i} className="w-3 h-3 rounded-full bg-white dark:bg-dark-950 -mb-2 shadow-inner" />
                     ))}
                 </div>
             </div>
@@ -241,10 +242,13 @@ function GoldSeal({ lang }: { lang: Lang }) {
 export function Hero({ lang }: { lang: Lang }) {
     return (
         <section className="relative overflow-hidden pt-16 sm:pt-24 pb-12 sm:pb-16 lg:pt-32 lg:pb-24">
-            {/* Background gradients */}
+            {/* Background gradients - Taobao Red Theme */}
             <div className="absolute inset-0 bg-white dark:bg-dark-950 -z-20"></div>
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-100/50 dark:bg-primary-900/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 -z-10 animate-pulse-slow"></div>
-            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-accent-100/30 dark:bg-accent-900/10 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/3 -z-10 animate-float" style={{ animationDelay: '2s' }}></div>
+            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#FF0036]/5 dark:bg-[#FF0036]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 -z-10 animate-pulse-slow"></div>
+            <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-orange-500/5 dark:bg-orange-900/10 rounded-full blur-[140px] translate-y-1/2 -translate-x-1/3 -z-10 animate-float" style={{ animationDelay: '2s' }}></div>
+            
+            {/* Custom pattern overlay */}
+            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none -z-15 bg-[url('https://www.transparenttextures.com/patterns/gplay.png')]"></div>
 
             {/* Danmu Layer */}
             <DanmuLayer lang={lang} />
@@ -257,10 +261,10 @@ export function Hero({ lang }: { lang: Lang }) {
 
                     {/* ===== Left: Taobao-Style Category Sidebar ===== */}
                     <div className="hidden lg:flex flex-col w-48 xl:w-52 shrink-0 pt-2">
-                        <div className="bg-white/80 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-lg overflow-hidden">
-                            <div className="bg-gradient-to-r from-red-600 to-orange-500 px-4 py-2.5">
-                                <p className="text-white text-xs font-black tracking-wider flex items-center gap-1.5">
-                                    <Crown className="w-3.5 h-3.5" />
+                        <div className="bg-white/80 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-lg overflow-hidden ring-1 ring-black/5">
+                            <div className="bg-gradient-to-r from-[#FF0036] to-[#FF5000] px-4 py-3">
+                                <p className="text-white text-sm font-black tracking-widest flex items-center gap-2 uppercase">
+                                    <Crown className="w-4 h-4 text-yellow-300" />
                                     {lang === 'zh' ? '全部分类' : 'CATEGORIES'}
                                 </p>
                             </div>
@@ -327,10 +331,10 @@ export function Hero({ lang }: { lang: Lang }) {
                             </div>
                         </div>
 
-                        <h1 className="w-full text-[26px] leading-[1.2] sm:text-3xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white mb-4 sm:mb-6 animate-fade-in-up whitespace-normal break-words sm:px-2" style={{ animationDelay: '100ms' }}>
+                        <h1 className="w-full text-3xl leading-[1.1] sm:text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter text-slate-900 dark:text-white mb-6 sm:mb-8 animate-fade-in-up whitespace-normal break-words sm:px-2" style={{ animationDelay: '100ms' }}>
                             {t('hero.title.line1', lang)}{' '}
                             <br className="hidden md:block" />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-accent-600 inline-block">
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF0036] via-[#FF5000] to-[#FF8C00] drop-shadow-sm px-2">
                                 {t('hero.title.highlight', lang)}
                             </span>
                         </h1>
