@@ -1,3 +1,5 @@
+"use client";
+
 import { MarketplaceProductCard } from '@/components/product/MarketplaceProductCard';
 import { Flame } from 'lucide-react';
 import { allProducts } from '@/data/products';
