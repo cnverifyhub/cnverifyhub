@@ -9,6 +9,11 @@ import { motion } from 'framer-motion';
 
 export default function SignupPage() {
     const router = useRouter();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -17,6 +22,8 @@ export default function SignupPage() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
+
+    if (!mounted) return null;
 
     // Password strength checks
     const checks = {

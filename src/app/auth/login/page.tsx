@@ -10,6 +10,12 @@ import { motion } from 'framer-motion';
 function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     const redirectTo = searchParams.get('redirect') || '/account';
 
     const [email, setEmail] = useState('');
@@ -17,6 +23,8 @@ function LoginForm() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+
+    if (!mounted) return null;
 
     const validate = () => {
         if (!email.trim()) { setError('请输入邮箱地址'); return false; }
