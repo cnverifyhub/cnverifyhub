@@ -1,9 +1,25 @@
+'use client';
+
 import React from 'react';
-import Image from 'next/image';
-import { ShoppingCart, ShieldCheck, Zap, Star, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Zap, ChevronRight, Eye, ShieldCheck, Clock } from 'lucide-react';
+import { formatYuan } from '@/lib/utils';
 import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
 
-const iconMap: Record<string, React.ElementType> = {
+interface ProductCardProps {
+    title: string;
+    price: number;
+    originalPrice?: number;
+    stock: number;
+    category: string;
+    salesVolume?: string;
+    badges?: string[];
+    onBuyNow?: () => void;
+    onPreview?: () => void;
+}
+
+// Flat brand icon components — local .webp assets, no CDN
+const BRAND_ICON_MAP: Record<string, React.ElementType> = {
     wechat: WeChatIcon,
     alipay: AlipayIcon,
     douyin: DouyinIcon,
@@ -13,26 +29,37 @@ const iconMap: Record<string, React.ElementType> = {
     xiaohongshu: XiaohongshuIcon,
 };
 
-interface ProductCardProps {
-    title: string;
-    price: number;
-    originalPrice?: number;
-    stock: number;
-    category: string;
-    salesVolume?: string; // e.g., "月销 500+"
-    badges?: string[];
-    onBuyNow?: () => void;
-}
+// Per-platform gradient backgrounds for the card image area
+const BRAND_GRADIENTS: Record<string, { from: string; via?: string; to: string; pattern: string }> = {
+    wechat:      { from: '#07C160', to: '#04a050', pattern: 'radial-gradient(circle at 80% 20%, rgba(255,255,255,0.15) 0%, transparent 50%)' },
+    alipay:      { from: '#1677ff', via: '#0f5ae0', to: '#0a40b8', pattern: 'radial-gradient(circle at 20% 80%, rgba(255,255,255,0.12) 0%, transparent 50%)' },
+    douyin:      { from: '#161823', via: '#2d2d3b', to: '#000000', pattern: 'radial-gradient(ellipse at 70% 30%, rgba(254,44,85,0.3) 0%, transparent 60%)' },
+    qq:          { from: '#12B7F5', via: '#0ea5d9', to: '#0880b0', pattern: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.2) 0%, transparent 60%)' },
+    xianyu:      { from: '#FFB300', via: '#FFC107', to: '#FF8F00', pattern: 'radial-gradient(circle at 30% 70%, rgba(255,255,255,0.2) 0%, transparent 50%)' },
+    taobao:      { from: '#FF5000', via: '#FF6B00', to: '#E64500', pattern: 'radial-gradient(circle at 80% 80%, rgba(255,220,0,0.2) 0%, transparent 50%)' },
+    xiaohongshu: { from: '#ff2442', via: '#ff1a35', to: '#d4001a', pattern: 'radial-gradient(circle at 20% 20%, rgba(255,255,255,0.15) 0%, transparent 50%)' },
+    default:     { from: '#1e293b', to: '#0f172a', pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 60%)' },
+};
 
-const categoryStyleMap: Record<string, { bg: string, iconScale: string }> = {
-    wechat: { bg: 'bg-[#07C160]', iconScale: 'scale-100' },
-    alipay: { bg: 'bg-[#1677ff]', iconScale: 'scale-100' },
-    douyin: { bg: 'bg-[#000000]', iconScale: 'scale-90' },
-    qq: { bg: 'bg-[#12B7F5]', iconScale: 'scale-100' },
-    xianyu: { bg: 'bg-[#FFE200]', iconScale: 'scale-110' },
-    taobao: { bg: 'bg-[#FF5000]', iconScale: 'scale-110' },
-    xiaohongshu: { bg: 'bg-[#ff2442]', iconScale: 'scale-100' },
-    default: { bg: 'bg-slate-900', iconScale: 'scale-100' }
+const categoryStyleMap: Record<string, { bg: string, chipColor: string, chipText: string, textColor: string }> = {
+    wechat: { bg: 'bg-[#07C160]', chipColor: 'bg-[#07C160]', chipText: 'text-white', textColor: 'text-[#07C160]' },
+    alipay: { bg: 'bg-[#1677ff]', chipColor: 'bg-[#1677ff]', chipText: 'text-white', textColor: 'text-[#1677ff]' },
+    douyin: { bg: 'bg-black', chipColor: 'bg-black', chipText: 'text-white', textColor: 'text-black' },
+    qq: { bg: 'bg-[#12B7F5]', chipColor: 'bg-[#12B7F5]', chipText: 'text-white', textColor: 'text-[#12B7F5]' },
+    xianyu: { bg: 'bg-[#FFE200]', chipColor: 'bg-[#FFE200]', chipText: 'text-black', textColor: 'text-[#996600]' },
+    taobao: { bg: 'bg-[#FF5000]', chipColor: 'bg-[#FF5000]', chipText: 'text-white', textColor: 'text-[#FF5000]' },
+    xiaohongshu: { bg: 'bg-[#ff2442]', chipColor: 'bg-[#ff2442]', chipText: 'text-white', textColor: 'text-[#ff2442]' },
+    default: { bg: 'bg-slate-900', chipColor: 'bg-slate-900', chipText: 'text-white', textColor: 'text-slate-900' }
+};
+
+const categoryNameMap: Record<string, { zh: string, en: string }> = {
+    wechat: { zh: '微信', en: 'WeChat' },
+    alipay: { zh: '支付宝', en: 'Alipay' },
+    douyin: { zh: '抖音', en: 'Douyin' },
+    qq: { zh: 'QQ', en: 'QQ' },
+    xianyu: { zh: '闲鱼', en: 'Xianyu' },
+    taobao: { zh: '淘宝', en: 'Taobao' },
+    xiaohongshu: { zh: '小红书', en: 'Xiaohongshu' },
 };
 
 export function MarketplaceProductCard({
@@ -41,97 +68,184 @@ export function MarketplaceProductCard({
     originalPrice,
     stock,
     category,
-    salesVolume = "500+ 件已售",
-    badges = ["现货秒发", "72小时售后", "防封耐用"],
-    onBuyNow
+    salesVolume = "500+件",
+    badges = ["现货", "72H售后", "防封"],
+    onBuyNow,
+    onPreview
 }: ProductCardProps) {
     const catKey = category.toLowerCase();
-    const IconComponent = iconMap[catKey] || Zap;
     const style = categoryStyleMap[catKey] || categoryStyleMap.default;
-    const taobaoRed = "#FF0036";
+    const catName = categoryNameMap[catKey] || { zh: category, en: category };
+    const discount = originalPrice ? Math.round((1 - price / originalPrice) * 100) : 0;
+
+    const BrandIcon = BRAND_ICON_MAP[catKey] || BRAND_ICON_MAP.wechat;
+    const gradient = BRAND_GRADIENTS[catKey] || BRAND_GRADIENTS.default;
+    const stockPct = Math.min(100, Math.max(0, (stock / 50) * 100));
+    const stockColor = stock > 20 ? '#07C160' : stock > 5 ? '#FF8C00' : '#FF0036';
 
     return (
-        <div className="group relative bg-white dark:bg-dark-900 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-slate-100 dark:border-slate-800 flex flex-col h-full ring-1 ring-slate-100/50 dark:ring-white/5">
-            {/* 16:9 Image Container with Branding Colors */}
-            <div className={`relative aspect-[16/9] ${style.bg} overflow-hidden flex items-center justify-center`}>
-                {/* Texture Overlay */}
-                <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/gplay.png')] pointer-events-none"></div>
-                
-                {/* Icon with Dynamic Scaling */}
-                <div className={`relative w-20 h-20 md:w-24 md:h-24 z-10 transition-transform duration-700 cubic-bezier(0.19, 1, 0.22, 1) group-hover:scale-110 group-hover:rotate-3 ${style.iconScale}`}>
-                    <IconComponent className="w-full h-full drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)] filter brightness-100 invert-0" />
-                </div>
-                
-                {/* Inner Glow / Radial Highlight */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-black/20 to-transparent pointer-events-none"></div>
+        <motion.div
+            whileHover={{ y: -4, boxShadow: '0 20px 40px -8px rgba(0,0,0,0.18)' }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="group relative bg-white dark:bg-dark-900 rounded-2xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col h-full ring-1 ring-slate-100/50 dark:ring-white/5"
+            style={{ willChange: 'transform' }}
+        >
+            {/* ── Image Area: Brand Gradient Background ── */}
+            <div
+                className="relative aspect-square overflow-hidden flex items-center justify-center"
+                style={{ background: `linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%)` }}
+            >
+                {/* Radial highlight overlay */}
+                <div className="absolute inset-0 pointer-events-none" style={{ background: gradient.pattern }} />
 
-                {/* Top-right "Auto Delivery" Badge */}
+                {/* Subtle dot grid pattern for depth */}
+                <div
+                    className="absolute inset-0 pointer-events-none opacity-10"
+                    style={{
+                        backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px)',
+                        backgroundSize: '18px 18px'
+                    }}
+                />
+
+                {/* Top-left Category + Discount chips */}
+                <div className="absolute top-2 left-2 z-20 flex flex-col gap-1">
+                    <span className="bg-black/20 backdrop-blur-sm text-white text-[10px] md:text-xs font-black px-2 py-1 rounded-xl shadow flex items-center gap-1 uppercase tracking-tighter">
+                        <ShieldCheck className="w-2.5 h-2.5" />
+                        {catName.zh}
+                    </span>
+                    {discount > 0 && (
+                        <span className="bg-white/90 text-[#FF0036] text-[10px] font-black px-1.5 py-0.5 rounded-lg shadow">
+                            -{discount}%
+                        </span>
+                    )}
+                </div>
+
+                {/* Top-right Auto Delivery Badge */}
                 <div className="absolute top-2 right-2 z-20">
-                    <span className="bg-[#FF0036] text-white text-[10px] md:text-xs font-black px-2 py-1 rounded-sm shadow-lg flex items-center gap-1 uppercase tracking-tighter">
-                        <Zap className="w-3 h-3 fill-white" />
+                    <span className="bg-white/90 text-[#FF0036] text-[10px] md:text-xs font-black px-2 py-1 rounded-xl shadow flex items-center gap-1 uppercase tracking-tighter">
+                        <Zap className="w-3 h-3 fill-[#FF0036]" />
                         自动发货
                     </span>
                 </div>
 
+                {/* Flat Brand Icon Bubble — iOS App Icon style */}
+                <div
+                    className="relative z-10 bg-white rounded-[22px] shadow-lg p-2.5 md:p-3 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105"
+                    style={{ width: 80, height: 80 }}
+                >
+                    <BrandIcon className="w-full h-full" />
+                </div>
+
+                {/* Bottom: delivery time chip */}
+                <div className="absolute bottom-2 right-2 z-20">
+                    <span className="bg-black/20 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <Clock className="w-2.5 h-2.5" />
+                        极速发货
+                    </span>
+                </div>
+
                 {/* Hover Overlay */}
-                <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center z-30">
-                    <button className="bg-white text-[#FF0036] px-5 py-2.5 rounded-full text-sm font-black flex items-center gap-2 transform translate-y-8 group-hover:translate-y-0 transition-all duration-500 shadow-xl scale-90 group-hover:scale-100 hover:bg-[#FF0036] hover:text-white">
-                        查看详情
+                <div className="absolute inset-0 bg-black/40 backdrop-blur-[3px] opacity-0 group-hover:opacity-100 transition-all duration-400 flex items-center justify-center z-30 gap-3">
+                    {onPreview && (
+                        <motion.button
+                            initial={{ y: 16, opacity: 0 }}
+                            whileHover={{ scale: 1.05 }}
+                            onClick={(e) => { e.stopPropagation(); onPreview(); }}
+                            className="bg-white/90 text-slate-800 px-4 py-2.5 rounded-full text-sm font-black flex items-center gap-1.5 shadow-xl"
+                        >
+                            <Eye className="w-4 h-4" />
+                            预览
+                        </motion.button>
+                    )}
+                    <motion.button
+                        initial={{ y: 16, opacity: 0 }}
+                        whileHover={{ scale: 1.05 }}
+                        className="bg-white text-[#FF0036] px-5 py-2.5 rounded-full text-sm font-black flex items-center gap-2 shadow-xl"
+                    >
+                        详情
                         <ChevronRight className="w-4 h-4" />
-                    </button>
+                    </motion.button>
                 </div>
             </div>
 
-            {/* Content Section */}
+            {/* ── Content Section ── */}
             <div className="p-3 md:p-4 flex flex-col flex-1">
-                {/* Product Title - Source Han Sans styled via globals.css font-chinese */}
-                <h3 className="text-sm md:text-base font-black text-slate-800 dark:text-white leading-snug mb-2 line-clamp-2 min-h-[2.5rem] tracking-tight group-hover:text-[#FF0036] transition-colors duration-300">
+                {/* Product Title */}
+                <h3 className="text-sm md:text-base font-bold text-slate-800 dark:text-white leading-snug mb-2 line-clamp-2 min-h-[2.5rem] tracking-tight">
                     {title}
                 </h3>
 
-                {/* Trust Badges - High Density */}
-                <div className="flex flex-wrap gap-1 mb-4">
+                {/* Trust Badges */}
+                <div className="flex flex-wrap gap-1 mb-3">
                     {badges.map((badge, idx) => (
-                        <span key={idx} className="text-[10px] sm:text-[11px] bg-red-50 dark:bg-red-900/10 text-[#FF0036] px-2 py-0.5 rounded-sm border border-red-100 dark:border-red-900/20 font-bold whitespace-nowrap">
+                        <span
+                            key={idx}
+                            className="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded border whitespace-nowrap"
+                            style={{
+                                color: gradient.from,
+                                backgroundColor: `${gradient.from}12`,
+                                borderColor: `${gradient.from}30`,
+                            }}
+                        >
                             {badge}
                         </span>
                     ))}
                 </div>
 
-                {/* Price & Stock & Sales info */}
-                <div className="mt-auto space-y-3">
-                    <div className="flex items-center justify-between border-b border-slate-50 dark:border-slate-800/50 pb-2">
-                        <div className="flex items-baseline gap-1">
-                            <span className="text-[#FF0036] text-sm font-bold">¥</span>
-                            <span className="text-[#FF0036] text-2xl md:text-3xl font-black tabular-nums tracking-tighter drop-shadow-sm">
-                                {price.toFixed(2)}
-                            </span>
-                            {originalPrice && (
-                                <span className="text-slate-400 text-xs line-through ml-1.5 opacity-60">
-                                    ¥{originalPrice.toFixed(2)}
-                                </span>
-                            )}
-                        </div>
-                        <span className="text-slate-400 text-[10px] md:text-sm font-bold italic opacity-60">
-                            已售 {salesVolume}
+                {/* Price Section */}
+                <div className="mt-auto">
+                    <div className="flex items-baseline gap-1 mb-1">
+                        <span className="text-xl md:text-2xl font-black tabular-nums tracking-tighter" style={{ color: gradient.from }}>
+                            {formatYuan(price)}
                         </span>
+                        {originalPrice && (
+                            <span className="text-slate-400 text-[10px] line-through ml-1">
+                                {formatYuan(originalPrice)}
+                            </span>
+                        )}
                     </div>
 
-                    <div className="flex items-center justify-between">
-                         <span className="text-[#fa8c16] text-[10px] md:text-xs font-black bg-orange-50 dark:bg-orange-900/10 px-2 py-0.5 rounded-full border border-orange-100 dark:border-orange-900/20">
+                    {/* Sales & Stock Row */}
+                    <div className="flex items-center justify-between text-[10px] md:text-xs mb-2">
+                        <span className="text-slate-400 font-medium">{salesVolume}</span>
+                        <span className="font-bold" style={{ color: stockColor }}>
                             仅剩 {stock} 件
                         </span>
-
-                        {/* Buy Now Button - Taobao Gradient */}
-                        <button
-                            onClick={onBuyNow}
-                            className="bg-gradient-to-r from-[#FF5000] to-[#FF0036] text-white text-xs md:text-sm font-black px-5 py-2 rounded-lg shadow-lg shadow-red-500/30 active:scale-95 transition-all flex items-center justify-center uppercase tracking-widest hover:brightness-110 hover:-translate-y-0.5"
-                        >
-                            立即抢购
-                        </button>
                     </div>
+
+                    {/* Stock Progress Bar */}
+                    <div className="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-3">
+                        <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${stockPct}%` }}
+                            transition={{ duration: 0.8, ease: 'easeOut', delay: 0.2 }}
+                            className="h-full rounded-full"
+                            style={{ backgroundColor: stockColor }}
+                        />
+                    </div>
+
+                    {/* Buy Button with shimmer */}
+                    <motion.button
+                        whileTap={{ scale: 0.97 }}
+                        whileHover={{ opacity: 0.92 }}
+                        onClick={onBuyNow}
+                        className="relative w-full py-2.5 rounded-xl font-black text-sm text-white shadow-lg overflow-hidden flex items-center justify-center gap-1.5"
+                        style={{ background: `linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%)` }}
+                    >
+                        {/* Shimmer sweep */}
+                        <span
+                            className="absolute inset-0 pointer-events-none"
+                            style={{
+                                background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%)',
+                                backgroundSize: '200% 100%',
+                                animation: 'shimmer-sweep 2.4s ease-in-out infinite',
+                            }}
+                        />
+                        <span className="relative z-10 text-base">立即购买</span>
+                        <ChevronRight className="relative z-10 w-4 h-4" />
+                    </motion.button>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }

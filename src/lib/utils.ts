@@ -5,8 +5,15 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+export const USDT_TO_CNY = 7.2;
+
 export function formatUsdt(amount: number): string {
     return `$${amount.toFixed(2)}`;
+}
+
+export function formatYuan(usdtAmount: number): string {
+    const yuanAmount = usdtAmount * USDT_TO_CNY;
+    return `¥${Math.round(yuanAmount).toString()}`;
 }
 
 export function formatStock(count: number): string {

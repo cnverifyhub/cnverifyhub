@@ -66,6 +66,5 @@ export const config = {
         '/en/account/:path*',
         '/auth/:path*',
         '/admin/:path*',
-        '/en/admin/:path*',
     ],
 };

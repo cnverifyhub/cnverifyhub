@@ -28,7 +28,7 @@ export function QRCodeDisplay({ address, amount, lang }: QRCodeDisplayProps) {
                     <p className="text-sm text-slate-500 mb-1">{lang === 'zh' ? '请精准转账该金额 (包含小数)' : 'Please transfer exact amount'}</p>
                     <div className="flex items-center justify-center gap-2">
                         <span className="text-3xl font-extrabold text-red-600 dark:text-red-500">{amount}</span>
-                        <span className="text-red-600/70 font-bold">USDT</span>
+                        <span className="text-red-600/70 font-bold">{lang === 'zh' ? '人民币折算' : 'RMB Equivalent'}</span>
                         <CopyButton textToCopy={amount} lang={lang} iconOnly className="ml-2 scale-110" />
                     </div>
                 </div>

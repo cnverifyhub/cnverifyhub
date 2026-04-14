@@ -1,6 +1,6 @@
 "use client";
 
-import { MarketplaceProductCard } from '@/components/product/MarketplaceProductCard';
+import { PricingCard } from '@/components/ui/PricingCard';
 import { Flame } from 'lucide-react';
 import { allProducts } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
@@ -31,19 +31,12 @@ export function PopularProducts({ lang }: { lang: Lang }) {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 lg:px-2">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 lg:px-2">
                     {popularProducts.map((product) => (
-                        <MarketplaceProductCard 
+                        <PricingCard 
                             key={product.id} 
-                            title={product.tierName[lang]}
-                            price={product.price.single}
-                            originalPrice={product.price.originalPrice?.single}
-                            stock={product.stockCount}
-                            category={product.category}
-                            onBuyNow={() => {
-                                addItem(product.id, 1);
-                                router.push(getLocalizedPath('/checkout', lang));
-                            }}
+                            product={product}
+                            lang={lang}
                         />
                     ))}
                 </div>

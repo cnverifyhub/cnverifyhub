@@ -13,6 +13,18 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        // Production domain — icons served via Cloudflare CDN
+        protocol: 'https',
+        hostname: 'cnwepro.com',
+        pathname: '/images/**',
+      },
+      {
+        // Netlify preview deployments
+        protocol: 'https',
+        hostname: '*.netlify.app',
+        pathname: '/images/**',
+      },
     ],
   },
   async headers() {

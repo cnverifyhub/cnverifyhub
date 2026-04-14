@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { t, type Lang } from '@/lib/i18n';
-import { formatUsdt } from '@/lib/utils';
+import { formatYuan } from '@/lib/utils';
 import { User, Shield, Star, Crown, ChevronRight, LogOut, Package, Wallet, Gift, Diamond, Loader2, RefreshCw, Clock, CheckCircle2, AlertCircle, Truck, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -194,7 +194,7 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
                     <div className="w-full md:w-1/2 bg-black/20 rounded-2xl p-4 backdrop-blur-sm border border-white/10">
                         <div className="flex justify-between text-sm font-bold mb-2">
                             <span>{lang === 'zh' ? '累计消费' : 'Total Spent'}</span>
-                            <span className="text-yellow-300">{formatUsdt(totalSpent)}</span>
+                            <span className="text-yellow-300">{formatYuan(totalSpent)}</span>
                         </div>
                         <div className="h-3 bg-black/40 rounded-full overflow-hidden mb-2 relative">
                             <motion.div
@@ -207,8 +207,7 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
                         <div className="text-xs opacity-80 text-right">
                             {vipTier === 'diamond'
                                 ? (lang === 'zh' ? '已达到最高等级！' : 'Maximum Tier!')
-                                : (lang === 'zh' ? `距离升级还差 ${formatUsdt(nextTarget - totalSpent)}` : `${formatUsdt(nextTarget - totalSpent)} to upgrade`)
-                            }
+                                : (lang === 'zh' ? `距离升级还差 ${formatYuan(nextTarget - totalSpent)}` : `${formatYuan(nextTarget - totalSpent)} to upgrade`)}
                         </div>
                     </div>
                 </div>
@@ -308,7 +307,7 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-4">
-                                        <span className="font-black text-lg text-red-600 dark:text-red-500">{formatUsdt(order.total_amount)}</span>
+                                        <span className="font-black text-lg text-red-600 dark:text-red-500">{formatYuan(order.total_amount)}</span>
                                         <ChevronRight className={`w-5 h-5 text-slate-400 transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
                                     </div>
                                 </button>
@@ -354,7 +353,7 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
                                                         {order.order_items.map((item: any) => (
                                                             <div key={item.id} className="flex justify-between items-center text-xs bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg">
                                                                 <span className="font-medium">{item.product_id} × {item.quantity}</span>
-                                                                <span className="font-bold text-red-600">{formatUsdt(item.price_at_time * item.quantity)}</span>
+                                                                <span className="font-bold text-red-600">{formatYuan(item.price_at_time * item.quantity)}</span>
                                                             </div>
                                                         ))}
                                                     </div>

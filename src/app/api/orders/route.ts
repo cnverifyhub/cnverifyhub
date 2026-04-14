@@ -1,11 +1,36 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase/client';
+import { checkOrderCreation } from '@/lib/fraud-detection';
 
 // POST — Create a new order
 export async function POST(request: Request) {
     try {
         const body = await request.json();
         const { order, items } = body;
+
+        // ── Fraud Detection Check ──
+        const totalQuantity = (items as any[]).reduce((sum: number, i: any) => sum + (i.quantity || 0), 0);
+        const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined;
+
+        const fraudResult = await checkOrderCreation({
+            email: order.email || '',
+            ip,
+            totalQuantity,
+            totalAmount: order.totalAmount || 0,
+            isFirstOrder: true, // Conservative default
+        });
+
+        if (!fraudResult.allowed) {
+            console.warn(`[Fraud] Order BLOCKED: email=${order.email}, severity=${fraudResult.severity}, events=${fraudResult.events.length}`);
+            return NextResponse.json(
+                { error: 'Order blocked. Please contact support.', fraudSeverity: fraudResult.severity },
+                { status: 403 }
+            );
+        }
+
+        if (fraudResult.events.length > 0) {
+            console.log(`[Fraud] Order FLAGGED (allowed): email=${order.email}, severity=${fraudResult.severity}`);
+        }
 
         // 1. Insert the main order
         const { data: orderData, error: orderError } = await supabase

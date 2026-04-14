@@ -99,14 +99,14 @@ export function SlashPriceModal({ isOpen, onClose, lang, productName }: SlashPri
                             <div className="text-5xl font-black text-yellow-300 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] mb-6 flex justify-center items-baseline gap-1">
                                 <span className="text-2xl">-</span>
                                 <span>{slashedAmount}</span>
-                                <span className="text-xl font-bold">USDT</span>
+                                <span className="text-xl font-bold">¥ (RMB)</span>
                             </div>
 
                             {/* Fake Progress Bar */}
                             <div className="bg-black/20 rounded-xl p-4 mb-6 backdrop-blur-sm border border-white/10">
                                 <div className="flex justify-between text-xs text-red-100 mb-2 font-medium">
                                     <span>{lang === 'zh' ? '当前进度 98%' : 'Progress 98%'}</span>
-                                    <span>{lang === 'zh' ? '还差 1.50 USDT' : '1.50 USDT left!'}</span>
+                                    <span>{lang === 'zh' ? '还差 ¥10' : '¥10 left!'}</span>
                                 </div>
                                 <div className="h-3 w-full bg-black/30 rounded-full overflow-hidden mb-2">
                                     <div className="h-full bg-gradient-to-r from-yellow-400 to-yellow-300 w-[98%] rounded-full relative">

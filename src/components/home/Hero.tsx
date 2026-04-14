@@ -2,20 +2,20 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { ShieldCheck, Zap, Headset, Award, Lock, ChevronRight, Gift, X, Crown, TrendingUp, MessageSquare, Star, Truck, BadgeCheck } from 'lucide-react';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { categories } from '@/data/products';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
 
-const logoUrls: Record<string, string> = {
-    wechat: '/images/categories/wechat.webp',
-    alipay: '/images/categories/alipay.webp',
-    douyin: '/images/categories/douyin.webp',
-    qq: '/images/categories/qq.webp',
-    xianyu: '/images/categories/xianyu.webp',
-    taobao: '/images/categories/taobao.webp',
-    xiaohongshu: '/images/categories/xiaohongshu.webp',
+const iconMap: Record<string, React.ReactNode> = {
+    wechat: <WeChatIcon className="w-full h-full" />,
+    alipay: <AlipayIcon className="w-full h-full" />,
+    douyin: <DouyinIcon className="w-full h-full" />,
+    qq: <QQIcon className="w-full h-full" />,
+    xianyu: <XianyuIcon className="w-full h-full" />,
+    taobao: <TaobaoIcon className="w-full h-full" />,
+    xiaohongshu: <XiaohongshuIcon className="w-full h-full" />,
 };
 
 /* ============================================
@@ -43,25 +43,32 @@ const danmuMessages = {
 };
 
 function DanmuLayer({ lang }: { lang: Lang }) {
-    const [bullets, setBullets] = useState<{ id: number; text: string; top: number; delay: number; duration: number }[]>([]);
+    const [mounted, setMounted] = useState(false);
+    const [bullets, setBullets] = useState<{ id: number; text: string; top: number; duration: number }[]>([]);
 
     useEffect(() => {
+        setMounted(true);
         const msgs = danmuMessages[lang];
         let counter = 0;
+        let index = 0;
         const spawn = () => {
-            const text = msgs[Math.floor(Math.random() * msgs.length)];
-            const top = 5 + Math.random() * 80; // 5%-85% height
-            const duration = 12 + Math.random() * 10; // 12-22s
+            const text = msgs[index % msgs.length];
+            index++;
+            const top = 5 + (counter * 37 % 80);  // deterministic position
+            const duration = 12 + (counter % 5) * 2; // deterministic duration 12-20s
             const id = counter++;
-            setBullets(prev => [...prev.slice(-12), { id, text, top, delay: 0, duration }]);
+            setBullets(prev => [...prev.slice(-12), { id, text, top, duration }]);
         };
-        spawn(); // first one immediately
-        const intervalId = setInterval(spawn, 2500 + Math.random() * 2000);
+        spawn();
+        const intervalId = setInterval(spawn, 3000);
         return () => clearInterval(intervalId);
     }, [lang]);
 
+    // ✅ Render nothing on server — prevents hydration mismatch
+    if (!mounted) return null;
+
     return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none -z-5" aria-hidden="true">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: -1 }} aria-hidden="true">
             {bullets.map(b => (
                 <span
                     key={b.id}
@@ -274,20 +281,14 @@ export function Hero({ lang }: { lang: Lang }) {
                                     href={getLocalizedPath(cat.href, lang)}
                                     className="flex items-center gap-2.5 px-4 py-3 hover:bg-red-50/60 dark:hover:bg-red-900/10 transition-colors border-b border-slate-50 dark:border-slate-800/50 last:border-b-0 group"
                                 >
-                                    <div className="w-7 h-7 rounded-lg shadow-sm overflow-hidden bg-white border border-slate-100 dark:border-slate-800 shrink-0">
-                                        {logoUrls[cat.icon as keyof typeof logoUrls] && ['wechat', 'alipay', 'douyin', 'qq'].includes(cat.id) ? (
-                                            <Image
-                                                src={logoUrls[cat.icon as keyof typeof logoUrls]}
-                                                alt={cat.name.en}
-                                                width={28}
-                                                height={28}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        ) : (
-                                            <div className={`w-full h-full flex items-center justify-center text-xs font-black ${cat.color}`}>
-                                                {cat.name.en.slice(0, 2)}
-                                            </div>
-                                        )}
+                                    <div className="shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-0.5">
+                                        <div className="w-9 h-9 rounded-[10px] bg-white border border-slate-200 dark:border-slate-700 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center overflow-hidden shrink-0">
+                                            {iconMap[cat.id] || (
+                                                <div className={`w-full h-full flex items-center justify-center text-xs font-black ${cat.color} bg-white`}>
+                                                    {cat.name.en.slice(0, 2)}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
@@ -325,8 +326,8 @@ export function Hero({ lang }: { lang: Lang }) {
                             <div className="flex-1 min-w-0 relative h-5 overflow-hidden text-[10px] sm:text-sm text-red-600 dark:text-red-400 font-bold whitespace-nowrap flex items-center">
                                 <div className="animate-[pulse_3s_ease-in-out_infinite]">
                                     {lang === 'zh'
-                                        ? '🔥 特惠狂欢开启！满100U限时直降15U，库存有限，先到先得！平台全线支持担保交易，购买更放心！'
-                                        : '🔥 Shopping Festival! Orders over 100U save 15U! Escrow protected payments enabled!'}
+                                        ? '🔥 特惠狂欢开启！满700¥限时直降100¥，库存有限，先到先得！平台全线支持支付宝/微信支付，购买更放心！'
+                                        : '🔥 Shopping Festival! Orders over 700¥ save 100¥! Alipay/WeChat payments enabled!'}
                                 </div>
                             </div>
                         </div>
@@ -351,7 +352,7 @@ export function Hero({ lang }: { lang: Lang }) {
                                 <span className="absolute inset-0 hero-shine" />
                             </Link>
                             <a
-                                href={process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL || 'https://t.me/cnwepro'}
+                                href="https://t.me/cnwepro"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="btn-outline w-full sm:w-auto px-4 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
@@ -378,7 +379,7 @@ export function Hero({ lang }: { lang: Lang }) {
                             <div className="flex-1 min-w-0 flex items-center justify-between bg-white/60 dark:bg-slate-800/40 backdrop-blur-sm rounded-2xl px-3 sm:px-4 py-2 sm:py-3 border border-slate-100 dark:border-slate-700/50 shadow-sm overflow-x-auto scrolbar-hide">
                                 {[
                                     { icon: <Star className="w-4 h-4" />, label: lang === 'zh' ? '选择账号' : 'Select', num: '1' },
-                                    { icon: <Lock className="w-4 h-4" />, label: lang === 'zh' ? 'USDT支付' : 'Pay USDT', num: '2' },
+                                    { icon: <Lock className="w-4 h-4" />, label: lang === 'zh' ? '扫码支付' : 'Pay QR', num: '2' },
                                     { icon: <Truck className="w-4 h-4" />, label: lang === 'zh' ? '自动发货' : 'Delivery', num: '3' },
                                     { icon: <ShieldCheck className="w-4 h-4" />, label: lang === 'zh' ? '验证使用' : 'Verify', num: '4' },
                                 ].map((step, i) => (

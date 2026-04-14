@@ -2,21 +2,26 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShoppingCart, X, Minus, Plus, Trash2, ShieldCheck } from 'lucide-react';
+import { ShoppingCart, X, Minus, Plus, Trash2, ShieldCheck, Ticket } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { getProductById, getCategoryById } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
-import { formatUsdt } from '@/lib/utils';
+import { formatYuan } from '@/lib/utils';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, TelegramIcon, TaobaoIcon, XianyuIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
 
 interface CartDrawerProps {
     lang: Lang;
 }
 
-const iconMap: Record<string, string> = {
-    wechat: "https://play-lh.googleusercontent.com/QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ",
-    alipay: "https://play-lh.googleusercontent.com/quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY",
-    douyin: "https://play-lh.googleusercontent.com/xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw=w600-h300-pc0xffffff-pd",
-    qq: "https://play-lh.googleusercontent.com/2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0"
+const iconMap: Record<string, React.ReactNode> = {
+    wechat: <WeChatIcon className="w-full h-full" />,
+    alipay: <AlipayIcon className="w-full h-full" />,
+    douyin: <DouyinIcon className="w-full h-full" />,
+    qq: <QQIcon className="w-full h-full" />,
+    xianyu: <XianyuIcon className="w-full h-full" />,
+    taobao: <TaobaoIcon className="w-full h-full" />,
+    xiaohongshu: <XiaohongshuIcon className="w-full h-full" />,
+    telegram: <TelegramIcon className="w-full h-full" />,
 };
 
 export function CartDrawer({ lang }: CartDrawerProps) {
@@ -95,12 +100,8 @@ export function CartDrawer({ lang }: CartDrawerProps) {
 
                                 return (
                                     <div key={item.productId} className="flex gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
-                                        <div className={`w-16 h-16 rounded-xl bg-white border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-center shrink-0 overflow-hidden`}>
-                                            <img
-                                                src={category ? (iconMap[category.id] || iconMap.wechat) : iconMap.wechat}
-                                                alt={category?.name[lang] || 'Platform icon'}
-                                                className="w-full h-full object-cover"
-                                            />
+                                        <div className={`w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 p-0.5 shadow-sm flex items-center justify-center shrink-0 overflow-hidden`}>
+                                            {category && iconMap[category.id] ? iconMap[category.id] : <WeChatIcon className="w-full h-full" />}
                                         </div>
 
                                         <div className="flex-1 flex flex-col justify-between">
@@ -137,7 +138,7 @@ export function CartDrawer({ lang }: CartDrawerProps) {
 
                                                 <div className="text-right">
                                                     <span className="font-extrabold text-slate-900 dark:text-white">
-                                                        {formatUsdt(unitPrice * item.quantity)}
+                                                        {formatYuan(unitPrice * item.quantity)}
                                                     </span>
                                                 </div>
                                             </div>
@@ -149,15 +150,28 @@ export function CartDrawer({ lang }: CartDrawerProps) {
                     )}
                 </div>
 
+                {/* Red Envelope & Discount Placeholder */}
+                {items.length > 0 && (
+                    <div className="px-5 py-3 bg-red-50 dark:bg-red-900/10 border-y border-red-100 dark:border-red-900/20 flex items-center justify-between group cursor-pointer hover:bg-red-100/50 transition-colors">
+                        <div className="flex items-center gap-2">
+                           <div className="w-7 h-7 bg-red-600 rounded-lg flex items-center justify-center shadow-lg shadow-red-500/20 animate-bounce" style={{ animationDuration: '3s' }}>
+                               <Ticket className="w-4 h-4 text-white" />
+                           </div>
+                           <span className="text-xs font-black text-red-600 dark:text-red-400 uppercase tracking-wider">{lang === 'zh' ? '使用优惠券 / 红包代码' : 'Use Coupon / Red Envelope'}</span>
+                        </div>
+                        <span className="text-[10px] font-bold text-slate-400 group-hover:text-red-500 transition-colors">NEW &gt;</span>
+                    </div>
+                )}
+
                 {/* Footer */}
                 {items.length > 0 && (
                     <div className="p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
                         <div className="flex items-center justify-between mb-4">
-                            <span className="text-slate-600 dark:text-slate-400 font-medium">
-                                {lang === 'zh' ? '总计 (USDT)' : 'Total (USDT)'}
+                            <span className="text-slate-600 dark:text-slate-400 font-medium tracking-tight">
+                                {lang === 'zh' ? '总计金额 (¥)' : 'Total Amount (¥)'}
                             </span>
-                            <span className="text-2xl font-black text-red-600 dark:text-red-500">
-                                {formatUsdt(getTotal())}
+                            <span className="text-2xl font-black text-red-600 dark:text-red-500 tabular-nums">
+                                {formatYuan(getTotal())}
                             </span>
                         </div>
 

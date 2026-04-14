@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { AlipayPaymentModal } from './AlipayPaymentModal';
 import { getProductById } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
-import { formatUsdt } from '@/lib/utils';
+import { formatYuan } from '@/lib/utils';
 import { ChevronRight, ShieldCheck, Check, ShoppingBag, Shield, Timer, PartyPopper, Lock, Loader2, AlertCircle } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useOrderStore } from '@/store/orderStore';
@@ -34,6 +34,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
 
     // Quick mock order ID generator
     const [orderId] = useState(() => `CNW-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`);
+    const [processingPhase, setProcessingPhase] = useState(0);
 
     useEffect(() => {
         setMounted(true);
@@ -81,22 +82,6 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
         return `${m}:${s}`;
     };
 
-    if (!mounted) return null;
-
-    if (items.length === 0 && step === 1) {
-        return (
-            <div className="text-center py-12 flex flex-col items-center">
-                <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4">
-                    <ShoppingBag className="w-8 h-8 text-slate-400" />
-                </div>
-                <p className="text-slate-500 mb-6 font-medium">{lang === 'zh' ? '购物车为空' : 'Your cart is empty'}</p>
-                <button onClick={() => router.push(getLocalizedPath('/', lang))} className="btn-primary">
-                    {t('common.backToHome', lang)}
-                </button>
-            </div>
-        );
-    }
-
     const totalPrice = getTotal();
 
     const handleNextStep = () => {
@@ -106,7 +91,6 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
         }
     };
 
-    const [processingPhase, setProcessingPhase] = useState(0);
 
     const handlePaymentConfirm = async (txHash: string, verificationData?: any) => {
         setIsProcessingPayment(true);
@@ -185,7 +169,28 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
     };
 
     return (
-        <div className="max-w-4xl mx-auto relative">
+        <div className="max-w-4xl mx-auto relative min-h-[400px]">
+            {!mounted ? (
+                <div className="flex items-center justify-center py-20">
+                    <Loader2 className="w-8 h-8 animate-spin text-primary-500" />
+                </div>
+            ) : items.length === 0 && step === 1 ? (
+                <div className="text-center py-20 flex flex-col items-center animate-fade-in">
+                    <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6">
+                        <ShoppingBag className="w-8 h-8 text-slate-400" />
+                    </div>
+                    <p className="text-slate-500 mb-8 font-medium text-lg">
+                        {lang === 'zh' ? '您的购物车是空的' : 'Your cart is currently empty'}
+                    </p>
+                    <button 
+                        onClick={() => router.push(getLocalizedPath('/', lang))} 
+                        className="btn-primary px-8 py-3"
+                    >
+                        {t('common.backToHome', lang)}
+                    </button>
+                </div>
+            ) : (
+                <>
             {/* Idle Gamification: Red Envelope Rain */}
             {isIdle && !claimedEnvelope && (
                 <div className="fixed inset-0 z-[100] pointer-events-none overflow-hidden bg-black/40 backdrop-blur-sm transition-all duration-700">
@@ -217,7 +222,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                             {lang === 'zh' ? '红包场降临！' : 'RED PACKET RAIN!'}
                         </h2>
                         <p className="text-white text-lg mt-4 font-bold drop-shadow-md">
-                            {lang === 'zh' ? '点击天降红包，最高减5U！' : 'Click a packet to win up to 5U off!'}
+                            {lang === 'zh' ? '点击天降红包，最高减40¥！' : 'Click a packet to win up to 40¥ off!'}
                         </p>
                     </div>
                 </div>
@@ -230,8 +235,8 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                         <div className="absolute top-0 inset-x-0 h-32 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
                         <div className="relative z-10 text-white">
                             <h3 className="text-3xl font-black text-yellow-300 mb-2 drop-shadow-md">{lang === 'zh' ? '恭喜抢到红包！' : 'You got a Red Packet!'}</h3>
-                            <p className="text-red-100 mb-6">{lang === 'zh' ? '立减 2.00 USDT' : 'Saved 2.00 USDT'}</p>
-                            <div className="text-6xl font-black text-yellow-400 mb-8 drop-shadow-[0_4px_4px_rgba(0,0,0,0.4)]">-2.00 U</div>
+                            <p className="text-red-100 mb-6">{lang === 'zh' ? '立减 15.00 ¥' : 'Saved 15.00 ¥'}</p>
+                            <div className="text-6xl font-black text-yellow-400 mb-8 drop-shadow-[0_4px_4px_rgba(0,0,0,0.4)]">-15 ¥</div>
                             <button onClick={() => setClaimedEnvelope(false)} className="w-full bg-gradient-to-r from-yellow-300 to-yellow-500 hover:from-yellow-200 hover:to-yellow-400 text-red-900 font-extrabold py-4 rounded-xl shadow-[0_6px_0_#b45309] active:translate-y-[4px] active:shadow-[0_2px_0_#b45309] transition-all text-lg">
                                 {lang === 'zh' ? '立即使用 (仅限本次)' : 'Use Now (This Order Only)'}
                             </button>
@@ -350,7 +355,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                                                             {lang === 'zh' ? '数量:' : 'Qty:'} {item.quantity}
                                                         </div>
                                                         <div className="font-black text-red-600 dark:text-red-500 text-lg sm:text-xl">
-                                                            {formatUsdt(unitPrice * item.quantity)}
+                                                            {formatYuan(unitPrice * item.quantity)}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -361,11 +366,11 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                                 <div className="p-5 bg-white dark:bg-dark-900 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_10px_rgb(0,0,0,0.02)]">
                                     <div className="flex justify-between items-center mb-2 text-slate-600 dark:text-slate-400 font-medium">
                                         <span>{lang === 'zh' ? '共计金额' : 'Subtotal'}</span>
-                                        <span>{formatUsdt(totalPrice)}</span>
+                                        <span>{formatYuan(totalPrice)}</span>
                                     </div>
                                     <div className="flex justify-between items-center text-xl sm:text-2xl font-black text-red-600 dark:text-red-500">
                                         <span>{lang === 'zh' ? '应付总额' : 'Total'}</span>
-                                        <span>{formatUsdt(totalPrice)}</span>
+                                        <span>{formatYuan(totalPrice)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -448,141 +453,6 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                 {/* Step 3: Success */}
                 {step === 3 && (
                     <div className="text-center animate-fade-in py-8 max-w-lg mx-auto">
-                        {isProcessingPayment ? (
-                            /* ========== WECHAT/ALIPAY-STYLE 3-PHASE PROCESSING OVERLAY ========== */
-                            <div className="fixed inset-0 z-[200] flex items-center justify-center" style={{
-                                background: processingPhase >= 3
-                                    ? 'linear-gradient(160deg, #07C160 0%, #06AD56 50%, #059B4C 100%)'
-                                    : 'linear-gradient(160deg, #1677ff 0%, #0958d9 50%, #003eb3 100%)',
-                                transition: 'background 0.8s ease-in-out'
-                            }}>
-                                {/* Subtle radial glow */}
-                                <div className="absolute inset-0" style={{
-                                    backgroundImage: `radial-gradient(circle at 50% 40%, rgba(255,255,255,0.12) 0%, transparent 60%)`,
-                                }} />
-
-                                <div className="relative flex flex-col items-center text-white px-6 w-full max-w-sm">
-                                    {/* Animated Circle + Icon */}
-                                    <div className="relative w-32 h-32 mb-10">
-                                        {/* Background glow pulse */}
-                                        <div className={`absolute inset-0 rounded-full transition-all duration-700 ${
-                                            processingPhase >= 3 ? 'bg-white/10 scale-150 animate-ping' : 'bg-white/5 scale-100'
-                                        }`} style={{ animationDuration: '2s' }} />
-                                        
-                                        {/* SVG animated circle-draw */}
-                                        <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 120 120">
-                                            {/* Background track */}
-                                            <circle cx="60" cy="60" r="54" fill="none" strokeWidth="3" stroke="rgba(255,255,255,0.15)" />
-                                            {/* Progress arc */}
-                                            <circle
-                                                cx="60" cy="60" r="54"
-                                                fill="none"
-                                                strokeWidth="4"
-                                                stroke="white"
-                                                strokeLinecap="round"
-                                                strokeDasharray="339.292"
-                                                strokeDashoffset={339.292 - (339.292 * Math.min(processingPhase, 3) / 3)}
-                                                style={{ transition: 'stroke-dashoffset 0.8s ease-in-out' }}
-                                            />
-                                        </svg>
-
-                                        {/* Center icon — transitions from spinner to check */}
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            {processingPhase < 3 ? (
-                                                <div className="w-16 h-16 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
-                                                    <svg className="animate-spin w-8 h-8 text-white" style={{ animationDuration: '2s' }} viewBox="0 0 24 24" fill="none">
-                                                        <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-                                                        <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                                                    </svg>
-                                                </div>
-                                            ) : (
-                                                <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center animate-[scale-bounce_0.5s_ease-out]">
-                                                    <svg className="w-10 h-10 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                                        <polyline
-                                                            points="6 12 10 16 18 8"
-                                                            strokeDasharray="24"
-                                                            strokeDashoffset="0"
-                                                            style={{ animation: 'draw-check 0.4s ease-out forwards' }}
-                                                        />
-                                                    </svg>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Amount Display */}
-                                    <div className="text-center mb-6">
-                                        <p className="text-white/60 text-sm mb-1">
-                                            {lang === 'zh' ? '支付金额' : 'Payment Amount'}
-                                        </p>
-                                        <p className="text-4xl font-black tracking-tight drop-shadow-md">
-                                            ${totalPrice.toFixed(2)}
-                                        </p>
-                                    </div>
-
-                                    {/* Status Title */}
-                                    <h2 className="text-xl sm:text-2xl font-black mb-6 tracking-tight drop-shadow-md text-center transition-all duration-500">
-                                        {processingPhase >= 3
-                                            ? (lang === 'zh' ? '支付成功！' : 'Payment Successful!')
-                                            : (lang === 'zh' ? '正在安全处理付款...' : 'Processing Payment...')
-                                        }
-                                    </h2>
-
-                                    {/* 3-Phase Status Lines */}
-                                    <div className="space-y-3 w-full max-w-xs">
-                                        {[
-                                            { zh: '已连接区块链网络', en: 'Connected to blockchain network', phase: 1 },
-                                            { zh: '正在验证交易记录', en: 'Verifying transaction record', phase: 2 },
-                                            { zh: '订单确认完成', en: 'Order confirmed', phase: 3 },
-                                        ].map((item, i) => (
-                                            <div
-                                                key={i}
-                                                className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-500 ${
-                                                    processingPhase >= item.phase
-                                                        ? 'bg-white/15 backdrop-blur-sm'
-                                                        : processingPhase === item.phase - 1
-                                                            ? 'bg-white/5'
-                                                            : 'opacity-40'
-                                                }`}
-                                            >
-                                                {processingPhase >= item.phase ? (
-                                                    <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center shrink-0 animate-[scale-bounce_0.3s_ease-out]">
-                                                        <Check className="w-3 h-3 text-emerald-500" strokeWidth={3} />
-                                                    </div>
-                                                ) : processingPhase === item.phase - 1 ? (
-                                                    <Loader2 className="w-5 h-5 animate-spin shrink-0" />
-                                                ) : (
-                                                    <div className="w-5 h-5 rounded-full border-2 border-white/30 shrink-0" />
-                                                )}
-                                                <span className="text-sm font-medium">
-                                                    {lang === 'zh' ? item.zh : item.en}
-                                                </span>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    {/* Bottom trust bar */}
-                                    <div className="mt-10 flex items-center gap-2 text-white/40 text-xs">
-                                        <Lock className="w-3 h-3" />
-                                        <span>{lang === 'zh' ? 'CNWePro 企业级风控引擎保障' : 'Secured by CNWePro risk engine'}</span>
-                                    </div>
-                                </div>
-
-                                {/* Keyframe for check draw animation */}
-                                <style jsx>{`
-                                    @keyframes draw-check {
-                                        from { stroke-dashoffset: 24; }
-                                        to { stroke-dashoffset: 0; }
-                                    }
-                                    @keyframes scale-bounce {
-                                        0% { transform: scale(0); }
-                                        60% { transform: scale(1.15); }
-                                        100% { transform: scale(1); }
-                                    }
-                                `}</style>
-                            </div>
-                        ) : (
-                            <>
                                 {/* ========== SUCCESS SCREEN — WECHAT/ALIPAY STYLE ========== */}
                                 <div className="relative">
                                     {/* Green checkmark with animated rings */}
@@ -699,12 +569,126 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                                         {lang === 'zh' ? (agreedToAntiBan ? '去查看我的账号 (提取)' : '请先勾选上方同意守则') : (agreedToAntiBan ? 'View Account Details ->' : 'Agree to rules first')}
                                     </button>
                                 </div>
-                            </>
-                        )}
                     </div>
                 )}
 
             </div>
+                </>
+            )}
+
+            {/* ========== WECHAT/ALIPAY-STYLE 3-PHASE PROCESSING OVERLAY ========== */}
+            {/* Rendered OUTSIDE the step conditional to prevent hook count changes */}
+            {isProcessingPayment && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center" style={{
+                    background: processingPhase >= 3
+                        ? 'linear-gradient(160deg, #07C160 0%, #06AD56 50%, #059B4C 100%)'
+                        : 'linear-gradient(160deg, #1677ff 0%, #0958d9 50%, #003eb3 100%)',
+                    transition: 'background 0.8s ease-in-out'
+                }}>
+                    {/* Subtle radial glow */}
+                    <div className="absolute inset-0" style={{
+                        backgroundImage: `radial-gradient(circle at 50% 40%, rgba(255,255,255,0.12) 0%, transparent 60%)`,
+                    }} />
+
+                    <div className="relative flex flex-col items-center text-white px-6 w-full max-w-sm">
+                        {/* Animated Circle + Icon */}
+                        <div className="relative w-32 h-32 mb-10">
+                            <div className={`absolute inset-0 rounded-full transition-all duration-700 ${
+                                processingPhase >= 3 ? 'bg-white/10 scale-150 animate-ping' : 'bg-white/5 scale-100'
+                            }`} style={{ animationDuration: '2s' }} />
+                            
+                            <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 120 120">
+                                <circle cx="60" cy="60" r="54" fill="none" strokeWidth="3" stroke="rgba(255,255,255,0.15)" />
+                                <circle
+                                    cx="60" cy="60" r="54"
+                                    fill="none"
+                                    strokeWidth="4"
+                                    stroke="white"
+                                    strokeLinecap="round"
+                                    strokeDasharray="339.292"
+                                    strokeDashoffset={339.292 - (339.292 * Math.min(processingPhase, 3) / 3)}
+                                    style={{ transition: 'stroke-dashoffset 0.8s ease-in-out' }}
+                                />
+                            </svg>
+
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                {processingPhase < 3 ? (
+                                    <div className="w-16 h-16 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                                        <svg className="animate-spin w-8 h-8 text-white" style={{ animationDuration: '2s' }} viewBox="0 0 24 24" fill="none">
+                                            <circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                                            <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                                        </svg>
+                                    </div>
+                                ) : (
+                                    <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center animate-[scale-bounce_0.5s_ease-out]">
+                                        <svg className="w-10 h-10 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                                            <polyline
+                                                points="6 12 10 16 18 8"
+                                                strokeDasharray="24"
+                                                strokeDashoffset="0"
+                                                className="animate-[draw-check_0.4s_ease-out_forwards]"
+                                            />
+                                        </svg>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="text-center mb-6">
+                            <p className="text-white/60 text-sm mb-1">
+                                {lang === 'zh' ? '支付金额' : 'Payment Amount'}
+                            </p>
+                            <p className="text-4xl font-black tracking-tight drop-shadow-md">
+                                {formatYuan(totalPrice)}
+                            </p>
+                        </div>
+
+                        <h2 className="text-xl sm:text-2xl font-black mb-6 tracking-tight drop-shadow-md text-center transition-all duration-500">
+                            {processingPhase >= 3
+                                ? (lang === 'zh' ? '支付成功！' : 'Payment Successful!')
+                                : (lang === 'zh' ? '正在安全处理付款...' : 'Processing Payment...')
+                            }
+                        </h2>
+
+                        <div className="space-y-3 w-full max-w-xs">
+                            {[
+                                { zh: '已连接区块链网络', en: 'Connected to blockchain network', phase: 1 },
+                                { zh: '正在验证交易记录', en: 'Verifying transaction record', phase: 2 },
+                                { zh: '订单确认完成', en: 'Order confirmed', phase: 3 },
+                            ].map((item, i) => (
+                                <div
+                                    key={i}
+                                    className={`flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all duration-500 ${
+                                        processingPhase >= item.phase
+                                            ? 'bg-white/15 backdrop-blur-sm'
+                                            : processingPhase === item.phase - 1
+                                                ? 'bg-white/5'
+                                                : 'opacity-40'
+                                    }`}
+                                >
+                                    {processingPhase >= item.phase ? (
+                                        <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center shrink-0 animate-[scale-bounce_0.3s_ease-out]">
+                                            <Check className="w-3 h-3 text-emerald-500" strokeWidth={3} />
+                                        </div>
+                                    ) : processingPhase === item.phase - 1 ? (
+                                        <Loader2 className="w-5 h-5 animate-spin shrink-0" />
+                                    ) : (
+                                        <div className="w-5 h-5 rounded-full border-2 border-white/30 shrink-0" />
+                                    )}
+                                    <span className="text-sm font-medium">
+                                        {lang === 'zh' ? item.zh : item.en}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="mt-10 flex items-center gap-2 text-white/40 text-xs text-center border-t border-white/5 pt-4">
+                            <Lock className="w-3 h-3" />
+                            <span>{lang === 'zh' ? 'CNWePro 企业级风控引擎保障' : 'Secured by CNWePro risk engine'}</span>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

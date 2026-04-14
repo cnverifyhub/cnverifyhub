@@ -26,7 +26,7 @@ const trustItems = {
             icon: <HeartHandshake className="w-10 h-10 text-[#e4393c]" />,
         },
         {
-            title: "USDT担保交易",
+            title: "平台担保交易",
             desc: "采用区块链担保，支付更安全透明",
             icon: <Box className="w-10 h-10 text-[#ffd700]" />,
         },
@@ -48,7 +48,7 @@ const trustItems = {
             icon: <HeartHandshake className="w-10 h-10 text-[#e4393c]" />,
         },
         {
-            title: "USDT Escrow",
+            title: "Secured Escrow",
             desc: "Safe and transparent payments via blockchain escrow",
             icon: <Box className="w-10 h-10 text-[#ffd700]" />,
         },

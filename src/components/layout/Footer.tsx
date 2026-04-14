@@ -7,16 +7,16 @@ import { ShieldCheck, MessageCircle, Send, Wallet, Shield, Clock, Headphones, Aw
 import { t, getLangFromPath, getLocalizedPath } from '@/lib/i18n';
 import { categories } from '@/data/products';
 import Image from 'next/image';
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon } from '@/components/ui/BrandIcons';
+import { WeChatIcon, AlipayIcon, TelegramIcon } from '@/components/ui/BrandIcons';
 
 const categoryIcons: Record<string, React.ReactNode> = {
-    wechat: <Image src="/images/categories/wechat.webp" alt="WeChat" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
-    alipay: <Image src="/images/categories/alipay.webp" alt="Alipay" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
-    douyin: <Image src="/images/categories/douyin.webp" alt="Douyin" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
-    qq: <Image src="/images/categories/qq.webp" alt="QQ" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
-    xianyu: <Image src="/images/categories/xianyu.webp" alt="Xianyu" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
-    taobao: <Image src="/images/categories/taobao.webp" alt="Taobao" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
-    xiaohongshu: <Image src="/images/categories/xiaohongshu.webp" alt="Xiaohongshu" width={24} height={24} unoptimized className="w-full h-full object-cover" />,
+    wechat: <Image src="https://play-lh.googleusercontent.com/QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ" alt="WeChat" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
+    alipay: <Image src="https://play-lh.googleusercontent.com/quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY" alt="Alipay" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
+    douyin: <Image src="https://play-lh.googleusercontent.com/xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw" alt="Douyin" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
+    qq: <Image src="https://play-lh.googleusercontent.com/2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0" alt="QQ" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
+    xianyu: <Image src="https://play-lh.googleusercontent.com/eaX5GSrLgAvCTKAe8N0baDkKA0gJ3siyG9X28sfmSO8yBmKVfPDQyJ3y_AvcCr8DSYU" alt="Xianyu" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
+    taobao: <Image src="https://play-lh.googleusercontent.com/6F3ONMR_UowQyqKud-bqqz5iWHGtleHEWTPZEoUiWPJj02R9hPL-agPCt_C3KYQLYi8" alt="Taobao" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
+    xiaohongshu: <Image src="https://play-lh.googleusercontent.com/c6Ipks61J7b4qgJMxo965UqsSo0M7ZwTDzQrmLKeBNneCk2gub-RitqSC-fnrmLGXTk3mNEceiBN5N3i26BmYHc" alt="Xiaohongshu" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
 };
 
 export default function Footer() {
@@ -143,11 +143,32 @@ export default function Footer() {
                     </div>
 
                     <div>
-                        <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-4">{lang === 'zh' ? '帮助中心' : 'Support'}</h4>
-                        <ul className="space-y-2">
-                            <li><a href="https://t.me/Minsheng0" className="hover:text-red-500">联系客服</a></li>
-                            <li><Link href={getLocalizedPath('/track', lang)} className="hover:text-red-500">订单查询</Link></li>
-                            <li><Link href={getLocalizedPath('/client', lang)} className="hover:text-red-500">提取中心</Link></li>
+                        <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-4">{lang === 'zh' ? '官方社群' : 'Community'}</h4>
+                        <ul className="space-y-4">
+                            <li>
+                                <a href="https://t.me/cnwepro" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group">
+                                    <TelegramIcon className="w-8 h-8 group-hover:scale-110 transition-transform" />
+                                    <div>
+                                        <p className="text-sm font-black text-slate-900 dark:text-white group-hover:text-primary-500 transition-colors">Telegram 频道</p>
+                                        <p className="text-[10px] text-slate-500">最新账号 & 动态更新</p>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="https://t.me/cnwechatpro" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group">
+                                    <div className="relative">
+                                        <TelegramIcon className="w-8 h-8 group-hover:scale-110 transition-transform" />
+                                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-white dark:border-dark-950"></span>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-black text-slate-900 dark:text-white group-hover:text-primary-500 transition-colors">7x24 在线售后</p>
+                                        <p className="text-[10px] text-slate-500">专业人工极速回复</p>
+                                    </div>
+                                </a>
+                            </li>
                         </ul>
                     </div>
 

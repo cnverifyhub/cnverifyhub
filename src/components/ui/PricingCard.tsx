@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { Check, ShieldCheck, Clock, ShoppingCart, Zap } from 'lucide-react';
 import { Badge } from './Badge';
 import { StockBadge } from './StockBadge';
 import type { Product } from '@/types';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
-import { formatUsdt } from '@/lib/utils';
+import { formatYuan } from '@/lib/utils';
 import { useCartStore } from '@/store/cartStore';
 
 interface PricingCardProps {
@@ -42,7 +43,14 @@ export function PricingCard({ product, lang }: PricingCardProps) {
     };
 
     return (
-        <div className="bg-white dark:bg-[#1c1c1e] rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 flex flex-col h-full border border-gray-100 dark:border-gray-800">
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
+            whileHover={{ y: -6, scale: 1.015 }}
+            className="bg-white dark:bg-[#1c1c1e] rounded-xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-orange-500/10 transition-shadow duration-300 flex flex-col h-full border border-gray-100 dark:border-gray-800"
+        >
             {/* Visual Header Block (Simulating Product Image) */}
             <Link href={getLocalizedPath(`/product/${product.id}`, lang)} className="relative aspect-[4/3] w-full block overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900">
                 {product.badge && (
@@ -57,11 +65,11 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                 )}
                 
                 <div className="absolute inset-0 flex items-center justify-center p-6">
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-[1.5rem] overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 bg-white">
+                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden shadow-lg border border-gray-100 dark:border-gray-700 bg-white p-2">
                         <img 
-                            src={`/images/categories/${product.category}.webp`}
+                            src={`https://play-lh.googleusercontent.com/${product.category === 'wechat' ? 'QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ' : product.category === 'alipay' ? 'quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY' : product.category === 'douyin' ? 'xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw' : product.category === 'qq' ? '2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0' : product.category === 'xianyu' ? 'eaX5GSrLgAvCTKAe8N0baDkKA0gJ3siyG9X28sfmSO8yBmKVfPDQyJ3y_AvcCr8DSYU' : product.category === 'taobao' ? '6F3ONMR_UowQyqKud-bqqz5iWHGtleHEWTPZEoUiWPJj02R9hPL-agPCt_C3KYQLYi8' : 'c6Ipks61J7b4qgJMxo965UqsSo0M7ZwTDzQrmLKeBNneCk2gub-RitqSC-fnrmLGXTk3mNEceiBN5N3i26BmYHc'}`}
                             alt={product.tierName[lang]}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                         />
                     </div>
                 </div>
@@ -120,19 +128,20 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                 <div className="mt-auto pt-1">
                     <div className="flex items-baseline gap-1 break-all flex-wrap">
                         <span className="text-[#FF5000] text-xs font-bold leading-none">USDT</span>
-                        <span className="text-[#FF5000] text-xl sm:text-2xl font-black leading-none drop-shadow-sm flex-shrink-0">
-                            {formatUsdt(product.price.single).replace(' USDT', '')}
-                        </span>
-                        
-                        {product.price.originalPrice && (
-                            <span className="text-gray-400 text-[10px] sm:text-xs line-through ml-1 shrink-0">
-                                {formatUsdt(product.price.originalPrice.single)}
+                        <div className="flex items-baseline gap-1.5">
+                            <span className="text-3xl font-black text-slate-900 dark:text-white tracking-tighter">
+                                {formatYuan(product.price.single)}
                             </span>
-                        )}
+                            {product.price.originalPrice && product.price.originalPrice.single > product.price.single && (
+                                <span className="text-sm text-slate-400 line-through font-bold">
+                                    {formatYuan(product.price.originalPrice.single)}
+                                </span>
+                            )}
+                        </div>
                     </div>
                     {/* Multi-tier pricing inline indicator */}
                     <div className="text-[9px] sm:text-[10px] text-gray-400 mt-1 pb-2 border-b border-gray-100 dark:border-gray-800 border-dashed">
-                        {lang === 'zh' ? '多件优惠:' : 'Bulk discount:'} <span className="text-[#FF5000] font-medium">10件 {formatUsdt(product.price.bulk10).replace(' USDT', 'U')} / 50件 {formatUsdt(product.price.bulk50).replace(' USDT', 'U')}</span>
+                        {lang === 'zh' ? '多件优惠:' : 'Bulk discount:'} <span className="text-[#FF5000] font-medium">10件 {formatYuan(product.price.bulk10)} / 50件 {formatYuan(product.price.bulk50)}</span>
                     </div>
                 </div>
             </div>
@@ -165,6 +174,6 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                     </div>
                 )}
             </div>
-        </div>
+        </motion.div>
     );
 }

@@ -44,8 +44,8 @@ interface OrderState {
     logoutAdmin: () => void;
 }
 
-// Hardcoded frontend password for the static Netlify export (NOT SECURE for production backends, but works for local static builds to prevent casual snooping)
-const MOCK_ADMIN_PASS = "admin888";
+// Admin password: use NEXT_PUBLIC env var on client, fallback for local dev
+const ADMIN_PASS = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin888';
 
 export const useOrderStore = create<OrderState>()(
     persist(
@@ -104,7 +104,7 @@ export const useOrderStore = create<OrderState>()(
             },
 
             loginAdmin: (password: string) => {
-                if (password === MOCK_ADMIN_PASS) {
+                if (password === ADMIN_PASS) {
                     set({ isAdminAuthenticated: true });
                     return true;
                 }

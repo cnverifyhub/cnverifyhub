@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase/client';
+import { checkPaymentVerification } from '@/lib/fraud-detection';
 
 /* ============================================
    Multi-Chain Payment Verification API
@@ -12,7 +13,6 @@ const ETHERSCAN_API = 'https://api.etherscan.io/api';
 
 const WALLET_ADDRESS = process.env.NEXT_PUBLIC_TRC20_WALLET || 'TQofpQffADyHpv25EBZPcQD7scx8AZV5or';
 const WALLET_ADDRESS_2 = process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'TH2mdXf9wkddGSpynCTLJcS4CcHSLHSv4E';
-const WALLET_ADDRESS_3 = process.env.NEXT_PUBLIC_TRC20_WALLET_3 || 'TXrNZRoVsnTEhNkEJsdgTKSGoXMsmyj6xr';
 
 const BEP20_WALLET = process.env.NEXT_PUBLIC_BEP20_WALLET || '0xb47669d0d17b57be5af515bf57e0294c130359b1';
 const ERC20_WALLET = process.env.NEXT_PUBLIC_ERC20_WALLET || '0xb47669d0d17b57be5af515bf57e0294c130359b1';
@@ -239,6 +239,19 @@ export async function POST(request: Request) {
                 break;
             default:
                 return NextResponse.json({ error: 'Unsupported network' }, { status: 400 });
+        }
+
+        // ── Fraud Detection on Payment ──
+        const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined;
+        const fraudCheck = await checkPaymentVerification({
+            txid: txHash,
+            fromWallet: result.from,
+            ip,
+        });
+
+        if (fraudCheck.severity === 'high' || fraudCheck.severity === 'critical') {
+            console.warn(`[Fraud] Payment flagged: txid=${txHash.substring(0, 12)}..., severity=${fraudCheck.severity}`);
+            // Still process but log for admin review
         }
 
         // If verification succeeded, update order in Supabase

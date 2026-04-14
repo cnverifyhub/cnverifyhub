@@ -100,6 +100,7 @@ const config: Config = {
                 'count-up': 'countUp 0.8s ease-out forwards',
                 'glow': 'glow 2s ease-in-out infinite alternate',
                 'spin-slow': 'spin 8s linear infinite',
+                'icon-bounce': 'iconBounce 0.5s ease-out',
             },
             keyframes: {
                 fadeIn: {
@@ -137,6 +138,13 @@ const config: Config = {
                 glow: {
                     '0%': { boxShadow: '0 0 20px rgba(229,57,53,0.3)' },
                     '100%': { boxShadow: '0 0 40px rgba(229,57,53,0.6)' },
+                },
+                iconBounce: {
+                    '0%': { transform: 'translateY(0) scale(1)' },
+                    '30%': { transform: 'translateY(-8px) scale(1.08)' },
+                    '50%': { transform: 'translateY(-4px) scale(1.04)' },
+                    '70%': { transform: 'translateY(-6px) scale(1.06)' },
+                    '100%': { transform: 'translateY(-4px) scale(1.05)' },
                 },
             },
             backgroundImage: {

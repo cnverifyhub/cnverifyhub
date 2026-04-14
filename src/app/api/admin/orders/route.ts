@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase/client';
 
-const MOCK_ADMIN_PASS = "admin888";
+const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'admin888';
 
 // GET all orders (Admin only)
 export async function GET(request: NextRequest) {
     try {
         const authHeader = request.headers.get('Authorization');
-        if (authHeader !== `Bearer ${MOCK_ADMIN_PASS}`) {
+        if (authHeader !== `Bearer ${ADMIN_PASS}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         const authHeader = request.headers.get('Authorization');
-        if (authHeader !== `Bearer ${MOCK_ADMIN_PASS}`) {
+        if (authHeader !== `Bearer ${ADMIN_PASS}`) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

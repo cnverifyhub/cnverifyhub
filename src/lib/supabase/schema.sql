@@ -93,3 +93,36 @@ CREATE POLICY "Users can view own order items" ON public.order_items
 
 -- Service role can do everything (admin panel)
 -- Note: Service role key bypasses RLS automatically
+
+-- 5. Fraud Detection Tables
+-- 5a. Blocklist of suspicious wallet addresses / TXIDs / IPs / emails
+CREATE TABLE IF NOT EXISTS public.fraud_blocklist (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    type VARCHAR(20) NOT NULL CHECK (type IN ('txid', 'wallet', 'ip', 'email')),
+    value VARCHAR(255) NOT NULL,
+    reason VARCHAR(255),
+    added_by VARCHAR(100) DEFAULT 'system',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    UNIQUE(type, value)
+);
+
+-- 5b. Fraud event log
+CREATE TABLE IF NOT EXISTS public.fraud_events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_type VARCHAR(50) NOT NULL,
+    severity VARCHAR(10) NOT NULL CHECK (severity IN ('low', 'medium', 'high', 'critical')),
+    email VARCHAR(255),
+    ip_address VARCHAR(45),
+    txid VARCHAR(255),
+    wallet_address VARCHAR(255),
+    order_id VARCHAR(50),
+    metadata JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Indexes for fast lookups
+CREATE INDEX IF NOT EXISTS idx_fraud_blocklist_type_value ON public.fraud_blocklist(type, value);
+CREATE INDEX IF NOT EXISTS idx_fraud_events_created ON public.fraud_events(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_fraud_events_type ON public.fraud_events(event_type);
+CREATE INDEX IF NOT EXISTS idx_fraud_events_severity ON public.fraud_events(severity);
+CREATE INDEX IF NOT EXISTS idx_orders_email_created ON public.orders(email, created_at DESC);

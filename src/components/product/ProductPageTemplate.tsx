@@ -2,17 +2,18 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { getProductById, getCategoryById } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
-import { formatUsdt } from '@/lib/utils';
+import { formatYuan } from '@/lib/utils';
 import {
     ChevronLeft, ShieldCheck, Zap, Clock, Star, Users, MessageCircle, Wallet, Music, Tv2,
-    ShoppingCart, CheckCircle2, AlertCircle, Scissors
+    ShoppingCart, CheckCircle2, AlertCircle, Scissors, Eye
 } from 'lucide-react';
 import { StockBadge } from '../ui/StockBadge';
 import { SlashPriceModal } from '../ui/SlashPriceModal';
+import { ProductPreview } from './ProductPreview';
 import { useCartStore } from '@/store/cartStore';
 import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
 
@@ -41,7 +42,7 @@ interface ProductPageTemplateProps {
     lang: Lang;
 }
 
-// Mock reviews data generator
+// Mock reviews data generator — deterministic to avoid SSR hydration mismatch
 const generateMockReviews = (lang: Lang) => {
     const zhNames = ['李**', '张**', '王**', '赵**', '陈**', '刘**', '风**', '天**'];
     const enNames = ['Alex**', 'John**', 'Sarah**', 'Mike**', 'David**', 'Tom**'];
@@ -63,12 +64,15 @@ const generateMockReviews = (lang: Lang) => {
     ];
     const comments = lang === 'zh' ? zhComments : enComments;
 
+    // Deterministic dates (no Math.random)
+    const dateBases = [3, 7, 12, 18];
+
     return Array.from({ length: 4 }).map((_, i) => ({
         id: i,
-        name: names[Math.floor(Math.random() * names.length)],
+        name: names[i % names.length],
         rating: 5,
-        date: new Date(Date.now() - Math.random() * 10000000000).toISOString().split('T')[0],
-        comment: comments[Math.floor(Math.random() * comments.length)]
+        date: `2026-04-${String(dateBases[i]).padStart(2, '0')}`,
+        comment: comments[i % comments.length]
     }));
 };
 
@@ -88,6 +92,7 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
     // Mock live sales specifically for this product
     const [recentBuyer, setRecentBuyer] = useState<string | null>(null);
     const [isSlashModalOpen, setIsSlashModalOpen] = useState(false);
+    const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
     useEffect(() => {
         if (!product || product.stockCount === 0) return;
@@ -225,19 +230,18 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                                 </div>
                             </div>
 
-                            {/* Right: High-Resolution 3D Illustration / Custom Image */}
-                            <div className="w-full md:w-[45%] lg:w-[40%] h-[200px] md:h-auto relative overflow-hidden bg-slate-50 dark:bg-slate-800/20 group">
-                                <Image
-                                    src={product.image || "/images/common/premium-account.png"}
-                                    alt={product.tierName[lang]}
-                                    fill
-                                    className="object-cover md:object-contain p-4 group-hover:scale-105 transition-transform duration-700"
-                                    unoptimized
-                                />
-                                {/* Glossy Reflection */}
-                                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10 pointer-events-none" />
-                                {/* Bottom Shadow for 3D depth */}
-                                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white dark:from-dark-900 to-transparent md:hidden" />
+                            {/* Right: AI-Generated Product Imagery */}
+                            <div className="w-full md:w-[42%] relative overflow-hidden flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+                                {category && (
+                                    <Image
+                                        src={`/images/products/${category.id}.png`}
+                                        alt={category.name[lang]}
+                                        fill
+                                        priority
+                                        className="object-cover transition-transform duration-700 hover:scale-105"
+                                        sizes="(max-width: 768px) 100vw, 40vw"
+                                    />
+                                )}
                             </div>
                         </div>
 
@@ -260,7 +264,7 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                             )}
 
                             {/* Features Grid */}
-                            <div className="grid grid-cols-2 gap-3 mb-6">
+                            <div className="grid grid-cols-2 gap-3 mb-4">
                                 {product.features.map((feature, i) => (
                                     <div key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
                                         <div className="w-5 h-5 rounded-full bg-success-100 dark:bg-success-900/30 flex items-center justify-center shrink-0">
@@ -270,6 +274,15 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                                     </div>
                                 ))}
                             </div>
+
+                            {/* Preview Button */}
+                            <button
+                                onClick={() => setIsPreviewOpen(true)}
+                                className="flex items-center gap-2 text-sm font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors mb-4"
+                            >
+                                <Eye className="w-4 h-4" />
+                                {lang === 'zh' ? '预览账号详情' : 'Preview Account Details'}
+                            </button>
 
                             <div className="flex flex-wrap items-center gap-4 py-4 border-t border-slate-100 dark:border-slate-800">
                                 <div className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400">
@@ -401,19 +414,18 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                                 <div className="text-xs text-slate-500 mb-1 font-medium">{lang === 'zh' ? '到手价' : 'Final Price'}</div>
                                 <div className="flex items-baseline flex-wrap gap-x-2 gap-y-1 text-red-600 dark:text-red-500">
                                     <div className="flex items-baseline gap-1">
-                                        <span className="text-xl font-bold">USDT</span>
-                                        <span className="text-5xl lg:text-6xl font-black tracking-tighter drop-shadow-sm font-sans">
-                                            {formatUsdt(currentPrice * quantity).replace(' USDT', '')}
+                                        <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tighter">
+                                            {formatYuan(currentPrice * quantity)}
                                         </span>
                                     </div>
 
-                                    {originalPrice && (
-                                        <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 ml-1">
-                                            <span className="text-sm line-through decoration-slate-300 dark:decoration-slate-600 font-medium">
-                                                {formatUsdt(originalPrice * quantity)}
+                                    {originalPrice !== null && originalPrice > currentPrice && (
+                                        <div className="flex flex-col">
+                                            <span className="text-sm text-slate-400 line-through font-bold">
+                                                {formatYuan(originalPrice * quantity)}
                                             </span>
-                                            <span className="text-[10px] bg-red-600 dark:bg-red-500 text-white px-1.5 py-0.5 rounded-sm font-bold tracking-wider relative -top-1">
-                                                {lang === 'zh' ? '已省' : 'SAVE'} {formatUsdt((originalPrice - currentPrice) * quantity).replace(' USDT', '')}U
+                                            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-black bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 mt-1 uppercase">
+                                                {lang === 'zh' ? '已省' : 'SAVE'} {formatYuan((originalPrice - currentPrice) * quantity)}
                                             </span>
                                         </div>
                                     )}
@@ -562,6 +574,13 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                     </div>
                 </div>
             </div>
+
+            <ProductPreview
+                isOpen={isPreviewOpen}
+                onClose={() => setIsPreviewOpen(false)}
+                product={product}
+                lang={lang}
+            />
 
             <SlashPriceModal
                 isOpen={isSlashModalOpen}

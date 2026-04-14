@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { QRCodeDisplay } from '@/components/ui/QRCodeDisplay';
 import { CountdownTimer } from '@/components/ui/CountdownTimer';
 import { CopyButton } from '@/components/ui/CopyButton';
-import { Check, AlertTriangle, Loader2, ShieldCheck, ExternalLink, Wallet, Bitcoin, ChevronDown } from 'lucide-react';
+import { Check, AlertTriangle, Loader2, ShieldCheck, ExternalLink, Wallet, Bitcoin, ChevronDown, Radio } from 'lucide-react';
 import { t, type Lang } from '@/lib/i18n';
 
 interface PaymentDisplayProps {
@@ -15,7 +15,7 @@ interface PaymentDisplayProps {
     onConfirm: (txHash: string, verificationData?: any) => void;
 }
 
-type VerifyPhase = 'idle' | 'checking' | 'verified' | 'failed';
+type VerifyPhase = 'idle' | 'checking' | 'polling' | 'verified' | 'failed';
 
 type PaymentNetwork = 'trc20' | 'bep20_usdt' | 'bep20_btc' | 'erc20_btc' | 'wechat';
 
@@ -27,11 +27,10 @@ const NETWORKS: { id: PaymentNetwork; label: string; labelZh: string; token: str
     { id: 'wechat', label: 'WeChat Pay', labelZh: '微信支付', token: 'CNY', icon: '💚', enabled: false, autoVerify: false },
 ];
 
-// TRC20 wallets — main + alternates
+// TRC20 wallets — main + backup
 const TRC20_WALLETS = [
     { address: process.env.NEXT_PUBLIC_TRC20_WALLET || 'TQofpQffADyHpv25EBZPcQD7scx8AZV5or', label: 'Main', labelZh: '主钱包', recommended: true },
-    { address: process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'TH2mdXf9wkddGSpynCTLJcS4CcHSLHSv4E', label: '2nd', labelZh: '备用1' },
-    { address: process.env.NEXT_PUBLIC_TRC20_WALLET_3 || 'TXrNZRoVsnTEhNkEJsdgTKSGoXMsmyj6xr', label: '3rd', labelZh: '备用2' },
+    { address: process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'TH2mdXf9wkddGSpynCTLJcS4CcHSLHSv4E', label: 'Backup', labelZh: '备用' },
 ];
 
 function getWalletAddress(network: PaymentNetwork, trc20Index: number = 0): string {
@@ -70,9 +69,114 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
     const [selectedNetwork, setSelectedNetwork] = useState<PaymentNetwork>('trc20');
     const [selectedTrc20Wallet, setSelectedTrc20Wallet] = useState(0);
 
+    // Polling state
+    const [pollStatus, setPollStatus] = useState<'idle' | 'pending' | 'confirmed' | 'failed'>('idle');
+    const [confirmations, setConfirmations] = useState(0);
+    const [pollAttempt, setPollAttempt] = useState(0);
+    const pollTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const isPollingRef = useRef(false);
+
     const walletAddress = getWalletAddress(selectedNetwork, selectedTrc20Wallet);
     const currentNetworkInfo = NETWORKS.find(n => n.id === selectedNetwork)!;
 
+    const MAX_POLL_ATTEMPTS = 20; // 20 × 30s = 10 minutes
+    const POLL_INTERVAL_MS = 30000; // 30 seconds
+
+    // Cleanup polling on unmount
+    useEffect(() => {
+        return () => {
+            isPollingRef.current = false;
+            if (pollTimerRef.current) clearTimeout(pollTimerRef.current);
+        };
+    }, []);
+
+    /** Cleanup polling timer */
+    const stopPolling = useCallback(() => {
+        isPollingRef.current = false;
+        if (pollTimerRef.current) {
+            clearTimeout(pollTimerRef.current);
+            pollTimerRef.current = null;
+        }
+    }, []);
+
+    /** Poll the verification endpoint */
+    const pollVerification = useCallback(async (attempt: number) => {
+        if (!isPollingRef.current || attempt > MAX_POLL_ATTEMPTS) {
+            if (attempt > MAX_POLL_ATTEMPTS) {
+                setPhase('failed');
+                setErrorMsg(lang === 'zh'
+                    ? '链上确认超时（10分钟），请检查TXID或联系客服。'
+                    : 'On-chain confirmation timed out (10 min). Please check TXID or contact support.');
+                setPollStatus('failed');
+            }
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/verify-payment/poll', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    txHash: txHash.trim(),
+                    expectedAmount: amount,
+                    orderId,
+                    network: selectedNetwork,
+                }),
+            });
+
+            const data = await res.json();
+            setPollAttempt(attempt);
+
+            if (data.status === 'confirmed') {
+                // Confirmed!
+                stopPolling();
+                setPollStatus('confirmed');
+                setPhase('verified');
+                const vd = data.verificationData || data;
+                setVerificationData({
+                    verified: true,
+                    amount: vd.amount,
+                    from: vd.from,
+                    to: vd.to,
+                    token: vd.token || 'USDT',
+                    network: vd.network || 'trc20',
+                    timestamp: vd.timestamp,
+                    confirmed: true,
+                    confirmationCount: vd.confirmations,
+                });
+                setTimeout(() => {
+                    onConfirm(txHash.trim(), vd);
+                }, 1500);
+                return;
+            }
+
+            if (data.status === 'failed') {
+                stopPolling();
+                setPollStatus('failed');
+                setPhase('failed');
+                setErrorMsg(data.reason || (lang === 'zh' ? '验证失败，请检查TXID后重试' : 'Verification failed'));
+                return;
+            }
+
+            // Still pending — update confirmations and schedule next poll
+            if (data.confirmations !== undefined) {
+                setConfirmations(data.confirmations);
+            }
+
+            // Schedule next poll
+            pollTimerRef.current = setTimeout(() => {
+                pollVerification(attempt + 1);
+            }, POLL_INTERVAL_MS);
+
+        } catch (err) {
+            // Network error — retry on next interval (don't increment attempt)
+            pollTimerRef.current = setTimeout(() => {
+                pollVerification(attempt);
+            }, POLL_INTERVAL_MS);
+        }
+    }, [txHash, amount, orderId, selectedNetwork, lang, onConfirm, stopPolling, MAX_POLL_ATTEMPTS, POLL_INTERVAL_MS]);
+
+    /** Handle initial TXID submission */
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!txHash.trim()) return;
@@ -80,71 +184,67 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
         setPhase('checking');
         setErrorMsg('');
         setVerificationData(null);
+        setPollAttempt(0);
+        setConfirmations(0);
 
-        // All networks now use automated blockchain verification
         if (currentNetworkInfo.autoVerify) {
-            try {
-                const res = await fetch('/api/verify-payment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        txHash: txHash.trim(),
-                        expectedAmount: amount,
-                        orderId,
-                        network: selectedNetwork,
-                        walletAddress,
-                        orderDetails
-                    })
-                });
+            if (selectedNetwork === 'trc20') {
+                // TRC20: Start polling loop
+                isPollingRef.current = true;
+                setPhase('polling');
+                setPollStatus('pending');
+                // First attempt immediately, then every 30s
+                pollVerification(1);
+            } else {
+                // Other networks: single-shot verification (existing behavior)
+                try {
+                    const res = await fetch('/api/verify-payment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            txHash: txHash.trim(),
+                            expectedAmount: amount,
+                            orderId,
+                            network: selectedNetwork,
+                            walletAddress,
+                            orderDetails
+                        })
+                    });
 
-                const data = await res.json();
+                    const data = await res.json();
 
-                if (data.verified) {
+                    if (data.verified) {
+                        setPhase('verified');
+                        setVerificationData(data);
+                        setTimeout(() => {
+                            onConfirm(txHash.trim(), data);
+                        }, 2000);
+                    } else {
+                        setPhase('failed');
+                        setErrorMsg(data.error || (lang === 'zh' ? '验证失败，请检查TXID后重试' : 'Verification failed. Please check TXID and try again.'));
+                    }
+                } catch {
                     setPhase('verified');
-                    setVerificationData(data);
-                    setTimeout(() => {
-                        onConfirm(txHash.trim(), data);
-                    }, 2000);
-                } else {
-                    setPhase('failed');
-                    setErrorMsg(data.error || (lang === 'zh' ? '验证失败，请检查TXID后重试' : 'Verification failed. Please check TXID and try again.'));
+                    const fallbackData = {
+                        verified: true, amount, token: currentNetworkInfo.token,
+                        network: selectedNetwork, manualVerification: true,
+                        from: 'pending-manual-check', to: walletAddress, confirmed: false,
+                    };
+                    setVerificationData(fallbackData);
+                    setTimeout(() => onConfirm(txHash.trim(), fallbackData), 2500);
                 }
-            } catch (err) {
-                // Graceful fallback — if API fails, still accept the order with manual verification flag
-                setPhase('verified');
-                const fallbackData = {
-                    verified: true,
-                    amount: amount,
-                    token: currentNetworkInfo.token,
-                    network: selectedNetwork,
-                    manualVerification: true,
-                    from: 'pending-manual-check',
-                    to: walletAddress,
-                    confirmed: false,
-                };
-                setVerificationData(fallbackData);
-                setTimeout(() => {
-                    onConfirm(txHash.trim(), fallbackData);
-                }, 2500);
             }
         } else {
-            // For disabled networks (wechat), simulate
+            // WeChat / disabled networks: simulate manual confirmation
             setTimeout(() => {
                 setPhase('verified');
                 const manualData = {
-                    verified: true,
-                    amount: amount,
-                    token: currentNetworkInfo.token,
-                    network: selectedNetwork,
-                    manualVerification: true,
-                    from: 'pending-manual-check',
-                    to: walletAddress,
-                    confirmed: false,
+                    verified: true, amount, token: currentNetworkInfo.token,
+                    network: selectedNetwork, manualVerification: true,
+                    from: 'pending-manual-check', to: walletAddress, confirmed: false,
                 };
                 setVerificationData(manualData);
-                setTimeout(() => {
-                    onConfirm(txHash.trim(), manualData);
-                }, 2500);
+                setTimeout(() => onConfirm(txHash.trim(), manualData), 2500);
             }, 2000);
         }
     };
@@ -201,7 +301,7 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
                     <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                         {lang === 'zh' ? '选择收款钱包' : 'Select Receiving Wallet'}
                     </p>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 gap-2">
                         {TRC20_WALLETS.map((w, i) => (
                             <button
                                 key={i}
@@ -265,10 +365,9 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
                         />
                     </div>
 
-                    {/* Verification Status Display */}
+                    {/* Verification Status Display — Initial Check */}
                     {phase === 'checking' && (
                         <div className="relative overflow-hidden p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800">
-                            {/* Animated progress bar */}
                             <div className="absolute top-0 left-0 h-1 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 rounded-full animate-[progress_2s_ease-in-out_infinite]" style={{ width: '60%' }} />
                             <div className="flex items-center gap-3">
                                 <div className="relative w-10 h-10 shrink-0">
@@ -280,17 +379,57 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
                                 </div>
                                 <div>
                                     <p className="font-semibold text-blue-700 dark:text-blue-400 text-sm">
-                                        {lang === 'zh' ? '正在区块链上验证交易...' : 'Verifying transaction on blockchain...'}
+                                        {lang === 'zh' ? '正在连接区块链网络...' : 'Connecting to blockchain network...'}
                                     </p>
                                     <p className="text-blue-600/70 dark:text-blue-400/70 text-xs mt-0.5">
-                                        {selectedNetwork === 'trc20'
-                                            ? (lang === 'zh' ? '查询TronScan · 验证钱包地址 · 确认金额' : 'Querying TronScan · Verifying wallet · Confirming amount')
-                                            : selectedNetwork.startsWith('bep20')
-                                                ? (lang === 'zh' ? '查询BSCScan · 验证BNB Chain · 确认金额' : 'Querying BSCScan · Verifying BNB Chain · Confirming amount')
-                                                : (lang === 'zh' ? '查询Etherscan · 验证以太坊 · 确认金额' : 'Querying Etherscan · Verifying Ethereum · Confirming amount')
-                                        }
+                                        {lang === 'zh' ? '正在查询交易是否已发送' : 'Checking if transaction exists on chain'}
                                     </p>
                                 </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Live Polling Status — TRC20 Background Confirmation */}
+                    {phase === 'polling' && (
+                        <div className="relative overflow-hidden p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 space-y-3">
+                            <div className="absolute top-0 left-0 h-1 bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 rounded-full animate-[progress_2s_ease-in-out_infinite]" style={{ width: '60%' }} />
+                            <div className="flex items-center gap-3">
+                                <div className="relative w-10 h-10 shrink-0">
+                                    <Radio className="w-full h-full text-blue-500 animate-pulse" />
+                                </div>
+                                <div className="flex-1">
+                                    <p className="font-semibold text-blue-700 dark:text-blue-400 text-sm">
+                                        {lang === 'zh' ? '等待链上确认中...' : 'Waiting for on-chain confirmation...'}
+                                    </p>
+                                    <p className="text-blue-600/70 dark:text-blue-400/70 text-xs mt-0.5">
+                                        {lang === 'zh'
+                                            ? `已识别交易，等待网络确认 (第 ${pollAttempt}/${MAX_POLL_ATTEMPTS} 次检查)`
+                                            : `Transaction found, awaiting confirmations (attempt ${pollAttempt}/${MAX_POLL_ATTEMPTS})`}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Confirmation Progress */}
+                            <div className="space-y-2">
+                                <div className="flex justify-between items-center text-xs">
+                                    <span className="text-blue-600/70 dark:text-blue-400/70 font-medium">
+                                        {lang === 'zh' ? '区块确认进度' : 'Confirmation Progress'}
+                                    </span>
+                                    <span className="font-mono font-bold text-blue-700 dark:text-blue-400">
+                                        {confirmations}/19 {lang === 'zh' ? '确认' : 'confirms'}
+                                    </span>
+                                </div>
+                                <div className="w-full h-2 bg-blue-100 dark:bg-blue-900/40 rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-1000"
+                                        style={{ width: `${Math.min(100, (confirmations / 19) * 100)}%` }}
+                                    />
+                                </div>
+                                <p className="text-[10px] text-blue-500/60 dark:text-blue-400/60 text-center">
+                                    {lang === 'zh'
+                                        ? 'TRC20网络通常需要1-3分钟完成确认'
+                                        : 'TRC20 network typically confirms in 1-3 minutes'}
+                                </p>
                             </div>
                         </div>
                     )}
@@ -358,13 +497,18 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
 
                     <button
                         type="submit"
-                        disabled={!txHash.trim() || phase === 'checking' || phase === 'verified'}
+                        disabled={!txHash.trim() || phase === 'checking' || phase === 'polling' || phase === 'verified'}
                         className="btn-primary w-full justify-center py-4"
                     >
                         {phase === 'checking' ? (
                             <span className="flex items-center gap-2">
                                 <Loader2 className="w-4 h-4 animate-spin" />
-                                {lang === 'zh' ? '验证中...' : 'Verifying...'}
+                                {lang === 'zh' ? '连接中...' : 'Connecting...'}
+                            </span>
+                        ) : phase === 'polling' ? (
+                            <span className="flex items-center gap-2">
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                {lang === 'zh' ? '链上确认中...' : 'Awaiting confirmations...'}
                             </span>
                         ) : phase === 'verified' ? (
                             <span className="flex items-center gap-2">

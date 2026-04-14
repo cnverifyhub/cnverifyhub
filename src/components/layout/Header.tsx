@@ -10,16 +10,16 @@ import { categories } from '@/data/products';
 import { LiveTicker } from './LiveTicker';
 import { useCartStore } from '@/store/cartStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon } from '@/components/ui/BrandIcons';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
 
 const categoryIcons: Record<string, React.ReactNode> = {
-    wechat: <Image src="/images/categories/wechat.webp" alt="WeChat" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
-    alipay: <Image src="/images/categories/alipay.webp" alt="Alipay" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
-    douyin: <Image src="/images/categories/douyin.webp" alt="Douyin" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
-    qq: <Image src="/images/categories/qq.webp" alt="QQ" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
-    xianyu: <Image src="/images/categories/xianyu.webp" alt="Xianyu" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
-    taobao: <Image src="/images/categories/taobao.webp" alt="Taobao" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
-    xiaohongshu: <Image src="/images/categories/xiaohongshu.webp" alt="Xiaohongshu" width={40} height={40} unoptimized className="w-full h-full object-cover" />,
+    wechat: <WeChatIcon className="w-full h-full" />,
+    alipay: <AlipayIcon className="w-full h-full" />,
+    douyin: <DouyinIcon className="w-full h-full" />,
+    qq: <QQIcon className="w-full h-full" />,
+    xianyu: <XianyuIcon className="w-full h-full" />,
+    taobao: <TaobaoIcon className="w-full h-full" />,
+    xiaohongshu: <XiaohongshuIcon className="w-full h-full" />,
 };
 
 export default function Header() {
@@ -99,7 +99,7 @@ export default function Header() {
             >
                 <LiveTicker lang={lang} />
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16 md:h-[68px]">
+                    <div className="flex justify-between items-center h-16 lg:h-[68px]">
 
                         {/* Logo */}
                         <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 group shrink-0">
@@ -118,7 +118,7 @@ export default function Header() {
                         </Link>
 
                         {/* Desktop Nav */}
-                        <nav className="hidden md:flex items-center gap-0.5 lg:gap-1">
+                        <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
                             {navLinks.map((link) => {
                                 const isActive = pathname === getLocalizedPath(link.href, lang);
                                 return (
@@ -146,32 +146,39 @@ export default function Header() {
                                 </button>
 
                                 <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-72">
-                                    <div className="bg-white/95 dark:bg-dark-900/95 backdrop-blur-xl rounded-2xl border border-slate-200/80 dark:border-slate-700/80 overflow-hidden shadow-2xl shadow-black/10 dark:shadow-black/40 p-2">
-                                        {categories.map((c) => (
-                                            <Link
-                                                key={c.id}
-                                                href={getLocalizedPath(c.href, lang)}
-                                                className="flex items-center gap-3 px-3 py-3 hover:bg-slate-50 dark:hover:bg-white/5 rounded-xl transition-colors group/item"
-                                            >
-                                                <div className="w-9 h-9 flex items-center justify-center rounded-xl overflow-hidden bg-white border border-slate-200 dark:border-slate-800 shadow-sm shrink-0 group-hover/item:scale-110 transition-transform">
-                                                    {categoryIcons[c.id]}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <span className={`font-semibold text-sm block ${c.color}`}>{c.name[lang]}</span>
-                                                    <span className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
-                                                        {c.description[lang]}
-                                                    </span>
-                                                </div>
-                                                <Zap className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 group-hover/item:text-orange-400 transition-colors" />
-                                            </Link>
-                                        ))}
-                                    </div>
+                                        <div className="p-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{t('footer.accounts', lang)}</span>
+                                            <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-50 dark:bg-emerald-500/10 rounded-full border border-emerald-100 dark:border-emerald-500/20">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                                <span className="text-[9px] font-bold text-emerald-600 dark:text-emerald-400">7x24 即收即用</span>
+                                            </div>
+                                        </div>
+                                        <div className="p-2 space-y-1">
+                                            {categories.map((c) => (
+                                                <Link
+                                                    key={c.id}
+                                                    href={getLocalizedPath(c.href, lang)}
+                                                    className="flex items-center gap-3 px-3 py-3 hover:bg-slate-50 dark:hover:bg-white/5 rounded-xl transition-all group/item hover:translate-x-1"
+                                                >
+                                                    <div className="w-10 h-10 flex items-center justify-center rounded-xl overflow-hidden bg-white border border-slate-200 dark:border-slate-800 shadow-sm shrink-0 group-hover/item:scale-110 group-hover/item:shadow-md transition-all">
+                                                        {categoryIcons[c.id]}
+                                                    </div>
+                                                    <div className="flex-1 min-w-0">
+                                                        <span className={`font-bold text-sm block ${c.color} group-hover/item:translate-x-0.5 transition-transform`}>{c.name[lang]}</span>
+                                                        <span className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 opacity-70">
+                                                            {c.description[lang]}
+                                                        </span>
+                                                    </div>
+                                                    <ChevronDown className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 -rotate-90 opacity-0 group-hover/item:opacity-100 transition-all" />
+                                                </Link>
+                                            ))}
+                                        </div>
                                 </div>
                             </div>
                         </nav>
 
                         {/* Desktop Actions */}
-                        <div className="hidden md:flex items-center gap-1.5">
+                        <div className="hidden lg:flex items-center gap-1.5">
                             <Link
                                 href={switchLangPath}
                                 className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors rounded-xl hover:bg-slate-100/80 dark:hover:bg-white/5"
@@ -220,7 +227,7 @@ export default function Header() {
                         </div>
 
                         {/* Mobile Actions */}
-                        <div className="flex md:hidden items-center gap-0.5 shrink-0">
+                        <div className="flex lg:hidden items-center gap-0.5 shrink-0">
                             <button
                                 onClick={() => setIsOpen(true)}
                                 className="p-2 text-slate-600 dark:text-slate-300 relative"
@@ -282,7 +289,7 @@ export default function Header() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-md z-[90]"
+                            className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-md z-[90]"
                             onClick={() => setMobileMenuOpen(false)}
                             style={{ top: `${headerHeight}px` }}
                         />
@@ -293,7 +300,7 @@ export default function Header() {
                             animate={{ y: 0, opacity: 1, scale: 1 }}
                             exit={{ y: -20, opacity: 0, scale: 0.97 }}
                             transition={{ type: 'spring', damping: 30, stiffness: 300, mass: 0.8 }}
-                            className="md:hidden fixed left-3 right-3 z-[100] bg-white/95 dark:bg-dark-900/95 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/5 shadow-2xl overflow-hidden"
+                            className="lg:hidden fixed left-3 right-3 z-[100] bg-white/95 dark:bg-dark-900/95 backdrop-blur-xl rounded-3xl border border-white/20 dark:border-white/5 shadow-2xl overflow-hidden"
                             style={{ top: `${headerHeight + 4}px`, maxHeight: `calc(100vh - ${headerHeight + 16}px)`, overflowY: 'auto' }}
                         >
                             <div className="p-5 space-y-1">
@@ -362,6 +369,14 @@ export default function Header() {
                                     transition={{ delay: 0.35 }}
                                     className="grid grid-cols-1 gap-3 mt-6 pt-5 border-t border-slate-200/50 dark:border-white/5"
                                 >
+                                    <Link
+                                        href={getLocalizedPath('/auth/login', lang)}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="flex items-center justify-center gap-2 h-12 bg-white dark:bg-dark-800 border-2 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 font-bold rounded-2xl hover:border-red-300 active:scale-95 transition-all"
+                                    >
+                                        <User className="w-4 h-4" />
+                                        {lang === 'zh' ? '登录 / 注册' : 'Login / Sign Up'}
+                                    </Link>
                                     <Link
                                         href={getLocalizedPath('/contact', lang)}
                                         onClick={() => setMobileMenuOpen(false)}
