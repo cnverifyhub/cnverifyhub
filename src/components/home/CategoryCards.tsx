@@ -3,16 +3,17 @@ import { ArrowRight, Zap, Flame } from 'lucide-react';
 import { categories, getTotalStock, getLowestPrice } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { formatYuan } from '@/lib/utils';
-import { MessageCircle, Wallet, Music, Tv2, ShoppingBag, Store, Camera } from 'lucide-react';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
+import { Wallet, MessageCircle } from 'lucide-react';
 
 const iconMap: Record<string, { icon: React.ReactNode, bgClass: string }> = {
-    wechat: { icon: <MessageCircle className="w-full h-full text-emerald-500" />, bgClass: 'bg-emerald-50/50 border border-emerald-100 shadow-sm' },
-    alipay: { icon: <Wallet className="w-full h-full text-blue-500" />, bgClass: 'bg-blue-50/50 border border-blue-100 shadow-sm' },
-    douyin: { icon: <Music className="w-full h-full text-slate-800 dark:text-white" />, bgClass: 'bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 shadow-sm' },
-    qq: { icon: <Tv2 className="w-full h-full text-sky-500" />, bgClass: 'bg-sky-50/50 border border-sky-100 shadow-sm' },
-    xianyu: { icon: <ShoppingBag className="w-full h-full text-amber-500" />, bgClass: 'bg-amber-50/50 border border-amber-100 shadow-sm' },
-    taobao: { icon: <Store className="w-full h-full text-orange-500" />, bgClass: 'bg-orange-50/50 border border-orange-100 shadow-sm' },
-    xiaohongshu: { icon: <Camera className="w-full h-full text-red-500" />, bgClass: 'bg-red-50/50 border border-red-100 shadow-sm' },
+    wechat: { icon: <WeChatIcon className="w-full h-full" />, bgClass: 'bg-white border border-slate-200 shadow-sm' },
+    alipay: { icon: <AlipayIcon className="w-full h-full" />, bgClass: 'bg-white border border-slate-200 shadow-sm' },
+    douyin: { icon: <DouyinIcon className="w-full h-full" />, bgClass: 'bg-white border border-slate-200 shadow-sm' },
+    qq: { icon: <QQIcon className="w-full h-full" />, bgClass: 'bg-white border border-slate-200 shadow-sm' },
+    xianyu: { icon: <XianyuIcon className="w-full h-full" />, bgClass: 'bg-white border border-slate-200 shadow-sm' },
+    taobao: { icon: <TaobaoIcon className="w-full h-full" />, bgClass: 'bg-white border border-slate-200 shadow-sm' },
+    xiaohongshu: { icon: <XiaohongshuIcon className="w-full h-full" />, bgClass: 'bg-white border border-slate-200 shadow-sm' },
 };
 
 export function CategoryCards({ lang }: { lang: Lang }) {
