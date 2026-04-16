@@ -25,7 +25,7 @@ function BrandIcon({ name, className }: { name: string; className?: string }) {
                 src={src}
                 alt={name}
                 fill
-                className="object-cover scale-[1.15]"
+                className="object-cover scale-100"
                 sizes="(max-width: 128px) 100vw, 128px"
                 priority={name === 'wechat' || name === 'alipay'}
             />

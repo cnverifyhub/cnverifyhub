@@ -282,9 +282,9 @@ export function Hero({ lang }: { lang: Lang }) {
                                     className="flex items-center gap-2.5 px-4 py-3 hover:bg-red-50/60 dark:hover:bg-red-900/10 transition-colors border-b border-slate-50 dark:border-slate-800/50 last:border-b-0 group"
                                 >
                                     <div className="shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-0.5">
-                                        <div className="w-9 h-9 rounded-[10px] bg-white border border-slate-200 dark:border-slate-700 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center overflow-hidden shrink-0">
+                                        <div className="w-9 h-9 flex items-center justify-center shrink-0">
                                             {iconMap[cat.id] || (
-                                                <div className={`w-full h-full flex items-center justify-center text-xs font-black ${cat.color} bg-white`}>
+                                                <div className={`w-full h-full flex items-center justify-center text-xs font-black ${cat.color} bg-white rounded-[10px]`}>
                                                     {cat.name.en.slice(0, 2)}
                                                 </div>
                                             )}
