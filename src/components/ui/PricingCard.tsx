@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Check, ShieldCheck, Clock, ShoppingCart, Zap, Users } from 'lucide-react';
+import { Check, ShieldCheck, Clock, ShoppingCart, Zap, Users, ArrowRight } from 'lucide-react';
 import { Badge } from './Badge';
 import { StockBadge } from './StockBadge';
 import type { Product } from '@/types';
@@ -16,14 +16,14 @@ interface PricingCardProps {
     lang: Lang;
 }
 
-const BRAND_CONFIG: Record<string, { color: string; bg: string; iconBg: string; shadow: string }> = {
-    wechat:      { color: '#07C160', bg: 'from-emerald-500/10 to-emerald-600/5', iconBg: '#07C160', shadow: 'shadow-emerald-500/20' },
-    alipay:      { color: '#1677ff', bg: 'from-blue-500/10 to-blue-600/5', iconBg: '#1677ff', shadow: 'shadow-blue-500/20' },
-    douyin:      { color: '#fe2c55', bg: 'from-slate-900/10 to-slate-800/5', iconBg: '#161823', shadow: 'shadow-slate-500/20' },
-    qq:          { color: '#12B7F5', bg: 'from-sky-500/10 to-sky-600/5', iconBg: '#12B7F5', shadow: 'shadow-sky-500/20' },
-    xianyu:      { color: '#FFB300', bg: 'from-amber-400/10 to-amber-500/5', iconBg: '#FFB300', shadow: 'shadow-amber-500/20' },
-    taobao:      { color: '#FF5000', bg: 'from-orange-500/10 to-orange-600/5', iconBg: '#FF5000', shadow: 'shadow-orange-500/20' },
-    xiaohongshu: { color: '#ff2442', bg: 'from-red-500/10 to-red-600/5', iconBg: '#ff2442', shadow: 'shadow-red-500/20' },
+const BRAND_CONFIG: Record<string, { color: string; bg: string; iconBg: string; shadow: string; glow: string }> = {
+    wechat:      { color: '#07C160', bg: 'bg-[#07C160]/5', iconBg: '#07C160', shadow: 'shadow-emerald-500/20', glow: 'group-hover:shadow-emerald-500/30' },
+    alipay:      { color: '#1677ff', bg: 'bg-[#1677ff]/5', iconBg: '#1677ff', shadow: 'shadow-blue-500/20', glow: 'group-hover:shadow-blue-500/30' },
+    douyin:      { color: '#000000', bg: 'bg-slate-900/5', iconBg: '#161823', shadow: 'shadow-slate-500/20', glow: 'group-hover:shadow-slate-500/30' },
+    qq:          { color: '#12B7F5', bg: 'bg-[#12B7F5]/5', iconBg: '#12B7F5', shadow: 'shadow-sky-500/20', glow: 'group-hover:shadow-sky-500/30' },
+    xianyu:      { color: '#FFB300', bg: 'bg-[#FFB300]/10', iconBg: '#FFB300', shadow: 'shadow-amber-500/20', glow: 'group-hover:shadow-amber-500/30' },
+    taobao:      { color: '#FF5000', bg: 'bg-[#FF5000]/5', iconBg: '#FF5000', shadow: 'shadow-orange-500/20', glow: 'group-hover:shadow-orange-500/30' },
+    xiaohongshu: { color: '#ff2442', bg: 'bg-[#ff2442]/5', iconBg: '#ff2442', shadow: 'shadow-red-500/20', glow: 'group-hover:shadow-red-500/30' },
 };
 
 export function PricingCard({ product, lang }: PricingCardProps) {
@@ -38,7 +38,6 @@ export function PricingCard({ product, lang }: PricingCardProps) {
 
     useEffect(() => {
         if (!product.popular || isOutOfStock) return;
-
         const timer = setInterval(() => {
             setTimeLeft(prev => Math.max(0, prev - 1));
         }, 1000);
@@ -57,91 +56,91 @@ export function PricingCard({ product, lang }: PricingCardProps) {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, type: 'spring', stiffness: 100 }}
-            whileHover={{ y: -6, scale: 1.01 }}
-            className={`bg-white dark:bg-[#1c1c1e] rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 flex flex-col h-full border border-gray-100 dark:border-gray-800 ${product.popular ? 'ring-1 ring-[#FF5000]/10' : ''}`}
+            transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
+            whileHover={{ y: -8, scale: 1.02 }}
+            className={`group bg-white dark:bg-[#1c1c1e] rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all duration-500 flex flex-col h-full border border-slate-100 dark:border-white/5 relative`}
         >
             <Link 
                 href={getLocalizedPath(`/product/${product.id}`, lang)} 
-                className={`relative aspect-[4/3] w-full block overflow-hidden bg-gradient-to-br ${config.bg}`}
+                className={`relative aspect-[5/4] w-full block overflow-hidden ${config.bg} p-6`}
             >
+                {/* Visual Flair */}
+                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-white dark:from-[#1c1c1e] to-transparent z-10" />
+                
                 {product.badge && (
-                    <div className="absolute top-3 left-0 bg-gradient-to-r from-[#FF5000] to-[#FF8C00] text-white text-[10px] sm:text-xs font-black px-3 py-1 rounded-r-xl z-20 shadow-md">
+                    <div className="absolute top-4 left-4 bg-gradient-to-r from-[#FF5000] to-[#FF8C00] text-white text-[10px] sm:text-xs font-black px-4 py-1.5 rounded-full z-20 shadow-lg shadow-orange-500/30">
                         {product.badge[lang]}
                     </div>
                 )}
-                {product.popular && !product.badge && (
-                    <div className="absolute top-3 left-0 bg-gradient-to-r from-red-600 to-[#FF5000] text-white text-[10px] sm:text-xs font-black px-3 py-1 rounded-r-xl z-20 shadow-md">
-                        {t('pricing.popular', lang)}
-                    </div>
-                )}
                 
-                <div className="absolute inset-0 flex items-center justify-center p-6 sm:p-8">
+                {/* Pro Max Image Area */}
+                <div className="relative w-full h-full flex items-center justify-center z-0">
                     <div 
-                        className={`w-20 h-20 sm:w-24 sm:h-24 rounded-[22.5%] overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-110 flex items-center justify-center p-2.5`}
+                        className={`w-28 h-28 sm:w-32 sm:h-32 rounded-[22.5%] overflow-hidden shadow-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 flex items-center justify-center p-0`}
                         style={{ backgroundColor: config.iconBg }}
                     >
                         <img 
-                            src={`https://play-lh.googleusercontent.com/${product.category === 'wechat' ? 'QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ' : product.category === 'alipay' ? 'quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY' : product.category === 'douyin' ? 'xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw' : product.category === 'qq' ? '2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0' : product.category === 'xianyu' ? 'eaX5GSrLgAvCTKAe8N0baDkKA0gJ3siyG9X28sfmSO8yBmKVfPDQyJ3y_AvcCr8DSYU' : product.category === 'taobao' ? '6F3ONMR_UowQyqKud-bqqz5iWHGtleHEWTPZEoUiWPJj02R9hPL-agPCt_C3KYQLYi8' : 'c6Ipks61J7b4qgJMxo965UqsSo0M7ZwTDzQrmLKeBNneCk2gub-RitqSC-fnrmLGXTk3mNEceiBN5N3i26BmYHc'}`}
+                            src={`/images/categories/${product.category}.webp`}
                             alt={product.tierName[lang]}
-                            className="w-full h-full object-contain brightness-0 invert"
+                            className="w-full h-full object-cover"
                         />
                     </div>
+                    {/* Shadow underneath */}
+                    <div className={`absolute bottom-4 w-20 h-4 bg-black/10 dark:bg-black/40 blur-xl rounded-full scale-x-150 transition-transform duration-500 group-hover:scale-x-110`} />
                 </div>
 
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none" />
-
-                <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent pt-8 pb-2 px-4 flex justify-between items-end text-white">
+                <div className="absolute bottom-6 inset-x-0 px-6 flex justify-between items-end text-slate-900 dark:text-white z-20">
                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black uppercase tracking-tighter opacity-80 mb-0.5">{lang === 'zh' ? '历史成交' : 'HISTORY'}</span>
-                        <span className="text-xs font-bold whitespace-nowrap">
-                            {lang === 'zh' ? `已售 ${100 + (product.id.charCodeAt(0) * 10)}+ 件` : `${100 + (product.id.charCodeAt(0) * 10)}+ sold`}
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-1">{lang === 'zh' ? '成交量' : 'VOLUME'}</span>
+                        <span className="text-sm font-black tracking-tight whitespace-nowrap bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded-lg">
+                            {lang === 'zh' ? `已售 ${100 + (product.id.charCodeAt(0) * 10)}+` : `${100 + (product.id.charCodeAt(0) * 10)}+ sold`}
                         </span>
                     </div>
                     <StockBadge count={product.stockCount} lang={lang} />
                 </div>
             </Link>
 
-            <div className="p-4 flex-grow flex flex-col pt-5">
-                <Link href={getLocalizedPath(`/product/${product.id}`, lang)} className="mb-3 block group/title">
-                    <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
-                        <span className="bg-[#FF5000] text-white text-[9px] font-black px-1.5 py-0.5 rounded-sm flex items-center uppercase letter tracking-tighter">
-                            {lang === 'zh' ? '官方自营' : 'Official'}
+            <div className="px-6 pb-6 pt-2 flex-grow flex flex-col">
+                <Link href={getLocalizedPath(`/product/${product.id}`, lang)} className="mb-4 block">
+                    <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span 
+                            className="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-tight"
+                            style={{ backgroundColor: `${config.color}15`, color: config.color }}
+                        >
+                            {lang === 'zh' ? '官方特选' : 'PREMIUM'}
                         </span>
-                        <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white leading-tight line-clamp-1 group-hover/title:text-[#FF5000] transition-colors">
+                        <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-tight line-clamp-1 group-hover:text-[#FF5000] transition-colors">
                             {product.tierName[lang]}
                         </h3>
                     </div>
-                    <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed opacity-80">
+                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed font-medium">
                         {product.description[lang]}
                     </p>
                 </Link>
 
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                    {product.features.slice(0, 3).map((feature, i) => (
-                        <span key={i} className="text-[10px] font-bold bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400 px-2 py-1 rounded-lg border border-slate-200/50 dark:border-slate-700/50 transition-colors hover:bg-[#FF5000]/5 hover:text-[#FF5000] hover:border-[#FF5000]/20">
+                <div className="flex flex-wrap gap-2 mb-6">
+                    {product.features.slice(0, 2).map((feature, i) => (
+                        <span key={i} className="text-[10px] font-bold bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-slate-400 px-3 py-1.5 rounded-xl border border-slate-100 dark:border-white/5">
                             {feature[lang]}
                         </span>
                     ))}
-                    <span className="text-[10px] font-black bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400 px-2 py-1 rounded-lg border border-emerald-100 dark:border-emerald-800/30 flex items-center gap-1">
-                        <ShieldCheck className="w-3 h-3" />
+                    <span className="text-[10px] font-black bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 px-3 py-1.5 rounded-xl border border-emerald-100 dark:border-emerald-500/20 flex items-center gap-1.5">
+                        <ShieldCheck className="w-3.5 h-3.5" />
                         {product.warranty[lang]}{lang === 'zh' ? '质保' : ' Warranty'}
                     </span>
                 </div>
 
                 {product.popular && !isOutOfStock && (
-                    <div className="mb-4 relative group/sale overflow-hidden rounded-xl border border-red-100 dark:border-red-900/30 shadow-sm">
-                        <div className="absolute inset-0 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20 group-hover/sale:scale-105 transition-transform duration-700" />
-                        <div className="relative flex items-stretch">
-                            <div className="bg-gradient-to-br from-red-600 to-[#FF5000] text-white text-[10px] font-black px-3 py-1.5 flex flex-col justify-center italic tracking-wider shrink-0 shadow-lg">
-                                <Zap className="w-3 h-3 mb-0.5 fill-current" />
-                                {lang === 'zh' ? '抢!' : 'SALE'}
+                    <div className="mb-6 relative group/sale overflow-hidden rounded-2xl border border-red-50 dark:border-red-500/20 shadow-sm bg-red-50/30 dark:bg-red-500/5">
+                        <div className="flex items-center">
+                            <div className="bg-gradient-to-br from-[#ff2442] to-[#ff5000] text-white text-[10px] font-black px-4 py-2 flex flex-col justify-center italic tracking-widest shrink-0">
+                                <Zap className="w-4 h-4 fill-current group-hover:scale-110 transition-transform" />
                             </div>
-                            <div className="flex-1 px-3 py-1.5 flex items-center justify-between bg-white/40 dark:bg-black/20 backdrop-blur-sm">
-                                <span className="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-tighter">
-                                    {lang === 'zh' ? '距秒杀结束' : 'Flash ends in'}
+                            <div className="flex-1 px-4 py-2 flex items-center justify-between">
+                                <span className="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-widest">
+                                    {lang === 'zh' ? '热卖倒计时' : 'FLASH SALE'}
                                 </span>
-                                <span className="text-xs font-black text-red-700 dark:text-red-400 font-mono tabular-nums bg-red-100/50 dark:bg-red-900/30 px-2 py-0.5 rounded-lg border border-red-200 dark:border-red-800/50">
+                                <span className="text-xs font-black text-red-600 dark:text-red-400 font-mono">
                                     {formatTime(timeLeft)}
                                 </span>
                             </div>
@@ -149,68 +148,62 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                     </div>
                 )}
 
-                <div className="mt-auto pt-2">
-                    <div className="flex items-end justify-between mb-2">
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
-                                {lang === 'zh' ? '当前单价 (USDT)' : 'SINGLE PRICE'}
+                <div className="mt-auto">
+                    <div className="flex flex-col mb-4">
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 leading-none">
+                            {lang === 'zh' ? '专属价格' : 'EXCLUSIVE PRICE'}
+                        </span>
+                        <div className="flex items-end gap-2 px-0.5">
+                            <span className="text-sm font-black text-[#ff5000] mb-1.5">USDT</span>
+                            <span className="text-4xl sm:text-5xl font-black text-slate-950 dark:text-white tracking-tighter leading-none">
+                                {formatYuan(product.price.single)}
                             </span>
-                            <div className="flex items-baseline gap-1">
-                                <span className="text-3xl font-black text-slate-950 dark:text-white tracking-tighter">
-                                    <span className="text-lg mr-0.5">$</span>
-                                    {formatYuan(product.price.single)}
+                            {product.price.originalPrice && product.price.originalPrice.single > product.price.single && (
+                                <span className="text-base text-slate-300 dark:text-slate-600 line-through font-bold mb-1.5">
+                                    {formatYuan(product.price.originalPrice.single)}
                                 </span>
-                                {product.price.originalPrice && product.price.originalPrice.single > product.price.single && (
-                                    <span className="text-sm text-slate-400 line-through font-bold opacity-70">
-                                        {formatYuan(product.price.originalPrice.single)}
-                                    </span>
-                                )}
-                            </div>
-                        </div>
-                        <div className="text-right flex flex-col items-end">
-                            <span className="text-[9px] font-black text-emerald-500 uppercase tracking-tighter mb-1 bg-emerald-50 dark:bg-emerald-900/20 px-1.5 rounded-full">
-                                {lang === 'zh' ? '多买更省' : 'SAVE MORE'}
-                            </span>
-                            <div className="text-[11px] font-black text-slate-600 dark:text-slate-400">
-                                <span className="text-[#FF5000]">50x</span> <span className="opacity-60">@</span> ${formatYuan(product.price.bulk50)}
-                            </div>
+                            )}
                         </div>
                     </div>
                     
-                    <div className="bg-slate-50 dark:bg-dark-900/50 rounded-xl p-2.5 border border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] font-bold group-hover:bg-[#FF5000]/5 group-hover:border-[#FF5000]/10 transition-colors">
-                        <div className="flex items-center gap-2 text-slate-500">
-                            <Users className="w-3.5 h-3.5" />
-                            <span>10+ {lang === 'zh' ? '批发' : 'Bulk'}</span>
+                    <div className="bg-[#f8f9fb] dark:bg-white/5 rounded-2xl p-4 flex items-center justify-between border border-slate-100 dark:border-white/5 group-hover:border-[#ff5000]/20 transition-all duration-300">
+                        <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-white dark:bg-white/10 flex items-center justify-center shadow-sm">
+                                <Users className="w-4 h-4 text-[#ff5000]" />
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">50+ {lang === 'zh' ? '批量下单' : 'BULK ORDER'}</span>
+                                <span className="text-xs font-black text-slate-700 dark:text-slate-300">${formatYuan(product.price.bulk50)} <span className="text-[10px] opacity-40 ml-1">each</span></span>
+                            </div>
                         </div>
-                        <span className="text-[#FF5000]">${formatYuan(product.price.bulk10)}</span>
+                        <ArrowRight className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-[#ff5000] group-hover:translate-x-1 transition-all" />
                     </div>
                 </div>
             </div>
 
-            <div className="p-4 pt-1 bg-white dark:bg-[#1c1c1e] relative">
+            <div className="px-6 pb-6 pt-0">
                 {isOutOfStock ? (
-                    <button disabled className="w-full bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 py-3 rounded-2xl text-sm font-black uppercase tracking-widest cursor-not-allowed">
-                        {lang === 'zh' ? '库存告急 · 已售罄' : 'Sold Out'}
+                    <button disabled className="w-full bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-600 py-4 rounded-2xl text-sm font-black uppercase tracking-widest cursor-not-allowed border border-slate-200 dark:border-white/5">
+                        {lang === 'zh' ? '库存已售罄' : 'SOLD OUT'}
                     </button>
                 ) : (
-                    <div className="flex gap-2.5">
+                    <div className="flex gap-3">
                         <button
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 addItem(product.id, 1);
                             }}
-                            className="w-14 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-[#FF5000] hover:text-white py-3 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm active:scale-95"
-                            title={lang === 'zh' ? '加入购物车' : 'Add to cart'}
+                            className="w-16 h-14 bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black rounded-2xl flex items-center justify-center transition-all duration-300 border border-slate-200 dark:border-white/5 active:scale-90"
                         >
-                            <ShoppingCart className="w-5 h-5" />
+                            <ShoppingCart className="w-6 h-6" />
                         </button>
                         <Link
                             href={getLocalizedPath(`/product/${product.id}`, lang)}
-                            className="flex-1 relative group/buy overflow-hidden bg-gradient-to-r from-[#FF8C00] to-[#FF5000] text-white py-3 rounded-2xl flex items-center justify-center text-sm font-black uppercase tracking-widest shadow-xl shadow-orange-500/30 transition-all duration-300 hover:shadow-orange-500/50 hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+                            className="flex-1 h-14 bg-gradient-to-r from-[#ff8c00] to-[#ff5000] text-white rounded-2xl flex items-center justify-center text-sm font-black uppercase tracking-[0.1em] shadow-xl shadow-orange-500/30 transition-all duration-300 hover:shadow-orange-500/50 hover:scale-[1.02] active:scale-95 relative overflow-hidden group/btn"
                         >
-                            <div className="absolute inset-0 hero-shine opacity-0 group-hover/buy:opacity-100 transition-opacity" />
-                            <span className="relative z-10">{lang === 'zh' ? '立即抢购 · BUY NOW' : 'Buy Now'}</span>
+                            <div className="absolute inset-0 bg-white/20 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 skew-x-12" />
+                            {lang === 'zh' ? '立刻抢购' : 'BUY NOW'}
                         </Link>
                     </div>
                 )}
