@@ -5,7 +5,6 @@ import { WhyChooseUs } from '@/components/home/WhyChooseUs';
 import { CustomerReviews } from '@/components/home/CustomerReviews';
 import { PopularProducts } from '@/components/home/PopularProducts';
 import { FAQSection } from '@/components/home/FAQSection';
-import { ContactFloat } from '@/components/ui/ContactFloat';
 import { LuckyWheel } from '@/components/home/LuckyWheel';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
@@ -86,7 +85,6 @@ export default function HomeEn() {
             <WhyChooseUs lang={lang} />
             <CustomerReviews lang={lang} />
             <FAQSection lang={lang} />
-            <ContactFloat lang={lang} />
             <LuckyWheel lang={lang} />
         </div>
     );

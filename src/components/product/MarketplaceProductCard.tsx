@@ -92,7 +92,7 @@ export function MarketplaceProductCard({
         >
             {/* ── Image Area: Brand Gradient Background ── */}
             <div
-                className="relative aspect-square overflow-hidden flex items-center justify-center"
+                className="relative aspect-[3/2.2] overflow-hidden flex items-center justify-center"
                 style={{ background: `linear-gradient(135deg, ${gradient.from} 0%, ${gradient.to} 100%)` }}
             >
                 {/* Radial highlight overlay */}
@@ -130,8 +130,8 @@ export function MarketplaceProductCard({
 
                 {/* Flat Brand Icon Bubble — iOS App Icon style */}
                 <div
-                    className="relative z-10 bg-white rounded-[22px] shadow-lg p-2.5 md:p-3 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105"
-                    style={{ width: 80, height: 80 }}
+                    className="relative z-10 bg-white rounded-[18px] shadow-lg p-2 md:p-2.5 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-105"
+                    style={{ width: 72, height: 72 }}
                 >
                     <BrandIcon className="w-full h-full" />
                 </div>
@@ -169,14 +169,14 @@ export function MarketplaceProductCard({
             </div>
 
             {/* ── Content Section ── */}
-            <div className="p-3 md:p-4 flex flex-col flex-1">
+            <div className="p-3 flex flex-col flex-1">
                 {/* Product Title */}
-                <h3 className="text-sm md:text-base font-bold text-slate-800 dark:text-white leading-snug mb-2 line-clamp-2 min-h-[2.5rem] tracking-tight">
+                <h3 className="text-sm md:text-base font-bold text-slate-800 dark:text-white leading-snug mb-1.5 line-clamp-2 min-h-[2.1rem] tracking-tight">
                     {title}
                 </h3>
 
                 {/* Trust Badges */}
-                <div className="flex flex-wrap gap-1 mb-3">
+                <div className="flex flex-wrap gap-1 mb-2">
                     {badges.map((badge, idx) => (
                         <span
                             key={idx}
@@ -194,7 +194,7 @@ export function MarketplaceProductCard({
 
                 {/* Price Section */}
                 <div className="mt-auto">
-                    <div className="flex items-baseline gap-1 mb-1">
+                    <div className="flex items-baseline gap-1 mb-0.5">
                         <span className="text-xl md:text-2xl font-black tabular-nums tracking-tighter" style={{ color: gradient.from }}>
                             {formatYuan(price)}
                         </span>
@@ -206,7 +206,7 @@ export function MarketplaceProductCard({
                     </div>
 
                     {/* Sales & Stock Row */}
-                    <div className="flex items-center justify-between text-[10px] md:text-xs mb-2">
+                    <div className="flex items-center justify-between text-[10px] md:text-xs mb-1.5">
                         <span className="text-slate-400 font-medium">{salesVolume}</span>
                         <span className="font-bold" style={{ color: stockColor }}>
                             仅剩 {stock} 件
@@ -214,7 +214,7 @@ export function MarketplaceProductCard({
                     </div>
 
                     {/* Stock Progress Bar */}
-                    <div className="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-3">
+                    <div className="w-full h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden mb-2.5">
                         <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: `${stockPct}%` }}

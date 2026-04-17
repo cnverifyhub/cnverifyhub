@@ -173,7 +173,7 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-dark-950 pt-20 pb-24 font-sans">
-            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
 
                 {/* Breadcrumbs */}
                 <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6">
