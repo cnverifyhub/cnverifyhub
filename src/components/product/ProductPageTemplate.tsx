@@ -479,9 +479,9 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
 
                             <div className="mb-6">
                                 <label className="block text-sm font-bold text-slate-900 dark:text-white mb-3">
-                                    {lang === 'zh' ? '批发阶梯价 (USDT)' : 'Bulk Pricing (USDT)'}
+                                    {lang === 'zh' ? '批发阶梯价' : 'Bulk Pricing'}
                                 </label>
-                                <div className="grid grid-cols-4 gap-2 mb-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4">
                                     {[
                                         { label: '1-9件', en: '1-9 pcs', price: product.price.single, min: 1 },
                                         { label: '10-49件', en: '10-49', price: product.price.bulk10, min: 10 },
@@ -499,7 +499,7 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                                                     {lang === 'zh' ? tier.label : tier.en}
                                                 </span>
                                                 <span className={`text-sm md:text-base font-black tabular-nums ${isActive ? 'text-red-600 dark:text-red-500' : ''}`}>
-                                                    {tier.price}
+                                                    {formatYuan(tier.price)}
                                                 </span>
                                             </div>
                                         )

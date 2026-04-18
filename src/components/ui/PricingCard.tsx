@@ -62,7 +62,7 @@ export function PricingCard({ product, lang }: PricingCardProps) {
         >
             <Link 
                 href={getLocalizedPath(`/product/${product.id}`, lang)} 
-                className={`relative aspect-[3/2] w-full block overflow-hidden ${config.bg} p-4 sm:p-5`}
+                className={`relative aspect-[5/4] w-full block overflow-hidden ${config.bg} p-6`}
             >
                 {/* Visual Flair */}
                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-white dark:from-[#1c1c1e] to-transparent z-10" />
@@ -100,8 +100,8 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                 </div>
             </Link>
 
-            <div className="px-5 pb-5 pt-1.5 flex-grow flex flex-col">
-                <Link href={getLocalizedPath(`/product/${product.id}`, lang)} className="mb-3 block">
+            <div className="px-6 pb-6 pt-2 flex-grow flex flex-col">
+                <Link href={getLocalizedPath(`/product/${product.id}`, lang)} className="mb-4 block">
                     <div className="flex flex-wrap items-center gap-2 mb-2">
                         <span 
                             className="text-[9px] font-black px-2 py-1 rounded-md uppercase tracking-tight"
@@ -118,7 +118,7 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                     </p>
                 </Link>
 
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="flex flex-wrap gap-2 mb-6">
                     {product.features.slice(0, 2).map((feature, i) => (
                         <span key={i} className="text-[10px] font-bold bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-slate-400 px-3 py-1.5 rounded-xl border border-slate-100 dark:border-white/5">
                             {feature[lang]}
@@ -131,7 +131,7 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                 </div>
 
                 {product.popular && !isOutOfStock && (
-                    <div className="mb-4 relative group/sale overflow-hidden rounded-2xl border border-red-50 dark:border-red-500/20 shadow-sm bg-red-50/30 dark:bg-red-500/5">
+                    <div className="mb-6 relative group/sale overflow-hidden rounded-2xl border border-red-50 dark:border-red-500/20 shadow-sm bg-red-50/30 dark:bg-red-500/5">
                         <div className="flex items-center">
                             <div className="bg-gradient-to-br from-[#ff2442] to-[#ff5000] text-white text-[10px] font-black px-4 py-2 flex flex-col justify-center italic tracking-widest shrink-0">
                                 <Zap className="w-4 h-4 fill-current group-hover:scale-110 transition-transform" />
@@ -180,7 +180,7 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                 </div>
             </div>
 
-            <div className="px-5 pb-5 pt-0">
+            <div className="px-6 pb-6 pt-0">
                 {isOutOfStock ? (
                     <button disabled className="w-full bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-600 py-4 rounded-2xl text-sm font-black uppercase tracking-widest cursor-not-allowed border border-slate-200 dark:border-white/5">
                         {lang === 'zh' ? '库存已售罄' : 'SOLD OUT'}

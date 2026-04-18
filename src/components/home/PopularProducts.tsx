@@ -15,7 +15,7 @@ export function PopularProducts({ lang }: { lang: Lang }) {
     const popularProducts = allProducts
         .filter(p => p.popular)
         .sort((a, b) => b.sortOrder - a.sortOrder)
-        .slice(0, 4);
+        .slice(0, 6);
 
     return (
         <section id="pricing" className="py-16 md:py-24 bg-slate-50 dark:bg-dark-950/50 border-t border-slate-200 dark:border-slate-800">
@@ -31,7 +31,7 @@ export function PopularProducts({ lang }: { lang: Lang }) {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 lg:gap-6 lg:px-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-6 lg:gap-8 lg:px-2">
                     {popularProducts.map((product) => (
                         <PricingCard 
                             key={product.id} 
