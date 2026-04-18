@@ -145,7 +145,8 @@ export default function Header() {
                                     <ChevronDown className="w-3.5 h-3.5 group-hover:rotate-180 transition-transform duration-300" />
                                 </button>
 
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 w-72">
+                                <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 w-72 z-50">
+                                    <div className="bg-white dark:bg-dark-900 rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden">
                                         <div className="p-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{t('footer.accounts', lang)}</span>
                                             <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-50 dark:bg-emerald-500/10 rounded-full border border-emerald-100 dark:border-emerald-500/20">
@@ -173,6 +174,7 @@ export default function Header() {
                                                 </Link>
                                             ))}
                                         </div>
+                                    </div>
                                 </div>
                             </div>
                         </nav>
