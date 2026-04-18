@@ -71,16 +71,11 @@ export function CategoryPageTemplate({ categoryId, lang }: CategoryPageTemplateP
                 <div className="section-container relative z-10">
                     <div className="max-w-4xl flex items-center gap-6 md:gap-8">
                         {/* App Icon Container - Matches homepage style */}
-                        <div className="w-20 h-20 md:w-32 md:h-32 flex items-center justify-center shrink-0 transition-transform duration-500 hover:scale-105 shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] rounded-2xl overflow-hidden bg-white border border-slate-200 p-3">
-                            <NextImage 
-                                src={`https://play-lh.googleusercontent.com/${category.id === 'wechat' ? 'QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ' : category.id === 'alipay' ? 'quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY' : category.id === 'douyin' ? 'xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw' : category.id === 'qq' ? '2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0' : category.id === 'xianyu' ? 'eaX5GSrLgAvCTKAe8N0baDkKA0gJ3siyG9X28sfmSO8yBmKVfPDQyJ3y_AvcCr8DSYU' : category.id === 'taobao' ? '6F3ONMR_UowQyqKud-bqqz5iWHGtleHEWTPZEoUiWPJj02R9hPL-agPCt_C3KYQLYi8' : 'c6Ipks61J7b4qgJMxo965UqsSo0M7ZwTDzQrmLKeBNneCk2gub-RitqSC-fnrmLGXTk3mNEceiBN5N3i26BmYHc'}`}
-                                alt={category.name[lang]} 
-                                width={128} 
-                                height={128} 
-                                priority 
-                                className="w-full h-full object-contain" 
-                                unoptimized
-                            />
+                        <div className="w-24 h-24 md:w-32 md:h-32 flex items-center justify-center shrink-0 transition-transform duration-500 hover:scale-110 rounded-2xl overflow-hidden">
+                            {(() => {
+                                const BrandIcon = iconMap[category.id] || WeChatIcon;
+                                return <BrandIcon className="w-full h-full" />;
+                            })()}
                         </div>
 
                         <div>
