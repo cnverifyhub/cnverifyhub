@@ -3,20 +3,46 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShieldCheck, MessageCircle, Send, Wallet, Shield, Clock, Headphones, Award, ChevronDown, AlertTriangle, FileText, Lock } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { 
+    ShieldCheck, 
+    MessageCircle, 
+    Shield, 
+    Clock, 
+    ChevronDown, 
+    AlertTriangle, 
+    FileText, 
+    Lock,
+    Globe,
+    ArrowUpRight,
+    Zap,
+    LifeBuoy,
+    CheckCircle2,
+    Award,
+    HelpCircle
+} from 'lucide-react';
 import { t, getLangFromPath, getLocalizedPath } from '@/lib/i18n';
 import { categories } from '@/data/products';
 import Image from 'next/image';
-import { WeChatIcon, AlipayIcon, TelegramIcon } from '@/components/ui/BrandIcons';
+import { 
+    WeChatIcon, 
+    AlipayIcon, 
+    TelegramIcon,
+    DouyinIcon,
+    QQIcon,
+    XianyuIcon,
+    TaobaoIcon,
+    XiaohongshuIcon
+} from '@/components/ui/BrandIcons';
 
-const categoryIcons: Record<string, React.ReactNode> = {
-    wechat: <Image src="https://play-lh.googleusercontent.com/QbSSiRcodmWx6HlezOtNu3vmZeuFqkQZQQO5Y2-Zg_jBRm-mXjhlXX5yFj8iphfqzQ" alt="WeChat" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
-    alipay: <Image src="https://play-lh.googleusercontent.com/quzvssC112NXIlt4YBkclEo7f9ZnhaNtZ5fvaCs_P19X7KL71DiUqd2ysR8ZHsTaRTY" alt="Alipay" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
-    douyin: <Image src="https://play-lh.googleusercontent.com/xey8dXOB53LtCR97JhDH7T-6np_sUBBE9iF7WP4Sp6T55oO28e6hic1LFTklCELw9Iw" alt="Douyin" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
-    qq: <Image src="https://play-lh.googleusercontent.com/2U-E-AGFKKEI-k6oRndaHvAsOpYZmBWm5hgpP0pVP5MTClOhk3fL3f_Sbl--9dnbUh0" alt="QQ" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
-    xianyu: <Image src="https://play-lh.googleusercontent.com/eaX5GSrLgAvCTKAe8N0baDkKA0gJ3siyG9X28sfmSO8yBmKVfPDQyJ3y_AvcCr8DSYU" alt="Xianyu" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
-    taobao: <Image src="https://play-lh.googleusercontent.com/6F3ONMR_UowQyqKud-bqqz5iWHGtleHEWTPZEoUiWPJj02R9hPL-agPCt_C3KYQLYi8" alt="Taobao" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
-    xiaohongshu: <Image src="https://play-lh.googleusercontent.com/c6Ipks61J7b4qgJMxo965UqsSo0M7ZwTDzQrmLKeBNneCk2gub-RitqSC-fnrmLGXTk3mNEceiBN5N3i26BmYHc" alt="Xiaohongshu" width={24} height={24} unoptimized className="w-full h-full object-contain" />,
+const iconMap: Record<string, React.ElementType> = {
+    wechat: WeChatIcon,
+    alipay: AlipayIcon,
+    douyin: DouyinIcon,
+    qq: QQIcon,
+    xianyu: XianyuIcon,
+    taobao: TaobaoIcon,
+    xiaohongshu: XiaohongshuIcon
 };
 
 export default function Footer() {
@@ -34,6 +60,8 @@ export default function Footer() {
             icon: FileText,
             titleZh: '实名认证说明', 
             titleEn: 'ID Verification',
+            gradient: 'from-blue-500/20 to-indigo-500/20',
+            iconColor: 'text-blue-500',
             contentZh: '部分账号（如微信/支付宝）可能需要二次实名或特定设备登录。购买前请确保了解对应平台的风控规则。',
             contentEn: 'Some accounts may require ID verification or specific device login. Please understand platform rules before buying.'
         },
@@ -42,6 +70,8 @@ export default function Footer() {
             icon: Shield,
             titleZh: '售后质保条款', 
             titleEn: 'Warranty Terms',
+            gradient: 'from-emerald-500/20 to-teal-500/20',
+            iconColor: 'text-emerald-500',
             contentZh: '所有账号提供72小时首登质保。非账号质量问题（如由于IP不干净导致的封号）不在质保范围内。',
             contentEn: '72h first-login warranty. Issues caused by user IP or platform-specific bans are not covered.'
         },
@@ -50,162 +80,318 @@ export default function Footer() {
             icon: Lock,
             titleZh: '使用规范', 
             titleEn: 'Usage Rules',
+            gradient: 'from-orange-500/20 to-red-500/20',
+            iconColor: 'text-orange-500',
             contentZh: '禁止将账号用于任何违法违规用途。若发现违规使用，本站有权立即收回账号并配合相关部门调查。',
             contentEn: 'Illegal use is strictly prohibited. We reserve the right to reclaim accounts used for non-compliant activities.'
         }
     ];
 
     return (
-        <footer className="relative bg-[#f5f5f5] dark:bg-[#0a0a0e] pt-12 pb-20 md:pb-10 overflow-hidden text-[#666] dark:text-[#999] text-[12px]">
+        <footer className="relative bg-white dark:bg-[#0a0a0f] pt-20 pb-24 md:pb-12 overflow-hidden z-10 border-t border-slate-100 dark:border-white/5">
+            {/* Background Aesthetics */}
+            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent" />
+            <div className="absolute -left-20 top-40 w-96 h-96 bg-primary-500/5 blur-[120px] rounded-full" />
+            <div className="absolute -right-20 bottom-0 w-96 h-96 bg-blue-500/5 blur-[120px] rounded-full" />
             
-            {/* 1. Risk Warning Banner */}
-            <div className="max-w-7xl mx-auto px-4 mb-10">
-                <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-500/20 p-4 rounded-xl flex items-start gap-3">
-                    <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-                    <div>
-                        <p className="font-bold text-amber-800 dark:text-amber-400 text-sm mb-1">风险提示 / Risk Warning</p>
-                        <p className="leading-relaxed">
-                            {lang === 'zh' 
-                                ? '本站所销售之账号资源仅供学习、测试及合规交流使用。请用户务必在遵守当地法律法规的前提下进行操作。因非法使用、违规操作产生的一切法律后果由使用者自行承担，本站概不负责。' 
-                                : 'The accounts sold here are for testing and educational purposes only. Users must comply with local laws. We are not responsible for any legal issues arising from misuse.'}
-                        </p>
+            <div className="max-w-7xl mx-auto px-4 relative z-10">
+                
+                {/* 1. Service Commitment Banner */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+                    {[
+                        { icon: Zap, title: lang === 'zh' ? '极速发货' : 'Instant', sub: lang === 'zh' ? '付款后自动秒发' : 'Auto Delivery', color: 'text-orange-500', bg: 'bg-orange-500/10' },
+                        { icon: ShieldCheck, title: lang === 'zh' ? '官方质保' : 'Warranty', sub: lang === 'zh' ? '72小时无忧售后' : '72h Guarantee', color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+                        { icon: Award, title: lang === 'zh' ? '高权老号' : 'Quality', sub: lang === 'zh' ? '严选实名优质老号' : 'Verified Accounts', color: 'text-blue-500', bg: 'bg-blue-500/10' },
+                        { icon: Clock, title: lang === 'zh' ? '全天支持' : '24/7 Support', sub: lang === 'zh' ? '专业售后实时在线' : 'Online Expert', color: 'text-purple-500', bg: 'bg-purple-500/10' }
+                    ].map((item, idx) => (
+                        <div key={idx} className="flex flex-col items-center text-center p-6 rounded-3xl bg-slate-50/50 dark:bg-white/5 border border-slate-100 dark:border-white/5 hover:border-primary-500/20 transition-all hover:translate-y-[-4px]">
+                            <div className={`w-12 h-12 rounded-2xl ${item.bg} ${item.color} flex items-center justify-center mb-4`}>
+                                <item.icon className="w-6 h-6" />
+                            </div>
+                            <h4 className="font-black text-slate-900 dark:text-white mb-1">{item.title}</h4>
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-bold tracking-tight uppercase">{item.sub}</p>
+                        </div>
+                    ))}
+                </div>
+
+                {/* 2. Impact Section: Risk & Purchase Notices */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-20">
+                    <div className="lg:col-span-12 flex flex-col items-center text-center mb-4">
+                        <div className="inline-flex items-center gap-2 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 px-4 py-1.5 rounded-full text-[10px] font-black tracking-widest uppercase mb-4 mb-2">
+                           <AlertTriangle className="w-3.5 h-3.5" />
+                           Platform Safety Guidelines
+                        </div>
+                        <h3 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-4">
+                            {lang === 'zh' ? '账户安全及合规说明' : 'Account Safety & Compliance'}
+                        </h3>
+                    </div>
+
+                    {/* Left: Risk Summary */}
+                    <div className="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-800 dark:from-[#1a1a24] dark:to-[#0a0a0f] rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:bg-white/10 transition-colors" />
+                        <div className="relative z-10">
+                            <h4 className="text-lg font-black mb-4 flex items-center gap-2">
+                                <Shield className="w-5 h-5 text-orange-400" />
+                                法律合规告知 / Legal Notice
+                            </h4>
+                            <p className="text-sm leading-relaxed text-slate-300 mb-8 opacity-80">
+                                {lang === 'zh' 
+                                    ? '本平台仅作为数字资产交易媒介，所有售出账号仅限用于合法合规的业务测试、技术研发等用途。严禁利用本平台账户从事包括但不限于诈骗、洗钱等违法活动。' 
+                                    : 'Our platform acts only as a gateway for digital asset exchange. Purchased accounts must be used solely for legal business testing and R&D. Illegal activities are strictly prohibited.'}
+                            </p>
+                            <div className="flex flex-wrap gap-4">
+                                <div className="flex items-center gap-2 text-xs font-bold text-slate-400 bg-white/5 px-4 py-2 rounded-xl">
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                                    合法合规
+                                </div>
+                                <div className="flex items-center gap-2 text-xs font-bold text-slate-400 bg-white/5 px-4 py-2 rounded-xl">
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                                    安全测试
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right: Purchase Accordion */}
+                    <div className="lg:col-span-7 space-y-3">
+                        {purchaseNotices.map((notice) => {
+                            const Icon = notice.icon;
+                            const isOpen = openNotice === notice.id;
+                            return (
+                                <div 
+                                    key={notice.id} 
+                                    className={`group rounded-3xl border transition-all duration-300 ${isOpen ? 'bg-white dark:bg-white/5 shadow-xl border-primary-500/20' : 'bg-slate-50/50 dark:bg-white/5 border-transparent hover:bg-slate-100/50'}`}
+                                >
+                                    <button 
+                                        onClick={() => toggleNotice(notice.id)}
+                                        className="w-full flex items-center justify-between p-5"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-10 h-10 rounded-2xl ${notice.gradient} flex items-center justify-center ${notice.iconColor} group-hover:scale-110 transition-transform`}>
+                                                <Icon className="w-5 h-5" />
+                                            </div>
+                                            <span className="font-black text-sm text-slate-800 dark:text-slate-200 uppercase tracking-tight">
+                                                {lang === 'zh' ? notice.titleZh : notice.titleEn}
+                                            </span>
+                                        </div>
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-slate-200/50 dark:bg-white/5 transition-transform duration-300 ${isOpen ? 'rotate-180 bg-primary-500 text-white' : 'text-slate-400'}`}>
+                                            <ChevronDown className="w-4 h-4" />
+                                        </div>
+                                    </button>
+                                    <motion.div 
+                                        initial={false}
+                                        animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="overflow-hidden"
+                                    >
+                                        <div className="px-6 pb-6 text-xs leading-relaxed text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-white/5 pt-4">
+                                            {lang === 'zh' ? notice.contentZh : notice.contentEn}
+                                        </div>
+                                    </motion.div>
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
-            </div>
 
-            {/* 2. Purchase Notice Accordion */}
-            <div className="max-w-7xl mx-auto px-4 mb-12">
-                <h3 className="text-sm font-black text-slate-800 dark:text-slate-200 mb-4 flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                    {lang === 'zh' ? '购买须知' : 'Purchase Notice'}
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {purchaseNotices.map((notice) => {
-                        const Icon = notice.icon;
-                        const isOpen = openNotice === notice.id;
-                        return (
-                            <div key={notice.id} className="bg-white dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
-                                <button 
-                                    onClick={() => toggleNotice(notice.id)}
-                                    className="w-full flex items-center justify-between p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
-                                >
-                                    <div className="flex items-center gap-2 font-bold text-slate-700 dark:text-slate-300">
-                                        <Icon className="w-4 h-4" />
-                                        {lang === 'zh' ? notice.titleZh : notice.titleEn}
-                                    </div>
-                                    <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
-                                </button>
-                                {isOpen && (
-                                    <div className="px-4 pb-4 animate-fade-in text-[11px] leading-relaxed">
-                                        {lang === 'zh' ? notice.contentZh : notice.contentEn}
-                                    </div>
-                                )}
+                {/* 3. Main Navigation Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-16 pt-16 border-t border-slate-100 dark:border-white/5">
+                    {/* Brand Meta */}
+                    <div className="lg:col-span-5">
+                        <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 mb-6 group inline-flex">
+                            <div className="w-12 h-12 bg-primary-500 rounded-2xl flex items-center justify-center p-2.5 shadow-xl shadow-primary-500/25 group-hover:rotate-6 group-hover:scale-110 transition-all">
+                                <Image src="/logo.png" alt="Logo" width={48} height={48} className="w-full h-full object-contain brightness-0 invert" />
                             </div>
-                        );
-                    })}
-                </div>
-            </div>
-
-            {/* 3. Main Footer Links & Trust */}
-            <div className="max-w-7xl mx-auto px-4 border-t border-slate-200 dark:border-slate-800 pt-10 pb-8">
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-8">
-                    {/* Brand */}
-                    <div className="col-span-2 lg:col-span-2 space-y-4">
-                        <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2">
-                            <Image src="/logo.png" alt="Logo" width={32} height={32} />
-                            <span className="font-black text-lg tracking-tight text-slate-900 dark:text-white">CNWePro</span>
+                            <div className="flex flex-col">
+                                <span className="font-black text-2xl tracking-tighter text-slate-900 dark:text-white leading-none">CNWePro</span>
+                                <span className="text-[10px] font-black text-slate-400 dark:text-slate-600 tracking-widest uppercase mt-1">Digital Asset Authority</span>
+                            </div>
                         </Link>
-                        <p className="max-w-sm line-clamp-3">
+                        <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400 mb-8 max-w-sm font-medium">
                             {t('site.description', lang)}
                         </p>
-                        {/* Security Certs */}
-                        <div className="flex items-center gap-4 py-2">
-                            <div className="flex items-center gap-1.5 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all cursor-default">
-                                <Lock className="w-3.5 h-3.5" />
-                                <span className="font-bold">SSL加密</span>
-                            </div>
-                            <div className="flex items-center gap-1.5 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all cursor-default">
-                                <ShieldCheck className="w-3.5 h-3.5" />
-                                <span className="font-bold">256位安全证书</span>
-                            </div>
+                        {/* Security Row */}
+                        <div className="flex items-center gap-8">
+                           <div className="flex items-center gap-3">
+                               <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center text-emerald-500 shadow-sm border border-slate-100 dark:border-white/5">
+                                   <Lock className="w-4 h-4" />
+                               </div>
+                               <div>
+                                   <p className="text-[10px] font-black text-slate-900 dark:text-white uppercase">SSL Secure</p>
+                                   <p className="text-[9px] text-slate-400">256-bit Encrypted</p>
+                               </div>
+                           </div>
+                           <div className="flex items-center gap-3">
+                               <div className="w-10 h-10 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center text-blue-500 shadow-sm border border-slate-100 dark:border-white/5">
+                                   < Globe className="w-4 h-4" />
+                               </div>
+                               <div>
+                                   <p className="text-[10px] font-black text-slate-900 dark:text-white uppercase">Cloudflare CDN</p>
+                                   <p className="text-[9px] text-slate-400">Global Acceleration</p>
+                               </div>
+                           </div>
                         </div>
                     </div>
 
-                    {/* Navigation Groups */}
-                    <div>
-                        <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-4">{lang === 'zh' ? '服务指南' : 'Guides'}</h4>
-                        <ul className="space-y-2">
-                            <li><Link href={getLocalizedPath('/about', lang)} className="hover:text-red-500">关于我们</Link></li>
-                            <li><Link href={getLocalizedPath('/faq', lang)} className="hover:text-red-500">常见问题</Link></li>
-                            <li><Link href={getLocalizedPath('/terms', lang)} className="hover:text-red-500">服务条款</Link></li>
-                            <li><Link href={getLocalizedPath('/privacy', lang)} className="hover:text-red-500">隐私政策</Link></li>
-                        </ul>
+                    {/* Popular Categories */}
+                    <div className="lg:col-span-4 translate-y-2">
+                        <h4 className="font-black text-[10px] uppercase tracking-[0.25em] text-slate-400 dark:text-slate-600 mb-8 font-mono border-l-2 border-primary-500 pl-4">
+                            {lang === 'zh' ? '人气分类' : 'Popular Categories'}
+                        </h4>
+                        <div className="grid grid-cols-2 gap-3">
+                            {categories.slice(0, 6).map((c) => {
+                                const Icon = iconMap[c.id] || WeChatIcon;
+                                return (
+                                    <Link 
+                                        key={c.id} 
+                                        href={getLocalizedPath(c.href, lang)}
+                                        className="flex items-center gap-3 p-3 rounded-2xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 hover:border-primary-500/30 hover:shadow-lg transition-all group"
+                                    >
+                                        <div className="w-8 h-8 shrink-0 group-hover:scale-110 transition-transform">
+                                            <Icon className="w-full h-full" />
+                                        </div>
+                                        <span className="text-sm font-bold text-slate-700 dark:text-slate-300 group-hover:text-primary-500 transition-colors truncate">
+                                            {c.name[lang]}
+                                        </span>
+                                    </Link>
+                                );
+                            })}
+                        </div>
                     </div>
 
-                    <div>
-                        <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-4">{lang === 'zh' ? '官方社群' : 'Community'}</h4>
-                        <ul className="space-y-4">
-                            <li>
-                                <a href="https://t.me/cnwepro" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group">
-                                    <TelegramIcon className="w-8 h-8 group-hover:scale-110 transition-transform" />
-                                    <div>
-                                        <p className="text-sm font-black text-slate-900 dark:text-white group-hover:text-primary-500 transition-colors">Telegram 频道</p>
-                                        <p className="text-[10px] text-slate-500">最新账号 & 动态更新</p>
-                                    </div>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://t.me/cnwechatpro" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 group">
-                                    <div className="relative">
-                                        <TelegramIcon className="w-8 h-8 group-hover:scale-110 transition-transform" />
-                                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border-2 border-white dark:border-dark-950"></span>
+                    {/* Navigation */}
+                    <div className="lg:col-span-3 lg:pl-8 translate-y-2">
+                        <h4 className="font-black text-[10px] uppercase tracking-[0.25em] text-slate-400 dark:text-slate-600 mb-8 font-mono border-l-2 border-primary-500 pl-4">
+                            {lang === 'zh' ? '支持与导航' : 'Quick Access'}
+                        </h4>
+                        <div className="grid grid-cols-1 gap-2">
+                            {[
+                                { label: '常见问题', en: 'FAQ Center', icon: HelpCircle, href: '/faq' },
+                                { label: '订单查询', en: 'Track Order', icon: Search, href: '/track' },
+                                { label: '官方售后', en: 'Live Support', icon: LifeBuoy, href: 'https://t.me/cnwechatpro' },
+                                { label: '隐私声明', en: 'Privacy', icon: Shield, href: '/privacy' }
+                            ].map((item) => (
+                                <Link 
+                                    key={item.href}
+                                    href={item.href.startsWith('http') ? item.href : getLocalizedPath(item.href, lang)}
+                                    className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 dark:hover:bg-white/5 group transition-colors"
+                                    target={item.href.startsWith('http') ? '_blank' : undefined}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="text-slate-400 dark:text-slate-600 group-hover:text-primary-500 transition-colors">
+                                            {item.icon && <item.icon className="w-4 h-4" />}
+                                        </div>
+                                        <span className="text-sm font-bold text-slate-600 dark:text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">
+                                            {lang === 'zh' ? item.label : item.en}
                                         </span>
                                     </div>
-                                    <div>
-                                        <p className="text-sm font-black text-slate-900 dark:text-white group-hover:text-primary-500 transition-colors">7x24 在线售后</p>
-                                        <p className="text-[10px] text-slate-500">专业人工极速回复</p>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    {/* QR Code / Trust Logos */}
-                    <div className="space-y-4">
-                        <h4 className="font-bold text-slate-800 dark:text-slate-200 mb-4">{lang === 'zh' ? '支付方式' : 'Payments'}</h4>
-                        <div className="grid grid-cols-2 gap-2">
-                            <div className="p-2 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-800 grayscale hover:grayscale-0 transition-all">
-                                <AlipayIcon className="w-16 h-4" />
-                            </div>
-                            <div className="p-2 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-800 grayscale hover:grayscale-0 transition-all">
-                                <WeChatIcon className="w-16 h-4" />
-                            </div>
-                            <div className="p-2 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-800 grayscale hover:grayscale-0 transition-all">
-                                <div className="text-[10px] font-black tracking-tighter text-emerald-600">USDT</div>
-                            </div>
-                            <div className="p-2 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center border border-slate-200 dark:border-slate-800 grayscale hover:grayscale-0 transition-all">
-                                <div className="text-[10px] font-black tracking-tighter text-amber-600">金牌担保</div>
-                            </div>
+                                    <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-700 group-hover:text-primary-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                                </Link>
+                            ))}
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* 4. Deep Bottom Bar */}
-            <div className="max-w-7xl mx-auto px-4 border-t border-slate-200/60 dark:border-slate-800/40 py-8 text-center sm:text-left">
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-4 opacity-70">
-                    <p>© {new Date().getFullYear()} CNWePro. All rights reserved.</p>
-                    <div className="flex items-center gap-6">
-                        <p className="font-mono">京ICP备XXXXXXXX号</p>
-                        <p>Powered by CNWePro Team</p>
+                {/* 4. Support Contact Flex Bar */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-16">
+                    <a href="https://t.me/cnwepro" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-6 rounded-[2rem] bg-[#0088cc]/5 hover:bg-[#0088cc]/10 border border-[#0088cc]/10 transition-all group overflow-hidden relative">
+                        <div className="absolute right-0 top-0 w-32 h-32 bg-[#0088cc]/5 blur-3xl -translate-y-1/2 translate-x-1/2" />
+                        <div className="flex items-center gap-5 relative z-10">
+                            <div className="w-14 h-14 bg-[#0088cc] rounded-2xl flex items-center justify-center p-3 shadow-2xl shadow-[#0088cc]/30 group-hover:scale-110 transition-transform">
+                                <TelegramIcon className="w-full h-full brightness-0 invert" />
+                            </div>
+                            <div>
+                                <h5 className="font-black text-slate-900 dark:text-white text-lg">Official Channel</h5>
+                                <p className="text-xs text-slate-500 font-medium">Join 50k+ users for instant price updates & drops</p>
+                            </div>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-white dark:bg-white/5 flex items-center justify-center text-[#0088cc] shadow-sm relative z-10">
+                            <Send className="w-5 h-5" />
+                        </div>
+                    </a>
+                    
+                    <a href="https://t.me/cnwechatpro" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-6 rounded-[2rem] bg-emerald-500/5 hover:bg-emerald-500/10 border border-emerald-500/10 transition-all group overflow-hidden relative">
+                         <div className="absolute right-0 top-0 w-32 h-32 bg-emerald-500/5 blur-3xl -translate-y-1/2 translate-x-1/2" />
+                         <div className="flex items-center gap-5 relative z-10">
+                            <div className="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center p-3 shadow-2xl shadow-emerald-500/30 group-hover:scale-110 transition-transform">
+                                <MessageCircle className="w-8 h-8 text-white" />
+                            </div>
+                            <div>
+                                <h5 className="font-black text-slate-900 dark:text-white text-lg">7x24 Live Support</h5>
+                                <p className="text-xs text-slate-500 font-medium">Speak with our platform experts for any account issues</p>
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-4 relative z-10 mr-2">
+                            <div className="flex flex-col items-end">
+                                <span className="text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Active</span>
+                                <div className="h-2 w-12 bg-emerald-500/20 rounded-full overflow-hidden mt-1">
+                                    <div className="h-full w-full bg-emerald-500 animate-pulse" />
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                {/* 5. Bottom Bar: Payments & Copyright */}
+                <div className="pt-12 flex flex-col md:flex-row justify-between items-center gap-10">
+                    {/* Copyright & Info */}
+                    <div className="flex flex-col items-center md:items-start gap-3">
+                        <div className="flex items-center gap-3 text-[10px] font-black tracking-widest text-slate-400 dark:text-slate-600 uppercase">
+                            <span>京ICP备XXXXXXXX号-1</span>
+                            <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-800" />
+                            <span>Trade Authority</span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium text-center md:text-left">
+                            © {new Date().getFullYear()} <span className="text-slate-950 dark:text-white font-black tracking-tighter text-sm">CNWePro</span>. High Performance Digital Asset Gateway. 🔏
+                        </p>
+                    </div>
+
+                    {/* Highly Refined Payment Row */}
+                    <div className="flex flex-wrap items-center justify-center gap-2">
+                        {[
+                            { icon: AlipayIcon, label: 'Alipay', w: 14, h: 4 },
+                            { icon: WeChatIcon, label: 'WeChat', w: 14, h: 4 }
+                        ].map((pay, i) => (
+                            <div key={i} className="px-4 py-2 rounded-xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 shadow-sm opacity-50 hover:opacity-100 transition-all grayscale hover:grayscale-0 flex items-center justify-center">
+                                <pay.icon className="w-16 h-4" />
+                            </div>
+                        ))}
+                        <div className="px-4 py-2 rounded-xl bg-white dark:bg-white/5 border border-slate-100 dark:border-white/5 shadow-sm hover:border-emerald-500/20 transition-all flex items-center gap-2">
+                            <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-[10px] text-white font-black">T</div>
+                            <span className="text-xs font-black tracking-tighter text-slate-900 dark:text-white italic">USDT<span className="text-[9px] opacity-40 ml-1">TRC20</span></span>
+                        </div>
+                        <div className="px-4 py-2 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg shadow-amber-500/20 border-t border-white/20 flex items-center gap-2">
+                            <ShieldCheck className="w-4 h-4 text-white" />
+                            <span className="text-[11px] font-black text-white italic tracking-tight">担保交易</span>
+                        </div>
                     </div>
                 </div>
+
             </div>
 
-            {/* Background Aesthetic Line */}
-            <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-red-500 via-orange-500 to-amber-500" />
+            {/* Final Background Accents */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_20%_20%,transparent_0%,rgba(0,0,0,0.02)_100%)] pointer-events-none" />
         </footer>
     );
+}
+
+// Mock Search icon
+function Search(props: any) {
+    return (
+        <svg
+            {...props}
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <circle cx="11" cy="11" r="8" />
+            <path d="m21 21-4.3-4.3" />
+        </svg>
+    )
 }
