@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase/client';
+import { supabaseAdmin as supabase } from '@/lib/supabase/admin';
 import { checkOrderCreation } from '@/lib/fraud-detection';
 
 // POST — Create a new order
@@ -10,7 +10,7 @@ export async function POST(request: Request) {
 
         // ── Fraud Detection Check ──
         const totalQuantity = (items as any[]).reduce((sum: number, i: any) => sum + (i.quantity || 0), 0);
-        const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined;
+        const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined;
 
         const fraudResult = await checkOrderCreation({
             email: order.email || '',
@@ -32,10 +32,14 @@ export async function POST(request: Request) {
             console.log(`[Fraud] Order FLAGGED (allowed): email=${order.email}, severity=${fraudResult.severity}`);
         }
 
+        // Generate a UUID upfront to bypass .select() needing RLS READ permissions
+        const generatedOrderId = crypto.randomUUID();
+
         // 1. Insert the main order
-        const { data: orderData, error: orderError } = await supabase
+        const { error: orderError } = await supabase
             .from('orders')
             .insert({
+                id: generatedOrderId,
                 public_id: order.id,
                 user_id: order.userId || null, // Link to auth user if available
                 email: order.email,
@@ -43,9 +47,7 @@ export async function POST(request: Request) {
                 crypto_type: order.cryptoType || 'USDT',
                 total_amount: order.totalAmount,
                 status: 'pending'
-            })
-            .select()
-            .single();
+            });
 
         if (orderError) {
             console.error('Supabase Order Error:', orderError);
@@ -54,7 +56,7 @@ export async function POST(request: Request) {
 
         // 2. Insert order items
         const orderItems = items.map((item: any) => ({
-            order_id: orderData.id,
+            order_id: generatedOrderId,
             product_id: item.productId,
             quantity: item.quantity,
             price_at_time: item.priceAtTime || 0
@@ -69,7 +71,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Order created but failed to save items' }, { status: 500 });
         }
 
-        return NextResponse.json({ success: true, orderId: orderData.id, publicId: orderData.public_id });
+        return NextResponse.json({ success: true, orderId: generatedOrderId, publicId: order.id });
     } catch (error) {
         console.error('API Order Error:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

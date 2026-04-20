@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase/client';
+import { supabaseAdmin as supabase } from '@/lib/supabase/admin';
 import { checkPaymentVerification } from '@/lib/fraud-detection';
 
 /* ============================================
@@ -242,7 +242,7 @@ export async function POST(request: Request) {
         }
 
         // ── Fraud Detection on Payment ──
-        const ip = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined;
+        const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined;
         const fraudCheck = await checkPaymentVerification({
             txid: txHash,
             fromWallet: result.from,
