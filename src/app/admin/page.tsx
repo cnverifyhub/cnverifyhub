@@ -12,7 +12,7 @@ import { getProductById } from '@/data/products';
 import { cn } from '@/lib/utils';
 
 type Tab = 'orders' | 'fraud';
-type StatusFilter = 'all' | 'pending' | 'completed' | 'cancelled';
+type StatusFilter = 'all' | 'pending' | 'paid' | 'completed' | 'cancelled';
 type FraudTab = 'blocklist' | 'events';
 
 const PAGE_SIZE = 20;
@@ -58,7 +58,7 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
     unknown_source: 'Unknown Source',
 };
 
-const ADMIN_PASS = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin888';
+const ADMIN_PASS = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'Sawmik888';
 
 const BLOCK_TYPE_LABELS: Record<string, string> = {
     txid: 'TXID',
@@ -117,7 +117,7 @@ export default function AdminDashboardPage() {
         setIsLoadingOrders(true);
         try {
             const res = await fetch('/api/admin/orders', {
-                headers: { 'Authorization': 'Bearer ${ADMIN_PASS}' },
+                headers: { 'Authorization': `Bearer ${ADMIN_PASS}` },
             });
             if (res.ok) {
                 const data = await res.json();
@@ -135,8 +135,8 @@ export default function AdminDashboardPage() {
         setIsLoadingFraud(true);
         try {
             const [blockRes, eventsRes] = await Promise.all([
-                fetch('/api/admin/fraud?type=blocklist', { headers: { 'Authorization': 'Bearer ${ADMIN_PASS}' } }),
-                fetch('/api/admin/fraud?type=events&limit=100', { headers: { 'Authorization': 'Bearer ${ADMIN_PASS}' } }),
+                fetch('/api/admin/fraud?type=blocklist', { headers: { 'Authorization': `Bearer ${ADMIN_PASS}` } }),
+                fetch('/api/admin/fraud?type=events&limit=100', { headers: { 'Authorization': `Bearer ${ADMIN_PASS}` } }),
             ]);
             if (blockRes.ok) {
                 const d = await blockRes.json();
@@ -175,7 +175,7 @@ export default function AdminDashboardPage() {
         try {
             const res = await fetch('/api/admin/orders', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ${ADMIN_PASS}' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
                 body: JSON.stringify({ orderPublicId: selectedOrder.id, accounts: parsedAccounts }),
             });
             if (res.ok) {
@@ -199,7 +199,7 @@ export default function AdminDashboardPage() {
         try {
             const res = await fetch('/api/admin/fraud', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ${ADMIN_PASS}' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
                 body: JSON.stringify({ type: newBlockType, value: newBlockValue.trim(), reason: newBlockReason.trim() }),
             });
             if (res.ok) {
@@ -221,7 +221,7 @@ export default function AdminDashboardPage() {
         try {
             const res = await fetch('/api/admin/fraud', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ${ADMIN_PASS}' },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
                 body: JSON.stringify({ action: 'remove', id }),
             });
             if (res.ok) fetchFraudData();
@@ -234,13 +234,18 @@ export default function AdminDashboardPage() {
         const total = orders.length;
         const pending = orders.filter(o => o.status === 'pending').length;
         const completed = orders.filter(o => o.status === 'completed').length;
+        const paid = orders.filter(o => o.status === 'paid').length;
         const today = orders.filter(o => {
             const d = new Date(o.createdAt);
             const now = new Date();
-            return d.toDateString() === now.toDateString() && o.status === 'completed';
+            return d.toDateString() === now.toDateString();
         }).length;
-        const revenue = orders.filter(o => o.status === 'completed').reduce((sum, o) => sum + o.totalAmount, 0);
-        return { total, pending, completed, today, revenue };
+        const revenue = orders.filter(o => o.status === 'completed' || o.status === 'paid').reduce((sum, o) => sum + o.totalAmount, 0);
+        const revenueRMB = revenue * 7.2; // ~7.2 CNY per USDT
+        const verified = orders.filter(o => o.txVerified).length;
+        const uniqueEmails = new Set(orders.map(o => o.email)).size;
+        const repeatCustomers = orders.length - uniqueEmails;
+        return { total, pending, completed, paid, today, revenue, revenueRMB, verified, uniqueEmails, repeatCustomers };
     }, [orders]);
 
     const filteredOrders = useMemo(() => {
@@ -251,11 +256,76 @@ export default function AdminDashboardPage() {
             list = list.filter(o =>
                 o.id.toLowerCase().includes(q) ||
                 o.email.toLowerCase().includes(q) ||
-                (o.txid && o.txid.toLowerCase().includes(q))
+                (o.txid && o.txid.toLowerCase().includes(q)) ||
+                (o.telegram && o.telegram.toLowerCase().includes(q)) ||
+                (o.paymentWallet && o.paymentWallet.toLowerCase().includes(q))
             );
         }
         return list;
     }, [orders, searchQuery, statusFilter]);
+
+    // ── Admin: Quick status update ──
+    const handleStatusUpdate = async (orderId: string, newStatus: string) => {
+        try {
+            const res = await fetch('/api/admin/orders', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
+                body: JSON.stringify({ orderPublicId: orderId, status: newStatus }),
+            });
+            if (res.ok) fetchOrders();
+            else alert('Status update failed');
+        } catch { alert('Network error'); }
+    };
+
+    // ── Admin: Manual TXID verification ──
+    const handleManualVerify = async (orderId: string) => {
+        if (!confirm('Verify this TXID on the blockchain?')) return;
+        try {
+            const res = await fetch('/api/admin/orders', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
+                body: JSON.stringify({ orderPublicId: orderId }),
+            });
+            const data = await res.json();
+            if (data.verified || data.alreadyVerified) {
+                alert('✅ Payment verified on blockchain!');
+                fetchOrders();
+            } else if (data.canForceVerify) {
+                if (confirm(`Blockchain verification failed: ${data.error}\n\nForce-mark as verified?`)) {
+                    await handleStatusUpdate(orderId, 'paid');
+                    await fetch('/api/admin/orders', {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
+                        body: JSON.stringify({ orderPublicId: orderId, txVerified: true }),
+                    });
+                    fetchOrders();
+                }
+            } else {
+                alert(`❌ Verification failed: ${data.error || 'Unknown error'}`);
+            }
+        } catch { alert('Network error during verification'); }
+    };
+
+    // ── Wallet label helper ──
+    const getWalletLabel = (wallet: string, network: string) => {
+        const w1 = process.env.NEXT_PUBLIC_TRC20_WALLET || 'TQofpQffADyHpv25EBZPcQD7scx8AZV5or';
+        const w2 = process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'TH2mdXf9wkddGSpynCTLJcS4CcHSLHSv4E';
+        if (wallet === w1) return 'Main TRC20';
+        if (wallet === w2) return 'Backup TRC20';
+        if (network?.startsWith('bep20')) return 'BEP20';
+        if (network?.startsWith('erc20')) return 'ERC20';
+        if (network === 'trc20') return 'TRC20';
+        return network?.toUpperCase() || '—';
+    };
+
+    // ── Explorer link helper ──
+    const getExplorerUrl = (txid: string, network: string) => {
+        if (!txid) return '';
+        if (network === 'trc20') return `https://tronscan.org/#/transaction/${txid}`;
+        if (network?.startsWith('bep20')) return `https://bscscan.com/tx/${txid}`;
+        if (network?.startsWith('erc20')) return `https://etherscan.io/tx/${txid}`;
+        return `https://tronscan.org/#/transaction/${txid}`;
+    };
 
     const totalPages = Math.max(1, Math.ceil(filteredOrders.length / PAGE_SIZE));
     const paginatedOrders = filteredOrders.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
@@ -381,26 +451,28 @@ export default function AdminDashboardPage() {
                             </button>
                         </header>
 
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                             {[
                                 { label: 'Total Orders', value: stats.total, icon: ShoppingCart, color: 'blue' },
                                 { label: 'Pending', value: stats.pending, icon: Clock, color: 'orange' },
-                                { label: 'Completed Today', value: stats.today, icon: CheckCircle2, color: 'green' },
-                                { label: 'Revenue (USDT)', value: stats.revenue.toFixed(1), icon: DollarSign, color: 'purple' },
+                                { label: 'Completed', value: stats.completed, icon: CheckCircle2, color: 'green' },
+                                { label: 'Revenue (USDT)', value: `$${stats.revenue.toFixed(1)}`, icon: DollarSign, color: 'purple' },
+                                { label: 'Revenue (RMB)', value: `¥${stats.revenueRMB.toFixed(0)}`, icon: DollarSign, color: 'purple' },
+                                { label: 'Verified Payments', value: `${stats.verified}/${stats.total}`, icon: CheckCircle2, color: 'green' },
                             ].map(s => (
-                                <div key={s.label} className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5">
+                                <div key={s.label} className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 md:p-5">
                                     <div className="flex items-center justify-between mb-3">
-                                        <span className={cn('w-10 h-10 rounded-xl flex items-center justify-center',
+                                        <span className={cn('w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center',
                                             s.color === 'blue' && 'bg-blue-100 dark:bg-blue-900/30 text-blue-600',
                                             s.color === 'orange' && 'bg-orange-100 dark:bg-orange-900/30 text-orange-600',
                                             s.color === 'green' && 'bg-green-100 dark:bg-green-900/30 text-green-600',
                                             s.color === 'purple' && 'bg-purple-100 dark:bg-purple-900/30 text-purple-600',
                                         )}>
-                                            <s.icon className="w-5 h-5" />
+                                            <s.icon className="w-4 h-4 md:w-5 md:h-5" />
                                         </span>
                                     </div>
-                                    <div className="text-2xl font-black text-slate-900 dark:text-white">{s.value}</div>
-                                    <div className="text-xs text-slate-500 mt-0.5">{s.label}</div>
+                                    <div className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">{s.value}</div>
+                                    <div className="text-[10px] md:text-xs text-slate-500 mt-0.5">{s.label}</div>
                                 </div>
                             ))}
                         </div>
@@ -417,8 +489,8 @@ export default function AdminDashboardPage() {
                                         className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
                                     />
                                 </div>
-                                <div className="flex gap-2">
-                                    {(['all', 'pending', 'completed', 'cancelled'] as StatusFilter[]).map(s => (
+                                <div className="flex gap-2 flex-wrap">
+                                    {(['all', 'pending', 'paid', 'completed', 'cancelled'] as StatusFilter[]).map(s => (
                                         <button
                                             key={s}
                                             onClick={() => { setStatusFilter(s); setCurrentPage(1); }}
@@ -436,27 +508,28 @@ export default function AdminDashboardPage() {
                             </div>
 
                             <div className="overflow-x-auto">
-                                <table className="w-full text-left border-collapse">
+                                <table className="w-full text-left border-collapse min-w-[700px]">
                                     <thead>
-                                        <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider">
-                                            <th className="px-4 py-3.5 font-bold border-b border-slate-200 dark:border-slate-800">Order ID</th>
-                                            <th className="px-4 py-3.5 font-bold border-b border-slate-200 dark:border-slate-800">Payment</th>
-                                            <th className="px-4 py-3.5 font-bold border-b border-slate-200 dark:border-slate-800 hidden sm:table-cell">Items</th>
-                                            <th className="px-4 py-3.5 font-bold border-b border-slate-200 dark:border-slate-800">Status</th>
-                                            <th className="px-4 py-3.5 font-bold border-b border-slate-200 dark:border-slate-800 text-right">Action</th>
+                                        <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-wider">
+                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Order</th>
+                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Payment</th>
+                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Wallet</th>
+                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Verified</th>
+                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Status</th>
+                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800 text-right">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
                                         {isLoadingOrders && orders.length === 0 ? (
                                             <tr>
-                                                <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
+                                                <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
                                                     <Clock className="w-8 h-8 animate-spin mx-auto mb-3 text-blue-500" />
-                                                    <p>Loading...</p>
+                                                    <p>Loading orders from Supabase...</p>
                                                 </td>
                                             </tr>
                                         ) : paginatedOrders.length === 0 ? (
                                             <tr>
-                                                <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
+                                                <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
                                                     <Package className="w-10 h-10 mx-auto mb-3 text-slate-300 dark:text-slate-700" />
                                                     <p>No orders found</p>
                                                 </td>
@@ -464,39 +537,94 @@ export default function AdminDashboardPage() {
                                         ) : (
                                             paginatedOrders.map(order => (
                                                 <tr key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
-                                                    <td className="px-4 py-3.5 whitespace-nowrap">
-                                                        <div className="font-mono text-xs font-bold text-slate-900 dark:text-white">{order.id}</div>
-                                                        <div className="text-xs text-slate-400 mt-0.5">{new Date(order.createdAt).toLocaleString()}</div>
+                                                    {/* Order ID + Date + Email + Telegram */}
+                                                    <td className="px-3 py-3 whitespace-nowrap">
+                                                        <div className="font-mono text-[11px] font-bold text-slate-900 dark:text-white">{order.id}</div>
+                                                        <div className="text-[10px] text-slate-400">{new Date(order.createdAt).toLocaleString()}</div>
+                                                        <div className="text-[10px] text-slate-500 truncate max-w-[120px]">{order.email}</div>
+                                                        {order.telegram && (
+                                                            <a href={`https://t.me/${order.telegram.replace('@','')}`} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-500 hover:underline">
+                                                                @{order.telegram.replace('@','')}
+                                                            </a>
+                                                        )}
                                                     </td>
-                                                    <td className="px-4 py-3.5">
-                                                        <div className="text-sm font-bold text-slate-900 dark:text-white">${order.totalAmount.toFixed(2)} {order.cryptoType.toUpperCase()}</div>
-                                                        <div className="text-xs text-slate-500 font-mono truncate max-w-[120px]" title={order.txid}>{order.txid || '—'}</div>
-                                                        <div className="text-xs text-slate-400 mt-0.5">{order.email}</div>
+
+                                                    {/* Payment Amount + TXID link */}
+                                                    <td className="px-3 py-3">
+                                                        <div className="text-sm font-bold text-slate-900 dark:text-white">${order.totalAmount.toFixed(2)}</div>
+                                                        <div className="text-[10px] text-slate-400">≈¥{(order.totalAmount * 7.2).toFixed(0)}</div>
+                                                        {order.txid ? (
+                                                            <a href={getExplorerUrl(order.txid, order.paymentNetwork || 'trc20')} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-500 font-mono hover:underline truncate block max-w-[100px]" title={order.txid}>
+                                                                {order.txid.slice(0, 10)}...
+                                                            </a>
+                                                        ) : (
+                                                            <span className="text-[10px] text-slate-400">No TXID</span>
+                                                        )}
                                                     </td>
-                                                    <td className="px-4 py-3.5 hidden sm:table-cell">
-                                                        <div className="flex flex-col gap-0.5">
-                                                            {order.items.map((item, idx) => {
-                                                                const info = getProductById(item.productId);
-                                                                return (
-                                                                    <div key={idx} className="text-xs text-slate-700 dark:text-slate-300">
-                                                                        <span className="font-medium">{info?.tierName.en || info?.tierName.zh || item.productId}</span>
-                                                                        <span className="text-slate-400 mx-1">x{item.quantity}</span>
-                                                                    </div>
-                                                                );
-                                                            })}
-                                                        </div>
+
+                                                    {/* Wallet Type + Address */}
+                                                    <td className="px-3 py-3">
+                                                        {order.paymentWallet ? (
+                                                            <>
+                                                                <span className={cn('inline-block px-1.5 py-0.5 rounded text-[9px] font-bold mb-1',
+                                                                    order.paymentNetwork === 'trc20' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                                                                    : order.paymentNetwork?.startsWith('bep20') ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400'
+                                                                    : 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
+                                                                )}>
+                                                                    {getWalletLabel(order.paymentWallet, order.paymentNetwork || '')}
+                                                                </span>
+                                                                <div className="text-[9px] font-mono text-slate-400 truncate max-w-[100px] cursor-pointer hover:text-slate-600" title={order.paymentWallet} onClick={() => { navigator.clipboard.writeText(order.paymentWallet || ''); }}>
+                                                                    {order.paymentWallet.slice(0, 8)}...{order.paymentWallet.slice(-4)}
+                                                                </div>
+                                                            </>
+                                                        ) : (
+                                                            <span className="text-[10px] text-slate-400">—</span>
+                                                        )}
                                                     </td>
-                                                    <td className="px-4 py-3.5 whitespace-nowrap">
-                                                        {order.status === 'pending' && <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-bold bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400"><Clock className="w-3 h-3" /> Pending</span>}
-                                                        {order.status === 'completed' && <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-bold bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"><CheckCircle2 className="w-3 h-3" /> Completed</span>}
-                                                        {order.status === 'cancelled' && <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-xs font-bold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"><AlertCircle className="w-3 h-3" /> Cancelled</span>}
+
+                                                    {/* Verification Status */}
+                                                    <td className="px-3 py-3 whitespace-nowrap">
+                                                        {order.txVerified ? (
+                                                            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-bold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                                                <CheckCircle2 className="w-3 h-3" /> Verified
+                                                            </span>
+                                                        ) : order.txid ? (
+                                                            <button onClick={() => handleManualVerify(order.id)} className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] font-bold bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400 hover:bg-orange-200 transition-colors cursor-pointer">
+                                                                <AlertCircle className="w-3 h-3" /> Verify Now
+                                                            </button>
+                                                        ) : (
+                                                            <span className="text-[10px] text-slate-400">—</span>
+                                                        )}
                                                     </td>
-                                                    <td className="px-4 py-3.5 whitespace-nowrap text-right">
+
+                                                    {/* Status Dropdown */}
+                                                    <td className="px-3 py-3 whitespace-nowrap">
+                                                        <select
+                                                            value={order.status}
+                                                            onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
+                                                            className={cn('text-[10px] font-bold rounded-lg px-2 py-1.5 border-0 outline-none cursor-pointer appearance-none',
+                                                                order.status === 'pending' && 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
+                                                                order.status === 'paid' && 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                                                                order.status === 'completed' && 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
+                                                                order.status === 'cancelled' && 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
+                                                                order.status === 'processing' && 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
+                                                            )}
+                                                        >
+                                                            <option value="pending">⏳ Pending</option>
+                                                            <option value="paid">💰 Paid</option>
+                                                            <option value="processing">🔄 Processing</option>
+                                                            <option value="completed">✅ Completed</option>
+                                                            <option value="cancelled">❌ Cancelled</option>
+                                                        </select>
+                                                    </td>
+
+                                                    {/* Action Buttons */}
+                                                    <td className="px-3 py-3 whitespace-nowrap text-right">
                                                         <button
                                                             onClick={() => setSelectedOrder(order)}
-                                                            className="inline-flex items-center gap-1 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-colors"
+                                                            className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold rounded-lg transition-colors"
                                                         >
-                                                            {order.status === 'pending' ? 'Process' : 'View'} <ChevronRight className="w-3 h-3" />
+                                                            {order.status === 'pending' || order.status === 'paid' ? 'Deliver' : 'View'} <ChevronRight className="w-3 h-3" />
                                                         </button>
                                                     </td>
                                                 </tr>

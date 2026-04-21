@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase/client';
+import { supabaseAdmin as supabase } from '@/lib/supabase/admin';
 
 /* ============================================
    Fraud Detection Rules Engine — CNWePro

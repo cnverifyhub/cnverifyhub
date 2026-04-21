@@ -19,7 +19,8 @@ import {
     LifeBuoy,
     CheckCircle2,
     Award,
-    HelpCircle
+    HelpCircle,
+    Search
 } from 'lucide-react';
 import { t, getLangFromPath, getLocalizedPath } from '@/lib/i18n';
 import { categories } from '@/data/products';
@@ -113,9 +114,9 @@ export default function Footer() {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 mb-10">
                     {/* Left: Chinese SEO & About (Dense text strategy) */}
-                    <div className="lg:col-span-4">
+                    <div className="md:col-span-2 lg:col-span-4">
                         <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 mb-4 group inline-flex">
                             <div className="w-10 h-10 bg-gradient-to-br from-[#FF0036] to-[#FF5000] rounded-xl flex items-center justify-center p-2 shadow-lg shadow-[#FF0036]/20">
                                 <Image src="/logo.png" alt="Logo" width={32} height={32} className="w-full h-full object-contain brightness-0 invert" />
@@ -140,7 +141,7 @@ export default function Footer() {
                     </div>
 
                     {/* Middle: Fast Links (Dense Grid) */}
-                    <div className="lg:col-span-5 grid grid-cols-2 gap-4">
+                    <div className="md:col-span-1 lg:col-span-5 grid grid-cols-2 gap-4">
                         <div>
                             <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-1.5">
                                 <div className="w-1 h-3 bg-[#FF0036] rounded-full" />
@@ -182,7 +183,7 @@ export default function Footer() {
                     </div>
 
                     {/* Right: Security & Notice Accordions (Compact) */}
-                    <div className="lg:col-span-3">
+                    <div className="md:col-span-1 lg:col-span-3">
                          <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-1.5">
                             <div className="w-1 h-3 bg-red-500 rounded-full" />
                             {lang === 'zh' ? '重要安全须知' : 'Security Notice'}
@@ -252,23 +253,4 @@ export default function Footer() {
     );
 }
 
-// Mock Search icon
-function Search(props: any) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.3-4.3" />
-        </svg>
-    )
-}
+

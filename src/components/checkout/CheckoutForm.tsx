@@ -135,7 +135,9 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                     priceAtTime: product ? product.price.single : 0
                 };
             }),
-            totalAmount: totalPrice
+            totalAmount: totalPrice,
+            paymentWallet: verificationData?.paymentWallet || '',
+            paymentNetwork: verificationData?.paymentNetwork || ''
         };
 
         try {
@@ -145,7 +147,9 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     order: orderData,
-                    items: orderData.items
+                    items: orderData.items,
+                    paymentWallet: orderData.paymentWallet,
+                    paymentNetwork: orderData.paymentNetwork
                 })
             });
 

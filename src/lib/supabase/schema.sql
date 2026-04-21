@@ -40,6 +40,8 @@ CREATE TABLE IF NOT EXISTS public.orders (
     tx_verified BOOLEAN DEFAULT false,
     total_amount NUMERIC(10, 2) NOT NULL,
     verification_details JSONB, -- stores TronScan/BSCScan/Etherscan payload
+    payment_wallet VARCHAR(255), -- which wallet address received the payment
+    payment_network VARCHAR(50), -- trc20, bep20, erc20
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

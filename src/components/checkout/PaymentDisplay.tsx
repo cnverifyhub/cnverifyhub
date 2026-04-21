@@ -145,7 +145,7 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
                     confirmationCount: vd.confirmations,
                 });
                 setTimeout(() => {
-                    onConfirm(txHash.trim(), vd);
+                    onConfirm(txHash.trim(), { ...vd, paymentWallet: walletAddress, paymentNetwork: selectedNetwork });
                 }, 1500);
                 return;
             }
@@ -217,7 +217,7 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
                         setPhase('verified');
                         setVerificationData(data);
                         setTimeout(() => {
-                            onConfirm(txHash.trim(), data);
+                            onConfirm(txHash.trim(), { ...data, paymentWallet: walletAddress, paymentNetwork: selectedNetwork });
                         }, 2000);
                     } else {
                         setPhase('failed');
@@ -231,7 +231,7 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
                         from: 'pending-manual-check', to: walletAddress, confirmed: false,
                     };
                     setVerificationData(fallbackData);
-                    setTimeout(() => onConfirm(txHash.trim(), fallbackData), 2500);
+                    setTimeout(() => onConfirm(txHash.trim(), { ...fallbackData, paymentWallet: walletAddress, paymentNetwork: selectedNetwork }), 2500);
                 }
             }
         } else {
@@ -244,7 +244,7 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
                     from: 'pending-manual-check', to: walletAddress, confirmed: false,
                 };
                 setVerificationData(manualData);
-                setTimeout(() => onConfirm(txHash.trim(), manualData), 2500);
+                setTimeout(() => onConfirm(txHash.trim(), { ...manualData, paymentWallet: walletAddress, paymentNetwork: selectedNetwork }), 2500);
             }, 2000);
         }
     };
@@ -264,18 +264,15 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
                 <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     {lang === 'zh' ? '选择支付网络' : 'Select Payment Network'}
                 </p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                    {NETWORKS.map((net) => (
+                <div className="grid grid-cols-2 gap-2">
+                    {NETWORKS.filter(n => n.enabled).map((net) => (
                         <button
                             key={net.id}
-                            disabled={!net.enabled}
                             onClick={() => { setSelectedNetwork(net.id); setPhase('idle'); setTxHash(''); setErrorMsg(''); setSelectedTrc20Wallet(0); }}
-                            className={`relative flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 text-left transition-all text-sm font-bold
+                            className={`relative flex items-center justify-center gap-2 px-3 py-3 rounded-xl border-2 transition-all text-sm font-bold
                                 ${selectedNetwork === net.id
                                     ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 shadow-md shadow-primary-500/10'
-                                    : net.enabled
-                                        ? 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/50'
-                                        : 'border-slate-100 dark:border-slate-800 text-slate-300 dark:text-slate-600 cursor-not-allowed opacity-60'
+                                    : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/50'
                                 }`}
                         >
                             <span className="text-base">{net.icon}</span>
@@ -283,11 +280,6 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
                             {net.id === 'trc20' && (
                                 <span className="absolute -top-1.5 -right-1.5 text-[8px] font-black bg-emerald-500 text-white px-1.5 py-0.5 rounded-full shadow-sm">
                                     {lang === 'zh' ? '推荐' : 'REC'}
-                                </span>
-                            )}
-                            {!net.enabled && (
-                                <span className="absolute -top-1.5 -right-1.5 text-[8px] font-black bg-slate-400 text-white px-1.5 py-0.5 rounded-full">
-                                    {lang === 'zh' ? '即将' : 'SOON'}
                                 </span>
                             )}
                         </button>

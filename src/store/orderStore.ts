@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type OrderStatus = 'pending' | 'paid' | 'completed' | 'cancelled';
+export type OrderStatus = 'pending' | 'paid' | 'processing' | 'completed' | 'cancelled';
 
 export interface OrderItem {
     productId: string;
@@ -28,6 +28,9 @@ export interface Order {
     items: OrderItem[];
     totalAmount: number;
     deliveredAccounts: string[]; // E.g., ["Account1: Pass1", "Account2: Pass2"]
+    telegram?: string;
+    paymentWallet?: string; // Which wallet received the payment
+    paymentNetwork?: string; // trc20, bep20, erc20
 }
 
 interface OrderState {
@@ -45,7 +48,7 @@ interface OrderState {
 }
 
 // Admin password: use NEXT_PUBLIC env var on client, fallback for local dev
-const ADMIN_PASS = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin888';
+const ADMIN_PASS = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'Sawmik888';
 
 export const useOrderStore = create<OrderState>()(
     persist(

@@ -46,7 +46,9 @@ export async function POST(request: Request) {
                 telegram: order.telegram,
                 crypto_type: order.cryptoType || 'USDT',
                 total_amount: order.totalAmount,
-                status: 'pending'
+                status: 'pending',
+                payment_wallet: order.paymentWallet || null,
+                payment_network: order.paymentNetwork || null
             });
 
         if (orderError) {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShoppingCart, X, Minus, Plus, Trash2, ShieldCheck, Ticket } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCartStore } from '@/store/cartStore';
 import { getProductById, getCategoryById } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
@@ -85,67 +86,77 @@ export function CartDrawer({ lang }: CartDrawerProps) {
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            {items.map((item: any) => {
-                                const product = getProductById(item.productId);
-                                if (!product) return null;
-                                const category = getCategoryById(product.category);
+                            <AnimatePresence mode="popLayout">
+                                {items.map((item: any) => {
+                                    const product = getProductById(item.productId);
+                                    if (!product) return null;
+                                    const category = getCategoryById(product.category);
 
-                                const getUnitPrice = (qty: number) => {
-                                    if (qty >= 200) return product.price.bulk200;
-                                    if (qty >= 50) return product.price.bulk50;
-                                    if (qty >= 10) return product.price.bulk10;
-                                    return product.price.single;
-                                };
-                                const unitPrice = getUnitPrice(item.quantity);
+                                    const getUnitPrice = (qty: number) => {
+                                        if (qty >= 200) return product.price.bulk200;
+                                        if (qty >= 50) return product.price.bulk50;
+                                        if (qty >= 10) return product.price.bulk10;
+                                        return product.price.single;
+                                    };
+                                    const unitPrice = getUnitPrice(item.quantity);
 
-                                return (
-                                    <div key={item.productId} className="flex gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20">
-                                        <div className={`w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 p-0.5 shadow-sm flex items-center justify-center shrink-0 overflow-hidden`}>
-                                            {category && iconMap[category.id] ? iconMap[category.id] : <WeChatIcon className="w-full h-full" />}
-                                        </div>
-
-                                        <div className="flex-1 flex flex-col justify-between">
-                                            <div className="flex justify-between items-start">
-                                                <h3 className="font-bold text-slate-900 dark:text-white text-sm line-clamp-2 pr-4">
-                                                    {product.tierName[lang]}
-                                                </h3>
-                                                <button
-                                                    onClick={() => removeItem(item.productId)}
-                                                    className="text-slate-400 hover:text-red-500 transition-colors"
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
+                                    return (
+                                        <motion.div
+                                            key={item.productId}
+                                            layout
+                                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.9, x: 20 }}
+                                            transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                                            className="flex gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/20"
+                                        >
+                                            <div className={`w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 p-0.5 shadow-sm flex items-center justify-center shrink-0 overflow-hidden`}>
+                                                {category && iconMap[category.id] ? iconMap[category.id] : <WeChatIcon className="w-full h-full" />}
                                             </div>
 
-                                            <div className="flex items-center justify-between mt-3">
-                                                <div className="flex items-center gap-1.5 bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-700 rounded-lg p-1">
+                                            <div className="flex-1 flex flex-col justify-between">
+                                                <div className="flex justify-between items-start">
+                                                    <h3 className="font-bold text-slate-900 dark:text-white text-sm line-clamp-2 pr-4">
+                                                        {product.tierName[lang]}
+                                                    </h3>
                                                     <button
-                                                        onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                                                        className="w-6 h-6 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                                                        onClick={() => removeItem(item.productId)}
+                                                        className="text-slate-400 hover:text-red-500 transition-colors"
                                                     >
-                                                        <Minus className="w-3.5 h-3.5" />
-                                                    </button>
-                                                    <span className="w-6 text-center text-sm font-medium text-slate-900 dark:text-white">
-                                                        {item.quantity}
-                                                    </span>
-                                                    <button
-                                                        onClick={() => updateQuantity(item.productId, Math.min(product.stockCount, item.quantity + 1))}
-                                                        className="w-6 h-6 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white"
-                                                    >
-                                                        <Plus className="w-3.5 h-3.5" />
+                                                        <Trash2 className="w-4 h-4" />
                                                     </button>
                                                 </div>
 
-                                                <div className="text-right">
-                                                    <span className="font-extrabold text-slate-900 dark:text-white">
-                                                        {formatYuan(unitPrice * item.quantity)}
-                                                    </span>
+                                                <div className="flex items-center justify-between mt-3">
+                                                    <div className="flex items-center gap-1.5 bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-700 rounded-lg p-1">
+                                                        <button
+                                                            onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                                                            className="w-6 h-6 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                                                        >
+                                                            <Minus className="w-3.5 h-3.5" />
+                                                        </button>
+                                                        <span className="w-6 text-center text-sm font-medium text-slate-900 dark:text-white">
+                                                            {item.quantity}
+                                                        </span>
+                                                        <button
+                                                            onClick={() => updateQuantity(item.productId, Math.min(product.stockCount, item.quantity + 1))}
+                                                            className="w-6 h-6 flex items-center justify-center text-slate-500 hover:text-slate-900 dark:hover:text-white"
+                                                        >
+                                                            <Plus className="w-3.5 h-3.5" />
+                                                        </button>
+                                                    </div>
+
+                                                    <div className="text-right">
+                                                        <span className="font-extrabold text-slate-900 dark:text-white">
+                                                            {formatYuan(unitPrice * item.quantity)}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
+                                        </motion.div>
+                                    );
+                                })}
+                            </AnimatePresence>
                         </div>
                     )}
                 </div>
@@ -166,10 +177,13 @@ export function CartDrawer({ lang }: CartDrawerProps) {
                 {/* Footer */}
                 {items.length > 0 && (
                     <div className="p-5 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50">
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="text-slate-600 dark:text-slate-400 font-medium tracking-tight">
-                                {lang === 'zh' ? '总计金额 (¥)' : 'Total Amount (¥)'}
-                            </span>
+                        <div className="flex items-end justify-between mb-4">
+                            <div className="flex flex-col">
+                                <span className="text-slate-600 dark:text-slate-400 font-medium tracking-tight">
+                                    {lang === 'zh' ? '总计金额 (¥)' : 'Total Amount (¥)'}
+                                </span>
+                                <span className="text-[10px] text-slate-400">≈ ${getTotal().toFixed(2)} USDT</span>
+                            </div>
                             <span className="text-2xl font-black text-red-600 dark:text-red-500 tabular-nums">
                                 {formatYuan(getTotal())}
                             </span>

@@ -12,11 +12,27 @@ function LoginForm() {
     const searchParams = useSearchParams();
     const [mounted, setMounted] = useState(false);
 
+    const redirectTo = searchParams.get('redirect') || '/account';
+
     useEffect(() => {
         setMounted(true);
-    }, []);
 
-    const redirectTo = searchParams.get('redirect') || '/account';
+        // 1. Check session on mount
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                window.location.href = redirectTo;
+            }
+        });
+
+        // 2. Global Auth State Listener
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                window.location.href = redirectTo;
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, [redirectTo]);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -58,8 +74,9 @@ function LoginForm() {
             }
 
             if (data.session) {
-                router.push(redirectTo);
-                router.refresh();
+                // Use window.location for reliable post-auth redirect
+                // router.push can fail to pick up new session cookies
+                window.location.href = redirectTo;
             }
         } catch (err) {
             setError('登录失败，请稍后重试 / Login failed, please try again');

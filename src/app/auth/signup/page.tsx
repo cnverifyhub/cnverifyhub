@@ -13,6 +13,22 @@ export default function SignupPage() {
 
     useEffect(() => {
         setMounted(true);
+
+        // 1. Check session on mount
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                window.location.href = '/account';
+            }
+        });
+
+        // 2. Global Auth State Listener
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_IN' && session) {
+                window.location.href = '/account';
+            }
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
     const [email, setEmail] = useState('');
@@ -73,8 +89,7 @@ export default function SignupPage() {
                 setSuccess(true);
             } else if (data.session) {
                 // Auto-confirmed (e.g. in dev mode)
-                router.push('/account');
-                router.refresh();
+                window.location.href = '/account';
             }
         } catch (err) {
             setError('注册失败，请稍后重试 / Registration failed');
