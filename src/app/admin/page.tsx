@@ -415,6 +415,7 @@ export default function AdminDashboardPage() {
                         )}
                     >
                         <ShieldAlert className="w-5 h-5" /> Fraud Control
+                    </button>
                     <button
                         onClick={() => { setActiveTab('users'); setSidebarOpen(false); }}
                         className={cn(
