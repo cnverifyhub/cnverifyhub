@@ -6,12 +6,12 @@ import {
     Lock, LayoutDashboard, Package, ShieldAlert, LogOut,
     CheckCircle2, Clock, AlertCircle, ChevronRight,
     Search, RefreshCw, X, DollarSign, ShoppingCart,
-    Plus, Trash2
+    Plus, Trash2, Users, Box, Settings
 } from 'lucide-react';
 import { getProductById } from '@/data/products';
 import { cn } from '@/lib/utils';
 
-type Tab = 'orders' | 'fraud';
+type Tab = 'orders' | 'fraud' | 'users' | 'products' | 'settings';
 type StatusFilter = 'all' | 'pending' | 'paid' | 'completed' | 'cancelled';
 type FraudTab = 'blocklist' | 'events';
 
@@ -415,6 +415,38 @@ export default function AdminDashboardPage() {
                         )}
                     >
                         <ShieldAlert className="w-5 h-5" /> Fraud Control
+                    <button
+                        onClick={() => { setActiveTab('users'); setSidebarOpen(false); }}
+                        className={cn(
+                            'w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-colors',
+                            activeTab === 'users'
+                                ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400'
+                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        )}
+                    >
+                        <Users className="w-5 h-5" /> Users & VIPs
+                    </button>
+                    <button
+                        onClick={() => { setActiveTab('products'); setSidebarOpen(false); }}
+                        className={cn(
+                            'w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-colors',
+                            activeTab === 'products'
+                                ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400'
+                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        )}
+                    >
+                        <Box className="w-5 h-5" /> Products
+                    </button>
+                    <button
+                        onClick={() => { setActiveTab('settings'); setSidebarOpen(false); }}
+                        className={cn(
+                            'w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-colors',
+                            activeTab === 'settings'
+                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white'
+                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
+                        )}
+                    >
+                        <Settings className="w-5 h-5" /> Settings
                     </button>
                 </nav>
 
@@ -438,7 +470,53 @@ export default function AdminDashboardPage() {
                     </div>
                 )}
 
-                {activeTab === 'orders' ? (
+                {activeTab === 'users' ? (
+                    <div className="p-4 md:p-8">
+                        <header className="mb-6">
+                            <h2 className="text-2xl font-black text-slate-900 dark:text-white">User & VIP Management</h2>
+                            <p className="text-slate-500 text-sm mt-0.5">Manage registered users, lifetime spend, and VIP tiers.</p>
+                        </header>
+                        <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-12 text-center">
+                            <Users className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">User Module Coming Soon</h3>
+                            <p className="text-slate-500">This section will list all users, calculate their total spent (USDT), and allow manual adjustments to their VIP tier (Bronze/Silver/Gold/Diamond).</p>
+                        </div>
+                    </div>
+                ) : activeTab === 'products' ? (
+                    <div className="p-4 md:p-8">
+                        <header className="mb-6">
+                            <h2 className="text-2xl font-black text-slate-900 dark:text-white">Product & Inventory</h2>
+                            <p className="text-slate-500 text-sm mt-0.5">Manage account packages, dynamic pricing, and stock.</p>
+                        </header>
+                        <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-12 text-center">
+                            <Box className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
+                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Inventory Module Coming Soon</h3>
+                            <p className="text-slate-500">Easily add new account variants (e.g. 2024 Aged WeChat) and update stock counts directly from the database.</p>
+                        </div>
+                    </div>
+                ) : activeTab === 'settings' ? (
+                    <div className="p-4 md:p-8">
+                        <header className="mb-6">
+                            <h2 className="text-2xl font-black text-slate-900 dark:text-white">Platform Settings</h2>
+                            <p className="text-slate-500 text-sm mt-0.5">Global configuration and active wallets.</p>
+                        </header>
+                        <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-2xl">
+                            <div className="space-y-6">
+                                <div>
+                                    <h4 className="font-bold text-sm text-slate-900 dark:text-white mb-2">Primary TRC20 Wallet</h4>
+                                    <input type="text" readOnly value={process.env.NEXT_PUBLIC_TRC20_WALLET || 'Not set'} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 font-mono text-sm" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-sm text-slate-900 dark:text-white mb-2">Backup TRC20 Wallet</h4>
+                                    <input type="text" readOnly value={process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'Not set'} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 font-mono text-sm" />
+                                </div>
+                                <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
+                                    <button disabled className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-400 font-bold rounded-lg cursor-not-allowed">Dynamic Edit (Requires API Migration)</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ) : activeTab === 'orders' ? (
                     <div className="p-4 md:p-8">
                         <header className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
                             <div>
