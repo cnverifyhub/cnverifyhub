@@ -17,7 +17,22 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# AI Agents
-.agents
-.tmp_skills
-.gemini
+# AI Agents & Skills
+.agents/
+.tmp_skills/
+.gemini/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+
+# Build Logs & Temp
+*.log
+*.txt
+.tmp/
+tmp/
+ts_errors.log
+build_output.log
+build.log
+ts_errors.txt
+build_log.txt
+tsconfig.tsbuildinfo

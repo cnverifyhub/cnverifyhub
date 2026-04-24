@@ -128,14 +128,14 @@ const organizationJsonLd = {
         {
             '@type': 'ContactPoint',
             contactType: 'customer service',
-            url: 'https://t.me/Minsheng0',
+            url: 'https://t.me/cnwechatpro',
             email: 'support@cnwepro.com',
             availableLanguage: ['Chinese', 'English'],
         }
     ],
     sameAs: [
         'https://t.me/cnwepro',
-        'https://t.me/Minsheng0',
+        'https://t.me/cnwechatpro',
     ],
 };
 

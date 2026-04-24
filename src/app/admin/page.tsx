@@ -6,7 +6,7 @@ import {
     Lock, LayoutDashboard, Package, ShieldAlert, LogOut,
     CheckCircle2, Clock, AlertCircle, ChevronRight,
     Search, RefreshCw, X, DollarSign, ShoppingCart,
-    Plus, Trash2, Users, Box, Settings
+    Plus, Trash2, Users, Box, Settings, ClipboardList, Send
 } from 'lucide-react';
 import { getProductById } from '@/data/products';
 import { cn } from '@/lib/utils';
@@ -82,6 +82,39 @@ export default function AdminDashboardPage() {
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+    const [deliveryType, setDeliveryType] = useState<'vault' | 'manual'>('manual');
+    const [manualFields, setManualFields] = useState({
+        mobile: '',
+        email: '',
+        emailPass: '',
+        accountPass: '',
+        pin: '',
+        passportNo: '',
+        realName: '',
+        other: ''
+    });
+    const [users, setUsers] = useState<any[]>([]);
+    const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+    const [dbProducts, setDbProducts] = useState<any[]>([]);
+    const [isLoadingProducts, setIsLoadingProducts] = useState(false);
+    const [editingStock, setEditingStock] = useState<{id: string, count: number} | null>(null);
+    const [fraudEvents, setFraudEvents] = useState<any[]>([]);
+    const [isLoadingFraud, setIsLoadingFraud] = useState(false);
+    const [isCreateOrderOpen, setIsCreateOrderOpen] = useState(false);
+    const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
+    const [newOrder, setNewOrder] = useState({
+        email: '',
+        telegram: '',
+        productId: '',
+        quantity: 1,
+        status: 'pending'
+    });
+    const [newUser, setNewUser] = useState({
+        email: '',
+        telegram: '',
+        vipTier: 'bronze'
+    });
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [accountsInput, setAccountsInput] = useState('');
     const [delivering, setDelivering] = useState(false);
@@ -110,8 +143,131 @@ export default function AdminDashboardPage() {
         if (isAdminAuthenticated) {
             fetchOrders();
             fetchFraudData();
+            fetchUsers();
+            fetchProducts();
+            fetchFraudEvents();
         }
     }, [isAdminAuthenticated]);
+
+    const fetchFraudEvents = async () => {
+        setIsLoadingFraud(true);
+        try {
+            const res = await fetch('/api/admin/fraud?type=events', {
+                headers: { 'Authorization': `Bearer ${ADMIN_PASS}` },
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setFraudEvents(data);
+            }
+        } catch (e) {
+            console.error('Fetch Fraud Events Error:', e);
+        } finally {
+            setIsLoadingFraud(false);
+        }
+    };
+
+    const fetchProducts = async () => {
+        setIsLoadingProducts(true);
+        try {
+            const res = await fetch('/api/admin/products', {
+                headers: { 'Authorization': `Bearer ${ADMIN_PASS}` },
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setDbProducts(data);
+            }
+        } catch (e) {
+            console.error('Fetch Products Error:', e);
+        } finally {
+            setIsLoadingProducts(false);
+        }
+    };
+
+    const handleUpdateStock = async (id: string, count: number) => {
+        try {
+            const res = await fetch('/api/admin/products', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
+                body: JSON.stringify({ id, stockCount: count }),
+            });
+            if (res.ok) {
+                setEditingStock(null);
+                fetchProducts();
+            }
+        } catch (e) {
+            alert('Failed to update stock');
+        }
+    };
+
+    const handleCreateOrder = async () => {
+        const product = dbProducts.find(p => p.id === newOrder.productId);
+        if (!product) return alert('Select a product');
+
+        try {
+            const res = await fetch('/api/admin/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
+                body: JSON.stringify({
+                    action: 'create',
+                    email: newOrder.email,
+                    telegram: newOrder.telegram,
+                    status: newOrder.status,
+                    totalAmount: product.price_usdt * newOrder.quantity,
+                    items: [{
+                        productId: product.id,
+                        quantity: newOrder.quantity,
+                        price: product.price_usdt
+                    }]
+                }),
+            });
+            if (res.ok) {
+                setIsCreateOrderOpen(false);
+                fetchOrders();
+                setNewOrder({ email: '', telegram: '', productId: '', quantity: 1, status: 'pending' });
+            } else {
+                const err = await res.json();
+                alert(`Error: ${err.error}`);
+            }
+        } catch (e) {
+            alert('Failed to create order');
+        }
+    };
+
+    const handleCreateUser = async () => {
+        try {
+            const res = await fetch('/api/admin/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
+                body: JSON.stringify(newUser),
+            });
+            if (res.ok) {
+                setIsCreateUserOpen(false);
+                fetchUsers();
+                setNewUser({ email: '', telegram: '', vipTier: 'bronze' });
+            } else {
+                const err = await res.json();
+                alert(`Error: ${err.error}`);
+            }
+        } catch (e) {
+            alert('Failed to create user');
+        }
+    };
+
+    const fetchUsers = async () => {
+        setIsLoadingUsers(true);
+        try {
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .order('created_at', { ascending: false });
+            if (error) throw error;
+            setUsers(data || []);
+        } catch (e) {
+            console.error('Fetch Users Error:', e);
+        } finally {
+            setIsLoadingUsers(false);
+        }
+    };
 
     const fetchOrders = async () => {
         setIsLoadingOrders(true);
@@ -166,21 +322,39 @@ export default function AdminDashboardPage() {
     const handleDeliver = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!selectedOrder) return;
-        const parsedAccounts = accountsInput.split('\n').map(l => l.trim()).filter(l => l !== '');
-        if (parsedAccounts.length === 0) {
-            alert('Please enter at least one account credential.');
-            return;
+        
+        let payload: any = {
+            orderPublicId: selectedOrder.id,
+            deliveryType: deliveryType
+        };
+
+        if (deliveryType === 'vault') {
+            const parsedAccounts = accountsInput.split('\n').map(l => l.trim()).filter(l => l !== '');
+            if (parsedAccounts.length === 0) {
+                alert('Please enter at least one account credential.');
+                return;
+            }
+            payload.accounts = parsedAccounts;
+        } else {
+            // Validate manual fields - at least one field should be filled
+            if (!manualFields.mobile && !manualFields.email && !manualFields.accountPass && !manualFields.other) {
+                alert('Please fill at least one delivery field.');
+                return;
+            }
+            payload.manualDetails = manualFields;
         }
+
         setDelivering(true);
         try {
             const res = await fetch('/api/admin/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
-                body: JSON.stringify({ orderPublicId: selectedOrder.id, accounts: parsedAccounts }),
+                body: JSON.stringify(payload),
             });
             if (res.ok) {
                 setSelectedOrder(null);
                 setAccountsInput('');
+                setManualFields({ mobile: '', email: '', emailPass: '', accountPass: '', pin: '', passportNo: '', realName: '', other: '' });
                 fetchOrders();
             } else {
                 alert('Delivery failed, please retry.');
@@ -371,7 +545,7 @@ export default function AdminDashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-slate-100 dark:bg-dark-950 flex font-sans">
+        <div className="min-h-screen bg-slate-100 dark:bg-dark-950 flex font-sans pt-20 md:pt-0">
             {isMobile && sidebarOpen && (
                 <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setSidebarOpen(false)} />
             )}
@@ -473,26 +647,190 @@ export default function AdminDashboardPage() {
 
                 {activeTab === 'users' ? (
                     <div className="p-4 md:p-8">
-                        <header className="mb-6">
-                            <h2 className="text-2xl font-black text-slate-900 dark:text-white">User & VIP Management</h2>
-                            <p className="text-slate-500 text-sm mt-0.5">Manage registered users, lifetime spend, and VIP tiers.</p>
+                        <header className="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 className="text-2xl font-black text-slate-900 dark:text-white">User & VIP Management</h2>
+                                <p className="text-slate-500 text-sm mt-0.5">Manage registered users, lifetime spend, and VIP tiers.</p>
+                            </div>
+                            <div className="flex gap-2">
+                                <button onClick={() => setIsCreateUserOpen(true)} className="btn-primary px-4 py-2 text-sm flex gap-2 items-center">
+                                    <Plus className="w-4 h-4" /> New User
+                                </button>
+                                <button onClick={fetchUsers} className="btn-secondary px-4 py-2 text-sm flex gap-2 items-center">
+                                    <RefreshCw className={cn('w-4 h-4', isLoadingUsers && 'animate-spin')} /> Refresh
+                                </button>
+                            </div>
                         </header>
-                        <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-12 text-center">
-                            <Users className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">User Module Coming Soon</h3>
-                            <p className="text-slate-500">This section will list all users, calculate their total spent (USDT), and allow manual adjustments to their VIP tier (Bronze/Silver/Gold/Diamond).</p>
+
+                        <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-[10px] uppercase tracking-wider">
+                                            <th className="px-4 py-3 font-bold">Identity (Telegram/Email)</th>
+                                            <th className="px-4 py-3 font-bold text-center">VIP Tier</th>
+                                            <th className="px-4 py-3 font-bold">Total Spent</th>
+                                            <th className="px-4 py-3 font-bold">Joined</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
+                                        {isLoadingUsers && users.length === 0 ? (
+                                            <tr><td colSpan={4} className="px-4 py-12 text-center text-slate-500"><Loader2 className="w-8 h-8 animate-spin mx-auto" /></td></tr>
+                                        ) : users.length === 0 ? (
+                                            <tr><td colSpan={4} className="px-4 py-12 text-center text-slate-500">No users found.</td></tr>
+                                        ) : (
+                                            users.map(u => (
+                                                <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
+                                                    <td className="px-4 py-3">
+                                                        <div className="flex flex-col">
+                                                            {u.telegram ? (
+                                                                <div className="font-black text-blue-600 dark:text-blue-400 text-sm flex items-center gap-1">
+                                                                    <Send className="w-3 h-3" /> @{u.telegram.replace('@', '')}
+                                                                </div>
+                                                            ) : (
+                                                                <div className="font-black text-slate-900 dark:text-white text-sm">{u.email}</div>
+                                                            )}
+                                                            <div className="text-[10px] text-slate-400 font-mono">{u.email || 'No email linked'}</div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-4 py-3 text-center">
+                                                        <span className={cn('px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest',
+                                                            u.vip_tier === 'diamond' ? 'bg-cyan-100 text-cyan-700' :
+                                                            u.vip_tier === 'gold' ? 'bg-yellow-100 text-yellow-700' :
+                                                            u.vip_tier === 'silver' ? 'bg-slate-200 text-slate-700' :
+                                                            'bg-orange-100 text-orange-700'
+                                                        )}>
+                                                            {u.vip_tier}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-4 py-3 font-bold text-slate-900 dark:text-white">
+                                                        {formatYuan(u.total_spent || 0)}
+                                                    </td>
+                                                    <td className="px-4 py-3 text-xs text-slate-500">
+                                                        {new Date(u.created_at).toLocaleDateString()}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                ) : activeTab === 'products' ? (
                     <div className="p-4 md:p-8">
-                        <header className="mb-6">
-                            <h2 className="text-2xl font-black text-slate-900 dark:text-white">Product & Inventory</h2>
-                            <p className="text-slate-500 text-sm mt-0.5">Manage account packages, dynamic pricing, and stock.</p>
+                        <header className="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 className="text-2xl font-black text-slate-900 dark:text-white">Inventory Control</h2>
+                                <p className="text-slate-500 text-sm mt-0.5">Manage account stock and active status across all tiers.</p>
+                            </div>
+                            <button onClick={fetchProducts} className="btn-secondary px-4 py-2 text-sm flex gap-2 items-center">
+                                <RefreshCw className={cn('w-4 h-4', isLoadingProducts && 'animate-spin')} /> Refresh
+                            </button>
                         </header>
-                        <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-12 text-center">
-                            <Box className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-4" />
-                            <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Inventory Module Coming Soon</h3>
-                            <p className="text-slate-500">Easily add new account variants (e.g. 2024 Aged WeChat) and update stock counts directly from the database.</p>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {isLoadingProducts && dbProducts.length === 0 ? (
+                                <div className="col-span-full py-12 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto" /></div>
+                            ) : (
+                                dbProducts.map(p => (
+                                    <div key={p.id} className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row gap-6">
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 text-[10px] font-bold uppercase rounded">{p.category}</span>
+                                                {!p.is_active && <span className="px-2 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold uppercase rounded">Inactive</span>}
+                                            </div>
+                                            <h4 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">{p.name_en}</h4>
+                                            <p className="text-sm text-slate-500 mb-4">{p.name_zh}</p>
+                                            <div className="flex items-baseline gap-2">
+                                                <span className="text-xl font-black text-slate-900 dark:text-white">${Number(p.price_usdt).toFixed(2)}</span>
+                                                <span className="text-xs text-slate-400">/ unit</span>
+                                            </div>
+                                        </div>
+                                        <div className="w-full sm:w-48 bg-slate-50 dark:bg-dark-950 rounded-xl p-4 flex flex-col justify-center items-center">
+                                            <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Current Stock</div>
+                                            {editingStock?.id === p.id ? (
+                                                <div className="flex flex-col gap-2 w-full">
+                                                    <input 
+                                                        type="number" 
+                                                        value={editingStock.count} 
+                                                        onChange={e => setEditingStock({...editingStock, count: parseInt(e.target.value) || 0})}
+                                                        className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-blue-500 rounded-lg text-center font-bold"
+                                                    />
+                                                    <div className="flex gap-2">
+                                                        <button onClick={() => setEditingStock(null)} className="flex-1 py-1 text-xs bg-slate-200 dark:bg-slate-700 rounded-md">Cancel</button>
+                                                        <button onClick={() => handleUpdateStock(p.id, editingStock.count)} className="flex-1 py-1 text-xs bg-blue-600 text-white rounded-md font-bold">Save</button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div className={cn('text-3xl font-black mb-3', p.stock_count > 10 ? 'text-emerald-500' : p.stock_count > 0 ? 'text-orange-500' : 'text-red-500')}>
+                                                        {p.stock_count}
+                                                    </div>
+                                                    <button onClick={() => setEditingStock({id: p.id, count: p.stock_count})} className="text-xs font-bold text-blue-600 hover:underline">Adjust Stock</button>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                ) : activeTab === 'fraud' ? (
+                    <div className="p-4 md:p-8">
+                        <header className="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 className="text-2xl font-black text-slate-900 dark:text-white">Security & Fraud</h2>
+                                <p className="text-slate-500 text-sm mt-0.5">Real-time alerts for suspicious transactions and IP behaviors.</p>
+                            </div>
+                            <button onClick={fetchFraudEvents} className="btn-secondary px-4 py-2 text-sm flex gap-2 items-center">
+                                <RefreshCw className={cn('w-4 h-4', isLoadingFraud && 'animate-spin')} /> Refresh
+                            </button>
+                        </header>
+
+                        <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-[10px] uppercase tracking-wider">
+                                            <th className="px-4 py-3 font-bold">Severity</th>
+                                            <th className="px-4 py-3 font-bold">Event Type</th>
+                                            <th className="px-4 py-3 font-bold">Identifier</th>
+                                            <th className="px-4 py-3 font-bold">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
+                                        {isLoadingFraud && fraudEvents.length === 0 ? (
+                                            <tr><td colSpan={4} className="px-4 py-12 text-center text-slate-500"><Loader2 className="w-8 h-8 animate-spin mx-auto" /></td></tr>
+                                        ) : fraudEvents.length === 0 ? (
+                                            <tr><td colSpan={4} className="px-4 py-12 text-center text-slate-500">No fraud events detected. Everything looks safe!</td></tr>
+                                        ) : (
+                                            fraudEvents.map(ev => (
+                                                <tr key={ev.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
+                                                    <td className="px-4 py-3">
+                                                        <span className={cn('px-2 py-0.5 rounded text-[10px] font-bold uppercase',
+                                                            ev.severity === 'critical' ? 'bg-red-100 text-red-700' :
+                                                            ev.severity === 'high' ? 'bg-orange-100 text-orange-700' :
+                                                            ev.severity === 'medium' ? 'bg-yellow-100 text-yellow-700' :
+                                                            'bg-slate-100 text-slate-600'
+                                                        )}>
+                                                            {ev.severity}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        <div className="font-bold text-slate-900 dark:text-white text-xs">{ev.event_type}</div>
+                                                    </td>
+                                                    <td className="px-4 py-3">
+                                                        <div className="text-xs font-mono text-slate-500">{ev.email || ev.ip_address || ev.txid || 'N/A'}</div>
+                                                    </td>
+                                                    <td className="px-4 py-3 text-[10px] text-slate-400">
+                                                        {new Date(ev.created_at).toLocaleString()}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 ) : activeTab === 'settings' ? (
@@ -590,10 +928,11 @@ export default function AdminDashboardPage() {
                                 <table className="w-full text-left border-collapse min-w-[700px]">
                                     <thead>
                                         <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-wider">
-                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Order</th>
+                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Order & Identity</th>
+                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Category</th>
+                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Variant</th>
                                             <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Payment</th>
                                             <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Wallet</th>
-                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Verified</th>
                                             <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Status</th>
                                             <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800 text-right">Actions</th>
                                         </tr>
@@ -625,6 +964,44 @@ export default function AdminDashboardPage() {
                                                             <a href={`https://t.me/${order.telegram.replace('@','')}`} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-500 hover:underline">
                                                                 @{order.telegram.replace('@','')}
                                                             </a>
+                                                        )}
+                                                    </td>
+                                                    
+                                                    {/* Product Items */}
+                                                    <td className="px-3 py-3">
+                                                        {order.items && order.items.length > 0 ? (
+                                                            <div className="space-y-1">
+                                                                {order.items.map((item: any, idx: number) => {
+                                                                    const p = dbProducts.find(prod => prod.id === item.productId);
+                                                                    return (
+                                                                        <div key={idx} className="text-[11px] font-bold text-slate-900 dark:text-white uppercase tracking-tight">
+                                                                            {p?.category || 'General'}
+                                                                        </div>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        ) : (
+                                                            <span className="text-[10px] text-slate-400">—</span>
+                                                        )}
+                                                    </td>
+
+                                                    {/* Product Variant */}
+                                                    <td className="px-3 py-3">
+                                                        {order.items && order.items.length > 0 ? (
+                                                            <div className="space-y-1">
+                                                                {order.items.map((item: any, idx: number) => {
+                                                                    const p = dbProducts.find(prod => prod.id === item.productId);
+                                                                    // Extract variant from name or ID
+                                                                    const variant = p?.name_en?.split('Account')[0]?.trim() || p?.name_en || item.productId;
+                                                                    return (
+                                                                        <div key={idx} className="text-[10px] text-slate-500">
+                                                                            {variant} <span className="opacity-60">×{item.quantity}</span>
+                                                                        </div>
+                                                                    );
+                                                                })}
+                                                            </div>
+                                                        ) : (
+                                                            <span className="text-[10px] text-slate-400">—</span>
                                                         )}
                                                     </td>
 
@@ -995,30 +1372,173 @@ export default function AdminDashboardPage() {
 
                             {selectedOrder.status === 'pending' && (
                                 <form onSubmit={handleDeliver} className="pt-2 border-t border-slate-100 dark:border-slate-800">
-                                    <div className="mb-3 p-3 bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-100 dark:border-blue-900/30 text-xs text-blue-800 dark:text-blue-300">
-                                        Verify TXID <code className="font-mono">{selectedOrder.txid}</code> on-chain before delivering.
-                                    </div>
-                                    <div className="mb-4">
-                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
-                                            Account Credentials ({selectedOrder.items.reduce((a, c) => a + c.quantity, 0)} units)
-                                        </label>
-                                        <textarea
-                                            required
-                                            rows={5}
-                                            value={accountsInput}
-                                            onChange={e => setAccountsInput(e.target.value)}
-                                            placeholder="account1----pass1&#10;account2----pass2"
-                                            className="w-full p-3 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-mono focus:ring-2 focus:ring-blue-500 outline-none text-slate-900 dark:text-slate-300"
-                                        />
-                                    </div>
-                                    <div className="flex gap-3">
-                                        <button type="button" onClick={() => setSelectedOrder(null)} className="flex-1 px-4 py-3 bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 font-bold rounded-xl transition-colors text-sm">Cancel</button>
-                                        <button type="submit" disabled={delivering} className="flex-1 px-4 py-3 bg-green-600 hover:bg-green-700 disabled:opacity-60 text-white font-bold rounded-xl transition-colors shadow-lg shadow-green-500/20 text-sm">
-                                            {delivering ? 'Delivering...' : 'Confirm Delivery'}
-                                        </button>
-                                    </div>
+                                     <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-4">
+                                         <button
+                                             type="button"
+                                             onClick={() => setDeliveryType('manual')}
+                                             className={cn('flex-1 py-1.5 text-xs font-bold rounded-lg transition-all', deliveryType === 'manual' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600' : 'text-slate-500')}
+                                         >
+                                             Manual Structured
+                                         </button>
+                                         <button
+                                             type="button"
+                                             onClick={() => setDeliveryType('vault')}
+                                             className={cn('flex-1 py-1.5 text-xs font-bold rounded-lg transition-all', deliveryType === 'vault' ? 'bg-white dark:bg-slate-700 shadow-sm text-blue-600' : 'text-slate-500')}
+                                         >
+                                             Bulk List (Vault)
+                                         </button>
+                                     </div>
+
+                                     {deliveryType === 'manual' ? (
+                                         <div className="space-y-3 mb-4">
+                                             <div className="grid grid-cols-2 gap-3">
+                                                 <div>
+                                                     <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Mobile</label>
+                                                     <input type="text" value={manualFields.mobile} onChange={e => setManualFields({...manualFields, mobile: e.target.value})} className="w-full px-3 py-2 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-lg text-sm" placeholder="+880..." />
+                                                 </div>
+                                                 <div>
+                                                     <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Real Name</label>
+                                                     <input type="text" value={manualFields.realName} onChange={e => setManualFields({...manualFields, realName: e.target.value})} className="w-full px-3 py-2 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-lg text-sm" placeholder="RANA RAHAT..." />
+                                                 </div>
+                                             </div>
+                                             <div className="grid grid-cols-2 gap-3">
+                                                 <div>
+                                                     <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Email</label>
+                                                     <input type="text" value={manualFields.email} onChange={e => setManualFields({...manualFields, email: e.target.value})} className="w-full px-3 py-2 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-lg text-sm" placeholder="user@mail.com" />
+                                                 </div>
+                                                 <div>
+                                                     <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Email Pass</label>
+                                                     <input type="text" value={manualFields.emailPass} onChange={e => setManualFields({...manualFields, emailPass: e.target.value})} className="w-full px-3 py-2 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-mono" placeholder="Password" />
+                                                 </div>
+                                             </div>
+                                             <div className="grid grid-cols-2 gap-3">
+                                                 <div>
+                                                     <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Account Pass</label>
+                                                     <input type="text" value={manualFields.accountPass} onChange={e => setManualFields({...manualFields, accountPass: e.target.value})} className="w-full px-3 py-2 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-mono" placeholder="Alipay Pass" />
+                                                 </div>
+                                                 <div>
+                                                     <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase">PIN</label>
+                                                     <input type="text" value={manualFields.pin} onChange={e => setManualFields({...manualFields, pin: e.target.value})} className="w-full px-3 py-2 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-lg text-sm font-mono" placeholder="888999" />
+                                                 </div>
+                                             </div>
+                                             <div>
+                                                 <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Passport No</label>
+                                                 <input type="text" value={manualFields.passportNo} onChange={e => setManualFields({...manualFields, passportNo: e.target.value})} className="w-full px-3 py-2 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-lg text-sm" placeholder="A21623946" />
+                                             </div>
+                                             <div>
+                                                 <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase">Other / Raw Info</label>
+                                                 <textarea rows={2} value={manualFields.other} onChange={e => setManualFields({...manualFields, other: e.target.value})} className="w-full px-3 py-2 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-mono" placeholder="Additional details..." />
+                                             </div>
+                                         </div>
+                                     ) : (
+                                         <div className="mb-4">
+                                             <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
+                                                 Bulk List ({selectedOrder.items.reduce((a, c) => a + c.quantity, 0)} units)
+                                             </label>
+                                             <textarea
+                                                 required
+                                                 rows={8}
+                                                 value={accountsInput}
+                                                 onChange={e => setAccountsInput(e.target.value)}
+                                                 placeholder="account1----pass1&#10;account2----pass2"
+                                                 className="w-full px-4 py-3 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-slate-900 dark:text-white font-mono text-sm"
+                                             />
+                                         </div>
+                                     )}
+
+                                    <button
+                                        type="submit"
+                                        disabled={delivering}
+                                        className="w-full py-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
+                                    >
+                                        {delivering ? <Loader2 className="w-5 h-5 animate-spin" /> : <Package className="w-5 h-5" />}
+                                        {delivering ? 'Delivering...' : 'Complete Fulfillment'}
+                                    </button>
                                 </form>
                             )}
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* ── CREATE ORDER MODAL ── */}
+            {isCreateOrderOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-dark-900 rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-dark-950">
+                            <h3 className="text-xl font-black text-slate-900 dark:text-white">Create Manual Order</h3>
+                            <button onClick={() => setIsCreateOrderOpen(false)} className="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors"><X className="w-5 h-5" /></button>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Buyer Email</label>
+                                    <input type="email" value={newOrder.email} onChange={e => setNewOrder({...newOrder, email: e.target.value})} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 outline-none" placeholder="user@example.com" />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Telegram (Optional)</label>
+                                    <input type="text" value={newOrder.telegram} onChange={e => setNewOrder({...newOrder, telegram: e.target.value})} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 outline-none" placeholder="@username" />
+                                </div>
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Select Product</label>
+                                <select value={newOrder.productId} onChange={e => setNewOrder({...newOrder, productId: e.target.value})} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 outline-none">
+                                    <option value="">Choose a product...</option>
+                                    {dbProducts.map(p => (
+                                        <option key={p.id} value={p.id}>{p.name_en} (${p.price_usdt})</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Quantity</label>
+                                    <input type="number" min="1" value={newOrder.quantity} onChange={e => setNewOrder({...newOrder, quantity: parseInt(e.target.value) || 1})} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 outline-none" />
+                                </div>
+                                <div className="space-y-1">
+                                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Initial Status</label>
+                                    <select value={newOrder.status} onChange={e => setNewOrder({...newOrder, status: e.target.value})} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 outline-none">
+                                        <option value="pending">Pending</option>
+                                        <option value="paid">Paid</option>
+                                        <option value="completed">Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button onClick={handleCreateOrder} className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-black rounded-2xl shadow-xl shadow-blue-500/20 transition-all">
+                                Generate Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* ── CREATE USER MODAL ── */}
+            {isCreateUserOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-dark-900 rounded-3xl w-full max-w-md shadow-2xl overflow-hidden border border-slate-200 dark:border-slate-800">
+                        <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-dark-950">
+                            <h3 className="text-xl font-black text-slate-900 dark:text-white">Create Manual Profile</h3>
+                            <button onClick={() => setIsCreateUserOpen(false)} className="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-full transition-colors"><X className="w-5 h-5" /></button>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email</label>
+                                <input type="email" value={newUser.email} onChange={e => setNewUser({...newUser, email: e.target.value})} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 outline-none" placeholder="user@example.com" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Telegram</label>
+                                <input type="text" value={newUser.telegram} onChange={e => setNewUser({...newUser, telegram: e.target.value})} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 outline-none" placeholder="@username" />
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">VIP Tier</label>
+                                <select value={newUser.vipTier} onChange={e => setNewUser({...newUser, vipTier: e.target.value})} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 outline-none">
+                                    <option value="bronze">Bronze</option>
+                                    <option value="silver">Silver</option>
+                                    <option value="gold">Gold</option>
+                                    <option value="diamond">Diamond</option>
+                                </select>
+                            </div>
+                            <button onClick={handleCreateUser} className="w-full py-4 bg-slate-900 dark:bg-white dark:text-slate-900 text-white font-black rounded-2xl shadow-xl transition-all">
+                                Create Profile
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -1026,3 +1546,4 @@ export default function AdminDashboardPage() {
         </div>
     );
 }
+

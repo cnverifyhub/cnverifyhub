@@ -202,7 +202,7 @@ export function OrderTimeline({ order, lang }: OrderTimelineProps) {
 
                         {/* Customer Support Button */}
                         <a 
-                            href="https://t.me/Minsheng0" 
+                            href="https://t.me/cnwechatpro" 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all group"

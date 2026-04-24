@@ -6,25 +6,17 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   transpilePackages: ['gsap'],
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion'],
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        // Production domain — icons served via Cloudflare CDN
-        protocol: 'https',
-        hostname: 'cnwepro.com',
-        pathname: '/images/**',
-      },
-      {
-        // Netlify preview deployments
-        protocol: 'https',
-        hostname: '*.netlify.app',
-        pathname: '/images/**',
-      },
+      { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'cnwepro.com', pathname: '/images/**' },
+      { protocol: 'https', hostname: '*.netlify.app', pathname: '/images/**' },
     ],
   },
   async headers() {
@@ -37,31 +29,21 @@ const nextConfig = {
           { key: 'X-XSS-Protection', value: '1; mode=block' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-        ],
-      },
-      {
-        source: '/fonts/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          // Aggressive pre-resolving for China speed
+          { key: 'Link', value: '<https://otgewrynnrqmtsyvlzrj.supabase.co>; rel=preconnect' },
         ],
       },
       {
         source: '/_next/static/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/fonts/(.*)',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
       {
         source: '/images/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
-        ],
-      },
-      {
-        source: '/(.*)\\.ico',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=2592000' },
-        ],
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
       },
     ];
   },

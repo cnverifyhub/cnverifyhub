@@ -155,7 +155,7 @@ export default function RefundPolicyPage() {
                     <h3 className="font-bold text-slate-900 dark:text-white mb-2">需要售后帮助？</h3>
                     <p className="text-sm text-slate-500 mb-6">请准备好订单号和问题截图，联系我们的客服团队。</p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                        <a href="https://t.me/Minsheng0" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#24A1DE] text-white rounded-xl font-bold hover:shadow-lg transition-all">
+                        <a href="https://t.me/cnwechatpro" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#24A1DE] text-white rounded-xl font-bold hover:shadow-lg transition-all">
                             <Send className="w-4 h-4" />
                             Telegram 客服
                         </a>

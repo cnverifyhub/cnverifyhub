@@ -594,7 +594,7 @@ By following these best practices, you can safely and effectively navigate Chine
 4. **⚖️ 法律支持与咨询**
    我们的专家团队提供专业的账号防封技术支持与合规咨询，确保您在使用各类账号（如海外批发的高权重账号）时畅通无阻。
 
-加入我们的官方 Telegram 社区 \`t.me/cnwepro_gr\` 或联系客服 \`@Minsheng0\` 了解更多最新资讯！
+加入我们的官方 Telegram 社区 \`t.me/cnwepro_gr\` 或联系客服 \`@cnwechatpro\` 了解更多最新资讯！
             `,
             en: `
 # Digital Identity & Anonymous USDT Trading
@@ -614,7 +614,7 @@ As highlighted in our official Telegram community (t.me/cnwepro), we offer the f
 4. **⚖️ Legal Support & Consulting**
    Our expert team offers professional consulting on compliance and anti-ban techniques, ensuring your wholesale premium accounts run smoothly.
 
-Join our official Telegram community at \`t.me/cnwepro_gr\` or contact \`@Minsheng0\` for the latest updates!
+Join our official Telegram community at \`t.me/cnwepro_gr\` or contact \`@cnwechatpro\` for the latest updates!
             `
         },
         date: '2026-03-21',

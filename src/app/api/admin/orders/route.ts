@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
         // Fetch all orders, ordered by newest first
         const { data: orders, error: ordersError } = await supabase
             .from('orders')
-            .select('*')
+            .select('*, profiles(email, telegram, display_name)')
             .order('created_at', { ascending: false });
 
         if (ordersError) throw ordersError;
@@ -58,7 +58,9 @@ export async function GET(request: NextRequest) {
                     quantity: i.quantity,
                     priceAtTime: Number(i.price_at_time)
                 })),
-                deliveredAccounts: orderAccounts.map(acc => acc.credentials)
+                deliveredAccounts: orderAccounts.map(acc => acc.credentials),
+                deliveryDetails: order.delivery_details || null,
+                userProfile: order.profiles || null
             };
         });
 
@@ -78,10 +80,58 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { orderPublicId, accounts } = await request.json();
+        const body = await request.json();
+        const { action, ...payload } = body;
 
-        if (!orderPublicId || !accounts || !Array.isArray(accounts) || accounts.length === 0) {
-            return NextResponse.json({ error: 'Invalid payload' }, { status: 400 });
+        // ── Case A: Create New Manual Order ──
+        if (action === 'create') {
+            const { email, telegram, items, status = 'pending', totalAmount } = payload;
+            
+            if (!email || !items || items.length === 0) {
+                return NextResponse.json({ error: 'Email and items are required' }, { status: 400 });
+            }
+
+            // Generate unique public ID: CNW-ADMIN-XXXXXX
+            const publicId = `CNW-MANUAL-${Math.floor(100000 + Math.random() * 900000)}`;
+
+            // 1. Create Order
+            const { data: order, error: orderError } = await supabase
+                .from('orders')
+                .insert({
+                    public_id: publicId,
+                    email,
+                    telegram,
+                    status,
+                    total_amount: totalAmount || 0,
+                    payment_network: 'manual'
+                })
+                .select()
+                .single();
+
+            if (orderError) throw orderError;
+
+            // 2. Create Order Items
+            const orderItems = items.map((item: any) => ({
+                order_id: order.id,
+                product_id: item.productId,
+                quantity: item.quantity,
+                price_at_time: item.price
+            }));
+
+            const { error: itemsError } = await supabase
+                .from('order_items')
+                .insert(orderItems);
+
+            if (itemsError) throw itemsError;
+
+            return NextResponse.json({ success: true, order });
+        }
+
+        // ── Case B: Fulfill Existing Order (Legacy Logic) ──
+        const { orderPublicId, deliveryType, accounts, deliveryDetails } = payload;
+        
+        if (!orderPublicId) {
+            return NextResponse.json({ error: 'Order ID required' }, { status: 400 });
         }
 
         const { data: order, error: orderError } = await supabase
@@ -94,25 +144,32 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Order not found' }, { status: 404 });
         }
 
-        // Insert accounts
-        const accountInserts = accounts.map((acc: string) => ({
-            product_id: 'auto-fulfillment',
-            credentials: acc,
-            is_sold: true,
-            assigned_order_id: order.id,
-            sold_at: new Date().toISOString()
-        }));
+        if (deliveryType === 'vault' && accounts && Array.isArray(accounts)) {
+            // Insert accounts into vault
+            const accountInserts = accounts.map((acc: string) => ({
+                product_id: 'auto-fulfillment',
+                credentials: acc,
+                is_sold: true,
+                assigned_order_id: order.id,
+                sold_at: new Date().toISOString()
+            }));
 
-        const { error: insertError } = await supabase
-            .from('vault_accounts')
-            .insert(accountInserts);
+            const { error: insertError } = await supabase
+                .from('vault_accounts')
+                .insert(accountInserts);
 
-        if (insertError) throw insertError;
+            if (insertError) throw insertError;
+        }
 
-        // Update order status to completed
+        // Update order status to completed + save delivery details if manual
+        const updatePayload: any = { status: 'completed' };
+        if (deliveryType === 'manual' && manualDetails) {
+            updatePayload.delivery_details = manualDetails;
+        }
+
         const { error: updateError } = await supabase
             .from('orders')
-            .update({ status: 'completed' })
+            .update(updatePayload)
             .eq('id', order.id);
 
         if (updateError) throw updateError;

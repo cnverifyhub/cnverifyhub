@@ -146,7 +146,7 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
     const pendingOrders = orders.filter(o => o.status === 'pending').length;
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-8 animate-fade-in-up">
+        <div className="max-w-4xl mx-auto px-4 pt-24 pb-8 md:pt-8 animate-fade-in-up">
             {/* Top Bar */}
             <div className="flex items-center justify-between mb-8">
                 <h1 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
@@ -369,6 +369,26 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
                                                         <div className="text-emerald-600 dark:text-emerald-400/80 space-y-0.5 font-mono text-[10px]">
                                                             <div>Amount: {order.verification_details.amount} {order.verification_details.token}</div>
                                                             {order.verification_details.from && <div>From: {order.verification_details.from.slice(0, 20)}...</div>}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Delivery Details */}
+                                                {order.delivery_details && (
+                                                    <div className="p-4 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 shadow-sm mt-3">
+                                                        <h4 className="font-black text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2">
+                                                            <Package className="w-4 h-4" />
+                                                            {lang === 'zh' ? '发货详情 (账号密码)' : 'Delivery Details (Account Info)'}
+                                                        </h4>
+                                                        <div className="space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
+                                                            {order.delivery_details.mobile && <div className="flex justify-between border-b border-blue-100 dark:border-blue-800/50 pb-1"><span className="opacity-70">Mobile:</span><span className="font-bold select-all">{order.delivery_details.mobile}</span></div>}
+                                                            {order.delivery_details.email && <div className="flex justify-between border-b border-blue-100 dark:border-blue-800/50 pb-1"><span className="opacity-70">Email:</span><span className="font-bold select-all">{order.delivery_details.email}</span></div>}
+                                                            {order.delivery_details.emailPass && <div className="flex justify-between border-b border-blue-100 dark:border-blue-800/50 pb-1"><span className="opacity-70">Email Pass:</span><span className="font-bold text-red-600 dark:text-red-400 select-all">{order.delivery_details.emailPass}</span></div>}
+                                                            {order.delivery_details.accountPass && <div className="flex justify-between border-b border-blue-100 dark:border-blue-800/50 pb-1"><span className="opacity-70">Account Pass:</span><span className="font-bold text-red-600 dark:text-red-400 select-all">{order.delivery_details.accountPass}</span></div>}
+                                                            {order.delivery_details.pin && <div className="flex justify-between border-b border-blue-100 dark:border-blue-800/50 pb-1"><span className="opacity-70">PIN:</span><span className="font-bold select-all">{order.delivery_details.pin}</span></div>}
+                                                            {order.delivery_details.passportNo && <div className="flex justify-between border-b border-blue-100 dark:border-blue-800/50 pb-1"><span className="opacity-70">Passport No:</span><span className="font-bold select-all">{order.delivery_details.passportNo}</span></div>}
+                                                            {order.delivery_details.realName && <div className="flex justify-between border-b border-blue-100 dark:border-blue-800/50 pb-1"><span className="opacity-70">Real Name:</span><span className="font-bold select-all">{order.delivery_details.realName}</span></div>}
+                                                            {order.delivery_details.other && <div className="mt-2 p-2 bg-white/50 dark:bg-black/20 rounded-lg text-[11px] font-mono select-all whitespace-pre-wrap">{order.delivery_details.other}</div>}
                                                         </div>
                                                     </div>
                                                 )}

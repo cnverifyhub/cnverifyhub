@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS public.orders (
     verification_details JSONB, -- stores TronScan/BSCScan/Etherscan payload
     payment_wallet VARCHAR(255), -- which wallet address received the payment
     payment_network VARCHAR(50), -- trc20, bep20, erc20
+    delivery_details JSONB, -- stores manual login credentials sent by admin
     created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
@@ -128,3 +129,26 @@ CREATE INDEX IF NOT EXISTS idx_fraud_events_created ON public.fraud_events(creat
 CREATE INDEX IF NOT EXISTS idx_fraud_events_type ON public.fraud_events(event_type);
 CREATE INDEX IF NOT EXISTS idx_fraud_events_severity ON public.fraud_events(severity);
 CREATE INDEX IF NOT EXISTS idx_orders_email_created ON public.orders(email, created_at DESC);
+
+-- 6. Products Table (for stock management)
+CREATE TABLE IF NOT EXISTS public.products (
+    id VARCHAR(255) PRIMARY KEY,
+    category VARCHAR(100) NOT NULL,
+    name_en VARCHAR(255) NOT NULL,
+    name_zh VARCHAR(255) NOT NULL,
+    stock_count INTEGER DEFAULT 0,
+    price_usdt NUMERIC(10, 2) NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Seed some products from the static catalog
+INSERT INTO public.products (id, category, name_en, name_zh, price_usdt, stock_count)
+VALUES 
+('wechat-standard-v1', 'wechat', 'Standard Individual Account', '标准个人账号', 29.00, 50),
+('wechat-aged-2023', 'wechat', '2023 Aged Account', '2023年老号', 45.00, 25),
+('wechat-merchant-verified', 'wechat', 'Merchant Verified Account', '商家认证账号', 120.00, 10),
+('alipay-personal-standard', 'alipay', 'Personal Standard Account', '个人标准账号', 35.00, 40),
+('alipay-merchant-full', 'alipay', 'Full Merchant Verified', '全认证商家号', 150.00, 5)
+ON CONFLICT (id) DO NOTHING;
