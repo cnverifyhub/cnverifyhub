@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: 'export', // Removed to enable Netlify Next.js Runtime
+  // output: 'export', // Removed to enable Vercel Next.js Runtime
   trailingSlash: true,
   compress: true,
   poweredByHeader: false,
@@ -16,7 +16,7 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'cnwepro.com', pathname: '/images/**' },
-      { protocol: 'https', hostname: '*.netlify.app', pathname: '/images/**' },
+      { protocol: 'https', hostname: '*.vercel.app', pathname: '/images/**' },
     ],
   },
   async headers() {

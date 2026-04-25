@@ -7,7 +7,8 @@ This guide is for agentic coding agents operating in the CNWePro repository.
 - **Framework**: Next.js 14 (App Router), TypeScript, Node.js >= 20
 - **Styling**: Tailwind CSS v3 with custom design tokens (NOT Tailwind v4)
 - **State**: Zustand with `persist` middleware (localStorage)
-- **Backend**: Supabase (Auth + PostgreSQL), deployed on Netlify
+- **Backend**: Supabase (Auth + PostgreSQL), deployed on Vercel
+- **Deployment**: Automatic via GitHub push to `main` branch
 - **i18n**: Dual-language (`zh` / `en`) via in-source `{ zh, en }` objects
 - **Testing**: None currently configured
 
