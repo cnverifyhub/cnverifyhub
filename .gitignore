@@ -36,3 +36,9 @@ build.log
 ts_errors.txt
 build_log.txt
 tsconfig.tsbuildinfo
+
+# Agent Sessions & Artifacts
+SESSION.md
+.superpowers/
+graphify-out/
+scratch/
