@@ -8,7 +8,9 @@ This guide is for agentic coding agents operating in the CNWePro repository.
 - **Styling**: Tailwind CSS v3 with custom design tokens (NOT Tailwind v4)
 - **State**: Zustand with `persist` middleware (localStorage)
 - **Backend**: Supabase (Auth + PostgreSQL), deployed on Vercel
-- **Deployment**: Automatic via GitHub push to `main` branch
+- **Deployment**: 
+    - **Routine Pushes**: Always include `[skip ci]` in the commit message to push to GitHub without triggering Vercel.
+    - **Production Deployment**: Only push *without* `[skip ci]` when the USER explicitly asks to "deploy".
 - **i18n**: Dual-language (`zh` / `en`) via in-source `{ zh, en }` objects
 - **Testing**: None currently configured
 
