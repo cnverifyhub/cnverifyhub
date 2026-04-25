@@ -140,6 +140,18 @@ Copy `.env.example` to `.env.local`. Required:
 
 ---
 
+## Project Skills
+
+- **vercel_deployment**: Expert knowledge for deploying to Vercel with Next.js.
+- **nextjs_app_router_patterns**: Best practices for Next.js 14+ components.
+- **auth_fortress_security**: Account hijacking and bot-spam protection.
+- **chinese_ui**: High-conversion Chinese e-commerce design patterns.
+- **faux_escrow**: Psychological trust engineering for payments.
+- **blockchain_oracle**: Crypto payment automation logic.
+- **tailwind_patterns**: Expert utility extraction and configuration.
+
+---
+
 ## Directory Structure
 
 ```
