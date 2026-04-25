@@ -6,10 +6,11 @@ import {
     Lock, LayoutDashboard, Package, ShieldAlert, LogOut,
     CheckCircle2, Clock, AlertCircle, ChevronRight,
     Search, RefreshCw, X, DollarSign, ShoppingCart,
-    Plus, Trash2, Users, Box, Settings, ClipboardList, Send
+    Plus, Trash2, Users, Box, Settings, ClipboardList, Send, Loader2
 } from 'lucide-react';
 import { getProductById } from '@/data/products';
-import { cn } from '@/lib/utils';
+import { cn, formatYuan } from '@/lib/utils';
+import { supabase } from '@/lib/supabase/client';
 
 type Tab = 'orders' | 'fraud' | 'users' | 'products' | 'settings';
 type StatusFilter = 'all' | 'pending' | 'paid' | 'completed' | 'cancelled';
@@ -99,8 +100,6 @@ export default function AdminDashboardPage() {
     const [dbProducts, setDbProducts] = useState<any[]>([]);
     const [isLoadingProducts, setIsLoadingProducts] = useState(false);
     const [editingStock, setEditingStock] = useState<{id: string, count: number} | null>(null);
-    const [fraudEvents, setFraudEvents] = useState<any[]>([]);
-    const [isLoadingFraud, setIsLoadingFraud] = useState(false);
     const [isCreateOrderOpen, setIsCreateOrderOpen] = useState(false);
     const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
     const [newOrder, setNewOrder] = useState({
@@ -646,7 +645,8 @@ export default function AdminDashboardPage() {
                 )}
 
                 {activeTab === 'users' ? (
-                    <div className="p-4 md:p-8">
+                    <>
+                        <div className="p-4 md:p-8">
                         <header className="flex justify-between items-start mb-6">
                             <div>
                                 <h2 className="text-2xl font-black text-slate-900 dark:text-white">User & VIP Management</h2>
@@ -752,13 +752,17 @@ export default function AdminDashboardPage() {
                                                 <div className="flex flex-col gap-2 w-full">
                                                     <input 
                                                         type="number" 
-                                                        value={editingStock.count} 
-                                                        onChange={e => setEditingStock({...editingStock, count: parseInt(e.target.value) || 0})}
+                                                        value={editingStock?.count || 0} 
+                                                        onChange={e => {
+                                                            if (editingStock) {
+                                                                setEditingStock({...editingStock, count: parseInt(e.target.value) || 0});
+                                                            }
+                                                        }}
                                                         className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-blue-500 rounded-lg text-center font-bold"
                                                     />
                                                     <div className="flex gap-2">
                                                         <button onClick={() => setEditingStock(null)} className="flex-1 py-1 text-xs bg-slate-200 dark:bg-slate-700 rounded-md">Cancel</button>
-                                                        <button onClick={() => handleUpdateStock(p.id, editingStock.count)} className="flex-1 py-1 text-xs bg-blue-600 text-white rounded-md font-bold">Save</button>
+                                                        <button onClick={() => editingStock && handleUpdateStock(p.id, editingStock.count)} className="flex-1 py-1 text-xs bg-blue-600 text-white rounded-md font-bold">Save</button>
                                                     </div>
                                                 </div>
                                             ) : (
@@ -774,7 +778,8 @@ export default function AdminDashboardPage() {
                                 ))
                             )}
                         </div>
-                    </div>
+                        </div>
+                    </>
                 ) : activeTab === 'fraud' ? (
                     <div className="p-4 md:p-8">
                         <header className="flex justify-between items-start mb-6">

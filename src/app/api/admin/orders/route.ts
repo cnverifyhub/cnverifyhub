@@ -128,7 +128,7 @@ export async function POST(request: NextRequest) {
         }
 
         // ── Case B: Fulfill Existing Order (Legacy Logic) ──
-        const { orderPublicId, deliveryType, accounts, deliveryDetails } = payload;
+        const { orderPublicId, deliveryType, accounts, deliveryDetails, manualDetails } = payload;
         
         if (!orderPublicId) {
             return NextResponse.json({ error: 'Order ID required' }, { status: 400 });

@@ -41,20 +41,24 @@ export async function middleware(request: NextRequest) {
         request.nextUrl.pathname.startsWith(path)
     );
 
+    const isEn = request.nextUrl.pathname.startsWith('/en');
+
     if (isProtected && !session) {
-        const loginUrl = new URL('/auth/login', request.url);
+        const loginPath = isEn ? '/en/auth/login' : '/auth/login';
+        const loginUrl = new URL(loginPath, request.url);
         loginUrl.searchParams.set('redirect', request.nextUrl.pathname);
         return NextResponse.redirect(loginUrl);
     }
 
     // If user is logged in and tries to access auth pages, redirect to account
-    const authPaths = ['/auth/login', '/auth/signup'];
+    const authPaths = ['/auth/login', '/auth/signup', '/en/auth/login', '/en/auth/signup'];
     const isAuthPage = authPaths.some(path =>
         request.nextUrl.pathname.startsWith(path)
     );
 
     if (isAuthPage && session) {
-        return NextResponse.redirect(new URL('/account', request.url));
+        const accountPath = isEn ? '/en/account' : '/account';
+        return NextResponse.redirect(new URL(accountPath, request.url));
     }
 
     return response;
