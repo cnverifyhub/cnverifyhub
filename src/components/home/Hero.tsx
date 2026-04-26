@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { ShieldCheck, Zap, Headset, Award, Lock, ChevronRight, Gift, X, Crown, TrendingUp, MessageSquare, Star, Truck, BadgeCheck } from 'lucide-react';
+import { ShieldCheck, Zap, Headset, Award, Lock, ChevronRight, Gift, X, Crown, TrendingUp, MessageSquare, Star, Truck, BadgeCheck, Send } from 'lucide-react';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { categories } from '@/data/products';

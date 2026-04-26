@@ -6,7 +6,7 @@ import {
     Lock, LayoutDashboard, Package, ShieldAlert, LogOut,
     CheckCircle2, Clock, AlertCircle, ChevronRight,
     Search, RefreshCw, X, DollarSign, ShoppingCart,
-    Plus, Trash2, Users, Box, Settings, ClipboardList, Send, Loader2
+    Plus, Trash2, Users, Box, Settings, ClipboardList, Send, Loader2, Database
 } from 'lucide-react';
 import { getProductById } from '@/data/products';
 import { cn, formatYuan } from '@/lib/utils';
