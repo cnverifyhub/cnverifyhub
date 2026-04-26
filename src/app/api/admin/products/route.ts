@@ -30,7 +30,7 @@ export async function PATCH(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { id, stockCount, priceUsdt, isActive } = await request.json();
+        const { id, stockCount, priceUsdt, isActive, nameEn, nameZh } = await request.json();
 
         if (!id) {
             return NextResponse.json({ error: 'Product ID is required' }, { status: 400 });
@@ -40,7 +40,8 @@ export async function PATCH(request: NextRequest) {
         if (typeof stockCount === 'number') updateFields.stock_count = stockCount;
         if (typeof priceUsdt === 'number') updateFields.price_usdt = priceUsdt;
         if (typeof isActive === 'boolean') updateFields.is_active = isActive;
-        updateFields.updated_at = new Date().toISOString();
+        if (nameEn) updateFields.name_en = nameEn;
+        if (nameZh) updateFields.name_zh = nameZh;
 
         const { error } = await supabase
             .from('products')

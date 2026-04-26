@@ -3,6 +3,26 @@ import { supabaseAdmin as supabase } from '@/lib/supabase/admin';
 
 const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'Sawmik888';
 
+export async function GET(request: NextRequest) {
+    try {
+        const authHeader = request.headers.get('Authorization');
+        if (authHeader !== `Bearer ${ADMIN_PASS}`) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        return NextResponse.json(data);
+    } catch (error) {
+        console.error('Fetch Users Error:', error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    }
+}
+
 export async function POST(request: NextRequest) {
     try {
         const authHeader = request.headers.get('Authorization');

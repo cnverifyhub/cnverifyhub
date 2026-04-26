@@ -31,6 +31,7 @@ export interface Order {
     telegram?: string;
     paymentWallet?: string; // Which wallet received the payment
     paymentNetwork?: string; // trc20, bep20, erc20
+    deliveryDetails?: any; // Manual login credentials or custom info
 }
 
 interface OrderState {

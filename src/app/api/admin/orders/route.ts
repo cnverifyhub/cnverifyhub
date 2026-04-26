@@ -11,13 +11,22 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Fetch all orders, ordered by newest first
         const { data: orders, error: ordersError } = await supabase
             .from('orders')
-            .select('*, profiles(email, telegram, display_name)')
+            .select('*')
             .order('created_at', { ascending: false });
 
-        if (ordersError) throw ordersError;
+        if (ordersError) {
+            console.error('Supabase Orders Fetch Error:', ordersError);
+            throw ordersError;
+        }
+
+        // Fetch all profiles to join in memory
+        const { data: profiles, error: profilesError } = await supabase
+            .from('profiles')
+            .select('id, email, telegram, display_name');
+        
+        if (profilesError) console.error('Profiles Fetch Error:', profilesError);
 
         // Fetch all items
         const { data: items, error: itemsError } = await supabase
@@ -60,7 +69,7 @@ export async function GET(request: NextRequest) {
                 })),
                 deliveredAccounts: orderAccounts.map(acc => acc.credentials),
                 deliveryDetails: order.delivery_details || null,
-                userProfile: order.profiles || null
+                userProfile: (profiles || []).find(p => p.id === order.user_id) || null
             };
         });
 

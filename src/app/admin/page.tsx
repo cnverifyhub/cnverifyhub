@@ -100,6 +100,8 @@ export default function AdminDashboardPage() {
     const [dbProducts, setDbProducts] = useState<any[]>([]);
     const [isLoadingProducts, setIsLoadingProducts] = useState(false);
     const [editingStock, setEditingStock] = useState<{id: string, count: number} | null>(null);
+    const [editingProduct, setEditingProduct] = useState<any | null>(null);
+    const [isSyncingProducts, setIsSyncingProducts] = useState(false);
     const [isCreateOrderOpen, setIsCreateOrderOpen] = useState(false);
     const [isCreateUserOpen, setIsCreateUserOpen] = useState(false);
     const [newOrder, setNewOrder] = useState({
@@ -156,7 +158,13 @@ export default function AdminDashboardPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setFraudEvents(data);
+                console.log('Admin Dashboard: Fetched fraud events:', data);
+                if (Array.isArray(data)) {
+                    setFraudEvents(data);
+                } else {
+                    console.error('Admin Dashboard: Expected array for fraud events, got:', typeof data);
+                    setFraudEvents([]);
+                }
             }
         } catch (e) {
             console.error('Fetch Fraud Events Error:', e);
@@ -186,15 +194,83 @@ export default function AdminDashboardPage() {
         try {
             const res = await fetch('/api/admin/products', {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
-                body: JSON.stringify({ id, stockCount: count }),
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${ADMIN_PASS}`
+                },
+                body: JSON.stringify({ id, stockCount: count })
             });
             if (res.ok) {
+                // @ts-ignore
+                toast.success('Stock updated');
                 setEditingStock(null);
                 fetchProducts();
             }
         } catch (e) {
-            alert('Failed to update stock');
+            console.error(e);
+            // @ts-ignore
+            toast.error('Failed to update stock');
+        }
+    };
+
+    const handleSyncProducts = async () => {
+        setIsSyncingProducts(true);
+        try {
+            const res = await fetch('/api/admin/products/sync', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${ADMIN_PASS}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                // @ts-ignore
+                toast.success(`Successfully synced ${data.count} products from code!`);
+                fetchProducts();
+            } else {
+                // @ts-ignore
+                toast.error('Sync failed');
+            }
+        } catch (e) {
+            console.error(e);
+            // @ts-ignore
+            toast.error('Sync error');
+        } finally {
+            setIsSyncingProducts(false);
+        }
+    };
+
+    const handleFullUpdateProduct = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!editingProduct) return;
+
+        try {
+            const res = await fetch('/api/admin/products', {
+                method: 'PATCH',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${ADMIN_PASS}`
+                },
+                body: JSON.stringify({ 
+                    id: editingProduct.id, 
+                    stockCount: editingProduct.stock_count,
+                    priceUsdt: editingProduct.price_usdt,
+                    isActive: editingProduct.is_active,
+                    nameEn: editingProduct.name_en,
+                    nameZh: editingProduct.name_zh
+                })
+            });
+            if (res.ok) {
+                // @ts-ignore
+                toast.success('Product updated successfully');
+                setEditingProduct(null);
+                fetchProducts();
+            } else {
+                // @ts-ignore
+                toast.error('Failed to update product');
+            }
+        } catch (e) {
+            console.error(e);
+            // @ts-ignore
+            toast.error('Error updating product');
         }
     };
 
@@ -255,12 +331,15 @@ export default function AdminDashboardPage() {
     const fetchUsers = async () => {
         setIsLoadingUsers(true);
         try {
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .order('created_at', { ascending: false });
-            if (error) throw error;
-            setUsers(data || []);
+            const res = await fetch('/api/admin/users', {
+                headers: { 'Authorization': `Bearer ${ADMIN_PASS}` },
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setUsers(data || []);
+            } else {
+                console.error('Fetch Users Failed:', res.status);
+            }
         } catch (e) {
             console.error('Fetch Users Error:', e);
         } finally {
@@ -276,11 +355,19 @@ export default function AdminDashboardPage() {
             });
             if (res.ok) {
                 const data = await res.json();
-                setOrders(data);
+                console.log('Admin Dashboard: Fetched orders:', data);
+                if (Array.isArray(data)) {
+                    setOrders(data);
+                } else {
+                    console.error('Admin Dashboard: Expected array for orders, got:', typeof data);
+                    setOrders([]);
+                }
                 setCurrentPage(1);
+            } else {
+                console.error('Admin Dashboard: Fetch orders failed:', res.status);
             }
         } catch (e) {
-            console.error(e);
+            console.error('Admin Dashboard: Fetch orders error:', e);
         } finally {
             setIsLoadingOrders(false);
         }
@@ -716,21 +803,37 @@ export default function AdminDashboardPage() {
                                 </table>
                             </div>
                         </div>
-                    </div>
+                        </div>
+                    </>
+                ) : activeTab === 'products' ? (
                     <div className="p-4 md:p-8">
                         <header className="flex justify-between items-start mb-6">
                             <div>
                                 <h2 className="text-2xl font-black text-slate-900 dark:text-white">Inventory Control</h2>
                                 <p className="text-slate-500 text-sm mt-0.5">Manage account stock and active status across all tiers.</p>
                             </div>
-                            <button onClick={fetchProducts} className="btn-secondary px-4 py-2 text-sm flex gap-2 items-center">
-                                <RefreshCw className={cn('w-4 h-4', isLoadingProducts && 'animate-spin')} /> Refresh
-                            </button>
+                            <div className="flex gap-2">
+                                <button 
+                                    onClick={handleSyncProducts} 
+                                    disabled={isSyncingProducts}
+                                    className="btn-secondary px-4 py-2 text-sm flex gap-2 items-center bg-orange-50 dark:bg-orange-900/20 text-orange-600 border-orange-200 dark:border-orange-800"
+                                >
+                                    {isSyncingProducts ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
+                                    Sync from Code
+                                </button>
+                                <button onClick={fetchProducts} className="btn-secondary px-4 py-2 text-sm flex gap-2 items-center">
+                                    <RefreshCw className={cn('w-4 h-4', isLoadingProducts && 'animate-spin')} /> Refresh
+                                </button>
+                            </div>
                         </header>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                             {isLoadingProducts && dbProducts.length === 0 ? (
                                 <div className="col-span-full py-12 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto" /></div>
+                            ) : dbProducts.length === 0 ? (
+                                <div className="col-span-full py-12 text-center text-slate-500 bg-white dark:bg-dark-900 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+                                    No products found in database.
+                                </div>
                             ) : (
                                 dbProducts.map(p => (
                                     <div key={p.id} className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row gap-6">
@@ -761,7 +864,7 @@ export default function AdminDashboardPage() {
                                                         className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-blue-500 rounded-lg text-center font-bold"
                                                     />
                                                     <div className="flex gap-2">
-                                                        <button onClick={() => setEditingStock(null)} className="flex-1 py-1 text-xs bg-slate-200 dark:bg-slate-700 rounded-md">Cancel</button>
+                                                     <button onClick={() => setEditingStock(null)} className="flex-1 py-1 text-xs bg-slate-200 dark:bg-slate-700 rounded-md">Cancel</button>
                                                         <button onClick={() => editingStock && handleUpdateStock(p.id, editingStock.count)} className="flex-1 py-1 text-xs bg-blue-600 text-white rounded-md font-bold">Save</button>
                                                     </div>
                                                 </div>
@@ -770,7 +873,10 @@ export default function AdminDashboardPage() {
                                                     <div className={cn('text-3xl font-black mb-3', p.stock_count > 10 ? 'text-emerald-500' : p.stock_count > 0 ? 'text-orange-500' : 'text-red-500')}>
                                                         {p.stock_count}
                                                     </div>
-                                                    <button onClick={() => setEditingStock({id: p.id, count: p.stock_count})} className="text-xs font-bold text-blue-600 hover:underline">Adjust Stock</button>
+                                                    <div className="flex flex-col gap-2 w-full">
+                                                        <button onClick={() => setEditingStock({id: p.id, count: p.stock_count})} className="text-xs font-bold text-blue-600 hover:underline">Quick Adjust Stock</button>
+                                                        <button onClick={() => setEditingProduct(p)} className="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg text-[10px] font-bold text-slate-700 dark:text-slate-300 transition-colors">Full Edit</button>
+                                                    </div>
                                                 </>
                                             )}
                                         </div>
@@ -778,8 +884,7 @@ export default function AdminDashboardPage() {
                                 ))
                             )}
                         </div>
-                        </div>
-                    </>
+                    </div>
                 ) : activeTab === 'fraud' ? (
                     <div className="p-4 md:p-8">
                         <header className="flex justify-between items-start mb-6">
@@ -1545,6 +1650,74 @@ export default function AdminDashboardPage() {
                                 Create Profile
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+            {editingProduct && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                    <div className="bg-white dark:bg-dark-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-200">
+                        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                            <h3 className="text-lg font-black text-slate-900 dark:text-white">Edit Product</h3>
+                            <button onClick={() => setEditingProduct(null)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <form onSubmit={handleFullUpdateProduct} className="p-5 space-y-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="col-span-2">
+                                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Product Name (EN)</label>
+                                    <input 
+                                        type="text" 
+                                        value={editingProduct.name_en || ''} 
+                                        onChange={e => setEditingProduct({...editingProduct, name_en: e.target.value})}
+                                        className="w-full px-4 py-2.5 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-bold"
+                                    />
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Product Name (ZH)</label>
+                                    <input 
+                                        type="text" 
+                                        value={editingProduct.name_zh || ''} 
+                                        onChange={e => setEditingProduct({...editingProduct, name_zh: e.target.value})}
+                                        className="w-full px-4 py-2.5 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-bold"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Price (USDT)</label>
+                                    <input 
+                                        type="number" 
+                                        step="0.01"
+                                        value={editingProduct.price_usdt || 0} 
+                                        onChange={e => setEditingProduct({...editingProduct, price_usdt: parseFloat(e.target.value)})}
+                                        className="w-full px-4 py-2.5 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-bold"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Stock Count</label>
+                                    <input 
+                                        type="number" 
+                                        value={editingProduct.stock_count || 0} 
+                                        onChange={e => setEditingProduct({...editingProduct, stock_count: parseInt(e.target.value)})}
+                                        className="w-full px-4 py-2.5 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-bold"
+                                    />
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            checked={editingProduct.is_active} 
+                                            onChange={e => setEditingProduct({...editingProduct, is_active: e.target.checked})}
+                                            className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                        />
+                                        <span className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Active Status</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="pt-4 flex gap-3">
+                                <button type="button" onClick={() => setEditingProduct(null)} className="flex-1 py-3 px-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl transition-all">Cancel</button>
+                                <button type="submit" className="flex-2 py-3 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/25">Save Changes</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}

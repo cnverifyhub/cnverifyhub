@@ -18,7 +18,7 @@ export function OrderTimeline({ order, lang }: OrderTimelineProps) {
     // 0: 待付款, 1: 待发货, 2: 已发货, 3: 交易成功
     let currentStep = 0;
     if (order.status === 'paid') currentStep = 1;
-    if (order.deliveredAccounts.length > 0) currentStep = 2;
+    if (order.deliveredAccounts?.length > 0 || order.deliveryDetails) currentStep = 2;
     if (order.status === 'completed') currentStep = 3;
 
     const wechatGreen = "#07C160";
@@ -125,7 +125,7 @@ export function OrderTimeline({ order, lang }: OrderTimelineProps) {
             </div>
 
             {/* Account Credentials Section (Visible only when shipped) */}
-            {currentStep >= 2 && order.deliveredAccounts.length > 0 && (
+            {currentStep >= 2 && ((order.deliveredAccounts && order.deliveredAccounts.length > 0) || order.deliveryDetails) && (
                 <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -159,7 +159,7 @@ export function OrderTimeline({ order, lang }: OrderTimelineProps) {
                                         </div>
                                         <button 
                                             disabled={!showAccounts}
-                                            onClick={() => handleCopy(username, `user-${idx}`)}
+                                            onClick={() => handleCopy(username || '', `user-${idx}`)}
                                             className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all disabled:opacity-50"
                                         >
                                             {copiedAccount === `user-${idx}` ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
@@ -176,7 +176,7 @@ export function OrderTimeline({ order, lang }: OrderTimelineProps) {
                                         </div>
                                         <button 
                                             disabled={!showAccounts}
-                                            onClick={() => handleCopy(password, `pass-${idx}`)}
+                                            onClick={() => handleCopy(password || '', `pass-${idx}`)}
                                             className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all disabled:opacity-50"
                                         >
                                             {copiedAccount === `pass-${idx}` ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
@@ -186,6 +186,49 @@ export function OrderTimeline({ order, lang }: OrderTimelineProps) {
                                 </div>
                             );
                         })}
+
+                        {/* Manual Delivery Details */}
+                        {order.deliveryDetails && (
+                            <div className="space-y-4">
+                                {Object.entries(order.deliveryDetails).map(([key, value]) => {
+                                    if (!value) return null;
+                                    const labels: Record<string, {zh: string, en: string}> = {
+                                        mobile: { zh: '手机号', en: 'Mobile' },
+                                        email: { zh: '电子邮箱', en: 'Email' },
+                                        emailPass: { zh: '邮箱密码', en: 'Email Password' },
+                                        accountPass: { zh: '账号密码', en: 'Account Password' },
+                                        pin: { zh: '支付/PIN码', en: 'PIN/Pay Code' },
+                                        passportNo: { zh: '证件号', en: 'ID/Passport No' },
+                                        realName: { zh: '实名姓名', en: 'Real Name' },
+                                        other: { zh: '其他信息', en: 'Other Info' }
+                                    };
+                                    const label = labels[key] || { zh: key, en: key };
+                                    
+                                    return (
+                                        <div key={key} className="space-y-3 bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-2xl border border-blue-100 dark:border-blue-900/30">
+                                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                                <div className="flex-1">
+                                                    <p className="text-[10px] uppercase tracking-widest text-blue-500 dark:text-blue-400 font-bold mb-1">
+                                                        {lang === 'zh' ? label.zh : label.en}
+                                                    </p>
+                                                    <div className="font-mono text-sm dark:text-white break-all">
+                                                        {showAccounts ? (value as string) : '****************'}
+                                                    </div>
+                                                </div>
+                                                <button 
+                                                    disabled={!showAccounts}
+                                                    onClick={() => handleCopy(value as string, `manual-${key}`)}
+                                                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all disabled:opacity-50"
+                                                >
+                                                    {copiedAccount === `manual-${key}` ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                                                    {lang === 'zh' ? '复制' : 'Copy'}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
 
                         {/* Red Warning Banner */}
                         <div className="flex items-start gap-3 p-4 rounded-2xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/30 text-red-600 dark:text-red-400 animate-pulse">

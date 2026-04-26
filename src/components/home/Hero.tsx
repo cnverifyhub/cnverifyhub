@@ -351,14 +351,24 @@ export function Hero({ lang }: { lang: Lang }) {
                                 {/* Shine sweep effect */}
                                 <span className="absolute inset-0 hero-shine" />
                             </Link>
-                            <a
-                                href="https://t.me/cnwepro"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn-outline w-full sm:w-auto px-4 sm:px-8 py-3.5 sm:py-4 text-base sm:text-lg border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white"
-                            >
-                                {t('hero.cta.secondary', lang)}
-                            </a>
+                            <div className="flex flex-col min-[400px]:flex-row gap-3 w-full sm:w-auto">
+                                <a
+                                    href="https://t.me/cnwepro"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-outline flex-1 sm:flex-none px-4 sm:px-6 py-3.5 sm:py-4 text-sm sm:text-base border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white flex items-center justify-center gap-2"
+                                >
+                                    <Send className="w-4 h-4" /> {t('hero.cta.channel', lang)}
+                                </a>
+                                <a
+                                    href="https://t.me/cnwechatpro"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-outline flex-1 sm:flex-none px-4 sm:px-6 py-3.5 sm:py-4 text-sm sm:text-base border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white flex items-center justify-center gap-2"
+                                >
+                                    <MessageSquare className="w-4 h-4" /> {t('hero.cta.personal', lang)}
+                                </a>
+                            </div>
                         </div>
 
                         {/* Dense Trust Cluster under CTA */}
