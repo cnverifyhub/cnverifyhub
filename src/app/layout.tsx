@@ -5,13 +5,7 @@ import { GoogleTagManager } from '@next/third-parties/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
-import MobileNav from '@/components/layout/MobileNav';
-import { CartDrawer } from '@/components/cart/CartDrawer';
-import { GsapAnimations } from '@/components/ui/GsapAnimations';
-
-
+import { ClientLayoutWrapper } from '@/components/layout/ClientLayoutWrapper';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
 // Font Optimization: Zero CLS Loading via Google Fonts (Downloaded at build time)
@@ -254,18 +248,12 @@ export default function RootLayout({
                     }}
                 />
             </head>
-            <body className={`min-h-screen flex flex-col pt-[66px] md:pt-[70px] overflow-x-hidden ${inter.variable} ${notoSansSC.variable}`}>
+            <body className={`min-h-screen flex flex-col overflow-x-hidden ${inter.variable} ${notoSansSC.variable}`}>
                 <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || 'GTM-PHWJK3GG'} />
-                <Header />
-
-                <main className="flex-grow">
+                
+                <ClientLayoutWrapper>
                     {children}
-                </main>
-
-                <CartDrawer lang="zh" />
-                <Footer />
-                <MobileNav />
-                <GsapAnimations />
+                </ClientLayoutWrapper>
 
                 <Analytics />
                 <SpeedInsights />
