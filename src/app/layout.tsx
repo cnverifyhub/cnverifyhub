@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter, Noto_Sans_SC } from 'next/font/google';
 import Script from 'next/script';
+import { GoogleTagManager } from '@next/third-parties/google';
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -252,6 +255,7 @@ export default function RootLayout({
                 />
             </head>
             <body className={`min-h-screen flex flex-col pt-[66px] md:pt-[70px] overflow-x-hidden ${inter.variable} ${notoSansSC.variable}`}>
+                <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || 'GTM-PHWJK3GG'} />
                 <Header />
 
                 <main className="flex-grow">
@@ -263,6 +267,8 @@ export default function RootLayout({
                 <MobileNav />
                 <GsapAnimations />
                 <FloatingServiceButton />
+                <Analytics />
+                <SpeedInsights />
             </body>
         </html>
     );

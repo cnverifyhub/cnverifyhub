@@ -97,6 +97,7 @@ export default function AdminDashboardPage() {
     });
     const [users, setUsers] = useState<any[]>([]);
     const [isLoadingUsers, setIsLoadingUsers] = useState(false);
+    const [userFetchError, setUserFetchError] = useState<string | null>(null);
     const [dbProducts, setDbProducts] = useState<any[]>([]);
     const [isLoadingProducts, setIsLoadingProducts] = useState(false);
     const [editingStock, setEditingStock] = useState<{id: string, count: number} | null>(null);
@@ -330,18 +331,22 @@ export default function AdminDashboardPage() {
 
     const fetchUsers = async () => {
         setIsLoadingUsers(true);
+        setUserFetchError(null);
         try {
             const res = await fetch('/api/admin/users', {
                 headers: { 'Authorization': `Bearer ${ADMIN_PASS}` },
             });
+            const data = await res.json();
             if (res.ok) {
-                const data = await res.json();
-                setUsers(data || []);
+                setUsers(Array.isArray(data) ? data : []);
             } else {
-                console.error('Fetch Users Failed:', res.status);
+                const msg = data?.details || data?.error || `HTTP ${res.status}`;
+                setUserFetchError(msg);
+                console.error('[Admin] Fetch Users Failed:', res.status, data);
             }
-        } catch (e) {
-            console.error('Fetch Users Error:', e);
+        } catch (e: any) {
+            setUserFetchError(e?.message || 'Network error');
+            console.error('[Admin] Fetch Users Error:', e);
         } finally {
             setIsLoadingUsers(false);
         }
@@ -598,18 +603,18 @@ export default function AdminDashboardPage() {
 
     if (!isAdminAuthenticated) {
         return (
-            <div className="min-h-screen bg-slate-50 dark:bg-dark-950 flex flex-col items-center justify-center p-4">
-                <div className="bg-white dark:bg-dark-900 rounded-3xl p-8 sm:p-12 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800">
-                    <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-500 rounded-2xl flex items-center justify-center mb-6 mx-auto">
-                        <Lock className="w-8 h-8" />
+            <div className="min-h-screen bg-[#070711] flex flex-col items-center justify-center p-4">
+                <div style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)'}} className="backdrop-blur-xl rounded-3xl p-8 sm:p-12 w-full max-w-md shadow-2xl">
+                    <div className="w-16 h-16 bg-gradient-to-br from-violet-600 to-blue-600 rounded-2xl flex items-center justify-center mb-6 mx-auto shadow-lg shadow-violet-500/30">
+                        <Lock className="w-8 h-8 text-white" />
                     </div>
                     <div className="text-center mb-8">
-                        <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-2">Admin Dashboard</h1>
-                        <p className="text-slate-500 text-sm">Enter admin password to continue</p>
+                        <h1 className="text-2xl font-black text-white mb-2">Admin Dashboard</h1>
+                        <p className="text-slate-400 text-sm">CNWePro Control Center</p>
                     </div>
-                    <form onSubmit={handleLogin} className="space-y-6">
+                    <form onSubmit={handleLogin} className="space-y-4">
                         {loginError && (
-                            <div className="p-3 bg-red-50 dark:bg-red-900/20 text-red-600 border border-red-200 dark:border-red-900/30 rounded-xl text-sm text-center font-medium">
+                            <div className="p-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl text-sm text-center font-medium">
                                 {loginError}
                             </div>
                         )}
@@ -617,137 +622,133 @@ export default function AdminDashboardPage() {
                             type="password"
                             value={password}
                             onChange={e => setPassword(e.target.value)}
-                            placeholder="Enter password"
-                            className="w-full px-5 py-4 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-slate-900 dark:text-white font-mono text-center tracking-widest text-lg"
+                            placeholder="••••••••••"
+                            style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}
+                            className="w-full px-5 py-4 rounded-xl focus:ring-2 focus:ring-violet-500 outline-none text-white font-mono text-center tracking-widest text-lg placeholder:text-slate-600"
                             required
                         />
-                        <button type="submit" className="w-full py-4 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 dark:text-slate-900 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5">
-                            Login
+                        <button type="submit" className="w-full py-4 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:-translate-y-0.5">
+                            Access Dashboard
                         </button>
                     </form>
+                    <p className="text-center text-xs text-slate-600 mt-6">Secured · CNWePro Admin v2.0</p>
                 </div>
             </div>
         );
     }
 
+    const navItems: { id: Tab; Icon: React.ElementType; label: string; color: string }[] = [
+        { id: 'orders', Icon: Package, label: 'Orders', color: '#3b82f6' },
+        { id: 'fraud', Icon: ShieldAlert, label: 'Fraud', color: '#ef4444' },
+        { id: 'users', Icon: Users, label: 'Users', color: '#8b5cf6' },
+        { id: 'products', Icon: Box, label: 'Products', color: '#10b981' },
+        { id: 'settings', Icon: Settings, label: 'Settings', color: '#64748b' },
+    ];
+
     return (
-        <div className="min-h-screen bg-slate-100 dark:bg-dark-950 flex font-sans pt-20 md:pt-0">
+        <div className="min-h-screen bg-[#070711] flex font-sans pb-16 md:pb-0">
             {isMobile && sidebarOpen && (
-                <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setSidebarOpen(false)} />
+                <div className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
             )}
 
+            {/* Desktop Sidebar */}
             <aside className={cn(
-                'w-64 bg-white dark:bg-dark-900 border-r border-slate-200 dark:border-slate-800 flex flex-col h-screen sticky top-0 z-50 transition-transform',
-                isMobile && 'fixed left-0 top-0 h-full -translate-x-full',
-                isMobile && sidebarOpen && 'translate-x-0'
-            )}>
-                <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                    <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-                        <LayoutDashboard className="w-6 h-6 text-blue-600" />
-                        Admin Dashboard
-                    </h1>
+                'w-60 flex flex-col h-screen sticky top-0 z-50 transition-transform shrink-0',
+                'hidden md:flex',
+                isMobile && 'fixed left-0 top-0 h-full -translate-x-full md:translate-x-0',
+                isMobile && sidebarOpen && 'flex translate-x-0'
+            )}
+                style={{background:'rgba(13,13,26,0.95)',borderRight:'1px solid rgba(255,255,255,0.07)',backdropFilter:'blur(20px)'}}>
+                <div className="p-5 flex items-center justify-between" style={{borderBottom:'1px solid rgba(255,255,255,0.07)'}}>
+                    <div className="flex items-center gap-2.5">
+                        <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-blue-600 rounded-lg flex items-center justify-center">
+                            <LayoutDashboard className="w-4 h-4 text-white" />
+                        </div>
+                        <span className="text-white font-black text-sm tracking-tight">CNWePro Admin</span>
+                    </div>
                     {isMobile && (
-                        <button onClick={() => setSidebarOpen(false)} className="text-slate-400 hover:text-slate-600">
-                            <X className="w-5 h-5" />
+                        <button onClick={() => setSidebarOpen(false)} className="text-slate-500 hover:text-white transition-colors">
+                            <X className="w-4 h-4" />
                         </button>
                     )}
                 </div>
 
-                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-                    <button
-                        onClick={() => { setActiveTab('orders'); setSidebarOpen(false); }}
-                        className={cn(
-                            'w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-colors',
-                            activeTab === 'orders'
-                                ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400'
-                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                        )}
-                    >
-                        <Package className="w-5 h-5" /> Orders
-                    </button>
-                    <button
-                        onClick={() => { setActiveTab('fraud'); setSidebarOpen(false); }}
-                        className={cn(
-                            'w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-colors',
-                            activeTab === 'fraud'
-                                ? 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400'
-                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                        )}
-                    >
-                        <ShieldAlert className="w-5 h-5" /> Fraud Control
-                    </button>
-                    <button
-                        onClick={() => { setActiveTab('users'); setSidebarOpen(false); }}
-                        className={cn(
-                            'w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-colors',
-                            activeTab === 'users'
-                                ? 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-400'
-                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                        )}
-                    >
-                        <Users className="w-5 h-5" /> Users & VIPs
-                    </button>
-                    <button
-                        onClick={() => { setActiveTab('products'); setSidebarOpen(false); }}
-                        className={cn(
-                            'w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-colors',
-                            activeTab === 'products'
-                                ? 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400'
-                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                        )}
-                    >
-                        <Box className="w-5 h-5" /> Products
-                    </button>
-                    <button
-                        onClick={() => { setActiveTab('settings'); setSidebarOpen(false); }}
-                        className={cn(
-                            'w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-colors',
-                            activeTab === 'settings'
-                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white'
-                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800'
-                        )}
-                    >
-                        <Settings className="w-5 h-5" /> Settings
-                    </button>
+                <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+                    {navItems.map(({ id, Icon, label, color }) => (
+                        <button key={id}
+                            onClick={() => { setActiveTab(id); setSidebarOpen(false); }}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all text-sm font-bold"
+                            style={activeTab === id
+                                ? { background: `${color}18`, color, boxShadow: `inset 0 0 0 1px ${color}30` }
+                                : { color: '#64748b' }
+                            }
+                        >
+                            <Icon className="w-4 h-4 shrink-0" style={activeTab === id ? { color } : {}}/>
+                            {label}
+                        </button>
+                    ))}
                 </nav>
 
-                <div className="p-4 border-t border-slate-200 dark:border-slate-800">
-                    <button
-                        onClick={logoutAdmin}
-                        className="flex items-center justify-center gap-2 w-full px-4 py-3 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl font-bold transition-colors"
-                    >
-                        <LogOut className="w-5 h-5" /> Logout
+                <div className="p-3" style={{borderTop:'1px solid rgba(255,255,255,0.07)'}}>
+                    <button onClick={logoutAdmin}
+                        className="flex items-center justify-center gap-2 w-full px-3 py-2.5 text-red-400 hover:bg-red-500/10 rounded-xl font-bold transition-colors text-sm">
+                        <LogOut className="w-4 h-4" /> Logout
                     </button>
                 </div>
             </aside>
 
-            <main className="flex-1 min-w-0">
-                {isMobile && (
-                    <div className="sticky top-0 z-30 bg-white dark:bg-dark-900 border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center gap-3">
-                        <button onClick={() => setSidebarOpen(true)} className="p-2 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+            {/* Mobile Bottom Tab Bar */}
+            {isMobile && (
+                <nav className="fixed bottom-0 left-0 right-0 z-50 flex md:hidden"
+                    style={{background:'rgba(7,7,17,0.95)',borderTop:'1px solid rgba(255,255,255,0.08)',backdropFilter:'blur(20px)'}}>
+                    {navItems.map(({ id, Icon, label, color }) => (
+                        <button key={id} onClick={() => setActiveTab(id)}
+                            className="flex-1 flex flex-col items-center py-2 gap-0.5 transition-all"
+                            style={activeTab === id ? { color } : { color: '#475569' }}>
+                            <Icon className="w-5 h-5" />
+                            <span className="text-[9px] font-bold">{label}</span>
                         </button>
-                        <span className="font-bold text-slate-900 dark:text-white">Admin Dashboard</span>
+                    ))}
+                </nav>
+            )}
+
+            <main className="flex-1 min-w-0">
+                {/* Mobile Top Bar */}
+                {isMobile && (
+                    <div className="sticky top-0 z-30 px-4 py-3 flex items-center justify-between" style={{background:'rgba(7,7,17,0.9)',borderBottom:'1px solid rgba(255,255,255,0.07)',backdropFilter:'blur(20px)'}}>
+                        <span className="font-black text-white text-sm">CNWePro Admin</span>
+                        <span className="text-xs text-slate-500 font-mono">v2.0</span>
                     </div>
                 )}
 
                 {activeTab === 'users' ? (
                     <>
-                        <div className="p-4 md:p-8">
-                        <header className="flex justify-between items-start mb-6">
+                        <div className="p-4 md:p-6">
+                        <header className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-6">
                             <div>
-                                <h2 className="text-2xl font-black text-slate-900 dark:text-white">User & VIP Management</h2>
-                                <p className="text-slate-500 text-sm mt-0.5">Manage registered users, lifetime spend, and VIP tiers.</p>
+                                <h2 className="text-xl font-black text-white">User & VIP Management</h2>
+                                <p className="text-slate-500 text-xs mt-0.5">Manage registered users, lifetime spend, and VIP tiers.</p>
                             </div>
-                            <div className="flex gap-2">
-                                <button onClick={() => setIsCreateUserOpen(true)} className="btn-primary px-4 py-2 text-sm flex gap-2 items-center">
-                                    <Plus className="w-4 h-4" /> New User
+                            <div className="flex gap-2 shrink-0">
+                                <button onClick={() => setIsCreateUserOpen(true)}
+                                    className="px-3 py-2 text-xs font-bold rounded-xl flex gap-1.5 items-center text-white transition-all"
+                                    style={{background:'linear-gradient(135deg,#8b5cf6,#6d28d9)'}}>
+                                    <Plus className="w-3.5 h-3.5" /> New User
                                 </button>
-                                <button onClick={fetchUsers} className="btn-secondary px-4 py-2 text-sm flex gap-2 items-center">
-                                    <RefreshCw className={cn('w-4 h-4', isLoadingUsers && 'animate-spin')} /> Refresh
+                                <button onClick={fetchUsers}
+                                    className="px-3 py-2 text-xs font-bold rounded-xl flex gap-1.5 items-center text-slate-300 hover:text-white transition-all"
+                                    style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}>
+                                    <RefreshCw className={cn('w-3.5 h-3.5', isLoadingUsers && 'animate-spin')} /> Refresh
                                 </button>
                             </div>
                         </header>
+
+                        {userFetchError && (
+                            <div className="mb-4 p-3 rounded-xl text-sm font-medium flex items-start gap-2" style={{background:'rgba(239,68,68,0.1)',border:'1px solid rgba(239,68,68,0.3)',color:'#fca5a5'}}>
+                                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                                <div><span className="font-bold">Failed to load users: </span>{userFetchError}<br/><span className="text-xs opacity-70">Check that SUPABASE_SERVICE_ROLE_KEY is set in Vercel env vars.</span></div>
+                            </div>
+                        )}
 
                         <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
                             <div className="overflow-x-auto">

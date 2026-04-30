@@ -4,204 +4,233 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
-import { Eye, EyeOff, LogIn, Mail, Lock, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Eye, EyeOff, LogIn, Mail, Lock, ShieldCheck, Sparkles, Send, Hash, KeyRound, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+type LoginTab = 'email' | 'telegram' | 'forgot';
 
 function LoginForm() {
-    const router = useRouter();
     const searchParams = useSearchParams();
-    const [mounted, setMounted] = useState(false);
-
     const redirectTo = searchParams.get('redirect') || '/account';
+    const [mounted, setMounted] = useState(false);
+    const [activeTab, setActiveTab] = useState<LoginTab>('email');
+
+    // Email
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPw, setShowPw] = useState(false);
+    const [emailErr, setEmailErr] = useState('');
+    const [emailLoading, setEmailLoading] = useState(false);
+
+    // Telegram
+    const [tgHandle, setTgHandle] = useState('');
+    const [orderId, setOrderId] = useState('');
+    const [tgErr, setTgErr] = useState('');
+    const [tgOk, setTgOk] = useState('');
+    const [tgLoading, setTgLoading] = useState(false);
+
+    // Forgot
+    const [fEmail, setFEmail] = useState('');
+    const [fErr, setFErr] = useState('');
+    const [fOk, setFOk] = useState(false);
+    const [fLoading, setFLoading] = useState(false);
 
     useEffect(() => {
         setMounted(true);
-
-        // 1. Check session on mount
         supabase.auth.getSession().then(({ data: { session } }) => {
-            if (session) {
-                window.location.href = redirectTo;
-            }
+            if (session) window.location.href = redirectTo;
         });
-
-        // 2. Global Auth State Listener
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' && session) {
-                window.location.href = redirectTo;
-            }
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((ev, session) => {
+            if (ev === 'SIGNED_IN' && session) window.location.href = redirectTo;
         });
-
         return () => subscription.unsubscribe();
     }, [redirectTo]);
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
-
     if (!mounted) return null;
 
-    const validate = () => {
-        if (!email.trim()) { setError('请输入邮箱地址'); return false; }
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError('请输入有效的邮箱地址'); return false; }
-        if (!password) { setError('请输入密码'); return false; }
-        if (password.length < 6) { setError('密码至少6位'); return false; }
-        return true;
+    const switchTab = (t: LoginTab) => {
+        setActiveTab(t);
+        setEmailErr(''); setTgErr(''); setTgOk(''); setFErr(''); setFOk(false);
     };
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
-        if (!validate()) return;
-
-        setLoading(true);
+    const handleEmail = async (e: React.FormEvent) => {
+        e.preventDefault(); setEmailErr('');
+        if (!email.trim()) { setEmailErr('请输入邮箱地址'); return; }
+        if (!password) { setEmailErr('请输入密码'); return; }
+        setEmailLoading(true);
         try {
-            const { data, error: authError } = await supabase.auth.signInWithPassword({
-                email: email.trim(),
-                password
-            });
-
-            if (authError) {
-                if (authError.message.includes('Invalid login')) {
-                    setError('邮箱或密码错误 / Invalid email or password');
-                } else if (authError.message.includes('Email not confirmed')) {
-                    setError('请先验证邮箱后再登录 / Please verify your email first');
-                } else {
-                    setError(authError.message);
-                }
+            const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+            if (error) {
+                setEmailErr(error.message.includes('Invalid login') ? '邮箱或密码错误 / Invalid email or password' : error.message);
                 return;
             }
-
-            if (data.session) {
-                // Use window.location for reliable post-auth redirect
-                // router.push can fail to pick up new session cookies
-                window.location.href = redirectTo;
-            }
-        } catch (err) {
-            setError('登录失败，请稍后重试 / Login failed, please try again');
-        } finally {
-            setLoading(false);
-        }
+            if (data.session) window.location.href = redirectTo;
+        } catch { setEmailErr('登录失败，请稍后重试'); }
+        finally { setEmailLoading(false); }
     };
+
+    const handleTelegram = async (e: React.FormEvent) => {
+        e.preventDefault(); setTgErr(''); setTgOk('');
+        if (!tgHandle.trim()) { setTgErr('请输入Telegram用户名'); return; }
+        if (!orderId.trim()) { setTgErr('请输入订单号（如 CNW-123456）'); return; }
+        setTgLoading(true);
+        try {
+            const res = await fetch('/api/auth/telegram-lookup', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegram: tgHandle.trim(), orderId: orderId.trim() }),
+            });
+            const d = await res.json();
+            if (res.ok && d.sent) setTgOk(`密码重置链接已发送至 ${d.emailHint}，请查收邮件并点击链接设置新密码。`);
+            else setTgErr(d.error || '查找失败，请检查用户名和订单号');
+        } catch { setTgErr('网络错误，请稍后重试'); }
+        finally { setTgLoading(false); }
+    };
+
+    const handleForgot = async (e: React.FormEvent) => {
+        e.preventDefault(); setFErr('');
+        if (!fEmail.trim()) { setFErr('请输入邮箱地址'); return; }
+        setFLoading(true);
+        try {
+            const { error } = await supabase.auth.resetPasswordForEmail(fEmail.trim(), {
+                redirectTo: `${window.location.origin}/auth/callback?redirect=/account`,
+            });
+            if (error) setFErr(error.message); else setFOk(true);
+        } catch { setFErr('发送失败，请稍后重试'); }
+        finally { setFLoading(false); }
+    };
+
+    const inp = 'w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-slate-900 dark:text-white placeholder:text-slate-400';
+    const lbl = 'block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2';
+    const errBox = 'p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm font-medium';
+    const spinSvg = <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none"><circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" /><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg>;
+
+    const tabs: { id: LoginTab; Icon: React.ElementType; label: string }[] = [
+        { id: 'email', Icon: Mail, label: '邮箱登录' },
+        { id: 'telegram', Icon: Send, label: 'Telegram' },
+        { id: 'forgot', Icon: KeyRound, label: '忘记密码' },
+    ];
 
     return (
         <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
-            <motion.div
-                initial={{ opacity: 0, y: 30, scale: 0.97 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className="w-full max-w-md"
-            >
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ type: 'spring', damping: 25 }} className="w-full max-w-md">
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: 'spring', damping: 15, delay: 0.1 }}
-                        className="w-20 h-20 mx-auto bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center mb-5 shadow-xl shadow-red-500/30"
-                    >
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', delay: 0.1 }}
+                        className="w-20 h-20 mx-auto bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center mb-5 shadow-xl shadow-red-500/30">
                         <LogIn className="w-10 h-10 text-white" />
                     </motion.div>
                     <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">欢迎回来</h1>
-                    <p className="text-slate-500">Welcome back to CNWePro</p>
+                    <p className="text-slate-500 dark:text-slate-400">Welcome back to CNWePro</p>
                 </div>
 
-                {/* Form */}
-                <div className="glass-card p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl">
-                    <form onSubmit={handleLogin} className="space-y-5">
-                        {/* Email */}
-                        <div>
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
-                                <Mail className="w-4 h-4 inline mr-1.5" />
-                                邮箱地址 / Email
-                            </label>
-                            <input
-                                type="email"
-                                required
-                                autoComplete="email"
-                                placeholder="your@email.com"
-                                value={email}
-                                onChange={(e) => { setEmail(e.target.value); setError(''); }}
-                                className="w-full px-4 py-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-dark-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-                            />
-                        </div>
+                <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl">
+                    {/* Tab Bar */}
+                    <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-xl p-1 mb-6">
+                        {tabs.map(({ id, Icon, label }) => (
+                            <button key={id} type="button" onClick={() => switchTab(id)}
+                                className={`flex-1 flex flex-col items-center gap-1 py-2 px-1 rounded-lg text-[10px] font-bold transition-all ${activeTab === id ? 'bg-white dark:bg-slate-700 text-red-600 dark:text-red-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'}`}>
+                                <Icon className="w-3.5 h-3.5" />{label}
+                            </button>
+                        ))}
+                    </div>
 
-                        {/* Password */}
-                        <div>
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">
-                                <Lock className="w-4 h-4 inline mr-1.5" />
-                                密码 / Password
-                            </label>
-                            <div className="relative">
-                                <input
-                                    type={showPassword ? 'text' : 'password'}
-                                    required
-                                    autoComplete="current-password"
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => { setPassword(e.target.value); setError(''); }}
-                                    className="w-full px-4 py-3.5 pr-12 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-dark-900 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors"
-                                >
-                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    <AnimatePresence mode="wait">
+                        {activeTab === 'email' && (
+                            <motion.form key="email" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.15 }} onSubmit={handleEmail} className="space-y-4">
+                                <div>
+                                    <label className={lbl}><Mail className="w-4 h-4 inline mr-1.5" />邮箱 / Email</label>
+                                    <input type="email" required autoComplete="email" placeholder="your@email.com" value={email} onChange={e => { setEmail(e.target.value); setEmailErr(''); }} className={inp} />
+                                </div>
+                                <div>
+                                    <label className={lbl}><Lock className="w-4 h-4 inline mr-1.5" />密码 / Password</label>
+                                    <div className="relative">
+                                        <input type={showPw ? 'text' : 'password'} required autoComplete="current-password" placeholder="••••••••" value={password} onChange={e => { setPassword(e.target.value); setEmailErr(''); }} className={`${inp} pr-12`} />
+                                        <button type="button" onClick={() => setShowPw(!showPw)} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                                            {showPw ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                        </button>
+                                    </div>
+                                </div>
+                                {emailErr && <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className={errBox}>{emailErr}</motion.div>}
+                                <button type="submit" disabled={emailLoading} className="w-full py-4 bg-gradient-to-r from-red-600 to-orange-500 text-white font-black text-lg rounded-xl shadow-lg shadow-red-500/20 hover:shadow-xl active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2">
+                                    {emailLoading ? spinSvg : <><LogIn className="w-5 h-5" />登录 / Login</>}
                                 </button>
-                            </div>
-                        </div>
+                            </motion.form>
+                        )}
 
-                        {/* Error */}
-                        {error && (
-                            <motion.div
-                                initial={{ opacity: 0, y: -5 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="p-3 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm font-medium"
-                            >
-                                {error}
+                        {activeTab === 'telegram' && (
+                            <motion.div key="tg" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.15 }}>
+                                <p className="mb-4 p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 text-xs leading-relaxed">
+                                    💡 通过Telegram下单但未注册账号？输入您的Telegram用户名和订单号，我们将发送密码重置链接到您的注册邮箱，设置密码后即可登录。
+                                </p>
+                                {tgOk ? (
+                                    <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="text-center py-6 space-y-3">
+                                        <CheckCircle2 className="w-14 h-14 text-emerald-500 mx-auto" />
+                                        <p className="font-bold text-slate-900 dark:text-white">邮件已发送！</p>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">{tgOk}</p>
+                                        <button type="button" onClick={() => switchTab('email')} className="text-sm font-bold text-red-500 hover:underline">设置密码后返回登录 →</button>
+                                    </motion.div>
+                                ) : (
+                                    <form onSubmit={handleTelegram} className="space-y-4">
+                                        <div>
+                                            <label className={lbl}><Send className="w-4 h-4 inline mr-1.5" />Telegram 用户名</label>
+                                            <div className="relative">
+                                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">@</span>
+                                                <input type="text" placeholder="your_telegram" value={tgHandle} onChange={e => { setTgHandle(e.target.value.replace('@', '')); setTgErr(''); }} className={`${inp} pl-8`} />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className={lbl}><Hash className="w-4 h-4 inline mr-1.5" />订单号 / Order ID</label>
+                                            <input type="text" placeholder="CNW-123456" value={orderId} onChange={e => { setOrderId(e.target.value); setTgErr(''); }} className={inp} />
+                                        </div>
+                                        {tgErr && <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className={errBox}>{tgErr}</motion.div>}
+                                        <button type="submit" disabled={tgLoading} className="w-full py-4 bg-gradient-to-r from-blue-600 to-indigo-500 text-white font-black text-lg rounded-xl shadow-lg shadow-blue-500/20 hover:shadow-xl active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2">
+                                            {tgLoading ? spinSvg : <><Send className="w-5 h-5" />发送重置链接</>}
+                                        </button>
+                                    </form>
+                                )}
                             </motion.div>
                         )}
 
-                        {/* Submit */}
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full py-4 bg-gradient-to-r from-red-600 to-orange-500 text-white font-black text-lg rounded-xl shadow-lg shadow-red-500/20 hover:shadow-xl hover:shadow-red-500/30 active:scale-[0.98] transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                        >
-                            {loading ? (
-                                <span className="flex items-center gap-2">
-                                    <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24" fill="none"><circle className="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" /><path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" /></svg>
-                                    登录中...
-                                </span>
-                            ) : (
-                                <>登录 / Login <ArrowRight className="w-5 h-5" /></>
-                            )}
-                        </button>
-                    </form>
+                        {activeTab === 'forgot' && (
+                            <motion.div key="forgot" initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 10 }} transition={{ duration: 0.15 }}>
+                                {fOk ? (
+                                    <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} className="text-center py-6 space-y-3">
+                                        <CheckCircle2 className="w-14 h-14 text-emerald-500 mx-auto" />
+                                        <p className="font-bold text-slate-900 dark:text-white">重置邮件已发送！</p>
+                                        <p className="text-sm text-slate-500 dark:text-slate-400">请查收邮箱（包括垃圾邮件）并点击重置链接。</p>
+                                        <button type="button" onClick={() => switchTab('email')} className="text-sm font-bold text-red-500 hover:underline">← 返回登录</button>
+                                    </motion.div>
+                                ) : (
+                                    <form onSubmit={handleForgot} className="space-y-4">
+                                        <p className="p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 text-xs">💡 输入注册邮箱，我们将发送密码重置链接。</p>
+                                        <div>
+                                            <label className={lbl}><Mail className="w-4 h-4 inline mr-1.5" />注册邮箱 / Email</label>
+                                            <input type="email" required autoComplete="email" placeholder="your@email.com" value={fEmail} onChange={e => { setFEmail(e.target.value); setFErr(''); }} className={inp} />
+                                        </div>
+                                        {fErr && <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className={errBox}>{fErr}</motion.div>}
+                                        <button type="submit" disabled={fLoading} className="w-full py-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-lg rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-xl active:scale-[0.98] transition-all disabled:opacity-60 flex items-center justify-center gap-2">
+                                            {fLoading ? spinSvg : <><KeyRound className="w-5 h-5" />发送重置链接</>}
+                                        </button>
+                                    </form>
+                                )}
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
-                    {/* Divider */}
-                    <div className="flex items-center gap-4 my-6">
-                        <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
-                        <span className="text-xs font-bold text-slate-400">OR</span>
-                        <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+                    <div className="mt-6">
+                        <div className="flex items-center gap-4 my-4">
+                            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+                            <span className="text-xs font-bold text-slate-400">OR</span>
+                            <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700" />
+                        </div>
+                        <Link href="/auth/signup" className="block w-full py-3.5 text-center font-bold text-slate-700 dark:text-slate-300 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:border-red-300 dark:hover:border-red-800 hover:bg-red-50/30 dark:hover:bg-red-950/10 transition-all">
+                            <Sparkles className="w-4 h-4 inline mr-1.5 text-red-500" />注册新账号 / Create Account
+                        </Link>
                     </div>
-
-                    {/* Sign Up Link */}
-                    <Link
-                        href="/auth/signup"
-                        className="block w-full py-3.5 text-center font-bold text-slate-700 dark:text-slate-300 rounded-xl border-2 border-slate-200 dark:border-slate-700 hover:border-red-300 dark:hover:border-red-800 hover:bg-red-50/30 dark:hover:bg-red-950/10 transition-all"
-                    >
-                        <Sparkles className="w-4 h-4 inline mr-1.5 text-red-500" />
-                        注册新账号 / Create Account
-                    </Link>
                 </div>
 
-                {/* Trust Bar */}
                 <div className="mt-6 flex items-center justify-center gap-2 text-xs text-slate-400">
-                    <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>Secured by Supabase Auth · 256-bit SSL</span>
+                    <ShieldCheck className="w-3.5 h-3.5" /><span>Secured by Supabase Auth · 256-bit SSL</span>
                 </div>
             </motion.div>
         </div>
@@ -210,13 +239,8 @@ function LoginForm() {
 
 export default function LoginPage() {
     return (
-        <Suspense fallback={
-            <div className="min-h-[85vh] flex items-center justify-center">
-                <div className="animate-spin w-10 h-10 border-4 border-red-500 border-t-transparent rounded-full" />
-            </div>
-        }>
+        <Suspense fallback={<div className="min-h-[85vh] flex items-center justify-center"><div className="animate-spin w-10 h-10 border-4 border-red-500 border-t-transparent rounded-full" /></div>}>
             <LoginForm />
         </Suspense>
     );
 }
-
