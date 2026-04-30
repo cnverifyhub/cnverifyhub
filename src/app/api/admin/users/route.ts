@@ -13,37 +13,44 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        const { data: profiles, error } = await supabase
+        // Query 1: Fetch all profiles
+        const { data: profiles, error: profilesError } = await supabase
             .from('profiles')
-            .select('*, orders(total_amount, status)')
+            .select('*')
             .order('created_at', { ascending: false });
 
-        if (error) {
-            console.error('[Admin Users GET] Supabase error:', {
-                code: error.code,
-                message: error.message,
-                details: error.details,
-                hint: error.hint,
-            });
+        if (profilesError) {
+            console.error('[Admin Users GET] Supabase error:', profilesError);
             return NextResponse.json(
-                { error: 'Database error', details: error.message, hint: error.hint, code: error.code },
+                { error: 'Database error', details: profilesError.message, hint: profilesError.hint, code: profilesError.code },
                 { status: 500 }
             );
         }
 
-        const enrichedProfiles = (profiles || []).map((p: any) => {
-            const validOrders = p.orders ? p.orders.filter((o: any) => o.status === 'completed' || o.status === 'paid') : [];
-            const dynamicTotalSpent = validOrders.reduce((sum: number, o: any) => sum + Number(o.total_amount || 0), 0);
-            
-            // Remove the orders array before sending to client to save bandwidth
-            const { orders, ...profileData } = p;
-            
-            return {
-                ...profileData,
-                // Use the calculated total if it's greater than the cached one
-                total_spent: Math.max(dynamicTotalSpent, Number(p.total_spent || 0))
-            };
-        });
+        // Query 2: Fetch all orders with user_id + total_amount + status
+        // (Separate query to avoid PostgREST schema cache issues with FK joins)
+        const { data: orders, error: ordersError } = await supabase
+            .from('orders')
+            .select('user_id, total_amount, status')
+            .in('status', ['paid', 'completed'])
+            .not('user_id', 'is', null);
+
+        if (ordersError) {
+            console.warn('[Admin Users GET] Could not fetch orders for spend calc:', ordersError.message);
+        }
+
+        // Build a map: userId → total spent
+        const spendMap = new Map<string, number>();
+        for (const order of orders || []) {
+            if (!order.user_id) continue;
+            spendMap.set(order.user_id, (spendMap.get(order.user_id) || 0) + Number(order.total_amount || 0));
+        }
+
+        // Merge: use dynamic value if higher than the cached column
+        const enrichedProfiles = (profiles || []).map((p: any) => ({
+            ...p,
+            total_spent: Math.max(spendMap.get(p.id) || 0, Number(p.total_spent || 0))
+        }));
 
         return NextResponse.json(enrichedProfiles);
     } catch (err: any) {
