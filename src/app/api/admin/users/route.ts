@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     try {
         const { data: profiles, error } = await supabase
             .from('profiles')
-            .select('*')
+            .select('*, orders(total_amount, status)')
             .order('created_at', { ascending: false });
 
         if (error) {
@@ -31,7 +31,21 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        return NextResponse.json(profiles || []);
+        const enrichedProfiles = (profiles || []).map((p: any) => {
+            const validOrders = p.orders ? p.orders.filter((o: any) => o.status === 'completed' || o.status === 'paid') : [];
+            const dynamicTotalSpent = validOrders.reduce((sum: number, o: any) => sum + Number(o.total_amount || 0), 0);
+            
+            // Remove the orders array before sending to client to save bandwidth
+            const { orders, ...profileData } = p;
+            
+            return {
+                ...profileData,
+                // Use the calculated total if it's greater than the cached one
+                total_spent: Math.max(dynamicTotalSpent, Number(p.total_spent || 0))
+            };
+        });
+
+        return NextResponse.json(enrichedProfiles);
     } catch (err: any) {
         console.error('[Admin Users GET] Unexpected error:', err);
         return NextResponse.json({ error: 'Internal Server Error', details: err?.message }, { status: 500 });
