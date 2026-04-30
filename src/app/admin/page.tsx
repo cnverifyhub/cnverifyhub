@@ -129,6 +129,12 @@ export default function AdminDashboardPage() {
     const [newBlockValue, setNewBlockValue] = useState('');
     const [newBlockReason, setNewBlockReason] = useState('');
     const [addingBlock, setAddingBlock] = useState(false);
+    const [saveStatus, setSaveStatus] = useState<{msg: string; ok: boolean} | null>(null);
+
+    const notify = (msg: string, ok = true) => {
+        setSaveStatus({ msg, ok });
+        setTimeout(() => setSaveStatus(null), 3000);
+    };
 
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
@@ -195,22 +201,20 @@ export default function AdminDashboardPage() {
         try {
             const res = await fetch('/api/admin/products', {
                 method: 'PATCH',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${ADMIN_PASS}`
-                },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
                 body: JSON.stringify({ id, stockCount: count })
             });
             if (res.ok) {
-                // @ts-ignore
-                toast.success('Stock updated');
+                notify('✅ Stock updated');
                 setEditingStock(null);
                 fetchProducts();
+            } else {
+                const d = await res.json();
+                notify(`❌ ${d.error || 'Failed to update stock'}`, false);
             }
         } catch (e) {
             console.error(e);
-            // @ts-ignore
-            toast.error('Failed to update stock');
+            notify('❌ Network error updating stock', false);
         }
     };
 
@@ -221,19 +225,16 @@ export default function AdminDashboardPage() {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${ADMIN_PASS}` }
             });
+            const data = await res.json();
             if (res.ok) {
-                const data = await res.json();
-                // @ts-ignore
-                toast.success(`Successfully synced ${data.count} products from code!`);
+                notify(`✅ Synced ${data.count ?? '?'} products from code!`);
                 fetchProducts();
             } else {
-                // @ts-ignore
-                toast.error('Sync failed');
+                notify(`❌ Sync failed: ${data.error || 'Unknown error'}`, false);
             }
         } catch (e) {
             console.error(e);
-            // @ts-ignore
-            toast.error('Sync error');
+            notify('❌ Sync network error', false);
         } finally {
             setIsSyncingProducts(false);
         }
@@ -242,14 +243,10 @@ export default function AdminDashboardPage() {
     const handleFullUpdateProduct = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!editingProduct) return;
-
         try {
             const res = await fetch('/api/admin/products', {
                 method: 'PATCH',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${ADMIN_PASS}`
-                },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
                 body: JSON.stringify({ 
                     id: editingProduct.id, 
                     stockCount: editingProduct.stock_count,
@@ -259,19 +256,17 @@ export default function AdminDashboardPage() {
                     nameZh: editingProduct.name_zh
                 })
             });
+            const d = await res.json();
             if (res.ok) {
-                // @ts-ignore
-                toast.success('Product updated successfully');
+                notify('✅ Product updated successfully');
                 setEditingProduct(null);
                 fetchProducts();
             } else {
-                // @ts-ignore
-                toast.error('Failed to update product');
+                notify(`❌ ${d.error || 'Failed to update product'}`, false);
             }
         } catch (e) {
             console.error(e);
-            // @ts-ignore
-            toast.error('Error updating product');
+            notify('❌ Network error — product not saved', false);
         }
     };
 
@@ -712,12 +707,20 @@ export default function AdminDashboardPage() {
                 </nav>
             )}
 
-            <main className="flex-1 min-w-0">
+            <main className="flex-1 min-w-0" style={{background:'#070711'}}>
                 {/* Mobile Top Bar */}
                 {isMobile && (
                     <div className="sticky top-0 z-30 px-4 py-3 flex items-center justify-between" style={{background:'rgba(7,7,17,0.9)',borderBottom:'1px solid rgba(255,255,255,0.07)',backdropFilter:'blur(20px)'}}>
                         <span className="font-black text-white text-sm">CNWePro Admin</span>
-                        <span className="text-xs text-slate-500 font-mono">v2.0</span>
+                        <span className="text-xs font-mono" style={{color:'#475569'}}>v2.0</span>
+                    </div>
+                )}
+
+                {/* Global Toast Notification */}
+                {saveStatus && (
+                    <div className="fixed top-4 right-4 z-[999] px-4 py-3 rounded-xl text-sm font-bold shadow-2xl flex items-center gap-2 transition-all"
+                        style={{background: saveStatus.ok ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)', border: saveStatus.ok ? '1px solid rgba(16,185,129,0.4)' : '1px solid rgba(239,68,68,0.4)', color: saveStatus.ok ? '#6ee7b7' : '#fca5a5', backdropFilter:'blur(20px)'}}>
+                        {saveStatus.msg}
                     </div>
                 )}
 
@@ -750,51 +753,51 @@ export default function AdminDashboardPage() {
                             </div>
                         )}
 
-                        <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                        <div className="rounded-2xl overflow-hidden" style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)'}}>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-[10px] uppercase tracking-wider">
-                                            <th className="px-4 py-3 font-bold">Identity (Telegram/Email)</th>
-                                            <th className="px-4 py-3 font-bold text-center">VIP Tier</th>
-                                            <th className="px-4 py-3 font-bold">Total Spent</th>
-                                            <th className="px-4 py-3 font-bold">Joined</th>
+                                        <tr style={{background:'rgba(255,255,255,0.03)',borderBottom:'1px solid rgba(255,255,255,0.07)'}}>
+                                            <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider" style={{color:'#64748b'}}>Identity (Telegram/Email)</th>
+                                            <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider text-center" style={{color:'#64748b'}}>VIP Tier</th>
+                                            <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider" style={{color:'#64748b'}}>Total Spent</th>
+                                            <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider" style={{color:'#64748b'}}>Joined</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
+                                    <tbody>
                                         {isLoadingUsers && users.length === 0 ? (
-                                            <tr><td colSpan={4} className="px-4 py-12 text-center text-slate-500"><Loader2 className="w-8 h-8 animate-spin mx-auto" /></td></tr>
+                                            <tr><td colSpan={4} className="px-4 py-12 text-center" style={{color:'#64748b'}}><Loader2 className="w-8 h-8 animate-spin mx-auto" /></td></tr>
                                         ) : users.length === 0 ? (
-                                            <tr><td colSpan={4} className="px-4 py-12 text-center text-slate-500">No users found.</td></tr>
+                                            <tr><td colSpan={4} className="px-4 py-12 text-center text-sm" style={{color:'#64748b'}}>No users found. Click Refresh to load.</td></tr>
                                         ) : (
                                             users.map(u => (
-                                                <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
+                                                <tr key={u.id} style={{borderTop:'1px solid rgba(255,255,255,0.05)'}} className="transition-colors hover:bg-white/[0.02]">
                                                     <td className="px-4 py-3">
                                                         <div className="flex flex-col">
                                                             {u.telegram ? (
-                                                                <div className="font-black text-blue-600 dark:text-blue-400 text-sm flex items-center gap-1">
+                                                                <div className="font-black text-sm flex items-center gap-1" style={{color:'#60a5fa'}}>
                                                                     <Send className="w-3 h-3" /> @{u.telegram.replace('@', '')}
                                                                 </div>
                                                             ) : (
-                                                                <div className="font-black text-slate-900 dark:text-white text-sm">{u.email}</div>
+                                                                <div className="font-black text-sm text-white">{u.email}</div>
                                                             )}
-                                                            <div className="text-[10px] text-slate-400 font-mono">{u.email || 'No email linked'}</div>
+                                                            <div className="text-[10px] font-mono" style={{color:'#475569'}}>{u.email || 'No email linked'}</div>
                                                         </div>
                                                     </td>
                                                     <td className="px-4 py-3 text-center">
                                                         <span className={cn('px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest',
-                                                            u.vip_tier === 'diamond' ? 'bg-cyan-100 text-cyan-700' :
-                                                            u.vip_tier === 'gold' ? 'bg-yellow-100 text-yellow-700' :
-                                                            u.vip_tier === 'silver' ? 'bg-slate-200 text-slate-700' :
-                                                            'bg-orange-100 text-orange-700'
+                                                            u.vip_tier === 'diamond' ? 'bg-cyan-900/40 text-cyan-300' :
+                                                            u.vip_tier === 'gold' ? 'bg-yellow-900/40 text-yellow-300' :
+                                                            u.vip_tier === 'silver' ? 'bg-slate-700 text-slate-300' :
+                                                            'bg-orange-900/40 text-orange-300'
                                                         )}>
                                                             {u.vip_tier}
                                                         </span>
                                                     </td>
-                                                    <td className="px-4 py-3 font-bold text-slate-900 dark:text-white">
+                                                    <td className="px-4 py-3 font-bold text-white">
                                                         {formatYuan(u.total_spent || 0)}
                                                     </td>
-                                                    <td className="px-4 py-3 text-xs text-slate-500">
+                                                    <td className="px-4 py-3 text-xs" style={{color:'#64748b'}}>
                                                         {new Date(u.created_at).toLocaleDateString()}
                                                     </td>
                                                 </tr>
@@ -807,76 +810,76 @@ export default function AdminDashboardPage() {
                         </div>
                     </>
                 ) : activeTab === 'products' ? (
-                    <div className="p-4 md:p-8">
-                        <header className="flex justify-between items-start mb-6">
+                    <div className="p-4 md:p-6">
+                        <header className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-6">
                             <div>
-                                <h2 className="text-2xl font-black text-slate-900 dark:text-white">Inventory Control</h2>
-                                <p className="text-slate-500 text-sm mt-0.5">Manage account stock and active status across all tiers.</p>
+                                <h2 className="text-xl font-black text-white">Inventory Control</h2>
+                                <p className="text-xs mt-0.5" style={{color:'#64748b'}}>Manage account stock and active status across all tiers.</p>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 shrink-0">
                                 <button 
                                     onClick={handleSyncProducts} 
                                     disabled={isSyncingProducts}
-                                    className="btn-secondary px-4 py-2 text-sm flex gap-2 items-center bg-orange-50 dark:bg-orange-900/20 text-orange-600 border-orange-200 dark:border-orange-800"
+                                    className="px-3 py-2 text-xs font-bold rounded-xl flex gap-1.5 items-center transition-all disabled:opacity-50"
+                                    style={{background:'rgba(249,115,22,0.12)',color:'#fb923c',border:'1px solid rgba(249,115,22,0.3)'}}
                                 >
-                                    {isSyncingProducts ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Database className="w-4 h-4" />}
+                                    {isSyncingProducts ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Database className="w-3.5 h-3.5" />}
                                     Sync from Code
                                 </button>
-                                <button onClick={fetchProducts} className="btn-secondary px-4 py-2 text-sm flex gap-2 items-center">
-                                    <RefreshCw className={cn('w-4 h-4', isLoadingProducts && 'animate-spin')} /> Refresh
+                                <button onClick={fetchProducts}
+                                    className="px-3 py-2 text-xs font-bold rounded-xl flex gap-1.5 items-center text-slate-300 hover:text-white transition-all"
+                                    style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}>
+                                    <RefreshCw className={cn('w-3.5 h-3.5', isLoadingProducts && 'animate-spin')} /> Refresh
                                 </button>
                             </div>
                         </header>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             {isLoadingProducts && dbProducts.length === 0 ? (
-                                <div className="col-span-full py-12 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto" /></div>
+                                <div className="col-span-full py-12 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto" style={{color:'#64748b'}} /></div>
                             ) : dbProducts.length === 0 ? (
-                                <div className="col-span-full py-12 text-center text-slate-500 bg-white dark:bg-dark-900 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
-                                    No products found in database.
+                                <div className="col-span-full py-12 text-center text-sm rounded-2xl border border-dashed" style={{color:'#64748b',borderColor:'rgba(255,255,255,0.1)'}}>
+                                    No products found in database. Click &quot;Sync from Code&quot; to import.
                                 </div>
                             ) : (
                                 dbProducts.map(p => (
-                                    <div key={p.id} className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm flex flex-col sm:flex-row gap-6">
+                                    <div key={p.id} className="rounded-2xl p-5 flex flex-col sm:flex-row gap-5" style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)'}}>
                                         <div className="flex-1">
                                             <div className="flex items-center gap-2 mb-2">
-                                                <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-500 text-[10px] font-bold uppercase rounded">{p.category}</span>
-                                                {!p.is_active && <span className="px-2 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold uppercase rounded">Inactive</span>}
+                                                <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase" style={{background:'rgba(255,255,255,0.08)',color:'#94a3b8'}}>{p.category}</span>
+                                                {!p.is_active && <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase" style={{background:'rgba(239,68,68,0.15)',color:'#f87171'}}>Inactive</span>}
                                             </div>
-                                            <h4 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">{p.name_en}</h4>
-                                            <p className="text-sm text-slate-500 mb-4">{p.name_zh}</p>
+                                            <h4 className="text-base font-bold text-white leading-tight">{p.name_en}</h4>
+                                            <p className="text-sm mb-4" style={{color:'#64748b'}}>{p.name_zh}</p>
                                             <div className="flex items-baseline gap-2">
-                                                <span className="text-xl font-black text-slate-900 dark:text-white">${Number(p.price_usdt).toFixed(2)}</span>
-                                                <span className="text-xs text-slate-400">/ unit</span>
+                                                <span className="text-xl font-black text-white">${Number(p.price_usdt).toFixed(2)}</span>
+                                                <span className="text-xs" style={{color:'#475569'}}> / unit</span>
                                             </div>
                                         </div>
-                                        <div className="w-full sm:w-48 bg-slate-50 dark:bg-dark-950 rounded-xl p-4 flex flex-col justify-center items-center">
-                                            <div className="text-[10px] font-bold text-slate-500 uppercase mb-2">Current Stock</div>
+                                        <div className="w-full sm:w-44 rounded-xl p-4 flex flex-col justify-center items-center" style={{background:'rgba(255,255,255,0.03)',border:'1px solid rgba(255,255,255,0.06)'}}>
+                                            <div className="text-[10px] font-bold uppercase mb-2" style={{color:'#475569'}}>Current Stock</div>
                                             {editingStock?.id === p.id ? (
                                                 <div className="flex flex-col gap-2 w-full">
                                                     <input 
                                                         type="number" 
                                                         value={editingStock?.count || 0} 
-                                                        onChange={e => {
-                                                            if (editingStock) {
-                                                                setEditingStock({...editingStock, count: parseInt(e.target.value) || 0});
-                                                            }
-                                                        }}
-                                                        className="w-full px-3 py-2 bg-white dark:bg-slate-800 border border-blue-500 rounded-lg text-center font-bold"
+                                                        onChange={e => { if (editingStock) setEditingStock({...editingStock, count: parseInt(e.target.value) || 0}); }}
+                                                        className="w-full px-3 py-2 rounded-lg text-center font-bold text-white outline-none"
+                                                        style={{background:'rgba(255,255,255,0.08)',border:'1px solid #3b82f6'}}
                                                     />
                                                     <div className="flex gap-2">
-                                                     <button onClick={() => setEditingStock(null)} className="flex-1 py-1 text-xs bg-slate-200 dark:bg-slate-700 rounded-md">Cancel</button>
-                                                        <button onClick={() => editingStock && handleUpdateStock(p.id, editingStock.count)} className="flex-1 py-1 text-xs bg-blue-600 text-white rounded-md font-bold">Save</button>
+                                                        <button onClick={() => setEditingStock(null)} className="flex-1 py-1 text-xs rounded-md" style={{background:'rgba(255,255,255,0.08)',color:'#94a3b8'}}>Cancel</button>
+                                                        <button onClick={() => editingStock && handleUpdateStock(p.id, editingStock.count)} className="flex-1 py-1 text-xs rounded-md font-bold text-white" style={{background:'#3b82f6'}}>Save</button>
                                                     </div>
                                                 </div>
                                             ) : (
                                                 <>
-                                                    <div className={cn('text-3xl font-black mb-3', p.stock_count > 10 ? 'text-emerald-500' : p.stock_count > 0 ? 'text-orange-500' : 'text-red-500')}>
+                                                    <div className={cn('text-3xl font-black mb-3', p.stock_count > 10 ? 'text-emerald-400' : p.stock_count > 0 ? 'text-orange-400' : 'text-red-400')}>
                                                         {p.stock_count}
                                                     </div>
                                                     <div className="flex flex-col gap-2 w-full">
-                                                        <button onClick={() => setEditingStock({id: p.id, count: p.stock_count})} className="text-xs font-bold text-blue-600 hover:underline">Quick Adjust Stock</button>
-                                                        <button onClick={() => setEditingProduct(p)} className="px-3 py-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg text-[10px] font-bold text-slate-700 dark:text-slate-300 transition-colors">Full Edit</button>
+                                                        <button onClick={() => setEditingStock({id: p.id, count: p.stock_count})} className="text-xs font-bold" style={{color:'#60a5fa'}}>Quick Adjust Stock</button>
+                                                        <button onClick={() => setEditingProduct(p)} className="px-3 py-1.5 rounded-lg text-[10px] font-bold transition-colors" style={{background:'rgba(255,255,255,0.08)',color:'#cbd5e1'}}>Full Edit</button>
                                                     </div>
                                                 </>
                                             )}
@@ -887,36 +890,38 @@ export default function AdminDashboardPage() {
                         </div>
                     </div>
                 ) : activeTab === 'fraud' ? (
-                    <div className="p-4 md:p-8">
-                        <header className="flex justify-between items-start mb-6">
+                    <div className="p-4 md:p-6">
+                        <header className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-6">
                             <div>
-                                <h2 className="text-2xl font-black text-slate-900 dark:text-white">Security & Fraud</h2>
-                                <p className="text-slate-500 text-sm mt-0.5">Real-time alerts for suspicious transactions and IP behaviors.</p>
+                                <h2 className="text-xl font-black text-white">Security &amp; Fraud</h2>
+                                <p className="text-xs mt-0.5" style={{color:'#64748b'}}>Real-time alerts for suspicious transactions and IP behaviors.</p>
                             </div>
-                            <button onClick={fetchFraudEvents} className="btn-secondary px-4 py-2 text-sm flex gap-2 items-center">
-                                <RefreshCw className={cn('w-4 h-4', isLoadingFraud && 'animate-spin')} /> Refresh
+                            <button onClick={fetchFraudEvents}
+                                className="px-3 py-2 text-xs font-bold rounded-xl flex gap-1.5 items-center text-slate-300 hover:text-white transition-all shrink-0"
+                                style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}>
+                                <RefreshCw className={cn('w-3.5 h-3.5', isLoadingFraud && 'animate-spin')} /> Refresh
                             </button>
                         </header>
 
-                        <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
+                        <div className="rounded-2xl overflow-hidden" style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)'}}>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 text-[10px] uppercase tracking-wider">
-                                            <th className="px-4 py-3 font-bold">Severity</th>
-                                            <th className="px-4 py-3 font-bold">Event Type</th>
-                                            <th className="px-4 py-3 font-bold">Identifier</th>
-                                            <th className="px-4 py-3 font-bold">Time</th>
+                                        <tr style={{background:'rgba(255,255,255,0.03)',borderBottom:'1px solid rgba(255,255,255,0.07)'}}>
+                                            <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider" style={{color:'#64748b'}}>Severity</th>
+                                            <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider" style={{color:'#64748b'}}>Event Type</th>
+                                            <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider" style={{color:'#64748b'}}>Identifier</th>
+                                            <th className="px-4 py-3 text-[10px] font-bold uppercase tracking-wider" style={{color:'#64748b'}}>Time</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
+                                    <tbody>
                                         {isLoadingFraud && fraudEvents.length === 0 ? (
-                                            <tr><td colSpan={4} className="px-4 py-12 text-center text-slate-500"><Loader2 className="w-8 h-8 animate-spin mx-auto" /></td></tr>
+                                            <tr><td colSpan={4} className="px-4 py-12 text-center" style={{color:'#64748b'}}><Loader2 className="w-8 h-8 animate-spin mx-auto" /></td></tr>
                                         ) : fraudEvents.length === 0 ? (
-                                            <tr><td colSpan={4} className="px-4 py-12 text-center text-slate-500">No fraud events detected. Everything looks safe!</td></tr>
+                                            <tr><td colSpan={4} className="px-4 py-12 text-center text-sm" style={{color:'#64748b'}}>No fraud events detected. Everything looks safe! ✅</td></tr>
                                         ) : (
                                             fraudEvents.map(ev => (
-                                                <tr key={ev.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
+                                                <tr key={ev.id} style={{borderTop:'1px solid rgba(255,255,255,0.04)'}} className="hover:bg-white/[0.02] transition-colors">
                                                     <td className="px-4 py-3">
                                                         <span className={cn('px-2 py-0.5 rounded text-[10px] font-bold uppercase',
                                                             ev.severity === 'critical' ? 'bg-red-100 text-red-700' :
@@ -945,76 +950,76 @@ export default function AdminDashboardPage() {
                         </div>
                     </div>
                 ) : activeTab === 'settings' ? (
-                    <div className="p-4 md:p-8">
+                    <div className="p-4 md:p-6">
                         <header className="mb-6">
-                            <h2 className="text-2xl font-black text-slate-900 dark:text-white">Platform Settings</h2>
-                            <p className="text-slate-500 text-sm mt-0.5">Global configuration and active wallets.</p>
+                            <h2 className="text-xl font-black text-white">Platform Settings</h2>
+                            <p className="text-xs mt-0.5" style={{color:'#64748b'}}>Global configuration and active wallets.</p>
                         </header>
-                        <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-2xl">
-                            <div className="space-y-6">
+                        <div className="rounded-2xl p-6 max-w-2xl" style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)'}}>
+                            <div className="space-y-5">
                                 <div>
-                                    <h4 className="font-bold text-sm text-slate-900 dark:text-white mb-2">Primary TRC20 Wallet</h4>
-                                    <input type="text" readOnly value={process.env.NEXT_PUBLIC_TRC20_WALLET || 'Not set'} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 font-mono text-sm" />
+                                    <h4 className="font-bold text-sm text-white mb-2">Primary TRC20 Wallet</h4>
+                                    <input type="text" readOnly value={process.env.NEXT_PUBLIC_TRC20_WALLET || 'Not set'} className="w-full px-4 py-2.5 rounded-xl font-mono text-sm outline-none cursor-default" style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.08)',color:'#94a3b8'}} />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-sm text-slate-900 dark:text-white mb-2">Backup TRC20 Wallet</h4>
-                                    <input type="text" readOnly value={process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'Not set'} className="w-full px-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-500 font-mono text-sm" />
+                                    <h4 className="font-bold text-sm text-white mb-2">Backup TRC20 Wallet</h4>
+                                    <input type="text" readOnly value={process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'Not set'} className="w-full px-4 py-2.5 rounded-xl font-mono text-sm outline-none cursor-default" style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.08)',color:'#94a3b8'}} />
                                 </div>
-                                <div className="pt-4 border-t border-slate-200 dark:border-slate-800">
-                                    <button disabled className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-400 font-bold rounded-lg cursor-not-allowed">Dynamic Edit (Requires API Migration)</button>
+                                <div className="pt-4" style={{borderTop:'1px solid rgba(255,255,255,0.08)'}}>
+                                    <button disabled className="px-4 py-2 rounded-lg text-sm font-bold cursor-not-allowed" style={{background:'rgba(255,255,255,0.04)',color:'#475569'}}>Dynamic Wallet Edit (Requires API Migration)</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 ) : activeTab === 'orders' ? (
-                    <div className="p-4 md:p-8">
-                        <header className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4 mb-6">
+                    <div className="p-4 md:p-6">
+                        <header className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-6">
                             <div>
-                                <h2 className="text-2xl font-black text-slate-900 dark:text-white">Order Management</h2>
-                                <p className="text-slate-500 text-sm mt-0.5">Manage all orders and process deliveries</p>
+                                <h2 className="text-xl font-black text-white">Order Management</h2>
+                                <p className="text-xs mt-0.5" style={{color:'#64748b'}}>Manage all orders and process deliveries</p>
                             </div>
-                            <button onClick={fetchOrders} className="btn-secondary rounded-xl px-4 py-2 text-sm flex gap-2 items-center shrink-0">
-                                {isLoadingOrders ? <Clock className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                            <button onClick={fetchOrders}
+                                className="px-3 py-2 text-xs font-bold rounded-xl flex gap-1.5 items-center text-slate-300 hover:text-white transition-all shrink-0"
+                                style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}
+                            >
+                                {isLoadingOrders ? <Clock className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
                                 Refresh
                             </button>
                         </header>
 
-                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
                             {[
-                                { label: 'Total Orders', value: stats.total, icon: ShoppingCart, color: 'blue' },
-                                { label: 'Pending', value: stats.pending, icon: Clock, color: 'orange' },
-                                { label: 'Completed', value: stats.completed, icon: CheckCircle2, color: 'green' },
-                                { label: 'Revenue (USDT)', value: `$${stats.revenue.toFixed(1)}`, icon: DollarSign, color: 'purple' },
-                                { label: 'Revenue (RMB)', value: `¥${stats.revenueRMB.toFixed(0)}`, icon: DollarSign, color: 'purple' },
-                                { label: 'Verified Payments', value: `${stats.verified}/${stats.total}`, icon: CheckCircle2, color: 'green' },
+                                { label: 'Total Orders', value: stats.total, icon: ShoppingCart, color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' },
+                                { label: 'Pending', value: stats.pending, icon: Clock, color: '#f97316', bg: 'rgba(249,115,22,0.12)' },
+                                { label: 'Completed', value: stats.completed, icon: CheckCircle2, color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
+                                { label: 'Revenue (USDT)', value: `$${stats.revenue.toFixed(1)}`, icon: DollarSign, color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)' },
+                                { label: 'Revenue (RMB)', value: `¥${stats.revenueRMB.toFixed(0)}`, icon: DollarSign, color: '#8b5cf6', bg: 'rgba(139,92,246,0.12)' },
+                                { label: 'Verified Payments', value: `${stats.verified}/${stats.total}`, icon: CheckCircle2, color: '#10b981', bg: 'rgba(16,185,129,0.12)' },
                             ].map(s => (
-                                <div key={s.label} className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 md:p-5">
+                                <div key={s.label} className="rounded-2xl p-4" style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)'}}>
                                     <div className="flex items-center justify-between mb-3">
-                                        <span className={cn('w-9 h-9 md:w-10 md:h-10 rounded-xl flex items-center justify-center',
-                                            s.color === 'blue' && 'bg-blue-100 dark:bg-blue-900/30 text-blue-600',
-                                            s.color === 'orange' && 'bg-orange-100 dark:bg-orange-900/30 text-orange-600',
-                                            s.color === 'green' && 'bg-green-100 dark:bg-green-900/30 text-green-600',
-                                            s.color === 'purple' && 'bg-purple-100 dark:bg-purple-900/30 text-purple-600',
-                                        )}>
-                                            <s.icon className="w-4 h-4 md:w-5 md:h-5" />
+                                        <span className="w-9 h-9 rounded-xl flex items-center justify-center" style={{background:s.bg, color:s.color}}>
+                                            <s.icon className="w-4 h-4" />
                                         </span>
                                     </div>
-                                    <div className="text-xl md:text-2xl font-black text-slate-900 dark:text-white">{s.value}</div>
-                                    <div className="text-[10px] md:text-xs text-slate-500 mt-0.5">{s.label}</div>
+                                    <div className="text-xl font-black text-white">{s.value}</div>
+                                    <div className="text-[10px] mt-0.5" style={{color:'#64748b'}}>{s.label}</div>
                                 </div>
                             ))}
                         </div>
 
-                        <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden">
-                            <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-3">
+                        <div className="rounded-2xl overflow-hidden" style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)'}}>
+                            <div className="p-4" style={{borderBottom:'1px solid rgba(255,255,255,0.06)'}}>
+                                <div className="flex flex-col sm:flex-row gap-3">
                                 <div className="relative flex-1">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{color:'#475569'}} />
                                     <input
                                         type="text"
                                         value={searchQuery}
                                         onChange={e => { setSearchQuery(e.target.value); setCurrentPage(1); }}
                                         placeholder="Search order / email / TXID..."
-                                        className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm text-slate-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                                        className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                                        style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)',color:'white'}}
                                     />
                                 </div>
                                 <div className="flex gap-2 flex-wrap">
@@ -1022,53 +1027,49 @@ export default function AdminDashboardPage() {
                                         <button
                                             key={s}
                                             onClick={() => { setStatusFilter(s); setCurrentPage(1); }}
-                                            className={cn(
-                                                'px-3 py-2 rounded-xl text-xs font-bold transition-colors capitalize',
-                                                statusFilter === s
-                                                    ? 'bg-blue-600 text-white'
-                                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
-                                            )}
+                                            className="px-3 py-2 rounded-xl text-xs font-bold transition-colors capitalize"
+                                            style={statusFilter === s
+                                                ? {background:'#3b82f6',color:'white'}
+                                                : {background:'rgba(255,255,255,0.06)',color:'#94a3b8'}
+                                            }
                                         >
                                             {s === 'all' ? 'All' : s}
                                         </button>
                                     ))}
+                                </div>
                                 </div>
                             </div>
 
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse min-w-[700px]">
                                     <thead>
-                                        <tr className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-wider">
-                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Order & Identity</th>
-                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Category</th>
-                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Variant</th>
-                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Payment</th>
-                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Wallet</th>
-                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800">Status</th>
-                                            <th className="px-3 py-3 font-bold border-b border-slate-200 dark:border-slate-800 text-right">Actions</th>
+                                        <tr style={{background:'rgba(255,255,255,0.03)',borderBottom:'1px solid rgba(255,255,255,0.07)'}}>
+                                            {['Order & Identity','Category','Variant','Payment','Wallet','Status','Actions'].map(h => (
+                                                <th key={h} className="px-3 py-3 text-[10px] font-bold uppercase tracking-wider" style={{color:'#64748b'}}>{h}</th>
+                                            ))}
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/50">
+                                    <tbody>
                                         {isLoadingOrders && orders.length === 0 ? (
                                             <tr>
-                                                <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
-                                                    <Clock className="w-8 h-8 animate-spin mx-auto mb-3 text-blue-500" />
+                                                <td colSpan={7} className="px-4 py-12 text-center" style={{color:'#64748b'}}>
+                                                    <Clock className="w-8 h-8 animate-spin mx-auto mb-3" style={{color:'#3b82f6'}} />
                                                     <p>Loading orders from Supabase...</p>
                                                 </td>
                                             </tr>
                                         ) : paginatedOrders.length === 0 ? (
                                             <tr>
-                                                <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
-                                                    <Package className="w-10 h-10 mx-auto mb-3 text-slate-300 dark:text-slate-700" />
+                                                <td colSpan={7} className="px-4 py-12 text-center" style={{color:'#64748b'}}>
+                                                    <Package className="w-10 h-10 mx-auto mb-3" style={{color:'#334155'}} />
                                                     <p>No orders found</p>
                                                 </td>
                                             </tr>
                                         ) : (
                                             paginatedOrders.map(order => (
-                                                <tr key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/20 transition-colors">
+                                                <tr key={order.id} style={{borderTop:'1px solid rgba(255,255,255,0.04)'}} className="hover:bg-white/[0.02] transition-colors">
                                                     {/* Order ID + Date + Email + Telegram */}
                                                     <td className="px-3 py-3 whitespace-nowrap">
-                                                        <div className="font-mono text-[11px] font-bold text-slate-900 dark:text-white">{order.id}</div>
+                                                        <div className="font-mono text-[11px] font-bold text-white">{order.id}</div>
                                                         <div className="text-[10px] text-slate-400">{new Date(order.createdAt).toLocaleString()}</div>
                                                         <div className="text-[10px] text-slate-500 truncate max-w-[120px]">{order.email}</div>
                                                         {order.telegram && (
@@ -1655,51 +1656,55 @@ export default function AdminDashboardPage() {
                 </div>
             )}
             {editingProduct && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-                    <div className="bg-white dark:bg-dark-900 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-slate-200 dark:border-slate-800 animate-in zoom-in-95 duration-200">
-                        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
-                            <h3 className="text-lg font-black text-slate-900 dark:text-white">Edit Product</h3>
-                            <button onClick={() => setEditingProduct(null)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{background:'rgba(0,0,0,0.8)',backdropFilter:'blur(8px)'}}>
+                    <div className="rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden" style={{background:'#0f0f1a',border:'1px solid rgba(255,255,255,0.1)'}}>
+                        <div className="p-5 flex justify-between items-center" style={{borderBottom:'1px solid rgba(255,255,255,0.08)'}}>
+                            <h3 className="text-lg font-black text-white">Edit Product</h3>
+                            <button onClick={() => setEditingProduct(null)} className="text-slate-400 hover:text-white transition-colors">
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
                         <form onSubmit={handleFullUpdateProduct} className="p-5 space-y-4">
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="col-span-2">
-                                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Product Name (EN)</label>
+                                    <label className="block text-xs font-bold mb-1 uppercase tracking-wider" style={{color:'#64748b'}}>Product Name (EN)</label>
                                     <input 
                                         type="text" 
                                         value={editingProduct.name_en || ''} 
                                         onChange={e => setEditingProduct({...editingProduct, name_en: e.target.value})}
-                                        className="w-full px-4 py-2.5 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-bold"
+                                        className="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-white outline-none focus:ring-2 focus:ring-violet-500"
+                                        style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}
                                     />
                                 </div>
                                 <div className="col-span-2">
-                                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Product Name (ZH)</label>
+                                    <label className="block text-xs font-bold mb-1 uppercase tracking-wider" style={{color:'#64748b'}}>Product Name (ZH)</label>
                                     <input 
                                         type="text" 
                                         value={editingProduct.name_zh || ''} 
                                         onChange={e => setEditingProduct({...editingProduct, name_zh: e.target.value})}
-                                        className="w-full px-4 py-2.5 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-bold"
+                                        className="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-white outline-none focus:ring-2 focus:ring-violet-500"
+                                        style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Price (USDT)</label>
+                                    <label className="block text-xs font-bold mb-1 uppercase tracking-wider" style={{color:'#64748b'}}>Price (USDT)</label>
                                     <input 
                                         type="number" 
                                         step="0.01"
                                         value={editingProduct.price_usdt || 0} 
                                         onChange={e => setEditingProduct({...editingProduct, price_usdt: parseFloat(e.target.value)})}
-                                        className="w-full px-4 py-2.5 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-bold"
+                                        className="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-white outline-none focus:ring-2 focus:ring-violet-500"
+                                        style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Stock Count</label>
+                                    <label className="block text-xs font-bold mb-1 uppercase tracking-wider" style={{color:'#64748b'}}>Stock Count</label>
                                     <input 
                                         type="number" 
                                         value={editingProduct.stock_count || 0} 
                                         onChange={e => setEditingProduct({...editingProduct, stock_count: parseInt(e.target.value)})}
-                                        className="w-full px-4 py-2.5 bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm font-bold"
+                                        className="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-white outline-none focus:ring-2 focus:ring-violet-500"
+                                        style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}
                                     />
                                 </div>
                                 <div className="col-span-2">
@@ -1708,15 +1713,19 @@ export default function AdminDashboardPage() {
                                             type="checkbox" 
                                             checked={editingProduct.is_active} 
                                             onChange={e => setEditingProduct({...editingProduct, is_active: e.target.checked})}
-                                            className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                                            className="w-4 h-4 rounded accent-violet-600"
                                         />
-                                        <span className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Active Status</span>
+                                        <span className="text-sm font-bold text-white">Product is Active</span>
                                     </label>
                                 </div>
                             </div>
-                            <div className="pt-4 flex gap-3">
-                                <button type="button" onClick={() => setEditingProduct(null)} className="flex-1 py-3 px-4 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold rounded-xl transition-all">Cancel</button>
-                                <button type="submit" className="flex-2 py-3 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/25">Save Changes</button>
+                            <div className="pt-4 flex gap-3" style={{borderTop:'1px solid rgba(255,255,255,0.08)'}}>
+                                <button type="button" onClick={() => setEditingProduct(null)}
+                                    className="flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all"
+                                    style={{background:'rgba(255,255,255,0.06)',color:'#94a3b8'}}>Cancel</button>
+                                <button type="submit"
+                                    className="flex-1 py-3 px-8 text-white font-bold rounded-xl transition-all shadow-lg"
+                                    style={{background:'linear-gradient(135deg,#7c3aed,#4f46e5)'}}>Save Changes</button>
                             </div>
                         </form>
                     </div>
