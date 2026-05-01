@@ -1,67 +1,68 @@
 import type { Metadata } from 'next';
 import { posts } from '@/data/posts';
 import { notFound } from 'next/navigation';
-import { Calendar, Tag, ChevronLeft, ShieldCheck, Bookmark, Share2 } from 'lucide-react';
+import { Calendar, ChevronLeft, ShieldCheck, Bookmark, Share2 } from 'lucide-react';
 import Link from 'next/link';
 
-// --- SSG: Pre-render every blog post at build time ---
+// --- SSG: Pre-render every English blog post at build time ---
 export async function generateStaticParams() {
     return posts.map((post) => ({ slug: post.slug }));
 }
 
-// --- Dynamic metadata per post ---
+// --- Dynamic metadata per post (English) ---
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
     const post = posts.find((p) => p.slug === params.slug);
     if (!post) return { title: 'Post Not Found | CNWePro' };
 
-    const lang = 'zh';
     const siteUrl = 'https://cnwepro.com';
-    const postUrl = `${siteUrl}/blog/${post.slug}/`;
+    const postUrl = `${siteUrl}/en/blog/${post.slug}/`;
 
     return {
-        title: `${post.title[lang]} | CNWePro Blog`,
-        description: post.excerpt[lang].slice(0, 160),
+        title: `${post.title.en} | CNWePro`,
+        description: post.excerpt.en.slice(0, 160),
         alternates: {
             canonical: postUrl,
             languages: {
-                'en': `${siteUrl}/en/blog/${post.slug}/`,
-                'zh-CN': postUrl,
+                'en': postUrl,
+                'zh-CN': `${siteUrl}/blog/${post.slug}/`,
             },
         },
         openGraph: {
-            title: post.title[lang],
-            description: post.excerpt[lang].slice(0, 160),
+            title: post.title.en,
+            description: post.excerpt.en.slice(0, 160),
             url: postUrl,
             type: 'article',
             publishedTime: post.date,
             authors: ['CNWePro'],
-            tags: [post.category, 'Chinese accounts', 'WeChat', 'Alipay'],
         },
     };
 }
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
+export default function EnBlogPostPage({ params }: { params: { slug: string } }) {
     const post = posts.find((p) => p.slug === params.slug);
-    const lang = 'zh';
 
     if (!post) notFound();
 
     const siteUrl = 'https://cnwepro.com';
-    const postUrl = `${siteUrl}/blog/${post.slug}/`;
+    const postUrl = `${siteUrl}/en/blog/${post.slug}/`;
 
-    // JSON-LD: Article Schema (SEO + AI Search)
+    // JSON-LD: Article Schema
     const articleSchema = {
         '@context': 'https://schema.org',
         '@type': 'Article',
-        headline: post.title[lang],
-        description: post.excerpt[lang],
+        headline: post.title.en,
+        description: post.excerpt.en,
         datePublished: post.date,
         dateModified: post.date,
         author: { '@type': 'Organization', name: 'CNWePro', url: siteUrl },
-        publisher: { '@type': 'Organization', name: 'CNWePro', url: siteUrl, logo: { '@type': 'ImageObject', url: `${siteUrl}/logo.png` } },
+        publisher: {
+            '@type': 'Organization',
+            name: 'CNWePro',
+            url: siteUrl,
+            logo: { '@type': 'ImageObject', url: `${siteUrl}/logo.png` },
+        },
         mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
-        inLanguage: 'zh-CN',
-        about: { '@type': 'Thing', name: 'Chinese Social Media Account Marketplace' },
+        inLanguage: 'en',
     };
 
     // JSON-LD: Breadcrumb
@@ -69,9 +70,9 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         itemListElement: [
-            { '@type': 'ListItem', position: 1, name: '首页', item: siteUrl },
-            { '@type': 'ListItem', position: 2, name: '学院', item: `${siteUrl}/blog/` },
-            { '@type': 'ListItem', position: 3, name: post.title[lang], item: postUrl },
+            { '@type': 'ListItem', position: 1, name: 'Home', item: `${siteUrl}/en/` },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteUrl}/en/blog/` },
+            { '@type': 'ListItem', position: 3, name: post.title.en, item: postUrl },
         ],
     };
 
@@ -85,11 +86,11 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                 <article className="section-container max-w-4xl">
                     {/* Breadcrumbs */}
                     <Link
-                        href="/blog"
+                        href="/en/blog"
                         className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-primary-500 mb-8 transition-colors group"
                     >
                         <ChevronLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                        返回学院列表
+                        Back to Blog
                     </Link>
 
                     {/* Post Header */}
@@ -104,15 +105,15 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                             </div>
                         </div>
                         <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-6 leading-[1.15] tracking-tight">
-                            {post.title[lang]}
+                            {post.title.en}
                         </h1>
                         <p className="text-xl text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                            {post.excerpt[lang]}
+                            {post.excerpt.en}
                         </p>
                     </div>
 
                     {/* Featured Image Placeholder */}
-                    <div className="aspect-video bg-gradient-to-br from-slate-200 to-slate-300 dark:from-dark-800 dark:to-dark-900 rounded-[2.5rem] mb-12 flex items-center justify-center border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-200/50 dark:shadow-none overflow-hidden relative group">
+                    <div className="aspect-video bg-gradient-to-br from-slate-200 to-slate-300 dark:from-dark-800 dark:to-dark-900 rounded-[2.5rem] mb-12 flex items-center justify-center border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden relative group">
                         <div className="absolute inset-0 bg-primary-500/5 group-hover:bg-primary-500/10 transition-colors" />
                         <ShieldCheck className="w-32 h-32 text-primary-500/10" />
                         <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
@@ -133,26 +134,26 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                         </div>
                     </div>
 
-                    {/* Post Content */}
+                    {/* Post Content - rendered as proper HTML */}
                     <div
                         className="prose prose-slate dark:prose-invert max-w-none prose-headings:font-black prose-headings:tracking-tight prose-a:text-primary-500 dark:prose-a:text-primary-400 prose-img:rounded-3xl prose-table:text-sm"
-                        dangerouslySetInnerHTML={{ __html: post.content[lang] }}
+                        dangerouslySetInnerHTML={{ __html: post.content.en }}
                     />
 
                     {/* Footer CTA */}
                     <div className="mt-20 pt-10 border-t border-slate-200 dark:border-slate-800">
                         <div className="bg-gradient-to-br from-primary-500 to-orange-600 rounded-[2.5rem] p-8 md:p-12 text-center text-white relative overflow-hidden shadow-2xl shadow-primary-500/30">
                             <div className="relative z-10">
-                                <h2 className="text-3xl font-black mb-4">准备好开启您的运营之旅了吗？</h2>
+                                <h2 className="text-3xl font-black mb-4">Ready to Get Started?</h2>
                                 <p className="text-primary-100 text-lg mb-8 max-w-xl mx-auto">
-                                    选择 CNWePro 专业级账号，从高权重、老字号开始。
+                                    Browse CNWePro's verified Chinese account inventory — instant delivery, USDT payment, 72-hour guarantee.
                                 </p>
                                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                                    <Link href="/" className="px-8 py-4 bg-white text-primary-600 font-extrabold rounded-2xl hover:scale-105 transition-transform shadow-xl">
-                                        立即选购账号
+                                    <Link href="/en/" className="px-8 py-4 bg-white text-primary-600 font-extrabold rounded-2xl hover:scale-105 transition-transform shadow-xl">
+                                        Browse Accounts
                                     </Link>
-                                    <Link href="/contact" className="px-8 py-4 bg-primary-700/50 backdrop-blur-md text-white border border-primary-400/30 font-extrabold rounded-2xl hover:bg-primary-700/70 transition-all">
-                                        咨询专业客服
+                                    <Link href="/en/contact" className="px-8 py-4 bg-primary-700/50 backdrop-blur-md text-white border border-primary-400/30 font-extrabold rounded-2xl hover:bg-primary-700/70 transition-all">
+                                        Contact Support
                                     </Link>
                                 </div>
                             </div>

@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // output: 'export', // Removed to enable Vercel Next.js Runtime
   trailingSlash: true,
   compress: true,
   poweredByHeader: false,
@@ -8,10 +7,12 @@ const nextConfig = {
   transpilePackages: ['gsap'],
   experimental: {
     optimizePackageImports: ['lucide-react', 'framer-motion'],
+    optimizeServerReact: true,
   },
   images: {
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    minimumCacheTTL: 31536000,
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
@@ -29,10 +30,17 @@ const nextConfig = {
           { key: 'X-XSS-Protection', value: '1; mode=block' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-          // Aggressive pre-resolving for China speed
-          { key: 'Link', value: '<https://otgewrynnrqmtsyvlzrj.supabase.co>; rel=preconnect' },
+          // Preconnect to Supabase and Baidu Analytics for faster resolution
+          {
+            key: 'Link',
+            value: [
+              '<https://otgewrynnrqmtsyvlzrj.supabase.co>; rel=preconnect',
+              '<https://hm.baidu.com>; rel=dns-prefetch',
+            ].join(', ')
+          },
         ],
       },
+      // Long-lived cache for immutable static assets
       {
         source: '/_next/static/(.*)',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
@@ -44,6 +52,11 @@ const nextConfig = {
       {
         source: '/images/(.*)',
         headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      // Cache blog pages for 1 hour (they're SSG so this is fine)
+      {
+        source: '/(blog|en/blog)/(.*)',
+        headers: [{ key: 'Cache-Control', value: 'public, s-maxage=3600, stale-while-revalidate=86400' }],
       },
     ];
   },
