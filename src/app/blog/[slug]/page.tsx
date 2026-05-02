@@ -1,17 +1,18 @@
 import type { Metadata } from 'next';
-import { posts } from '@/data/posts';
+import { getAllSlugs, getPostBySlug, getAllPosts } from '@/lib/blog';
 import { notFound } from 'next/navigation';
 import { Calendar, Tag, ChevronLeft, ShieldCheck, Bookmark, Share2 } from 'lucide-react';
 import Link from 'next/link';
 
 // --- SSG: Pre-render every blog post at build time ---
 export async function generateStaticParams() {
-    return posts.map((post) => ({ slug: post.slug }));
+    const slugs = getAllSlugs();
+    return slugs.map((slug) => ({ slug }));
 }
 
 // --- Dynamic metadata per post ---
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-    const post = posts.find((p) => p.slug === params.slug);
+    const post = getPostBySlug(params.slug, 'zh');
     if (!post) return { title: 'Post Not Found | CNWePro' };
 
     const lang = 'zh';
@@ -19,8 +20,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     const postUrl = `${siteUrl}/blog/${post.slug}/`;
 
     return {
-        title: `${post.title[lang]} | CNWePro Blog`,
-        description: post.excerpt[lang].slice(0, 160),
+        title: `${post.title} | CNWePro Blog`,
+        description: post.excerpt.slice(0, 160),
         alternates: {
             canonical: postUrl,
             languages: {
@@ -29,11 +30,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
             },
         },
         openGraph: {
-            title: post.title[lang],
-            description: post.excerpt[lang].slice(0, 160),
+            title: post.title,
+            description: post.excerpt.slice(0, 160),
             url: postUrl,
             type: 'article',
-            publishedTime: post.date,
+            publishedTime: post.publishDate,
             authors: ['CNWePro'],
             tags: [post.category, 'Chinese accounts', 'WeChat', 'Alipay'],
         },
@@ -44,7 +45,7 @@ import Image from 'next/image';
 import { ReadingProgress, ShareButtons, TableOfContents } from '@/components/blog/BlogClientFeatures';
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
-    const post = posts.find((p) => p.slug === params.slug);
+    const post = getPostBySlug(params.slug, 'zh');
     const lang = 'zh';
 
     if (!post) notFound();
@@ -53,7 +54,8 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     const postUrl = `${siteUrl}/blog/${post.slug}/`;
 
     // Related Posts
-    const relatedPosts = posts
+    const allPosts = getAllPosts('zh');
+    const relatedPosts = allPosts
         .filter(p => p.category === post.category && p.slug !== post.slug)
         .slice(0, 3);
 
@@ -61,11 +63,11 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     const articleSchema = {
         '@context': 'https://schema.org',
         '@type': 'Article',
-        headline: post.title[lang],
-        description: post.excerpt[lang],
-        image: post.image ? `${siteUrl}${post.image}` : `${siteUrl}/logo.png`,
-        datePublished: post.date,
-        dateModified: post.date,
+        headline: post.title,
+        description: post.excerpt,
+        image: post.featuredImage ? `${siteUrl}${post.featuredImage}` : `${siteUrl}/logo.png`,
+        datePublished: post.publishDate,
+        dateModified: post.modifiedDate || post.publishDate,
         author: { '@type': 'Organization', name: 'CNWePro Team', url: siteUrl },
         publisher: { '@type': 'Organization', name: 'CNWePro', url: siteUrl, logo: { '@type': 'ImageObject', url: `${siteUrl}/logo.png` } },
         mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
@@ -79,7 +81,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
         itemListElement: [
             { '@type': 'ListItem', position: 1, name: '首页', item: siteUrl },
             { '@type': 'ListItem', position: 2, name: '博客', item: `${siteUrl}/blog/` },
-            { '@type': 'ListItem', position: 3, name: post.title[lang], item: postUrl },
+            { '@type': 'ListItem', position: 3, name: post.title, item: postUrl },
         ],
     };
 
@@ -108,12 +110,12 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                             </span>
                             <div className="flex items-center gap-1.5 text-xs text-slate-500">
                                 <Calendar className="w-3.5 h-3.5" />
-                                {post.date}
+                                {post.publishDate}
                             </div>
                         </div>
                         
                         <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-6 leading-[1.2] tracking-tight">
-                            {post.title[lang]}
+                            {post.title}
                         </h1>
                         
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 py-6 border-y border-slate-200 dark:border-slate-800">
@@ -123,17 +125,17 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                                 </div>
                                 <div>
                                     <div className="font-bold text-sm text-slate-900 dark:text-white">CNWePro Team</div>
-                                    <div className="text-xs text-slate-500">{Math.ceil(post.content[lang].length / 500)} 分钟阅读</div>
+                                    <div className="text-xs text-slate-500">{Math.ceil(post.content.length / 500)} 分钟阅读</div>
                                 </div>
                             </div>
-                            <ShareButtons title={post.title[lang]} url={postUrl} lang={lang} />
+                            <ShareButtons title={post.title} url={postUrl} lang={lang} />
                         </div>
                     </div>
 
                     {/* Featured Image */}
                     <div className="max-w-5xl mx-auto aspect-[21/9] bg-slate-100 dark:bg-dark-800 rounded-3xl mb-12 flex items-center justify-center border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden relative">
-                        {post.image ? (
-                            <Image src={post.image} alt={post.title[lang]} fill className="object-cover" priority />
+                        {post.featuredImage ? (
+                            <Image src={post.featuredImage} alt={post.title} fill className="object-cover" priority />
                         ) : (
                             <>
                                 <div className="absolute inset-0 bg-red-500/5" />
@@ -145,11 +147,11 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                     {/* Content & Sidebar Grid */}
                     <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-12">
                         
-                        <div className="prose prose-slate dark:prose-invert prose-red max-w-none prose-headings:font-black prose-headings:tracking-tight prose-img:rounded-2xl lg:prose-xl">
+                        <div className="prose prose-lg dark:prose-invert max-w-none prose-headings:font-black prose-headings:text-slate-900 dark:prose-headings:text-white prose-a:text-red-500 hover:prose-a:text-red-600 prose-img:rounded-3xl prose-img:shadow-2xl">
                             <p className="lead text-xl text-slate-500 dark:text-slate-400 font-medium mb-10 border-l-4 border-red-500 pl-6 py-2">
-                                {post.excerpt[lang]}
+                                {post.excerpt}
                             </p>
-                            <div dangerouslySetInnerHTML={{ __html: post.content[lang] }} />
+                            <div dangerouslySetInnerHTML={{ __html: post.content }} />
                         </div>
                         
                         <aside className="hidden lg:block">
@@ -177,7 +179,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                                 {relatedPosts.map(rp => (
                                     <Link key={rp.slug} href={`/blog/${rp.slug}`} className="group block bg-slate-50 dark:bg-dark-800 rounded-2xl p-5 hover:bg-white dark:hover:bg-dark-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-700 transition-all shadow-sm hover:shadow-xl">
                                         <div className="text-xs text-red-500 font-bold mb-2">{rp.category}</div>
-                                        <h4 className="font-bold text-slate-900 dark:text-white group-hover:text-red-500 transition-colors line-clamp-2">{rp.title[lang]}</h4>
+                                        <h4 className="font-bold text-slate-900 dark:text-white group-hover:text-red-500 transition-colors line-clamp-2">{rp.title}</h4>
                                     </Link>
                                 ))}
                             </div>

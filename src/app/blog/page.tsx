@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { posts } from '@/data/posts';
+import { getAllPosts } from '@/lib/blog';
 import BlogIndexClient from './BlogIndexClient';
 
 export const metadata: Metadata = {
@@ -31,5 +31,6 @@ export const metadata: Metadata = {
 };
 
 export default function BlogPage() {
+    const posts = getAllPosts('zh');
     return <BlogIndexClient posts={posts} lang="zh" />;
 }

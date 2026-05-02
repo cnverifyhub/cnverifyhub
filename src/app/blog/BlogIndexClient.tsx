@@ -3,11 +3,11 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Post } from '@/data/posts';
+import { BlogPost } from '@/lib/blog';
 import { Calendar, ChevronRight, Search, ChevronLeft, Tag } from 'lucide-react';
 
 interface BlogIndexClientProps {
-    posts: Post[];
+    posts: BlogPost[];
     lang: 'zh' | 'en';
 }
 
@@ -41,8 +41,8 @@ export default function BlogIndexClient({ posts, lang }: BlogIndexClientProps) {
     // Filter posts
     const filteredPosts = useMemo(() => {
         return posts.filter((post) => {
-            const matchesSearch = post.title[lang].toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                  post.excerpt[lang].toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                  post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesCategory = selectedCategory !== 'all' ? post.category === selectedCategory : true;
             return matchesSearch && matchesCategory;
         });
@@ -111,10 +111,10 @@ export default function BlogIndexClient({ posts, lang }: BlogIndexClientProps) {
                             className="group flex flex-col bg-white dark:bg-dark-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-2xl hover:shadow-red-500/10 hover:-translate-y-2 transition-all duration-300"
                         >
                             <div className="aspect-[16/10] bg-slate-100 dark:bg-slate-800 relative overflow-hidden shrink-0">
-                                {post.image ? (
+                                {post.featuredImage ? (
                                     <Image 
-                                        src={post.image} 
-                                        alt={post.title[lang]} 
+                                        src={post.featuredImage} 
+                                        alt={post.title} 
                                         fill 
                                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -133,13 +133,13 @@ export default function BlogIndexClient({ posts, lang }: BlogIndexClientProps) {
                             <div className="p-6 flex flex-col flex-1">
                                 <div className="flex items-center gap-2 text-xs text-slate-400 mb-3">
                                     <Calendar className="w-3.5 h-3.5" />
-                                    {post.date}
+                                    {post.publishDate}
                                 </div>
                                 <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-red-500 transition-colors line-clamp-2">
-                                    {post.title[lang]}
+                                    {post.title}
                                 </h2>
                                 <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-3 mb-6 leading-relaxed flex-1">
-                                    {post.excerpt[lang]}
+                                    {post.excerpt}
                                 </p>
                                 <div className="flex items-center justify-between mt-auto">
                                     <div className="flex items-center text-sm font-bold text-red-500 gap-1 group-hover:translate-x-1 transition-transform">
@@ -147,7 +147,7 @@ export default function BlogIndexClient({ posts, lang }: BlogIndexClientProps) {
                                         <ChevronRight className="w-4 h-4" />
                                     </div>
                                     <span className="text-xs text-slate-400 font-medium bg-slate-50 dark:bg-dark-800 px-2 py-1 rounded-md">
-                                        {Math.ceil(post.content[lang].length / 500)} {lang === 'zh' ? '分钟阅读' : 'min read'}
+                                        {Math.ceil(post.content.length / 500)} {lang === 'zh' ? '分钟阅读' : 'min read'}
                                     </span>
                                 </div>
                             </div>
