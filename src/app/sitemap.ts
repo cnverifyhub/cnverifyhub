@@ -19,10 +19,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const staticRoutes: MetadataRoute.Sitemap = [
         { url: `${SITE_URL}/`, lastModified: now, changeFrequency: 'daily', priority: 1.0, alternates: getAlternates('/') },
         { url: `${SITE_URL}/en/`, lastModified: now, changeFrequency: 'daily', priority: 1.0, alternates: getAlternates('/') },
-        
+
         { url: `${SITE_URL}/blog/`, lastModified: now, changeFrequency: 'daily', priority: 0.8, alternates: getAlternates('/blog/') },
         { url: `${SITE_URL}/en/blog/`, lastModified: now, changeFrequency: 'daily', priority: 0.8, alternates: getAlternates('/blog/') },
-        
+
         { url: `${SITE_URL}/checkout/`, lastModified: now, changeFrequency: 'never', priority: 0.6, alternates: getAlternates('/checkout/') },
         { url: `${SITE_URL}/en/checkout/`, lastModified: now, changeFrequency: 'never', priority: 0.6, alternates: getAlternates('/checkout/') },
 

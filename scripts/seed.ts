@@ -17,7 +17,6 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Import our local data directly from the src directory
 import { categories, allProducts } from '../src/data/products';
-import { posts } from '../src/data/posts';
 
 async function seedDatabase() {
   console.log("🌱 Starting Supabase Seeding Process...");
@@ -73,25 +72,6 @@ async function seedDatabase() {
   const { error: prodError } = await supabase.from('products').upsert(productsData, { onConflict: 'id' });
   if (prodError) console.error("❌ Error seeding products:", prodError);
   else console.log(`✅ successfully upserted ${productsData.length} products.`);
-
-  // 3. Seed Posts
-  console.log("\n📰 Seeding Blog Posts...");
-  const postsData = posts.map(p => ({
-    id: p.slug, // Using slug as the primary key ID
-    title_zh: p.title.zh,
-    title_en: p.title.en,
-    excerpt_zh: p.excerpt.zh,
-    excerpt_en: p.excerpt.en,
-    content_zh: p.content.zh,
-    content_en: p.content.en,
-    date: p.date,
-    image: p.image,
-    category: p.category
-  }));
-
-  const { error: postError } = await supabase.from('posts').upsert(postsData, { onConflict: 'id' });
-  if (postError) console.error("❌ Error seeding posts:", postError);
-  else console.log(`✅ successfully upserted ${postsData.length} blog posts.`);
 
   console.log("\n🚀 Seeding Complete! Your Supabase database is now populated.");
 }

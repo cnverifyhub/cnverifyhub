@@ -6,6 +6,7 @@ import Footer from '@/components/layout/Footer';
 import MobileNav from '@/components/layout/MobileNav';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { GsapAnimations } from '@/components/ui/GsapAnimations';
+import { SalesTicker } from '@/components/ui/SalesTicker';
 
 export function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname() || '';
@@ -34,6 +35,7 @@ export function ClientLayoutWrapper({ children }: { children: React.ReactNode })
             <CartDrawer lang="zh" />
             <Footer />
             <MobileNav />
+            <SalesTicker />
             <GsapAnimations />
         </div>
     );

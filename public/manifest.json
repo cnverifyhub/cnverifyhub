@@ -1,0 +1,24 @@
+{
+  "name": "CNWePro",
+  "short_name": "CNWePro",
+  "description": "Professional Chinese digital account marketplace. WeChat, Alipay, Douyin accounts with instant USDT delivery.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ef4444",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -288,7 +288,29 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                     ))}
                 </div>
             )}
-            {/* Stepper */}
+            {/* Progress Stepper */}
+            <div className="mb-8 flex items-center justify-between relative px-2">
+                <div className="absolute left-0 top-3 w-full h-1 bg-slate-200 dark:bg-slate-800 -z-10 rounded-full overflow-hidden">
+                    <div className="h-full bg-primary-500 transition-all duration-500 ease-out" style={{ width: step === 1 ? '10%' : step === 2 ? '50%' : '100%' }} />
+                </div>
+                
+                <div className={`flex flex-col items-center gap-2 ${step >= 1 ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-slate-600'}`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs transition-colors duration-300 ${step >= 1 ? 'bg-primary-500 text-white shadow-md shadow-primary-500/30' : 'bg-slate-200 dark:bg-slate-800'}`}>1</div>
+                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest">{lang === 'zh' ? '确认订单' : 'CART'}</span>
+                </div>
+                
+                <div className={`flex flex-col items-center gap-2 ${step >= 2 ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-slate-600'}`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs transition-colors duration-300 ${step >= 2 ? 'bg-primary-500 text-white shadow-md shadow-primary-500/30' : 'bg-slate-200 dark:bg-slate-800'}`}>2</div>
+                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest">{lang === 'zh' ? '安全支付' : 'PAYMENT'}</span>
+                </div>
+                
+                <div className={`flex flex-col items-center gap-2 ${step >= 3 ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-slate-600'}`}>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs transition-colors duration-300 ${step >= 3 ? 'bg-primary-500 text-white shadow-md shadow-primary-500/30' : 'bg-slate-200 dark:bg-slate-800'}`}>3</div>
+                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest">{lang === 'zh' ? '发货完成' : 'DONE'}</span>
+                </div>
+            </div>
+
+            {/* Countdown Banner */}
             {step === 1 && countdown > 0 && (
                 <div className="mb-6 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 border border-red-200 dark:border-red-800/30 rounded-xl px-4 py-3 flex items-center justify-between animate-fade-in">
                     <div className="flex items-center gap-2">

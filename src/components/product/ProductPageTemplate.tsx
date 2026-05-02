@@ -565,6 +565,37 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                                 </div>
                             )}
 
+                            {/* Mobile Sticky Bottom CTA */}
+                            {!isOutOfStock && (
+                                <div className="fixed bottom-0 left-0 right-0 z-[100] lg:hidden bg-white/90 dark:bg-dark-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 p-3 px-4 pb-6 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] flex items-center justify-between gap-3 animate-fade-in-up">
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                                            {lang === 'zh' ? '合计' : 'Total'}
+                                        </span>
+                                        <span className="text-xl font-black text-red-600 dark:text-red-500 leading-none">
+                                            {formatYuan(currentPrice * quantity)}
+                                        </span>
+                                    </div>
+                                    <div className="flex gap-2 flex-1">
+                                        <button
+                                            onClick={() => addItem(product.id, quantity)}
+                                            className="w-12 h-12 rounded-xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0 active:scale-95"
+                                        >
+                                            <ShoppingCart className="w-5 h-5" />
+                                        </button>
+                                        <button
+                                            onClick={() => {
+                                                addItem(product.id, quantity);
+                                                router.push(getLocalizedPath('/checkout', lang));
+                                            }}
+                                            className="flex-1 h-12 rounded-xl text-sm font-black bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-lg shadow-red-500/30 active:scale-95"
+                                        >
+                                            {lang === 'zh' ? '立即购买' : 'Buy Now'}
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
                             <div className="mt-4 flex items-center justify-center gap-4 text-xs text-slate-500">
                                 <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3" /> {lang === 'zh' ? '安全交易' : 'Secure'}</span>
                                 <span className="flex items-center gap-1"><Zap className="w-3 h-3" /> {lang === 'zh' ? '光速发货' : 'Fast'}</span>
