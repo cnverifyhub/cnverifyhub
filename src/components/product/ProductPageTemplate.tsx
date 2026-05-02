@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -173,40 +171,8 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
     const reviews = generateMockReviews(lang);
     const isOutOfStock = product.stockCount === 0;
 
-    const productSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'Product',
-        name: product.tierName[lang],
-        description: product.description[lang],
-        image: `${SITE_URL}/images/products/${category.id}.png`,
-        offers: {
-            '@type': 'Offer',
-            priceCurrency: 'CNY',
-            price: Math.round(currentPrice * 7.2),
-            availability: isOutOfStock ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
-            url: `${SITE_URL}${getLocalizedPath(`/product/${product.id}`, lang)}`,
-            seller: {
-                '@type': 'Organization',
-                name: 'CNWePro'
-            }
-        },
-        brand: {
-            '@type': 'Brand',
-            name: 'CNWePro'
-        },
-        aggregateRating: {
-            '@type': 'AggregateRating',
-            ratingValue: '4.9',
-            reviewCount: product.stockCount * 4 + 12
-        }
-    };
-
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-dark-950 pt-20 pb-24 font-sans">
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
-            />
             <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
 
                 {/* Breadcrumbs */}
@@ -299,7 +265,7 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
 
                             {/* Features Grid */}
                             <div className="grid grid-cols-2 gap-3 mb-4">
-                                {product.features.map((feature, i) => (
+                                {product.features?.map((feature, i) => (
                                     <div key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
                                         <div className="w-5 h-5 rounded-full bg-success-100 dark:bg-success-900/30 flex items-center justify-center shrink-0">
                                             <CheckCircle2 className="w-3.5 h-3.5 text-success-600 dark:text-success-400" />
@@ -319,14 +285,18 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                             </button>
 
                             <div className="flex flex-wrap items-center gap-4 py-4 border-t border-slate-100 dark:border-slate-800">
-                                <div className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400">
-                                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                                    <span>{product.warranty[lang]}</span>
-                                </div>
-                                <div className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400">
-                                    <Clock className="w-4 h-4 text-primary-500" />
-                                    <span>{lang === 'zh' ? '预计发货：' : 'Est. Delivery: '}{product.deliveryTime[lang]}</span>
-                                </div>
+                                {product.warranty && (
+                                    <div className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400">
+                                        <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                                        <span>{product.warranty[lang]}</span>
+                                    </div>
+                                )}
+                                {product.deliveryTime && (
+                                    <div className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400">
+                                        <Clock className="w-4 h-4 text-primary-500" />
+                                        <span>{lang === 'zh' ? '预计发货：' : 'Est. Delivery: '}{product.deliveryTime[lang]}</span>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Shop Ratings (Taobao Style) */}

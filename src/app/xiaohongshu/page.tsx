@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
+import { calculateYuan } from '@/lib/utils';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: '小红书账号购买 - 高权重营销老号 | CNWePro',
-        description: '小红书基础号¥135起 | 千粉号¥495起 | USDT支付秒发货',
+        description: '小红书基础号¥18起 | 千粉号¥68起 | USDT支付秒发货',
     },
 };
 
@@ -34,13 +35,13 @@ function getXiaohongshuJsonLd() {
             item: {
                 '@type': 'Product',
                 name: p.tierName.zh,
-                description: p.features.map(f => f.zh).join(', '),
+                description: p.features?.map(f => f.zh).join(', ') || p.description.zh,
                 url: `${SITE_URL}/xiaohongshu/`,
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'CNY',
-                    price: Math.round(p.price.single * 7.2),
+                    price: calculateYuan(p.price.single),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

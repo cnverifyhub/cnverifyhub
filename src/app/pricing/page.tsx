@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { PopularProducts } from '@/components/home/PopularProducts';
 import { allProducts } from '@/data/products';
+import { calculateYuan } from '@/lib/utils';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -13,7 +14,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: '价格总览 - 微信·支付宝·抖音·QQ账号 | CNWePro',
-        description: '全品类账号阶梯定价，130¥起，支付宝/微信支付秒发货',
+        description: '全品类账号阶梯定价，¥135起，支付宝/微信支付秒发货',
     },
 };
 
@@ -32,8 +33,8 @@ function getPricingJsonLd() {
         url: `${SITE_URL}/pricing/`,
         offers: {
             '@type': 'AggregateOffer',
-            lowPrice: (lowPrice * 7.2).toFixed(2),
-            highPrice: (highPrice * 7.2).toFixed(2),
+            lowPrice: calculateYuan(lowPrice).toString(),
+            highPrice: calculateYuan(highPrice).toString(),
             priceCurrency: 'CNY',
             offerCount: allProducts.length,
             availability: 'https://schema.org/InStock',

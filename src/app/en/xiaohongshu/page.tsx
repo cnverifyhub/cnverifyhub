@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
 import { getProductsByCategory } from '@/data/products';
+import { calculateYuan } from '@/lib/utils';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'Buy Xiaohongshu Account - Verified & Aged | CNWePro',
-        description: 'RED/Xiaohongshu accounts from ¥135. High-follower marketing accounts available. Instant delivery.',
+        description: 'RED/Xiaohongshu accounts from $18. High-follower marketing accounts available. Instant delivery.',
         url: `${SITE_URL}/en/xiaohongshu/`,
     },
 };
@@ -35,13 +36,13 @@ function getXiaohongshuJsonLd() {
             item: {
                 '@type': 'Product',
                 name: p.tierName.en,
-                description: p.features.map(f => f.en).join(', '),
+                description: p.features?.map(f => f.en).join(', ') || p.description.en,
                 url: `${SITE_URL}/en/xiaohongshu/`,
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'CNY',
-                    price: Math.round(p.price.single * 7.2),
+                    price: calculateYuan(p.price.single),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

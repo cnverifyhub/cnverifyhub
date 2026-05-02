@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getProductById } from '@/data/products';
@@ -60,40 +58,8 @@ export function BundleProductPageTemplate({ productId, lang }: BundleProductPage
         router.push(`/${lang === 'en' ? 'en/' : ''}checkout`);
     };
 
-    const bundleSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'Product',
-        name: tierName[lang],
-        description: description[lang],
-        image: `https://cnwepro.com/images/categories/bundle.webp`,
-        offers: {
-            '@type': 'Offer',
-            priceCurrency: 'CNY',
-            price: Math.round(price.single * 7.2),
-            availability: product.stockCount > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-            url: `https://cnwepro.com/${lang === 'en' ? 'en/' : ''}product/${product.id}`,
-            seller: {
-                '@type': 'Organization',
-                name: 'CNWePro'
-            }
-        },
-        brand: {
-            '@type': 'Brand',
-            name: 'CNWePro'
-        },
-        aggregateRating: {
-            '@type': 'AggregateRating',
-            ratingValue: '4.9',
-            reviewCount: 42
-        }
-    };
-
     return (
         <div className="min-h-screen bg-[#F8FAFC] dark:bg-dark-900 pb-32">
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(bundleSchema) }}
-            />
             {/* Sticky Mobile CTA */}
             <motion.div
                 initial={{ y: 100 }}
@@ -215,7 +181,7 @@ export function BundleProductPageTemplate({ productId, lang }: BundleProductPage
                                 {lang === 'zh' ? '已实名认证，可正常收付款，支持闲鱼/淘宝一键登录。' : 'Real-name verified. Ready for payments and 1-click Xianyu login.'}
                             </p>
                             <ul className="space-y-2">
-                                {bundleContents?.[0]?.includes.map((item, i) => (
+                                {(bundleContents?.[0]?.includes || []).map((item, i) => (
                                     <li key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 font-medium">
                                         <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
                                         {item}
@@ -238,7 +204,7 @@ export function BundleProductPageTemplate({ productId, lang }: BundleProductPage
                                 {lang === 'zh' ? '已与上述支付宝完成底层绑定，可直接免手机号登录发布商品。' : 'Pre-linked to the Alipay account. Login directly to start selling.'}
                             </p>
                             <ul className="space-y-2">
-                                {bundleContents?.[1]?.includes.map((item, i) => (
+                                {(bundleContents?.[1]?.includes || []).map((item, i) => (
                                     <li key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 font-medium">
                                         <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0" />
                                         {item}

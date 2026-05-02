@@ -43,14 +43,13 @@ export interface Product {
     description: { zh: string; en: string };
     price: PricingTier;
     compareAtPrice?: number;
-    currency: 'CNY' | 'USD' | 'USDT';
-    features: Array<{ zh: string; en: string }>;
+    currency?: 'CNY' | 'USD' | 'USDT';
+    features?: Array<{ zh: string; en: string }>;
     includes?: string[];
-    requirements?: { zh: string; en: string; buyerNeeds?: string; technical?: string };
+    requirements?: { zh?: string; en?: string; buyerNeeds?: string; technical?: string };
     deliveryMethod?: 'auto' | 'manual' | 'scheduled';
-    deliveryTime: { zh: string; en: string };
-    warranty: { zh: string; en: string };
-    warrantyHours?: number;
+    deliveryTime?: { zh: string; en: string };
+    warranty?: { zh: string; en: string };
     stockCount: number;
     popular?: boolean;
     badge?: { zh: string; en: string };
@@ -79,7 +78,7 @@ export interface Product {
         description: string;
         verificationLevel?: string;
         linkStatus?: string;
-        includes: string[];
+        includes?: string[];
     }>;
     whyBundle?: { zh: string; en: string };
     useCases?: string[];

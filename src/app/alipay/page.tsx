@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
+import { calculateYuan } from '@/lib/utils';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: '支付宝账号购买 - 实名·企业·商家号 | CNWePro',
-        description: '支付宝个人号¥351起 | 商家号¥423起 | USDT支付秒发货',
+        description: '支付宝个人号¥274起 | 企业号¥634起 | USDT支付秒发货',
     },
 };
 
@@ -34,13 +35,13 @@ function getAlipayJsonLd() {
             item: {
                 '@type': 'Product',
                 name: p.tierName.zh,
-                description: p.features.map(f => f.zh).join(', '),
+                description: p.features?.map(f => f.zh).join(', ') || p.description.zh,
                 url: `${SITE_URL}/alipay/`,
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'CNY',
-                    price: Math.round(p.price.single * 7.2),
+                    price: calculateYuan(p.price.single),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },
