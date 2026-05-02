@@ -15,6 +15,9 @@ const ICON_PATHS: Record<string, string> = {
     taobao:       '/images/categories/taobao.webp',
     xiaohongshu:  '/images/categories/xiaohongshu.webp',
     telegram:     '/images/categories/telegram.png',
+    bundle:       '/images/categories/bundle.png',
+    verification: '/images/categories/verification.png',
+    fintech:      '/images/categories/verification.png', // Fallback for fintech
 };
 
 function BrandIcon({ name, className }: { name: string; className?: string }) {
@@ -63,4 +66,16 @@ export function XiaohongshuIcon({ className }: BrandIconProps) {
 
 export function TelegramIcon({ className }: BrandIconProps) {
     return <BrandIcon name="telegram" className={className} />;
+}
+
+export function BundleIcon({ className }: BrandIconProps) {
+    return <BrandIcon name="bundle" className={className} />;
+}
+
+export function VerificationIcon({ className }: BrandIconProps) {
+    return <BrandIcon name="verification" className={className} />;
+}
+
+export function FintechIcon({ className }: BrandIconProps) {
+    return <BrandIcon name="fintech" className={className} />;
 }

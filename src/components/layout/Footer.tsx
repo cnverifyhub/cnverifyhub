@@ -33,7 +33,10 @@ import {
     QQIcon,
     XianyuIcon,
     TaobaoIcon,
-    XiaohongshuIcon
+    XiaohongshuIcon,
+    BundleIcon,
+    VerificationIcon,
+    FintechIcon
 } from '@/components/ui/BrandIcons';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -43,7 +46,10 @@ const iconMap: Record<string, React.ElementType> = {
     qq: QQIcon,
     xianyu: XianyuIcon,
     taobao: TaobaoIcon,
-    xiaohongshu: XiaohongshuIcon
+    xiaohongshu: XiaohongshuIcon,
+    bundle: BundleIcon,
+    verification: VerificationIcon,
+    fintech: FintechIcon
 };
 
 export default function Footer() {
@@ -147,13 +153,13 @@ export default function Footer() {
                                 <div className="w-1 h-3 bg-[#FF0036] rounded-full" />
                                 {lang === 'zh' ? '热销专区' : 'Top Categories'}
                             </h4>
-                            <ul className="space-y-2.5">
-                                {categories.slice(0, 5).map(c => {
+                            <ul className="grid grid-cols-2 lg:grid-cols-1 gap-y-2.5 gap-x-4">
+                                {categories.slice(0, 8).map(c => {
                                     const Icon = iconMap[c.id] || WeChatIcon;
                                     return (
                                         <li key={c.id}>
                                             <Link href={getLocalizedPath(c.href, lang)} className="text-[11px] lg:text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#FF0036] dark:hover:text-[#FF0036] flex items-center gap-1.5 transition-colors">
-                                                <Icon className="w-3.5 h-3.5" /> <span className="truncate">{c.name[lang]}</span> {c.id === 'wechat' && <span className="text-[9px] bg-[#FF0036] text-white px-1 rounded-sm shrink-0">HOT</span>}
+                                                <Icon className="w-3.5 h-3.5" /> <span className="truncate">{c.name[lang]}</span> {c.id === 'bundle' && <span className="text-[9px] bg-[#FF0036] text-white px-1 rounded-sm shrink-0">HOT</span>}
                                             </Link>
                                         </li>
                                     );

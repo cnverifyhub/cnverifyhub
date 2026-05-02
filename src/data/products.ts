@@ -73,10 +73,28 @@ export const categories: Category[] = [
         id: 'bundle',
         name: { zh: '组合套装', en: 'Combo Bundles' },
         description: { zh: '多平台组合账号，一站式解决关联验证难题', en: 'Multi-platform linked accounts, solving verification hurdles' },
-        icon: 'xianyu', // We can use xianyu icon or a generic one. Since we don't have a bundle icon yet, we'll use xianyu
+        icon: 'package',
         color: 'text-purple-500',
         gradient: 'from-purple-500 to-indigo-600',
         href: '/bundle',
+    },
+    {
+        id: 'verification',
+        name: { zh: '实名认证服务', en: 'Verification Services' },
+        description: { zh: '提供支付宝、微信、及各类跨境平台护照实名代认证服务', en: 'Passport verification services for Alipay, WeChat, and trading platforms' },
+        icon: 'shield-check',
+        color: 'text-indigo-500',
+        gradient: 'from-indigo-500 to-blue-600',
+        href: '/verification',
+    },
+    {
+        id: 'fintech',
+        name: { zh: '金融交易账户', en: 'FinTech & Trading' },
+        description: { zh: '已实名认证的XM、HFM、Neteller、Payoneer等金融账户', en: 'Verified accounts for XM, HFM, Neteller, Skrill, and Payoneer' },
+        icon: 'landmark',
+        color: 'text-emerald-500',
+        gradient: 'from-emerald-500 to-teal-600',
+        href: '/fintech',
     },
 ];
 
@@ -229,7 +247,6 @@ const wechatProducts: Product[] = [
         deliveryTime: { zh: '4-8小时', en: '4-8 hours' },
         stockCount: 10,
         sortOrder: 9,
-        image: "/images/common/premium-account.png",
     },
     {
         id: 'wechat-enterprise',
@@ -562,12 +579,6 @@ const taobaoProducts: Product[] = [
         tierSlug: 'basic',
         description: { zh: '淘宝购物基础白号', en: 'Fresh Taobao shopping account' },
         price: { single: 15.80, bulk10: 12.80, bulk50: 12.80, bulk200: 10.80, originalPrice: { single: 25.80, bulk10: 22.80, bulk50: 22.80, bulk200: 18.80 } },
-        features: [
-            { zh: '全新注册', en: 'Freshly registered' },
-            { zh: '正常购物', en: 'Normal shopping' },
-        ],
-        warranty: { zh: '24小时质保', en: '24-hour warranty' },
-        deliveryTime: { zh: '5-15分钟', en: '5-15 minutes' },
         stockCount: 25,
         sortOrder: 1,
     },
@@ -633,21 +644,21 @@ const bundleProducts: Product[] = [
         id: 'bundle-alipay-xianyu-001',
         category: 'bundle',
         tierName: { zh: '支付宝+闲鱼 组合账号', en: 'Alipay + Xianyu Combo Account' },
-        tierSlug: 'alipay-xianyu-combo',
+        tierSlug: 'alipay-xianyu-bundle',
         description: { zh: '一站解决闲鱼登录难题，支付宝实名认证+闲鱼账号绑定发货', en: 'One-stop solution for Xianyu login. Verified Alipay + linked Xianyu account.' },
-        price: { single: 89.00, bulk10: 85.00, bulk50: 80.00, bulk200: 75.00, originalPrice: { single: 128.00, bulk10: 128.00, bulk50: 128.00, bulk200: 128.00 } },
+        price: { single: 280.00, bulk10: 240.00, bulk50: 240.00, bulk200: 240.00, originalPrice: { single: 350.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00 } },
         features: [
             { zh: '包含实名支付宝', en: 'Includes verified Alipay' },
             { zh: '包含关联闲鱼号', en: 'Includes linked Xianyu' },
             { zh: '无需中国手机号', en: 'No China phone needed' },
+            { zh: '24小时质保', en: '24h Warranty' },
         ],
-        warranty: { zh: '7天质保 (包含登录与关联失效)', en: '7 days (covers login & link failure)' },
+        warranty: { zh: '7天登录质保', en: '7-day login warranty' },
         deliveryTime: { zh: '5-15 分钟', en: '5-15 mins' },
         stockCount: 47,
         popular: true,
-        badge: { zh: '🔥 爆款组合', en: '🔥 Hot Combo' },
+        badge: { zh: '入门推荐', en: 'Starter Pick' },
         sortOrder: 1,
-        // Bundle specific fields
         bundleContents: [
             {
                 item: 'alipay',
@@ -687,7 +698,227 @@ const bundleProducts: Product[] = [
             zh: '首次登录建议在常用设备稳定使用3-5天，不要立即修改绑定信息或大额交易。',
             en: 'First login: use on same device for 3-5 days. Do NOT change binding info or make large transactions immediately.'
         }
-    }
+    },
+    {
+        id: 'bundle-alipay-taobao-001',
+        category: 'bundle',
+        tierName: { zh: '支付宝+淘宝 购物套装', en: 'Alipay + Taobao Shopping Bundle' },
+        tierSlug: 'alipay-taobao-bundle',
+        description: { zh: '支付宝实名认证+淘宝买家号，支持历史订单查询与地址设置', en: 'Verified Alipay + Taobao buyer account with purchase history and address setup guide.' },
+        price: { single: 320.00, bulk10: 250.00, bulk50: 250.00, bulk200: 250.00, originalPrice: { single: 450.00, bulk10: 380.00, bulk50: 380.00, bulk200: 380.00 } },
+        features: [
+            { zh: '支付宝实名认证', en: 'Verified Alipay' },
+            { zh: '淘宝优质买家号', en: 'Premium Taobao Buyer' },
+            { zh: '包含地址设置指南', en: 'Address setup guide' },
+            { zh: '支持支付绑定', en: 'Payment binding ready' },
+        ],
+        warranty: { zh: '3天登录质保', en: '3-day login warranty' },
+        deliveryTime: { zh: '15-30 分钟', en: '15-30 mins' },
+        stockCount: 32,
+        sortOrder: 2,
+    },
+    {
+        id: 'bundle-alipay-1688-001',
+        category: 'bundle',
+        tierName: { zh: '支付宝企业+1688 批发套装', en: 'Alipay Business + 1688 Wholesale Bundle' },
+        tierSlug: 'alipay-1688-bundle',
+        description: { zh: '企业支付宝+1688卖家/买家号，适合一件代发与大宗采购', en: 'Enterprise Alipay + 1688 seller/buyer account for dropshippers and wholesalers.' },
+        price: { single: 880.00, bulk10: 780.00, bulk50: 780.00, bulk200: 780.00, originalPrice: { single: 1200.00, bulk10: 1000.00, bulk50: 1000.00, bulk200: 1000.00 } },
+        features: [
+            { zh: '企业支付宝认证', en: 'Business Alipay' },
+            { zh: '1688 高权重账号', en: '1688 High Authority' },
+            { zh: '适合跨境电商', en: 'Perfect for Cross-border' },
+            { zh: '包含供应商沟通技巧', en: 'Supplier tips included' },
+        ],
+        warranty: { zh: '15天售后支持', en: '15-day support' },
+        deliveryTime: { zh: '2-6 小时', en: '2-6 hours' },
+        stockCount: 15,
+        badge: { zh: '专业版', en: 'Pro Choice' },
+        sortOrder: 3,
+    },
+    {
+        id: 'bundle-wechat-jd-001',
+        category: 'bundle',
+        tierName: { zh: '微信+京东 购物套装', en: 'WeChat + JD.com Bundle' },
+        tierSlug: 'wechat-jd-bundle',
+        description: { zh: '已实名微信+京东买家号，支付已关联', en: 'Verified WeChat + JD buyer account with payment pre-linked.' },
+        price: { single: 350.00, bulk10: 310.00, bulk50: 310.00, bulk200: 310.00, originalPrice: { single: 480.00, bulk10: 420.00, bulk50: 420.00, bulk200: 420.00 } },
+        features: [
+            { zh: '微信已绑卡实名', en: 'Verified WeChat' },
+            { zh: '京东账号历史活跃', en: 'Active JD history' },
+            { zh: '极速发货', en: 'Fast Delivery' },
+        ],
+        warranty: { zh: '72小时质保', en: '72h warranty' },
+        deliveryTime: { zh: '1-3 小时', en: '1-3 hours' },
+        stockCount: 22,
+        sortOrder: 4,
+    },
+    {
+        id: 'bundle-full-suite',
+        category: 'bundle',
+        tierName: { zh: '全平台电商套装', en: 'Full E-Commerce Suite' },
+        tierSlug: 'full-ecommerce-suite',
+        description: { zh: '支付宝+微信+闲鱼+淘宝+1688 全套账号', en: 'Full suite including Alipay, WeChat, Xianyu, Taobao, and 1688.' },
+        price: { single: 2880.00, bulk10: 2600.00, bulk50: 2600.00, bulk200: 2600.00, originalPrice: { single: 3500.00, bulk10: 3200.00, bulk50: 3200.00, bulk200: 3200.00 } },
+        features: [
+            { zh: '全套实名资料', en: 'Full Identity Set' },
+            { zh: '多平台互通', en: 'Inter-platform login' },
+            { zh: 'VIP 专属客服', en: 'VIP Dedicated Support' },
+            { zh: '终身维护指导', en: 'Lifetime Guidance' },
+        ],
+        warranty: { zh: '30天超长保障', en: '30-day extended' },
+        deliveryTime: { zh: '12-24 小时', en: '12-24 hours' },
+        stockCount: 5,
+        popular: true,
+        badge: { zh: '大咖首选', en: 'Executive' },
+        sortOrder: 5,
+    },
+];
+
+/* ---------- Verification Products ---------- */
+const verificationProducts: Product[] = [
+    {
+        id: 'verify-alipay-passport',
+        category: 'verification',
+        tierName: { zh: '支付宝护照实名认证', en: 'Alipay Passport Verification' },
+        tierSlug: 'alipay-verification',
+        description: { zh: '使用您的海外护照协助开通支付宝实名权限', en: 'Assist in verifying your Alipay account using your overseas passport (Tour Pass or full).' },
+        price: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 },
+        features: [
+            { zh: '支持全球护照', en: 'Global passport support' },
+            { zh: '代办 1-2 小时完成', en: '1-2 hour turnaround' },
+            { zh: '100% 成功率保障', en: '100% Success rate' },
+        ],
+        warranty: { zh: '认证失效包重做', en: 'Re-do if failed' },
+        deliveryTime: { zh: '1-2 小时', en: '1-2 hours' },
+        stockCount: 99,
+        sortOrder: 1,
+    },
+    {
+        id: 'verify-wechat-passport',
+        category: 'verification',
+        tierName: { zh: '微信护照实名认证', en: 'WeChat Passport Verification' },
+        tierSlug: 'wechat-verification',
+        description: { zh: '绑定外国护照到微信，开通支付及红包功能', en: 'Bind foreign passport to WeChat to enable payment and Red Packet features.' },
+        price: { single: 180.00, bulk10: 180.00, bulk50: 180.00, bulk200: 180.00 },
+        features: [
+            { zh: '开通微信支付', en: 'Enable WeChat Pay' },
+            { zh: '收发红包权限', en: 'Red Packet enabled' },
+            { zh: '专业流程指导', en: 'Professional Guidance' },
+        ],
+        warranty: { zh: '认证失效包重做', en: 'Re-do if failed' },
+        deliveryTime: { zh: '1-2 小时', en: '1-2 hours' },
+        stockCount: 99,
+        sortOrder: 2,
+    },
+    {
+        id: 'verify-kyc-package',
+        category: 'verification',
+        tierName: { zh: 'KYC 资料包', en: 'KYC Document Package' },
+        tierSlug: 'kyc-package',
+        description: { zh: '提供匹配的 POI+POA+手持拍照资料集', en: 'Matched POI + POA + Selfie set for trading platform verification.' },
+        price: { single: 200.00, bulk10: 180.00, bulk50: 180.00, bulk200: 180.00 },
+        features: [
+            { zh: '高清手持自拍', en: 'HD Selfie with ID' },
+            { zh: '匹配地址证明', en: 'Matching Address Proof' },
+            { zh: '支持各大交易平台', en: 'All major platforms' },
+        ],
+        warranty: { zh: '资料失效包换', en: 'Replacement warranty' },
+        deliveryTime: { zh: '1-4 小时', en: '1-4 hours' },
+        stockCount: 50,
+        sortOrder: 3,
+    },
+    {
+        id: 'verify-face-assist',
+        category: 'verification',
+        tierName: { zh: '人脸核验辅助', en: 'Face Verification Assistance' },
+        tierSlug: 'face-assist',
+        description: { zh: '远程协助平台人脸验证 (支付宝/微信/银行App)', en: 'Remote assistance for platform face verification.' },
+        price: { single: 120.00, bulk10: 120.00, bulk50: 120.00, bulk200: 120.00 },
+        features: [
+            { zh: '实时远程连线', en: 'Live remote connection' },
+            { zh: '支持主流 App', en: 'Mainstream Apps support' },
+            { zh: '隐私安全保护', en: 'Privacy Protected' },
+        ],
+        warranty: { zh: '单次服务保障', en: 'Per session warranty' },
+        deliveryTime: { zh: '预约时间', en: 'Scheduled time' },
+        stockCount: 99,
+        sortOrder: 4,
+    },
+];
+
+/* ---------- FinTech Products ---------- */
+const fintechProducts: Product[] = [
+    {
+        id: 'fintech-xm',
+        category: 'fintech',
+        tierName: { zh: 'XM 认证交易账户', en: 'XM Verified Trading Account' },
+        tierSlug: 'xm-account',
+        description: { zh: '已完成 KYC 认证的 XM 交易账户，即刻开市', en: 'Pre-verified XM account (Micro/Standard/Ultra Low), ready to trade.' },
+        price: { single: 80.00, bulk10: 70.00, bulk50: 70.00, bulk200: 70.00 },
+        features: [
+            { zh: '全实名认证', en: 'Full KYC verified' },
+            { zh: '包含验证邮箱', en: 'Verified email included' },
+            { zh: '支持快速出入金', en: 'Fast deposit/withdrawal' },
+        ],
+        warranty: { zh: '7天稳定质保', en: '7-day stability' },
+        deliveryTime: { zh: '2-4 小时', en: '2-4 hours' },
+        stockCount: 12,
+        sortOrder: 1,
+    },
+    {
+        id: 'fintech-hfm',
+        category: 'fintech',
+        tierName: { zh: 'HFM 认证交易账户', en: 'HFM Verified Trading Account' },
+        tierSlug: 'hfm-account',
+        description: { zh: '已完成实名认证的 HFM (HotForex) 账户', en: 'Pre-verified HFM (HotForex) account, fully functional.' },
+        price: { single: 90.00, bulk10: 80.00, bulk50: 80.00, bulk200: 80.00 },
+        features: [
+            { zh: '顶级监管平台', en: 'Top-tier regulated' },
+            { zh: '资料完整匹配', en: 'Full document match' },
+            { zh: '即拿即用', en: 'Ready to use' },
+        ],
+        warranty: { zh: '7天稳定质保', en: '7-day stability' },
+        deliveryTime: { zh: '2-4 小时', en: '2-4 hours' },
+        stockCount: 10,
+        sortOrder: 2,
+    },
+    {
+        id: 'fintech-neteller',
+        category: 'fintech',
+        tierName: { zh: 'Neteller 认证账户', en: 'Neteller Verified Account' },
+        tierSlug: 'neteller-account',
+        description: { zh: '全认证 Neteller 电子钱包，支持大额转账', en: 'Fully verified Neteller e-wallet, ready for deposits/transfers.' },
+        price: { single: 90.00, bulk10: 80.00, bulk50: 80.00, bulk200: 80.00 },
+        features: [
+            { zh: '银级/金级权重', en: 'Silver/Gold tier weight' },
+            { zh: '无转账额度限制', en: 'No transfer limits' },
+            { zh: '全球通用', en: 'Global usage' },
+        ],
+        warranty: { zh: '30天售后保障', en: '30-day warranty' },
+        deliveryTime: { zh: '4-12 小时', en: '4-12 hours' },
+        stockCount: 8,
+        popular: true,
+        sortOrder: 3,
+    },
+    {
+        id: 'fintech-payoneer',
+        category: 'fintech',
+        tierName: { zh: 'Payoneer 认证账户', en: 'Payoneer Verified Account' },
+        tierSlug: 'payoneer-account',
+        description: { zh: '自带美/欧/英收款账户的 Payoneer 认证号', en: 'Verified Payoneer with US/EU/UK receiving accounts.' },
+        price: { single: 120.00, bulk10: 110.00, bulk50: 110.00, bulk200: 110.00 },
+        features: [
+            { zh: '包含多币种收款账号', en: 'Multi-currency accounts' },
+            { zh: '支持提现到本地', en: 'Local withdrawal enabled' },
+            { zh: '独立资料注册', en: 'Unique ID registered' },
+        ],
+        warranty: { zh: '15天稳定质保', en: '15-day stability' },
+        deliveryTime: { zh: '12-24 小时', en: '12-24 hours' },
+        stockCount: 6,
+        badge: { zh: '大额首选', en: 'High Limit' },
+        sortOrder: 5,
+    },
 ];
 
 /* ---------- All Products ---------- */
@@ -700,6 +931,8 @@ export const allProducts: Product[] = [
     ...taobaoProducts,
     ...xiaohongshuProducts,
     ...bundleProducts,
+    ...verificationProducts,
+    ...fintechProducts,
 ];
 
 /* ---------- Helpers ---------- */
@@ -719,6 +952,7 @@ export function getCategoryById(id: CategoryId): Category | undefined {
 
 export function getLowestPrice(category: CategoryId): number {
     const products = getProductsByCategory(category);
+    if (products.length === 0) return 0;
     return Math.min(...products.map((p) => p.price.single));
 }
 

@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { getAllPosts } from '@/lib/blog';
 import BlogIndexClient from './BlogIndexClient';
 
+export const revalidate = 3600; // ISR: Revalidate every hour
+
 export const metadata: Metadata = {
     title: 'Buy Chinese Accounts — Guides, Tutorials & Tips | CNWePro Blog',
     description: 'Expert guides on buying WeChat accounts, Alipay accounts, Douyin accounts and more. Learn how international buyers can safely purchase and use Chinese social media accounts.',
@@ -30,7 +32,7 @@ export const metadata: Metadata = {
     },
 };
 
-export default function BlogPage() {
+export default async function BlogPage() {
     const posts = getAllPosts('zh');
     return <BlogIndexClient posts={posts} lang="zh" />;
 }

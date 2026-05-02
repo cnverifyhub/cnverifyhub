@@ -1,5 +1,44 @@
 [
   {
+    "slug": "xianyu-taobao-purchasing-guide",
+    "title": {
+      "zh": "2026闲鱼与淘宝账号购买及使用全指南：避坑、防封与实名方案",
+      "en": "Complete Guide to Buying Xianyu & Taobao Accounts (2026)"
+    },
+    "category": {
+      "zh": "安全",
+      "en": "Security"
+    },
+    "date": "2026-05-02",
+    "image": "/images/blog/xianyu-taobao-purchasing-guide.png"
+  },
+  {
+    "slug": "digital-identity-usdt-guide",
+    "title": {
+      "zh": "数字身份与USDT匿名交易：2026跨境支付安全进阶指南",
+      "en": "Digital Identity & USDT: Advanced Guide for Secure Payments 2026"
+    },
+    "category": {
+      "zh": "支付",
+      "en": "Payment"
+    },
+    "date": "2026-05-02",
+    "image": "/images/blog/digital-identity-usdt-guide.png"
+  },
+  {
+    "slug": "douyin-marketing-2026",
+    "title": {
+      "zh": "抖音与TikTok区别及2026出海营销策略",
+      "en": "Douyin vs TikTok: Key Differences & 2026 Marketing Strategy"
+    },
+    "category": {
+      "zh": "营销",
+      "en": "Marketing"
+    },
+    "date": "2026-05-02",
+    "image": "/images/blog/douyin-marketing-2026.png"
+  },
+  {
     "slug": "wechat-overseas-verification-guide",
     "title": {
       "zh": "微信海外实名认证教程：无中国身份证怎么用微信支付？",
@@ -24,19 +63,6 @@
     },
     "date": "2026-05-02",
     "image": "/images/blog/alipay-foreigner-setup-2026-featured.webp"
-  },
-  {
-    "slug": "douyin-vs-tiktok-marketing",
-    "title": {
-      "zh": "抖音与TikTok区别及2026出海营销策略",
-      "en": "Douyin vs TikTok: Key Differences & 2026 Marketing Strategy"
-    },
-    "category": {
-      "zh": "营销",
-      "en": "Marketing"
-    },
-    "date": "2026-05-02",
-    "image": "/images/blog/douyin-vs-tiktok-marketing-featured.webp"
   },
   {
     "slug": "qq-account-security-2fa",

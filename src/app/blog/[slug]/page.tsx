@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 import Image from 'next/image';
-import { ReadingProgress, ShareButtons, TableOfContents } from '@/components/blog/BlogClientFeatures';
+import { ReadingProgress, ShareButtons, TableOfContents, ScrollProgressBar } from '@/components/blog/BlogClientFeatures';
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
     const post = getPostBySlug(params.slug, 'zh');
@@ -125,10 +125,17 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                                 </div>
                                 <div>
                                     <div className="font-bold text-sm text-slate-900 dark:text-white">CNWePro Team</div>
-                                    <div className="text-xs text-slate-500">{Math.ceil(post.content.length / 500)} 分钟阅读</div>
+                                    <div className="text-xs text-slate-500">{post.readingTime} · {post.wordCount.toLocaleString()} {lang === 'zh' ? '字' : 'words'}</div>
                                 </div>
                             </div>
-                            <ShareButtons title={post.title} url={postUrl} lang={lang} />
+                            <div className="flex flex-col items-end gap-1">
+                                <ShareButtons title={post.title} url={postUrl} lang={lang} />
+                                {post.modifiedDate && post.modifiedDate !== post.publishDate && (
+                                    <div className="text-[10px] text-slate-400 italic">
+                                        {lang === 'zh' ? '最后更新于：' : 'Last updated: '} {post.modifiedDate}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
 

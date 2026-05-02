@@ -25,6 +25,9 @@ const BRAND_CONFIG: Record<string, { color: string; bg: string; iconBg: string; 
     xianyu:      { color: '#FFB300', bg: 'bg-[#FFB300]/10', iconBg: '#FFB300', shadow: 'shadow-amber-500/20', glow: 'group-hover:shadow-amber-500/30' },
     taobao:      { color: '#FF5000', bg: 'bg-[#FF5000]/5', iconBg: '#FF5000', shadow: 'shadow-orange-500/20', glow: 'group-hover:shadow-orange-500/30' },
     xiaohongshu: { color: '#ff2442', bg: 'bg-[#ff2442]/5', iconBg: '#ff2442', shadow: 'shadow-red-500/20', glow: 'group-hover:shadow-red-500/30' },
+    bundle:      { color: '#8b5cf6', bg: 'bg-[#8b5cf6]/5', iconBg: '#8b5cf6', shadow: 'shadow-purple-500/20', glow: 'group-hover:shadow-purple-500/30' },
+    verification:{ color: '#6366f1', bg: 'bg-[#6366f1]/5', iconBg: '#6366f1', shadow: 'shadow-indigo-500/20', glow: 'group-hover:shadow-indigo-500/30' },
+    fintech:     { color: '#10b981', bg: 'bg-[#10b981]/5', iconBg: '#10b981', shadow: 'shadow-emerald-500/20', glow: 'group-hover:shadow-emerald-500/30' },
 };
 
 export function PricingCard({ product, lang }: PricingCardProps) {
@@ -119,10 +122,12 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-1">{lang === 'zh' ? '成交量' : 'VOLUME'}</span>
                         <span className="text-sm font-black tracking-tight whitespace-nowrap bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded-lg">
                             {(() => {
-                                // Derive a stable unique sold count based on product ID
-                                const soldCount = (product as any).sold ?? (product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) * 3 % 1500 + 5);
-                                if (soldCount < 10) return lang === 'zh' ? '新品' : 'New';
-                                if (soldCount > 1000) return lang === 'zh' ? '已售 1k+' : '1k+ sold';
+                                // Derive a stable unique sold count based on product ID + category seed
+                                const categorySeed = product.category.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                                const idSeed = product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+                                const soldCount = (product as any).sold ?? ((idSeed * 7 + categorySeed * 3) % 1800 + 120);
+                                
+                                if (soldCount > 1000) return lang === 'zh' ? `已售 ${(soldCount/1000).toFixed(1)}k+` : `${(soldCount/1000).toFixed(1)}k+ sold`;
                                 return lang === 'zh' ? `已售 ${soldCount}` : `${soldCount} sold`;
                             })()}
                         </span>

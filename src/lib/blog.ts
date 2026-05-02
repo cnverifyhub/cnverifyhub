@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import { marked } from 'marked';
+
 export interface BlogPost {
     slug: string;
     title: string;
@@ -11,6 +13,7 @@ export interface BlogPost {
     modifiedDate: string;
     author: string;
     readingTime: string;
+    wordCount: number;
     featuredImage: string;
     excerpt: string;
     content: string;
@@ -37,9 +40,26 @@ export function getAllPosts(lang: 'zh' | 'en'): BlogPost[] {
         .filter(fileName => fileName.endsWith('.json') && fileName !== 'manifest.json')
         .map(fileName => {
             const fullPath = path.join(dir, fileName);
-            const fileContents = fs.readFileSync(fullPath, 'utf8');
-            return JSON.parse(fileContents) as BlogPost;
+            try {
+                const fileContents = fs.readFileSync(fullPath, 'utf8');
+                const post = JSON.parse(fileContents) as BlogPost;
+                
+                // Parse markdown content to HTML
+                const markdownContent = post.content;
+                post.content = marked.parse(markdownContent) as string;
+                
+                // Calculate word count and reading time dynamically if missing or thin
+                const plainText = markdownContent.replace(/<[^>]*>/g, '');
+                post.wordCount = plainText.trim().split(/\s+/).length + (plainText.match(/[\u4e00-\u9fa5]/g)?.length || 0);
+                post.readingTime = `${Math.ceil(post.wordCount / 250)} min`;
+                
+                return post;
+            } catch (err) {
+                console.error(`Error loading blog post ${fileName}:`, err);
+                return null;
+            }
         })
+        .filter((post): post is BlogPost => post !== null)
         .sort((a, b) => new Date(b.publishDate).getTime() - new Date(a.publishDate).getTime());
         
     return posts;
@@ -51,8 +71,24 @@ export function getPostBySlug(slug: string, lang: 'zh' | 'en'): BlogPost | null 
     
     if (!fs.existsSync(fullPath)) return null;
     
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    return JSON.parse(fileContents) as BlogPost;
+    try {
+        const fileContents = fs.readFileSync(fullPath, 'utf8');
+        const post = JSON.parse(fileContents) as BlogPost;
+        
+        // Parse markdown content to HTML
+        const markdownContent = post.content;
+        post.content = marked.parse(markdownContent) as string;
+        
+        // Dynamic stats
+        const plainText = markdownContent.replace(/<[^>]*>/g, '');
+        post.wordCount = plainText.trim().split(/\s+/).length + (plainText.match(/[\u4e00-\u9fa5]/g)?.length || 0);
+        post.readingTime = `${Math.ceil(post.wordCount / 250)} min`;
+        
+        return post;
+    } catch (err) {
+        console.error(`Error loading blog post ${slug}:`, err);
+        return null;
+    }
 }
 
 export function getAllSlugs(): string[] {

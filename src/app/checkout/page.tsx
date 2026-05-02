@@ -2,6 +2,7 @@
 
 import { Suspense } from 'react';
 import { CheckoutForm } from '@/components/checkout/CheckoutForm';
+import { CategoryBar } from '@/components/layout/CategoryBar';
 import { t } from '@/lib/i18n';
 
 export default function CheckoutPage() {
@@ -14,6 +15,7 @@ export default function CheckoutPage() {
                             {t('checkout.title', 'zh')}
                         </h1>
                     </div>
+                    <CategoryBar />
                     <CheckoutForm lang="zh" />
                 </div>
             </Suspense>

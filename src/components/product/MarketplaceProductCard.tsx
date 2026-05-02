@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Zap, ChevronRight, Eye, ShieldCheck, Clock } from 'lucide-react';
 import { formatYuan } from '@/lib/utils';
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, BundleIcon, VerificationIcon, FintechIcon } from '@/components/ui/BrandIcons';
 
 interface ProductCardProps {
     title: string;
@@ -27,6 +27,9 @@ const BRAND_ICON_MAP: Record<string, React.ElementType> = {
     xianyu: XianyuIcon,
     taobao: TaobaoIcon,
     xiaohongshu: XiaohongshuIcon,
+    bundle: BundleIcon,
+    verification: VerificationIcon,
+    fintech: FintechIcon
 };
 
 // Per-platform gradient backgrounds for the card image area
@@ -39,6 +42,8 @@ const BRAND_GRADIENTS: Record<string, { from: string; via?: string; to: string; 
     taobao:      { from: '#FF5000', via: '#FF6B00', to: '#E64500', pattern: 'radial-gradient(circle at 80% 80%, rgba(255,220,0,0.2) 0%, transparent 50%)' },
     xiaohongshu: { from: '#ff2442', via: '#ff1a35', to: '#d4001a', pattern: 'radial-gradient(circle at 20% 20%, rgba(255,255,255,0.15) 0%, transparent 50%)' },
     bundle:      { from: '#8b5cf6', via: '#7c3aed', to: '#6d28d9', pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 70%)' },
+    verification: { from: '#3f51b5', via: '#3949ab', to: '#303f9f', pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 70%)' },
+    fintech:      { from: '#10b981', via: '#059669', to: '#047857', pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 70%)' },
     default:     { from: '#1e293b', to: '#0f172a', pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 60%)' },
 };
 
@@ -51,6 +56,8 @@ const categoryStyleMap: Record<string, { bg: string, chipColor: string, chipText
     taobao: { bg: 'bg-[#FF5000]', chipColor: 'bg-[#FF5000]', chipText: 'text-white', textColor: 'text-[#FF5000]' },
     xiaohongshu: { bg: 'bg-[#ff2442]', chipColor: 'bg-[#ff2442]', chipText: 'text-white', textColor: 'text-[#ff2442]' },
     bundle: { bg: 'bg-purple-500', chipColor: 'bg-purple-500', chipText: 'text-white', textColor: 'text-purple-600' },
+    verification: { bg: 'bg-indigo-500', chipColor: 'bg-indigo-500', chipText: 'text-white', textColor: 'text-indigo-600' },
+    fintech: { bg: 'bg-emerald-500', chipColor: 'bg-emerald-500', chipText: 'text-white', textColor: 'text-emerald-600' },
     default: { bg: 'bg-slate-900', chipColor: 'bg-slate-900', chipText: 'text-white', textColor: 'text-slate-900' }
 };
 
@@ -63,6 +70,8 @@ const categoryNameMap: Record<string, { zh: string, en: string }> = {
     taobao: { zh: '淘宝', en: 'Taobao' },
     xiaohongshu: { zh: '小红书', en: 'Xiaohongshu' },
     bundle: { zh: '组合套装', en: 'Bundle' },
+    verification: { zh: '实名代办', en: 'Verification' },
+    fintech: { zh: '金融交易', en: 'FinTech' },
 };
 
 export function MarketplaceProductCard({

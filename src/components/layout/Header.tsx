@@ -10,7 +10,7 @@ import { categories } from '@/data/products';
 import { LiveTicker } from './LiveTicker';
 import { useCartStore } from '@/store/cartStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, BundleIcon, VerificationIcon, FintechIcon } from '@/components/ui/BrandIcons';
 
 const categoryIcons: Record<string, React.ReactNode> = {
     wechat: <WeChatIcon className="w-full h-full" />,
@@ -20,6 +20,9 @@ const categoryIcons: Record<string, React.ReactNode> = {
     xianyu: <XianyuIcon className="w-full h-full" />,
     taobao: <TaobaoIcon className="w-full h-full" />,
     xiaohongshu: <XiaohongshuIcon className="w-full h-full" />,
+    bundle: <BundleIcon className="w-full h-full" />,
+    verification: <VerificationIcon className="w-full h-full" />,
+    fintech: <FintechIcon className="w-full h-full" />,
 };
 
 export default function Header() {
