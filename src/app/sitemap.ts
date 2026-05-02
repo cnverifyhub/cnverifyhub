@@ -18,6 +18,8 @@ const blogSlugs = [
     'chinese-accounts-international-business',
     'buy-chinese-accounts-usdt-crypto',
     'xianyu-account-guide-foreigners',
+    'wechat-marketing-strategies',
+    'unblock-wechat-account-guide',
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
