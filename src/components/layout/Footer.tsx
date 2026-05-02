@@ -141,7 +141,7 @@ export default function Footer() {
                     </div>
 
                     {/* Middle: Fast Links (Dense Grid) */}
-                    <div className="md:col-span-1 lg:col-span-5 grid grid-cols-2 gap-4">
+                    <div className="md:col-span-1 lg:col-span-5 grid grid-cols-3 gap-2 lg:gap-4">
                         <div>
                             <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-1.5">
                                 <div className="w-1 h-3 bg-[#FF0036] rounded-full" />
@@ -152,8 +152,8 @@ export default function Footer() {
                                     const Icon = iconMap[c.id] || WeChatIcon;
                                     return (
                                         <li key={c.id}>
-                                            <Link href={getLocalizedPath(c.href, lang)} className="text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#FF0036] dark:hover:text-[#FF0036] flex items-center gap-2 transition-colors">
-                                                <Icon className="w-3.5 h-3.5" /> {c.name[lang]} {c.id === 'wechat' && <span className="text-[10px] bg-[#FF0036] text-white px-1 rounded-sm">HOT</span>}
+                                            <Link href={getLocalizedPath(c.href, lang)} className="text-[11px] lg:text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#FF0036] dark:hover:text-[#FF0036] flex items-center gap-1.5 transition-colors">
+                                                <Icon className="w-3.5 h-3.5" /> <span className="truncate">{c.name[lang]}</span> {c.id === 'wechat' && <span className="text-[9px] bg-[#FF0036] text-white px-1 rounded-sm shrink-0">HOT</span>}
                                             </Link>
                                         </li>
                                     );
@@ -163,18 +163,38 @@ export default function Footer() {
                         <div>
                             <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-1.5">
                                 <div className="w-1 h-3 bg-[#1677ff] rounded-full" />
-                                {lang === 'zh' ? '客户服务' : 'Support Support'}
+                                {lang === 'zh' ? '客户服务' : 'Support'}
                             </h4>
                             <ul className="space-y-2.5">
                                 {[
-                                    { label: '帮助中心 FAQ', en: 'FAQ Center', icon: HelpCircle, href: '/faq' },
-                                    { label: '订单售后查询', en: 'Track Order', icon: Search, href: '/track' },
-                                    { label: 'TG在线人工客服', en: 'Live Support', icon: LifeBuoy, href: 'https://t.me/cnwechatpro' },
-                                    { label: '平台隐私与合规', en: 'Privacy Policy', icon: Shield, href: '/privacy' }
+                                    { label: '帮助中心', en: 'FAQ Center', icon: HelpCircle, href: '/faq' },
+                                    { label: '订单查询', en: 'Track Order', icon: Search, href: '/track' },
+                                    { label: '在线客服', en: 'Live Support', icon: LifeBuoy, href: 'https://t.me/cnwechatpro' },
+                                    { label: '隐私合规', en: 'Privacy', icon: Shield, href: '/privacy' }
                                 ].map((item, idx) => (
                                     <li key={idx}>
-                                        <Link href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} className="text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#1677ff] dark:hover:text-[#1677ff] flex items-center gap-2 transition-colors">
-                                            <item.icon className="w-3.5 h-3.5" /> {lang === 'zh' ? item.label : item.en}
+                                        <Link href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} className="text-[11px] lg:text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#1677ff] dark:hover:text-[#1677ff] flex items-center gap-1.5 transition-colors">
+                                            <item.icon className="w-3.5 h-3.5 shrink-0" /> <span className="truncate">{lang === 'zh' ? item.label : item.en}</span>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-1.5">
+                                <div className="w-1 h-3 bg-emerald-500 rounded-full" />
+                                {lang === 'zh' ? '资源' : 'Resources'}
+                            </h4>
+                            <ul className="space-y-2.5">
+                                {[
+                                    { label: '博客首页', en: 'Blog Home', icon: FileText, href: getLocalizedPath('/blog', lang) },
+                                    { label: '最新文章', en: 'Latest Posts', icon: AlertTriangle, href: getLocalizedPath('/blog', lang) },
+                                    { label: '安全指南', en: 'Security Guide', icon: ShieldCheck, href: getLocalizedPath('/blog/wechat-security-guide', lang) },
+                                    { label: '营销技巧', en: 'Marketing Tips', icon: ArrowUpRight, href: getLocalizedPath('/blog/wechat-marketing-strategies', lang) }
+                                ].map((item, idx) => (
+                                    <li key={idx}>
+                                        <Link href={item.href} className="text-[11px] lg:text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-500 flex items-center gap-1.5 transition-colors">
+                                            <item.icon className="w-3.5 h-3.5 shrink-0" /> <span className="truncate">{lang === 'zh' ? item.label : item.en}</span>
                                         </Link>
                                     </li>
                                 ))}

@@ -22,6 +22,7 @@ const translations = {
         'nav.about': '关于我们',
         'nav.track': '订单查询',
         'nav.faq': '常见问题',
+        'nav.blog': '博客',
 
         // Hero
         'hero.badge': '🔥 全网最低价 · 24/7在线服务',
@@ -194,6 +195,7 @@ const translations = {
         'nav.about': 'About',
         'nav.track': 'Track Order',
         'nav.faq': 'FAQ',
+        'nav.blog': 'Blog',
 
         'hero.badge': '🔥 Lowest Prices · 24/7 Support',
         'hero.title.line1': 'Professional Chinese Account',

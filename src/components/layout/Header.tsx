@@ -80,6 +80,7 @@ export default function Header() {
     const navLinks = [
         { href: '/', label: t('nav.home', lang) },
         { href: '/pricing', label: t('nav.pricing', lang) },
+        { href: '/blog', label: t('nav.blog', lang) },
         { href: '/client', label: t('nav.track', lang) },
         { href: '/faq', label: t('nav.faq', lang) },
     ];
@@ -120,7 +121,10 @@ export default function Header() {
                         {/* Desktop Nav */}
                         <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
                             {navLinks.map((link) => {
-                                const isActive = pathname === getLocalizedPath(link.href, lang);
+                                const localizedHref = getLocalizedPath(link.href, lang);
+                                const isActive = link.href === '/' 
+                                    ? pathname === localizedHref 
+                                    : pathname.startsWith(localizedHref);
                                 return (
                                     <Link
                                         key={link.href}
@@ -313,16 +317,24 @@ export default function Header() {
                                         animate={{ x: 0, opacity: 1 }}
                                         transition={{ type: 'spring', damping: 25, stiffness: 250, delay: i * 0.04 }}
                                     >
-                                        <Link
-                                            href={getLocalizedPath(link.href, lang)}
-                                            onClick={() => setMobileMenuOpen(false)}
-                                            className={`block px-5 py-4 rounded-2xl text-lg font-bold transition-all active:scale-[0.97] ${pathname === getLocalizedPath(link.href, lang)
-                                                ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg shadow-red-500/30'
-                                                : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5'
-                                                }`}
-                                        >
-                                            {link.label}
-                                        </Link>
+                                        {(() => {
+                                            const localizedHref = getLocalizedPath(link.href, lang);
+                                            const isActive = link.href === '/' 
+                                                ? pathname === localizedHref 
+                                                : pathname.startsWith(localizedHref);
+                                            return (
+                                                <Link
+                                                    href={localizedHref}
+                                                    onClick={() => setMobileMenuOpen(false)}
+                                                    className={`block px-5 py-4 rounded-2xl text-lg font-bold transition-all active:scale-[0.97] ${isActive
+                                                        ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-lg shadow-red-500/30'
+                                                        : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/5'
+                                                        }`}
+                                                >
+                                                    {link.label}
+                                                </Link>
+                                            );
+                                        })()}
                                     </motion.div>
                                 ))}
 
