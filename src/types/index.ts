@@ -3,7 +3,7 @@
    ============================================ */
 
 export type Lang = 'zh' | 'en';
-export type CategoryId = 'wechat' | 'alipay' | 'douyin' | 'qq' | 'xianyu' | 'taobao' | 'xiaohongshu';
+export type CategoryId = 'wechat' | 'alipay' | 'douyin' | 'qq' | 'xianyu' | 'taobao' | 'xiaohongshu' | 'bundle';
 export interface Category {
     id: CategoryId;
     name: { zh: string; en: string };
@@ -42,6 +42,24 @@ export interface Product {
     badge?: { zh: string; en: string };
     sortOrder: number;
     image?: string;
+    // --- Bundle specific optional fields ---
+    bundleContents?: Array<{
+        item: string;
+        name: string;
+        description: string;
+        verificationLevel?: string;
+        linkStatus?: string;
+        includes: string[];
+    }>;
+    whyBundle?: { zh: string; en: string };
+    useCases?: string[]; // Simplified: directly strings (assumed to be matching the requested definition format)
+    loginMethod?: {
+        primary: string;
+        secondary: string;
+        note: string;
+    };
+    requirements?: { buyerNeeds: string; technical: string };
+    risks?: { zh: string; en: string };
 }
 
 export type OrderStatus =

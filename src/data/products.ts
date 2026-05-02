@@ -69,6 +69,15 @@ export const categories: Category[] = [
         gradient: 'from-red-500 to-rose-700',
         href: '/xiaohongshu',
     },
+    {
+        id: 'bundle',
+        name: { zh: '组合套装', en: 'Combo Bundles' },
+        description: { zh: '多平台组合账号，一站式解决关联验证难题', en: 'Multi-platform linked accounts, solving verification hurdles' },
+        icon: 'xianyu', // We can use xianyu icon or a generic one. Since we don't have a bundle icon yet, we'll use xianyu
+        color: 'text-purple-500',
+        gradient: 'from-purple-500 to-indigo-600',
+        href: '/bundle',
+    },
 ];
 
 /* ---------- WeChat Products ---------- */
@@ -618,6 +627,69 @@ const xiaohongshuProducts: Product[] = [
     }
 ];
 
+/* ---------- Bundle Products ---------- */
+const bundleProducts: Product[] = [
+    {
+        id: 'bundle-alipay-xianyu-001',
+        category: 'bundle',
+        tierName: { zh: '支付宝+闲鱼 组合账号', en: 'Alipay + Xianyu Combo Account' },
+        tierSlug: 'alipay-xianyu-combo',
+        description: { zh: '一站解决闲鱼登录难题，支付宝实名认证+闲鱼账号绑定发货', en: 'One-stop solution for Xianyu login. Verified Alipay + linked Xianyu account.' },
+        price: { single: 89.00, bulk10: 85.00, bulk50: 80.00, bulk200: 75.00, originalPrice: { single: 128.00, bulk10: 128.00, bulk50: 128.00, bulk200: 128.00 } },
+        features: [
+            { zh: '包含实名支付宝', en: 'Includes verified Alipay' },
+            { zh: '包含关联闲鱼号', en: 'Includes linked Xianyu' },
+            { zh: '无需中国手机号', en: 'No China phone needed' },
+        ],
+        warranty: { zh: '7天质保 (包含登录与关联失效)', en: '7 days (covers login & link failure)' },
+        deliveryTime: { zh: '5-15 分钟', en: '5-15 mins' },
+        stockCount: 47,
+        popular: true,
+        badge: { zh: '🔥 爆款组合', en: '🔥 Hot Combo' },
+        sortOrder: 1,
+        // Bundle specific fields
+        bundleContents: [
+            {
+                item: 'alipay',
+                name: '支付宝实名账号',
+                description: '已实名认证，可正常收付款，支持闲鱼/淘宝一键登录',
+                verificationLevel: 'real-name-verified',
+                includes: ['实名信息', '已绑银行卡', '已开启花呗(可选)', '安全邮箱']
+            },
+            {
+                item: 'xianyu',
+                name: '闲鱼卖家账号',
+                description: '已与支付宝绑定，可直接发布商品，信用分良好',
+                linkStatus: 'pre-linked-to-alipay',
+                includes: ['已绑定支付宝', '芝麻信用授权', '可立即发布', '无违规记录']
+            }
+        ],
+        whyBundle: {
+            zh: '闲鱼必须使用中国大陆手机号注册，且必须绑定实名支付宝。单独购买账号后自行绑定成功率低、易封号。本组合已预先绑定完成，到手即用。',
+            en: 'Xianyu requires a China mainland number AND real-name Alipay. Self-linking after purchase has high failure/flag risk. This bundle is pre-linked and ready to use.'
+        },
+        useCases: [
+            '海外卖家在闲鱼出售二手商品或代购',
+            '跨境电商测试闲鱼流量',
+            '需要支付宝收款但无法实名认证的外国人',
+            '批量运营多个闲鱼店铺'
+        ],
+        loginMethod: {
+            primary: 'Alipay QR scan or password login',
+            secondary: 'Xianyu auto-login via Alipay authorization',
+            note: 'No China phone number needed after initial setup'
+        },
+        requirements: {
+            buyerNeeds: 'No China ID or phone number required. Works with overseas IP using our guide.',
+            technical: 'Smartphone with Alipay app (iOS/Android), Xianyu app'
+        },
+        risks: {
+            zh: '首次登录建议在常用设备稳定使用3-5天，不要立即修改绑定信息或大额交易。',
+            en: 'First login: use on same device for 3-5 days. Do NOT change binding info or make large transactions immediately.'
+        }
+    }
+];
+
 /* ---------- All Products ---------- */
 export const allProducts: Product[] = [
     ...wechatProducts,
@@ -627,6 +699,7 @@ export const allProducts: Product[] = [
     ...xianyuProducts,
     ...taobaoProducts,
     ...xiaohongshuProducts,
+    ...bundleProducts,
 ];
 
 /* ---------- Helpers ---------- */

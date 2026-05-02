@@ -38,6 +38,7 @@ const BRAND_GRADIENTS: Record<string, { from: string; via?: string; to: string; 
     xianyu:      { from: '#FFB300', via: '#FFC107', to: '#FF8F00', pattern: 'radial-gradient(circle at 30% 70%, rgba(255,255,255,0.2) 0%, transparent 50%)' },
     taobao:      { from: '#FF5000', via: '#FF6B00', to: '#E64500', pattern: 'radial-gradient(circle at 80% 80%, rgba(255,220,0,0.2) 0%, transparent 50%)' },
     xiaohongshu: { from: '#ff2442', via: '#ff1a35', to: '#d4001a', pattern: 'radial-gradient(circle at 20% 20%, rgba(255,255,255,0.15) 0%, transparent 50%)' },
+    bundle:      { from: '#8b5cf6', via: '#7c3aed', to: '#6d28d9', pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 70%)' },
     default:     { from: '#1e293b', to: '#0f172a', pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 60%)' },
 };
 
@@ -49,6 +50,7 @@ const categoryStyleMap: Record<string, { bg: string, chipColor: string, chipText
     xianyu: { bg: 'bg-[#FFE200]', chipColor: 'bg-[#FFE200]', chipText: 'text-black', textColor: 'text-[#996600]' },
     taobao: { bg: 'bg-[#FF5000]', chipColor: 'bg-[#FF5000]', chipText: 'text-white', textColor: 'text-[#FF5000]' },
     xiaohongshu: { bg: 'bg-[#ff2442]', chipColor: 'bg-[#ff2442]', chipText: 'text-white', textColor: 'text-[#ff2442]' },
+    bundle: { bg: 'bg-purple-500', chipColor: 'bg-purple-500', chipText: 'text-white', textColor: 'text-purple-600' },
     default: { bg: 'bg-slate-900', chipColor: 'bg-slate-900', chipText: 'text-white', textColor: 'text-slate-900' }
 };
 
@@ -60,6 +62,7 @@ const categoryNameMap: Record<string, { zh: string, en: string }> = {
     xianyu: { zh: '闲鱼', en: 'Xianyu' },
     taobao: { zh: '淘宝', en: 'Taobao' },
     xiaohongshu: { zh: '小红书', en: 'Xiaohongshu' },
+    bundle: { zh: '组合套装', en: 'Bundle' },
 };
 
 export function MarketplaceProductCard({
@@ -74,11 +77,14 @@ export function MarketplaceProductCard({
     onPreview
 }: ProductCardProps) {
     const catKey = category.toLowerCase();
+    const isBundle = catKey === 'bundle';
     const style = categoryStyleMap[catKey] || categoryStyleMap.default;
     const catName = categoryNameMap[catKey] || { zh: category, en: category };
     const discount = originalPrice ? Math.round((1 - price / originalPrice) * 100) : 0;
+    const saveAmount = originalPrice ? Math.max(0, originalPrice - price).toFixed(2) : '0';
 
-    const BrandIcon = BRAND_ICON_MAP[catKey] || BRAND_ICON_MAP.wechat;
+    // Bundles use a generic generic star/gift icon or fallback to first item
+    const BrandIcon = BRAND_ICON_MAP[catKey] || BRAND_ICON_MAP.xianyu;
     const gradient = BRAND_GRADIENTS[catKey] || BRAND_GRADIENTS.default;
     const stockPct = Math.min(100, Math.max(0, (stock / 50) * 100));
     const stockColor = stock > 20 ? '#07C160' : stock > 5 ? '#FF8C00' : '#FF0036';
@@ -113,11 +119,15 @@ export function MarketplaceProductCard({
                         <ShieldCheck className="w-2.5 h-2.5" />
                         {catName.zh}
                     </span>
-                    {discount > 0 && (
+                    {isBundle && originalPrice ? (
+                        <span className="bg-[#FF0036]/90 backdrop-blur-sm text-white text-[10px] font-black px-1.5 py-0.5 rounded-lg shadow border border-red-500/30">
+                            立省 ¥{saveAmount}
+                        </span>
+                    ) : discount > 0 ? (
                         <span className="bg-white/90 text-[#FF0036] text-[10px] font-black px-1.5 py-0.5 rounded-lg shadow">
                             -{discount}%
                         </span>
-                    )}
+                    ) : null}
                 </div>
 
                 {/* Top-right Auto Delivery Badge */}
@@ -174,6 +184,20 @@ export function MarketplaceProductCard({
                 <h3 className="text-sm md:text-base font-bold text-slate-800 dark:text-white leading-snug mb-1.5 line-clamp-2 min-h-[2.1rem] tracking-tight">
                     {title}
                 </h3>
+                
+                {isBundle && (
+                    <div className="flex flex-col gap-1 mb-2">
+                        <div className="flex items-center gap-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-md border border-slate-100 dark:border-slate-800">
+                            <span className="flex items-center gap-1"><span className="text-green-500">✓</span> 支付宝</span>
+                            <span className="text-slate-300 dark:text-slate-600">+</span>
+                            <span className="flex items-center gap-1"><span className="text-green-500">✓</span> 闲鱼</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-[10px] text-emerald-600 dark:text-emerald-400 font-bold px-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            已预先绑定 (Pre-linked)
+                        </div>
+                    </div>
+                )}
 
                 {/* Trust Badges */}
                 <div className="flex flex-wrap gap-1 mb-2">
