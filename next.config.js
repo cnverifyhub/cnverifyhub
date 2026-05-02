@@ -30,9 +30,9 @@ const nextConfig = {
           { key: 'X-XSS-Protection', value: '1; mode=block' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
-          { 
-            key: 'Content-Security-Policy', 
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://hm.baidu.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://images.unsplash.com https://api.dicebear.com; connect-src 'self' https://otgewrynnrqmtsyvlzrj.supabase.co https://hm.baidu.com https://www.google-analytics.com; font-src 'self' data:;" 
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://hm.baidu.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://images.unsplash.com https://api.dicebear.com; connect-src 'self' https://otgewrynnrqmtsyvlzrj.supabase.co https://hm.baidu.com https://www.google-analytics.com; font-src 'self' data:;"
           },
           // Preconnect to Supabase and Baidu Analytics for faster resolution
           {
