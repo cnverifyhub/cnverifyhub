@@ -36,19 +36,34 @@ const generateRandomDate = () => {
     return `${year}-${month}-${day}`;
 };
 
+import Image from 'next/image';
+
 const ReviewAvatar = ({ src, name }: { src: string, name: string }) => {
     const [error, setError] = useState(false);
+    
+    // Fallback colors based on name hash
+    const colors = [
+        'bg-blue-500', 'bg-emerald-500', 'bg-violet-500', 
+        'bg-amber-500', 'bg-rose-500', 'bg-indigo-500',
+        'bg-cyan-500', 'bg-orange-500'
+    ];
+    const colorIndex = name.length % colors.length;
+    const fallbackColor = colors[colorIndex];
+
     return (
-        <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 flex items-center justify-center">
+        <div className={`w-10 h-10 rounded-full overflow-hidden shrink-0 flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-sm ${error ? fallbackColor : 'bg-slate-100 dark:bg-slate-800'}`}>
             {!error ? (
-                <img 
+                <Image 
                     src={src} 
                     alt={name} 
+                    width={40}
+                    height={40}
                     className="w-full h-full object-cover" 
                     onError={() => setError(true)}
+                    unoptimized={src.includes('.svg')}
                 />
             ) : (
-                <span className="text-xs font-bold text-slate-400">{name.charAt(0)}</span>
+                <span className="text-sm font-bold text-white uppercase">{name.charAt(0)}</span>
             )}
         </div>
     );
