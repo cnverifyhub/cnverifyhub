@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 import { getAllSlugs } from '@/lib/blog';
-import { categories, allProducts } from '@/data/products';
+import { categories } from '@/data/products';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -42,13 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: `${SITE_URL}/en/${cat.id}/`, lastModified: now, changeFrequency: 'daily' as const, priority: 0.9, alternates: getAlternates(`/${cat.id}/`) },
     ]);
 
-    // 3. Product Routes
-    const productRoutes: MetadataRoute.Sitemap = allProducts.flatMap(prod => [
-        { url: `${SITE_URL}/product/${prod.id}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.8, alternates: getAlternates(`/product/${prod.id}/`) },
-        { url: `${SITE_URL}/en/product/${prod.id}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.8, alternates: getAlternates(`/product/${prod.id}/`) },
-    ]);
-
-    // 4. Dynamic Blog Posts
+    // 3. Dynamic Blog Posts
     const blogSlugs = getAllSlugs();
     const blogRoutes: MetadataRoute.Sitemap = blogSlugs.flatMap(slug => [
         { url: `${SITE_URL}/blog/${slug}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/blog/${slug}/`) },
@@ -58,7 +52,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     return [
         ...staticRoutes,
         ...categoryRoutes,
-        ...productRoutes,
         ...blogRoutes,
     ];
 }

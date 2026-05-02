@@ -36,6 +36,24 @@ const generateRandomDate = () => {
     return `${year}-${month}-${day}`;
 };
 
+const ReviewAvatar = ({ src, name }: { src: string, name: string }) => {
+    const [error, setError] = useState(false);
+    return (
+        <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0 flex items-center justify-center">
+            {!error ? (
+                <img 
+                    src={src} 
+                    alt={name} 
+                    className="w-full h-full object-cover" 
+                    onError={() => setError(true)}
+                />
+            ) : (
+                <span className="text-xs font-bold text-slate-400">{name.charAt(0)}</span>
+            )}
+        </div>
+    );
+};
+
 export function CustomerReviews({ lang }: { lang: Lang }) {
     const [reviews, setReviews] = useState<any[]>([]);
 
@@ -119,9 +137,7 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
                             {/* Header: Avatar, Name, Stars */}
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-slate-100 overflow-hidden shrink-0">
-                                        <img src={review.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                                    </div>
+                                    <ReviewAvatar src={review.avatar} name={review.user} />
                                     <div className="flex flex-col">
                                         <span className="text-sm font-bold text-slate-900 dark:text-white">
                                             {review.user}
@@ -174,9 +190,7 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
                             {/* Header: Avatar, Name, Stars */}
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-slate-100 overflow-hidden shrink-0">
-                                        <img src={review.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                                    </div>
+                                    <ReviewAvatar src={review.avatar} name={review.user} />
                                     <div className="flex flex-col">
                                         <span className="text-sm font-bold text-slate-900 dark:text-white">
                                             {review.user}
