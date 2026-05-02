@@ -9,11 +9,32 @@ import { formatYuan } from '@/lib/utils';
 import { ChevronRight, ShieldCheck, Check, ShoppingBag, Shield, Timer, PartyPopper, Lock, Loader2, AlertCircle } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useOrderStore } from '@/store/orderStore';
+import Image from 'next/image';
 import { supabase } from '@/lib/supabase/client';
 
 interface CheckoutFormProps {
     lang: Lang;
 }
+
+const CartItemImage = ({ category, badge }: { category: string, badge?: any }) => {
+    const [imgError, setImgError] = useState(false);
+    return (
+        <div className={`w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-gradient-to-br ${badge ? 'from-primary-400 to-primary-600' : 'from-slate-300 to-slate-400'} rounded-xl shadow-sm flex items-center justify-center relative overflow-hidden`}>
+            {!imgError ? (
+                <Image 
+                    src={`/images/categories/${category}.webp`} 
+                    alt={`${category} icon`} 
+                    fill 
+                    className="object-cover p-2"
+                    sizes="(max-width: 640px) 64px, 80px"
+                    onError={() => setImgError(true)}
+                />
+            ) : (
+                <span className="text-white font-black text-2xl z-10">{category.toUpperCase().slice(0, 1)}</span>
+            )}
+        </div>
+    );
+};
 
 export function CheckoutForm({ lang }: CheckoutFormProps) {
     const router = useRouter();
@@ -344,9 +365,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
 
                                         return (
                                             <div key={item.productId} className="p-4 sm:p-5 flex gap-4 hover:bg-white dark:hover:bg-slate-800/50 transition-colors">
-                                                <div className={`w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-gradient-to-br ${product.badge ? 'from-primary-400 to-primary-600' : 'from-slate-300 to-slate-400'} rounded-xl shadow-sm flex items-center justify-center`}>
-                                                    <span className="text-white font-black text-2xl">{product.category.toUpperCase().slice(0, 1)}</span>
-                                                </div>
+                                                <CartItemImage category={product.category} badge={product.badge} />
                                                 <div className="flex-1 flex flex-col justify-between">
                                                     <div>
                                                         <h4 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base line-clamp-2 leading-tight">

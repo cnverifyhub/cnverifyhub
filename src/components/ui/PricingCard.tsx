@@ -93,7 +93,13 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                     <div className="flex flex-col">
                         <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-40 mb-1">{lang === 'zh' ? '成交量' : 'VOLUME'}</span>
                         <span className="text-sm font-black tracking-tight whitespace-nowrap bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded-lg">
-                            {lang === 'zh' ? `已售 ${100 + (product.id.charCodeAt(0) * 10)}+` : `${100 + (product.id.charCodeAt(0) * 10)}+ sold`}
+                            {(() => {
+                                // Derive a stable unique sold count based on product ID
+                                const soldCount = (product as any).sold ?? (product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) * 3 % 1500 + 5);
+                                if (soldCount < 10) return lang === 'zh' ? '新品' : 'New';
+                                if (soldCount > 1000) return lang === 'zh' ? '已售 1k+' : '1k+ sold';
+                                return lang === 'zh' ? `已售 ${soldCount}` : `${soldCount} sold`;
+                            })()}
                         </span>
                     </div>
                     <StockBadge count={product.stockCount} lang={lang} />
