@@ -11,7 +11,13 @@ import { useCartStore } from '@/store/cartStore';
 import { useOrderStore } from '@/store/orderStore';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase/client';
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, BundleIcon, VerificationIcon, FintechIcon } from '@/components/ui/BrandIcons';
+import { 
+    WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, 
+    BundleIcon, VerificationIcon, FintechIcon,
+    AlipayXianyuIcon, AlipayTaobaoIcon, Alipay1688Icon, WechatJdIcon, FullSuiteIcon,
+    PassportVerifyIcon, FaceVerifyIcon, KycPackageIcon, WechatRealnameIcon, AlipayRealnameIcon,
+    XmIcon, HfmIcon, NetellerIcon, SkrillIcon, PayoneerIcon, WiseIcon
+} from '@/components/ui/BrandIcons';
 
 const ICON_COMPONENTS: Record<string, React.ElementType> = {
     wechat: WeChatIcon,
@@ -23,15 +29,38 @@ const ICON_COMPONENTS: Record<string, React.ElementType> = {
     xiaohongshu: XiaohongshuIcon,
     bundle: BundleIcon,
     verification: VerificationIcon,
-    fintech: FintechIcon
+    fintech: FintechIcon,
+    
+    // New Bundles
+    'bundle-alipay-xianyu': AlipayXianyuIcon,
+    'bundle-alipay-taobao': AlipayTaobaoIcon,
+    'bundle-alipay-1688':   AlipayTaobaoIcon, // Fallback for 1688
+    'bundle-wechat-jd':     WechatJdIcon,
+    'bundle-full-suite':    FullSuiteIcon,
+    
+    // New Verification
+    'verify-passport':      PassportVerifyIcon,
+    'verify-face':          FaceVerifyIcon,
+    'verify-kyc':           KycPackageIcon,
+    'verify-wechat':        WechatRealnameIcon,
+    'verify-alipay':        AlipayRealnameIcon,
+    
+    // New Trading
+    'xm-account':           XmIcon,
+    'hfm-account':          HfmIcon,
+    'neteller-account':     NetellerIcon,
+    'skrill-account':       SkrillIcon,
+    'payoneer-account':     PayoneerIcon,
+    'wise-account':         WiseIcon,
 };
 
 interface CheckoutFormProps {
     lang: Lang;
 }
 
-const CartItemImage = ({ category, badge }: { category: string, badge?: any }) => {
-    const Icon = ICON_COMPONENTS[category] || WeChatIcon;
+const CartItemImage = ({ category, productId, badge }: { category: string, productId: string, badge?: any }) => {
+    // Try to resolve specific icon (by productId or category)
+    const Icon = ICON_COMPONENTS[productId] || ICON_COMPONENTS[category] || WeChatIcon;
     return (
         <div className={`w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-white dark:bg-dark-800 rounded-xl shadow-sm flex items-center justify-center relative overflow-hidden border border-slate-200 dark:border-slate-800`}>
             <div className="w-full h-full p-2">
@@ -50,7 +79,8 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
     const router = useRouter();
     const { items, getTotal, clearCart } = useCartStore();
     const { addOrder } = useOrderStore();
-    const [step, setStep] = useState<1 | 2 | 3>(1);
+    const [step, setStep] = useState<1 | 1.5 | 2 | 3>(1);
+    const [requirementsData, setRequirementsData] = useState<Record<string, string>>({});
     const [agreedToAntiBan, setAgreedToAntiBan] = useState(false);
 
     const [contactInfo, setContactInfo] = useState({ telegram: '', email: '' });
@@ -118,6 +148,19 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
 
     const handleNextStep = () => {
         if (step === 1 && contactInfo.telegram && contactInfo.email) {
+            // Check if any item is a service
+            const hasService = items.some(item => {
+                const p = getProductById(item.productId);
+                return p?.type === 'service';
+            });
+
+            if (hasService) {
+                setStep(1.5);
+            } else {
+                setStep(2);
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (step === 1.5) {
             setStep(2);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -317,19 +360,20 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
             <div className="flex items-center justify-between mb-8 md:mb-12 max-w-2xl mx-auto px-4">
                 {[
                     { num: 1, label: t('checkout.step1', lang) },
+                    { num: 1.5, label: lang === 'zh' ? '提交资料' : 'Requirements' },
                     { num: 2, label: t('checkout.step2', lang) },
                     { num: 3, label: t('checkout.step4', lang) },
-                ].map((s, i) => (
+                ].filter(s => s.num !== 1.5 || items.some(i => getProductById(i.productId)?.type === 'service')).map((s, i, arr) => (
                     <div key={s.num} className="flex flex-col items-center flex-1 relative">
                         <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm mb-2 z-10 transition-colors ${step >= s.num ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30' : 'bg-slate-200 dark:bg-slate-800 text-slate-500'
                             }`}>
-                            {step > s.num ? <Check className="w-5 h-5" /> : s.num}
+                            {step > s.num ? <Check className="w-5 h-5" /> : s.num === 1.5 ? '!' : s.num}
                         </div>
                         <span className={`text-xs font-bold md:text-sm text-center ${step >= s.num ? 'text-primary-600 dark:text-primary-400' : 'text-slate-500'
                             }`}>
                             {s.label}
                         </span>
-                        {i < 2 && (
+                        {i < arr.length - 1 && (
                             <div className={`absolute top-5 left-[50%] w-[100%] h-[2px] -z-0 transition-colors ${step > s.num ? 'bg-primary-500' : 'bg-slate-200 dark:bg-slate-800'
                                 }`}></div>
                         )}
@@ -377,7 +421,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
 
                                         return (
                                             <div key={item.productId} className="p-4 sm:p-5 flex gap-4 hover:bg-white dark:hover:bg-slate-800/50 transition-colors">
-                                                <CartItemImage category={product.category} badge={product.badge} />
+                                                <CartItemImage category={product.category} productId={item.productId} badge={product.badge} />
                                                 <div className="flex-1 flex flex-col justify-between">
                                                     <div>
                                                         <h4 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base line-clamp-2 leading-tight">
@@ -604,6 +648,68 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                                         {lang === 'zh' ? (agreedToAntiBan ? '去查看我的账号 (提取)' : '请先勾选上方同意守则') : (agreedToAntiBan ? 'View Account Details ->' : 'Agree to rules first')}
                                     </button>
                                 </div>
+                    </div>
+                )}
+
+                {/* Step 1.5: Requirements */}
+                {step === 1.5 && (
+                    <div className="animate-fade-in max-w-2xl mx-auto py-4">
+                        <div className="text-center mb-8">
+                            <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                                <ShieldCheck className="w-8 h-8 text-blue-500" />
+                            </div>
+                            <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-2">
+                                {lang === 'zh' ? '填写服务需求' : 'Service Requirements'}
+                            </h3>
+                            <p className="text-slate-500 text-sm">
+                                {lang === 'zh' ? '请提供以下信息以便我们处理您的实名/验证需求。' : 'Please provide the following info so we can process your request.'}
+                            </p>
+                        </div>
+
+                        <div className="space-y-6">
+                            {items.filter(i => getProductById(i.productId)?.type === 'service').map(item => {
+                                const p = getProductById(item.productId);
+                                return (
+                                    <div key={item.productId} className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-800">
+                                        <h4 className="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                                            <div className="w-2 h-6 bg-blue-500 rounded-full" />
+                                            {p?.tierName[lang]}
+                                        </h4>
+                                        <div className="space-y-4">
+                                            {p?.requirements?.[lang] && (
+                                                <div className="p-3 bg-blue-500/5 border border-blue-500/20 rounded-xl text-xs text-blue-600 dark:text-blue-400 font-medium">
+                                                    {p.requirements[lang]}
+                                                </div>
+                                            )}
+                                            <textarea 
+                                                rows={4}
+                                                placeholder={lang === 'zh' ? '在此输入所需资料（如护照号、姓名、预留手机号等）...' : 'Enter required info here (Passport, Full Name, Phone, etc.)...'}
+                                                className="w-full px-4 py-3 rounded-xl bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 outline-none focus:ring-2 focus:ring-blue-500 transition-all text-sm"
+                                                value={requirementsData[item.productId] || ''}
+                                                onChange={(e) => setRequirementsData({...requirementsData, [item.productId]: e.target.value})}
+                                            />
+                                        </div>
+                                    </div>
+                                );
+                            })}
+
+                            <div className="flex gap-4 pt-4">
+                                <button 
+                                    onClick={() => setStep(1)}
+                                    className="flex-1 py-4 px-6 rounded-2xl font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"
+                                >
+                                    {lang === 'zh' ? '返回修改' : 'Go Back'}
+                                </button>
+                                <button 
+                                    onClick={handleNextStep}
+                                    disabled={items.filter(i => getProductById(i.productId)?.type === 'service').some(i => !requirementsData[i.productId])}
+                                    className="flex-[2] py-4 px-6 rounded-2xl font-black text-white bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                >
+                                    {lang === 'zh' ? '确认并付款' : 'Confirm & Pay'}
+                                    <ChevronRight className="w-5 h-5" />
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 )}
 

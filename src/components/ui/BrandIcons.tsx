@@ -15,9 +15,31 @@ const ICON_PATHS: Record<string, string> = {
     taobao:       '/images/categories/taobao.webp',
     xiaohongshu:  '/images/categories/xiaohongshu.webp',
     telegram:     '/images/categories/telegram.png',
-    bundle:       '/images/categories/bundle.png',
-    verification: '/images/categories/verification.png',
-    fintech:      '/images/categories/verification.png', // Fallback for fintech
+    bundle:       '/icons/alipay-xianyu-bundle.svg',
+    verification: '/icons/passport-verification.svg',
+    fintech:      '/icons/wise-account.svg',
+    
+    // New Bundles
+    'bundle-alipay-xianyu': '/icons/alipay-xianyu-bundle.svg',
+    'bundle-alipay-taobao': '/icons/alipay-taobao-bundle.svg',
+    'bundle-alipay-1688':   '/icons/alipay-1688-bundle.svg',
+    'bundle-wechat-jd':     '/icons/wechat-jd-bundle.svg',
+    'bundle-full-suite':    '/icons/full-ecommerce-suite.svg',
+    
+    // New Verification
+    'verify-passport':      '/icons/passport-verification.svg',
+    'verify-face':          '/icons/face-verification.svg',
+    'verify-kyc':           '/icons/kyc-package.svg',
+    'verify-wechat':        '/icons/wechat-realname.svg',
+    'verify-alipay':        '/icons/alipay-realname.svg',
+    
+    // New Trading/FinTech
+    'xm-account':           '/icons/xm-account.svg',
+    'hfm-account':          '/icons/hfm-account.svg',
+    'neteller-account':     '/icons/neteller-account.svg',
+    'skrill-account':       '/icons/skrill-account.svg',
+    'payoneer-account':     '/icons/payoneer-account.svg',
+    'wise-account':         '/icons/wise-account.svg',
 };
 
 function BrandIcon({ name, className }: { name: string; className?: string }) {
@@ -79,3 +101,25 @@ export function VerificationIcon({ className }: BrandIconProps) {
 export function FintechIcon({ className }: BrandIconProps) {
     return <BrandIcon name="fintech" className={className} />;
 }
+
+// Bundle Specifics
+export function AlipayXianyuIcon({ className }: BrandIconProps) { return <BrandIcon name="bundle-alipay-xianyu" className={className} />; }
+export function AlipayTaobaoIcon({ className }: BrandIconProps) { return <BrandIcon name="bundle-alipay-taobao" className={className} />; }
+export function Alipay1688Icon({ className }: BrandIconProps) { return <BrandIcon name="bundle-alipay-1688" className={className} />; }
+export function WechatJdIcon({ className }: BrandIconProps) { return <BrandIcon name="bundle-wechat-jd" className={className} />; }
+export function FullSuiteIcon({ className }: BrandIconProps) { return <BrandIcon name="bundle-full-suite" className={className} />; }
+
+// Verification Specifics
+export function PassportVerifyIcon({ className }: BrandIconProps) { return <BrandIcon name="verify-passport" className={className} />; }
+export function FaceVerifyIcon({ className }: BrandIconProps) { return <BrandIcon name="verify-face" className={className} />; }
+export function KycPackageIcon({ className }: BrandIconProps) { return <BrandIcon name="verify-kyc" className={className} />; }
+export function WechatRealnameIcon({ className }: BrandIconProps) { return <BrandIcon name="verify-wechat" className={className} />; }
+export function AlipayRealnameIcon({ className }: BrandIconProps) { return <BrandIcon name="verify-alipay" className={className} />; }
+
+// Trading Specifics
+export function XmIcon({ className }: BrandIconProps) { return <BrandIcon name="xm-account" className={className} />; }
+export function HfmIcon({ className }: BrandIconProps) { return <BrandIcon name="hfm-account" className={className} />; }
+export function NetellerIcon({ className }: BrandIconProps) { return <BrandIcon name="neteller-account" className={className} />; }
+export function SkrillIcon({ className }: BrandIconProps) { return <BrandIcon name="skrill-account" className={className} />; }
+export function PayoneerIcon({ className }: BrandIconProps) { return <BrandIcon name="payoneer-account" className={className} />; }
+export function WiseIcon({ className }: BrandIconProps) { return <BrandIcon name="wise-account" className={className} />; }

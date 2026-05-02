@@ -14,6 +14,8 @@ interface ProductCardProps {
     category: string;
     salesVolume?: string;
     badges?: string[];
+    deliveryTime?: string;
+    type?: string;
     onBuyNow?: () => void;
     onPreview?: () => void;
 }
@@ -44,6 +46,7 @@ const BRAND_GRADIENTS: Record<string, { from: string; via?: string; to: string; 
     bundle:      { from: '#8b5cf6', via: '#7c3aed', to: '#6d28d9', pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 70%)' },
     verification: { from: '#3f51b5', via: '#3949ab', to: '#303f9f', pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 70%)' },
     fintech:      { from: '#10b981', via: '#059669', to: '#047857', pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 70%)' },
+    trading:      { from: '#f59e0b', via: '#d97706', to: '#b45309', pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.2) 0%, transparent 70%)' },
     default:     { from: '#1e293b', to: '#0f172a', pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.05) 0%, transparent 60%)' },
 };
 
@@ -58,6 +61,7 @@ const categoryStyleMap: Record<string, { bg: string, chipColor: string, chipText
     bundle: { bg: 'bg-purple-500', chipColor: 'bg-purple-500', chipText: 'text-white', textColor: 'text-purple-600' },
     verification: { bg: 'bg-indigo-500', chipColor: 'bg-indigo-500', chipText: 'text-white', textColor: 'text-indigo-600' },
     fintech: { bg: 'bg-emerald-500', chipColor: 'bg-emerald-500', chipText: 'text-white', textColor: 'text-emerald-600' },
+    trading: { bg: 'bg-amber-500', chipColor: 'bg-amber-500', chipText: 'text-white', textColor: 'text-amber-600' },
     default: { bg: 'bg-slate-900', chipColor: 'bg-slate-900', chipText: 'text-white', textColor: 'text-slate-900' }
 };
 
@@ -72,6 +76,7 @@ const categoryNameMap: Record<string, { zh: string, en: string }> = {
     bundle: { zh: '组合套装', en: 'Bundle' },
     verification: { zh: '实名代办', en: 'Verification' },
     fintech: { zh: '金融交易', en: 'FinTech' },
+    trading: { zh: '存号交易', en: 'Trading' },
 };
 
 export function MarketplaceProductCard({
@@ -82,6 +87,8 @@ export function MarketplaceProductCard({
     category,
     salesVolume = "500+件",
     badges = ["现货", "72H售后", "防封"],
+    deliveryTime = "极速发货",
+    type = "account",
     onBuyNow,
     onPreview
 }: ProductCardProps) {
@@ -159,7 +166,7 @@ export function MarketplaceProductCard({
                 <div className="absolute bottom-2 right-2 z-20">
                     <span className="bg-black/20 backdrop-blur-sm text-white text-[9px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
                         <Clock className="w-2.5 h-2.5" />
-                        极速发货
+                        {deliveryTime}
                     </span>
                 </div>
 

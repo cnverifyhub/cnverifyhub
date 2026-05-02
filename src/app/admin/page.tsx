@@ -12,7 +12,7 @@ import { getProductById } from '@/data/products';
 import { cn, formatYuan } from '@/lib/utils';
 import { supabase } from '@/lib/supabase/client';
 
-type Tab = 'orders' | 'fraud' | 'users' | 'products' | 'settings';
+type Tab = 'orders' | 'services' | 'fraud' | 'users' | 'products' | 'settings';
 type StatusFilter = 'all' | 'pending' | 'paid' | 'completed' | 'cancelled';
 type FraudTab = 'blocklist' | 'events';
 
@@ -129,6 +129,9 @@ export default function AdminDashboardPage() {
     const [newBlockValue, setNewBlockValue] = useState('');
     const [newBlockReason, setNewBlockReason] = useState('');
     const [addingBlock, setAddingBlock] = useState(false);
+    const [serviceOrders, setServiceOrders] = useState<any[]>([]);
+    const [isLoadingServices, setIsLoadingServices] = useState(false);
+    const [serviceStatusFilter, setServiceStatusFilter] = useState<string>('all');
     const [saveStatus, setSaveStatus] = useState<{msg: string; ok: boolean} | null>(null);
 
     const notify = (msg: string, ok = true) => {
@@ -154,8 +157,42 @@ export default function AdminDashboardPage() {
             fetchUsers();
             fetchProducts();
             fetchFraudEvents();
+            fetchServiceOrders();
         }
     }, [isAdminAuthenticated]);
+
+    const fetchServiceOrders = async () => {
+        setIsLoadingServices(true);
+        try {
+            const res = await fetch('/api/orders/service', {
+                headers: { 'Authorization': `Bearer ${ADMIN_PASS}` },
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setServiceOrders(data.services || []);
+            }
+        } catch (e) {
+            console.error('Fetch Service Orders Error:', e);
+        } finally {
+            setIsLoadingServices(false);
+        }
+    };
+
+    const handleUpdateServiceStatus = async (id: string, status: string) => {
+        try {
+            const res = await fetch(`/api/orders/service/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${ADMIN_PASS}` },
+                body: JSON.stringify({ status })
+            });
+            if (res.ok) {
+                notify('✅ Service status updated');
+                fetchServiceOrders();
+            }
+        } catch (e) {
+            notify('❌ Failed to update status', false);
+        }
+    };
 
     const fetchFraudEvents = async () => {
         setIsLoadingFraud(true);
@@ -634,6 +671,7 @@ export default function AdminDashboardPage() {
 
     const navItems: { id: Tab; Icon: React.ElementType; label: string; color: string }[] = [
         { id: 'orders', Icon: Package, label: 'Orders', color: '#3b82f6' },
+        { id: 'services', Icon: ClipboardList, label: 'Services', color: '#f59e0b' },
         { id: 'fraud', Icon: ShieldAlert, label: 'Fraud', color: '#ef4444' },
         { id: 'users', Icon: Users, label: 'Users', color: '#8b5cf6' },
         { id: 'products', Icon: Box, label: 'Products', color: '#10b981' },
@@ -724,7 +762,72 @@ export default function AdminDashboardPage() {
                     </div>
                 )}
 
-                {activeTab === 'users' ? (
+                {activeTab === 'services' ? (
+                    <div className="p-4 md:p-6">
+                        <header className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-6">
+                            <div>
+                                <h2 className="text-xl font-black text-white">Professional Services</h2>
+                                <p className="text-slate-500 text-xs mt-0.5">Track KYC, Verification, and Manual Workflows.</p>
+                            </div>
+                            <button onClick={fetchServiceOrders}
+                                className="px-3 py-2 text-xs font-bold rounded-xl flex gap-1.5 items-center text-slate-300 hover:text-white transition-all shrink-0"
+                                style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}>
+                                <RefreshCw className={cn('w-3.5 h-3.5', isLoadingServices && 'animate-spin')} /> Refresh
+                            </button>
+                        </header>
+
+                        {/* Kanban Board */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 overflow-x-auto pb-4">
+                            {[
+                                { id: 'pending', label: 'Pending', color: 'slate' },
+                                { id: 'in_progress', label: 'In Progress', color: 'blue' },
+                                { id: 'awaiting_customer', label: 'Awaiting Info', color: 'orange' },
+                                { id: 'completed', label: 'Completed', color: 'emerald' }
+                            ].map(col => (
+                                <div key={col.id} className="min-w-[280px]">
+                                    <div className="flex items-center justify-between mb-3 px-1">
+                                        <h3 className="text-xs font-black uppercase tracking-widest text-slate-400 flex items-center gap-2">
+                                            <span className={cn('w-2 h-2 rounded-full', 
+                                                col.id === 'pending' ? 'bg-slate-500' :
+                                                col.id === 'in_progress' ? 'bg-blue-500' :
+                                                col.id === 'awaiting_customer' ? 'bg-orange-500' : 'bg-emerald-500'
+                                            )} />
+                                            {col.label}
+                                        </h3>
+                                        <span className="text-[10px] font-bold px-1.5 py-0.5 bg-white/5 rounded text-slate-500">
+                                            {serviceOrders.filter(s => s.status === col.id).length}
+                                        </span>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {serviceOrders.filter(s => s.status === col.id).map(service => (
+                                            <div key={service.id} className="rounded-2xl p-4 space-y-3 transition-all hover:scale-[1.02] cursor-pointer" 
+                                                style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)'}}>
+                                                <div className="flex justify-between items-start">
+                                                    <div className="text-[10px] font-mono text-blue-400">#{service.order?.public_id || 'ORD'}</div>
+                                                    <div className="text-[9px] text-slate-500">{new Date(service.created_at).toLocaleDateString()}</div>
+                                                </div>
+                                                <div>
+                                                    <div className="text-xs font-bold text-white mb-0.5">{service.product?.name_en}</div>
+                                                    <div className="text-[10px] text-slate-500">{service.order?.telegram || service.order?.email}</div>
+                                                </div>
+                                                <div className="flex gap-1.5 pt-1">
+                                                    {col.id !== 'pending' && <button onClick={() => handleUpdateServiceStatus(service.id, 'pending')} className="p-1.5 rounded-lg bg-white/5 text-slate-400 hover:text-white transition-colors"><RefreshCw className="w-3 h-3" /></button>}
+                                                    {col.id !== 'in_progress' && <button onClick={() => handleUpdateServiceStatus(service.id, 'in_progress')} className="flex-1 py-1 px-2 rounded-lg bg-blue-500/20 text-blue-400 text-[10px] font-bold">Start</button>}
+                                                    {col.id !== 'completed' && <button onClick={() => handleUpdateServiceStatus(service.id, 'completed')} className="flex-1 py-1 px-2 rounded-lg bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">Finish</button>}
+                                                </div>
+                                            </div>
+                                        ))}
+                                        {serviceOrders.filter(s => s.status === col.id).length === 0 && (
+                                            <div className="py-8 text-center text-[10px] text-slate-600 border border-dashed border-white/5 rounded-2xl">
+                                                No tasks
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ) : activeTab === 'users' ? (
                     <>
                         <div className="p-4 md:p-6">
                         <header className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 mb-6">

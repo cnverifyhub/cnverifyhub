@@ -1,0 +1,12 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="115" fill="#f8f9fb"/>
+  <path d="M156 180H356V400C356 422.091 338.091 440 316 440H196C173.909 440 156 422.091 156 400V180Z" fill="#333" stroke="#333" stroke-width="20" stroke-linejoin="round"/>
+  <path d="M206 180V140C206 112.386 228.386 90 256 90C283.614 90 306 112.386 306 140V180" stroke="#333" stroke-width="20" stroke-linecap="round"/>
+  
+  <!-- Badges -->
+  <circle cx="120" cy="120" r="40" fill="#1677FF"/> <!-- Alipay -->
+  <circle cx="392" cy="120" r="40" fill="#07C160"/> <!-- WeChat -->
+  <circle cx="440" cy="256" r="40" fill="#FF5000"/> <!-- Taobao -->
+  <circle cx="392" cy="392" r="40" fill="#FFDA44"/> <!-- Xianyu -->
+  <circle cx="120" cy="392" r="40" fill="#FF6A00"/> <!-- 1688 -->
+</svg>

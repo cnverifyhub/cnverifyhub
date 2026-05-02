@@ -53,6 +53,16 @@ export const metadata: Metadata = {
         telephone: false,
         email: false,
     },
+    icons: {
+        icon: [
+            { url: '/favicon.svg', type: 'image/svg+xml' },
+            { url: '/icon.png', type: 'image/png' },
+        ],
+        apple: [
+            { url: '/logo.png' },
+        ],
+    },
+    themeColor: '#FF0036',
     openGraph: {
         type: 'website',
         siteName: 'CNWePro',

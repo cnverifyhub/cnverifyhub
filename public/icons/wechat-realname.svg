@@ -1,0 +1,19 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="greenGrad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#07C160"/>
+      <stop offset="1" stop-color="#059653"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="115" fill="url(#greenGrad)"/>
+  <rect x="120" y="240" width="272" height="180" rx="20" fill="white" fill-opacity="0.3" stroke="white" stroke-width="10"/>
+  <circle cx="180" cy="300" r="30" fill="white"/>
+  <rect x="230" y="285" width="120" height="8" rx="4" fill="white"/>
+  <rect x="230" y="305" width="80" height="8" rx="4" fill="white"/>
+  <rect x="230" y="325" width="100" height="8" rx="4" fill="white"/>
+  
+  <!-- WeChat Mini Logo Style -->
+  <circle cx="256" cy="160" r="60" fill="white"/>
+  <circle cx="230" cy="150" r="10" fill="#07C160"/>
+  <circle cx="282" cy="150" r="10" fill="#07C160"/>
+</svg>

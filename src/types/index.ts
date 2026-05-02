@@ -3,7 +3,12 @@
    ============================================ */
 
 export type Lang = 'zh' | 'en';
-export type CategoryId = 'wechat' | 'alipay' | 'douyin' | 'qq' | 'xianyu' | 'taobao' | 'xiaohongshu' | 'bundle' | 'verification' | 'fintech';
+export type CategoryId = 
+    | 'wechat' | 'alipay' | 'douyin' | 'qq' | 'xianyu' | 'taobao' | 'xiaohongshu' 
+    | 'bundle' | 'verification' | 'fintech' | 'trading';
+
+export type ProductType = 'account' | 'bundle' | 'service' | 'document';
+
 export interface Category {
     id: CategoryId;
     name: { zh: string; en: string };
@@ -29,20 +34,44 @@ export interface PricingTier {
 
 export interface Product {
     id: string;
+    slug: string;
     category: CategoryId;
+    subcategory?: string;
+    type: ProductType;
     tierName: { zh: string; en: string };
     tierSlug: string;
     description: { zh: string; en: string };
     price: PricingTier;
+    compareAtPrice?: number;
+    currency: 'CNY' | 'USD' | 'USDT';
     features: Array<{ zh: string; en: string }>;
-    warranty: { zh: string; en: string };
+    includes: string[];
+    requirements?: { zh: string; en: string; buyerNeeds?: string; technical?: string };
+    deliveryMethod: 'auto' | 'manual' | 'scheduled';
     deliveryTime: { zh: string; en: string };
+    warrantyHours: number;
     stockCount: number;
     popular?: boolean;
     badge?: { zh: string; en: string };
     sortOrder: number;
     image?: string;
-    // --- Bundle specific optional fields ---
+    featuredImage?: string;
+    ogImage?: string;
+    soldCount?: number;
+    rating?: number;
+    reviewCount?: number;
+    isPublished: boolean;
+    seoTitle?: string;
+    seoDescription?: string;
+    
+    // --- Bundle specific relational fields ---
+    bundleComponents?: Array<{
+        productId: string;
+        quantity: number;
+        name?: string;
+    }>;
+
+    // Legacy fields (for backward compatibility)
     bundleContents?: Array<{
         item: string;
         name: string;
@@ -52,26 +81,44 @@ export interface Product {
         includes: string[];
     }>;
     whyBundle?: { zh: string; en: string };
-    useCases?: string[]; // Simplified: directly strings (assumed to be matching the requested definition format)
+    useCases?: string[];
     loginMethod?: {
         primary: string;
         secondary: string;
         note: string;
     };
-    requirements?: { buyerNeeds: string; technical: string };
     risks?: { zh: string; en: string };
+}
+
+export interface ProductVariant {
+    id: string;
+    productId: string;
+    name: string;
+    price: number;
+    stock: number;
+    sku: string;
+    metadata: Record<string, any>;
 }
 
 export type OrderStatus =
     | 'pending_payment'
     | 'payment_received'
+    | 'paid'
     | 'processing'
     | 'delivered'
     | 'completed'
     | 'cancelled';
 
+export type ServiceStatus = 
+    | 'pending' 
+    | 'in_progress' 
+    | 'awaiting_customer' 
+    | 'completed' 
+    | 'failed';
+
 export interface Order {
     id: string;
+    publicId: string;
     productId: string;
     category: CategoryId;
     tierName: string;
@@ -86,6 +133,21 @@ export interface Order {
     createdAt: string;
     updatedAt: string;
     credentials?: AccountCredentials;
+}
+
+export interface ServiceOrder {
+    id: string;
+    orderId: string;
+    productId: string;
+    customerEmail: string;
+    customerTelegram: string;
+    status: ServiceStatus;
+    requirementsSubmitted: boolean;
+    requirementsData: Record<string, any>;
+    resultData: Record<string, any>;
+    assignedTo?: string;
+    createdAt: string;
+    updatedAt: string;
 }
 
 export interface AccountCredentials {
