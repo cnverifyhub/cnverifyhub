@@ -5,7 +5,8 @@ import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { formatYuan } from '@/lib/utils';
 import { 
     WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, 
-    XianyuIcon, TaobaoIcon, XiaohongshuIcon 
+    XianyuIcon, TaobaoIcon, XiaohongshuIcon,
+    BundleIcon, VerificationIcon, FintechIcon
 } from '@/components/ui/BrandIcons';
 
 const iconMap: Record<string, { icon: React.ReactNode, accentColor: string, textColor: string }> = {
@@ -43,6 +44,21 @@ const iconMap: Record<string, { icon: React.ReactNode, accentColor: string, text
         icon: <XiaohongshuIcon className="w-full h-full" />, 
         accentColor: '#ff2442',
         textColor: 'text-slate-900 dark:text-white'
+    },
+    bundle: { 
+        icon: <BundleIcon className="w-full h-full" />, 
+        accentColor: '#8b5cf6',
+        textColor: 'text-[#8b5cf6]'
+    },
+    verification: { 
+        icon: <VerificationIcon className="w-full h-full" />, 
+        accentColor: '#6366f1',
+        textColor: 'text-[#6366f1]'
+    },
+    fintech: { 
+        icon: <FintechIcon className="w-full h-full" />, 
+        accentColor: '#10b981',
+        textColor: 'text-[#10b981]'
     },
 };
 

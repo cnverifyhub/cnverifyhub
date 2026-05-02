@@ -11,26 +11,36 @@ import { useCartStore } from '@/store/cartStore';
 import { useOrderStore } from '@/store/orderStore';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase/client';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, BundleIcon, VerificationIcon, FintechIcon } from '@/components/ui/BrandIcons';
+
+const ICON_COMPONENTS: Record<string, React.ElementType> = {
+    wechat: WeChatIcon,
+    alipay: AlipayIcon,
+    douyin: DouyinIcon,
+    qq: QQIcon,
+    xianyu: XianyuIcon,
+    taobao: TaobaoIcon,
+    xiaohongshu: XiaohongshuIcon,
+    bundle: BundleIcon,
+    verification: VerificationIcon,
+    fintech: FintechIcon
+};
 
 interface CheckoutFormProps {
     lang: Lang;
 }
 
 const CartItemImage = ({ category, badge }: { category: string, badge?: any }) => {
-    const [imgError, setImgError] = useState(false);
+    const Icon = ICON_COMPONENTS[category] || WeChatIcon;
     return (
-        <div className={`w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-gradient-to-br ${badge ? 'from-primary-400 to-primary-600' : 'from-slate-300 to-slate-400'} rounded-xl shadow-sm flex items-center justify-center relative overflow-hidden`}>
-            {!imgError ? (
-                <Image 
-                    src={`/images/categories/${category}.webp`} 
-                    alt={`${category} icon`} 
-                    fill 
-                    className="object-cover p-2"
-                    sizes="(max-width: 640px) 64px, 80px"
-                    onError={() => setImgError(true)}
-                />
-            ) : (
-                <span className="text-white font-black text-2xl z-10">{category.toUpperCase().slice(0, 1)}</span>
+        <div className={`w-16 h-16 sm:w-20 sm:h-20 shrink-0 bg-white dark:bg-dark-800 rounded-xl shadow-sm flex items-center justify-center relative overflow-hidden border border-slate-200 dark:border-slate-800`}>
+            <div className="w-full h-full p-2">
+                <Icon className="w-full h-full" />
+            </div>
+            {badge && (
+                <div className="absolute top-0 right-0 bg-red-500 text-white text-[8px] font-black px-1 py-0.5 rounded-bl-lg uppercase">
+                    HOT
+                </div>
             )}
         </div>
     );
@@ -54,11 +64,12 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
     const [claimedEnvelope, setClaimedEnvelope] = useState(false);
 
     // Quick mock order ID generator
-    const [orderId] = useState(() => `CNW-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`);
+    const [orderId, setOrderId] = useState('');
     const [processingPhase, setProcessingPhase] = useState(0);
 
     useEffect(() => {
         setMounted(true);
+        setOrderId(`CNW-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`);
     }, []);
 
     // Countdown timer for checkout urgency
@@ -288,27 +299,6 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                     ))}
                 </div>
             )}
-            {/* Progress Stepper */}
-            <div className="mb-8 flex items-center justify-between relative px-2">
-                <div className="absolute left-0 top-3 w-full h-1 bg-slate-200 dark:bg-slate-800 -z-10 rounded-full overflow-hidden">
-                    <div className="h-full bg-primary-500 transition-all duration-500 ease-out" style={{ width: step === 1 ? '10%' : step === 2 ? '50%' : '100%' }} />
-                </div>
-                
-                <div className={`flex flex-col items-center gap-2 ${step >= 1 ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-slate-600'}`}>
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs transition-colors duration-300 ${step >= 1 ? 'bg-primary-500 text-white shadow-md shadow-primary-500/30' : 'bg-slate-200 dark:bg-slate-800'}`}>1</div>
-                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest">{lang === 'zh' ? '确认订单' : 'CART'}</span>
-                </div>
-                
-                <div className={`flex flex-col items-center gap-2 ${step >= 2 ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-slate-600'}`}>
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs transition-colors duration-300 ${step >= 2 ? 'bg-primary-500 text-white shadow-md shadow-primary-500/30' : 'bg-slate-200 dark:bg-slate-800'}`}>2</div>
-                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest">{lang === 'zh' ? '安全支付' : 'PAYMENT'}</span>
-                </div>
-                
-                <div className={`flex flex-col items-center gap-2 ${step >= 3 ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-slate-600'}`}>
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs transition-colors duration-300 ${step >= 3 ? 'bg-primary-500 text-white shadow-md shadow-primary-500/30' : 'bg-slate-200 dark:bg-slate-800'}`}>3</div>
-                    <span className="text-[10px] sm:text-xs font-black uppercase tracking-widest">{lang === 'zh' ? '发货完成' : 'DONE'}</span>
-                </div>
-            </div>
 
             {/* Countdown Banner */}
             {step === 1 && countdown > 0 && (

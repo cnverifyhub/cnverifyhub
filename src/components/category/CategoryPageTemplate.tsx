@@ -16,7 +16,10 @@ const iconMap: Record<string, React.ElementType> = {
     qq: QQIcon,
     xianyu: XianyuIcon,
     taobao: TaobaoIcon,
-    xiaohongshu: XiaohongshuIcon
+    xiaohongshu: XiaohongshuIcon,
+    bundle: BundleIcon,
+    verification: VerificationIcon,
+    fintech: FintechIcon
 };
 
 const iconColors: Record<string, string> = {

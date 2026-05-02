@@ -35,6 +35,13 @@ const iconMap: Record<string, React.ElementType> = {
 export function CategoryBar() {
     const pathname = usePathname() || '/';
     const lang = getLangFromPath(pathname);
+    const [mounted, setMounted] = React.useState(false);
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) return <div className="w-full h-[100px]" />;
 
     return (
         <div className="w-full bg-white dark:bg-dark-900 border-y border-slate-100 dark:border-slate-800 py-4 mb-8 overflow-hidden">

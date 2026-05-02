@@ -11,6 +11,20 @@ import type { Product } from '@/types';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { formatYuan } from '@/lib/utils';
 import { useCartStore } from '@/store/cartStore';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, BundleIcon, VerificationIcon, FintechIcon } from './BrandIcons';
+
+const ICON_COMPONENTS: Record<string, React.ElementType> = {
+    wechat: WeChatIcon,
+    alipay: AlipayIcon,
+    douyin: DouyinIcon,
+    qq: QQIcon,
+    xianyu: XianyuIcon,
+    taobao: TaobaoIcon,
+    xiaohongshu: XiaohongshuIcon,
+    bundle: BundleIcon,
+    verification: VerificationIcon,
+    fintech: FintechIcon
+};
 
 interface PricingCardProps {
     product: Product;
@@ -105,13 +119,10 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                         className={`relative w-28 h-28 sm:w-32 sm:h-32 rounded-[22.5%] overflow-hidden shadow-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 flex items-center justify-center p-0`}
                         style={{ backgroundColor: config.iconBg }}
                     >
-                        <Image 
-                            src={`/images/categories/${product.category}.webp`}
-                            alt={product.tierName[lang]}
-                            fill
-                            sizes="(max-width: 640px) 128px, 128px"
-                            className="object-cover"
-                        />
+                        {(() => {
+                            const Icon = ICON_COMPONENTS[product.category] || WeChatIcon;
+                            return <Icon className="w-full h-full" />;
+                        })()}
                     </div>
                     {/* Shadow underneath */}
                     <div className={`absolute bottom-4 w-20 h-4 bg-black/10 dark:bg-black/40 blur-xl rounded-full scale-x-150 transition-transform duration-500 group-hover:scale-x-110`} />
