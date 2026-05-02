@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: '支付宝账号购买 - 实名·企业·商家号 | CNWePro',
-        description: '支付宝个人号¥38起 | 企业号¥88起 | USDT支付秒发货',
+        description: '支付宝个人号¥351起 | 商家号¥423起 | USDT支付秒发货',
     },
 };
 
@@ -39,8 +39,8 @@ function getAlipayJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

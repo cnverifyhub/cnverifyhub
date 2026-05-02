@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'QQ高等级号·靓号现货交易 | CNWePro',
-        description: '严选老号防找回，太阳号、靓号极速发货。支持USDT加密支付。',
+        description: 'QQ全新号¥135起 | 高级老号¥279起 | USDT加密支付。',
     },
 };
 
@@ -39,8 +39,8 @@ function getQQJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

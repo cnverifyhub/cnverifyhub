@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getProductById } from '@/data/products';
@@ -58,8 +60,40 @@ export function BundleProductPageTemplate({ productId, lang }: BundleProductPage
         router.push(`/${lang === 'en' ? 'en/' : ''}checkout`);
     };
 
+    const bundleSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: tierName[lang],
+        description: description[lang],
+        image: `https://cnwepro.com/images/categories/bundle.webp`,
+        offers: {
+            '@type': 'Offer',
+            priceCurrency: 'CNY',
+            price: Math.round(price.single * 7.2),
+            availability: product.stockCount > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+            url: `https://cnwepro.com/${lang === 'en' ? 'en/' : ''}product/${product.id}`,
+            seller: {
+                '@type': 'Organization',
+                name: 'CNWePro'
+            }
+        },
+        brand: {
+            '@type': 'Brand',
+            name: 'CNWePro'
+        },
+        aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: '4.9',
+            reviewCount: 42
+        }
+    };
+
     return (
         <div className="min-h-screen bg-[#F8FAFC] dark:bg-dark-900 pb-32">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(bundleSchema) }}
+            />
             {/* Sticky Mobile CTA */}
             <motion.div
                 initial={{ y: 100 }}

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'Buy Xiaohongshu Account - Verified & Aged | CNWePro',
-        description: 'RED/Xiaohongshu accounts from $18. High-follower marketing accounts available. Instant delivery.',
+        description: 'RED/Xiaohongshu accounts from ¥135. High-follower marketing accounts available. Instant delivery.',
         url: `${SITE_URL}/en/xiaohongshu/`,
     },
 };
@@ -40,8 +40,8 @@ function getXiaohongshuJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

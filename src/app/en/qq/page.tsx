@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'Buy Premium QQ Accounts | CNWePro',
-        description: 'Aged QQ numbers with high levels (Sun/Moon). Instant crypto delivery.',
+        description: 'Aged QQ numbers with high levels (Sun/Moon). From ¥135. Instant crypto delivery.',
         url: `${SITE_URL}/en/qq/`,
     },
 };
@@ -40,8 +40,8 @@ function getQQJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

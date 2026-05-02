@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: '淘宝账号购买 - 优质买家老号 | CNWePro',
-        description: '淘宝白号¥15起 | VIP老号¥48起 | USDT支付秒发货',
+        description: '淘宝基础号¥114起 | VIP老号¥351起 | USDT支付秒发货',
     },
 };
 
@@ -39,8 +39,8 @@ function getTaobaoJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

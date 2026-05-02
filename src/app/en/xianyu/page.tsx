@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'Buy Xianyu Account - Verified & Aged | CNWePro',
-        description: 'Verified Xianyu accounts from $48. High credit aged accounts available. Instant delivery.',
+        description: 'Verified Xianyu accounts from ¥351. High credit aged accounts available. Instant delivery.',
         url: `${SITE_URL}/en/xianyu/`,
     },
 };
@@ -40,8 +40,8 @@ function getXianyuJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'Buy Verified Alipay Accounts | CNWePro',
-        description: 'Verified Alipay personal & enterprise accounts. Instant USDT delivery.',
+        description: 'Verified Alipay personal & enterprise accounts. From ¥351. Instant USDT delivery.',
         url: `${SITE_URL}/en/alipay/`,
     },
 };
@@ -40,8 +40,8 @@ function getAlipayJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

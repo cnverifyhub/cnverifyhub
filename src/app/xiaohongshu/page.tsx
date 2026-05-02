@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: '小红书账号购买 - 高权重营销老号 | CNWePro',
-        description: '小红书基础号¥18起 | 千粉号¥68起 | USDT支付秒发货',
+        description: '小红书基础号¥135起 | 千粉号¥495起 | USDT支付秒发货',
     },
 };
 
@@ -39,8 +39,8 @@ function getXiaohongshuJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

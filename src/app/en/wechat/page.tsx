@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'Buy WeChat Account - Verified & Aged | CNWePro',
-        description: 'Fresh WeChat accounts from $18. Verified accounts from $28. Instant crypto delivery safely.',
+        description: 'Fresh WeChat accounts from ¥207. Verified accounts from ¥279. Instant crypto delivery safely.',
         url: `${SITE_URL}/en/wechat/`,
     },
 };
@@ -43,8 +43,8 @@ function getWeChatJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

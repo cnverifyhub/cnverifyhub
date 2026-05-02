@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: '抖音号购买 - 千粉万粉号·蓝V企业号 | CNWePro',
-        description: '高权重抖音号批发，带橱窗直播权限。USDT支付，72小时质保。',
+        description: '抖音浏览号¥135起 | 实名号¥351起 | 千粉号¥279起 | USDT支付秒发货',
     },
 };
 
@@ -39,8 +39,8 @@ function getDouyinJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

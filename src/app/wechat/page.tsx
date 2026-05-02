@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: '微信号购买 - 实名·绑卡·企业号现货 | CNWePro',
-        description: '微信白号¥28起 | 实名号¥38起 | 绑卡号¥58起 | USDT支付秒发货',
+        description: '微信白号¥207起 | 实名号¥279起 | 绑卡号¥423起 | USDT支付秒发货',
     },
 };
 
@@ -42,8 +42,8 @@ function getWeChatJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

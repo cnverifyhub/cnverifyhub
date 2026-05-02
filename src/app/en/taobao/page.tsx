@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'Buy Taobao Account - Verified & VIP Aged | CNWePro',
-        description: 'Taobao buyer accounts from $15. VIP aged accounts from $48. Instant delivery via USDT.',
+        description: 'Taobao buyer accounts from ¥114. VIP aged accounts from ¥351. Instant delivery via USDT.',
         url: `${SITE_URL}/en/taobao/`,
     },
 };
@@ -40,8 +40,8 @@ function getTaobaoJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

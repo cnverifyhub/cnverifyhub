@@ -11,9 +11,13 @@ export function formatUsdt(amount: number): string {
     return `$${amount.toFixed(2)}`;
 }
 
+export function calculateYuan(usdtAmount: number): number {
+    return Math.round(usdtAmount * USDT_TO_CNY);
+}
+
 export function formatYuan(usdtAmount: number): string {
-    const yuanAmount = usdtAmount * USDT_TO_CNY;
-    return `¥${Math.round(yuanAmount).toString()}`;
+    const yuanAmount = calculateYuan(usdtAmount);
+    return `¥${yuanAmount.toString()}`;
 }
 
 export function formatStock(count: number): string {

@@ -9,7 +9,7 @@ import { Badge } from './Badge';
 import { StockBadge } from './StockBadge';
 import type { Product } from '@/types';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
-import { formatYuan } from '@/lib/utils';
+import { calculateYuan, formatYuan } from '@/lib/utils';
 import { useCartStore } from '@/store/cartStore';
 import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, BundleIcon, VerificationIcon, FintechIcon } from './BrandIcons';
 
@@ -80,7 +80,7 @@ export function PricingCard({ product, lang }: PricingCardProps) {
         offers: {
             '@type': 'Offer',
             priceCurrency: 'CNY',
-            price: product.price.single,
+            price: calculateYuan(product.price.single),
             availability: isOutOfStock ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
             url: `https://cnwepro.com/product/${product.id}`
         },

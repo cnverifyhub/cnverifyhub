@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'Buy Verified Douyin Accounts | CNWePro',
-        description: 'Douyin accounts with real followers and high authority. Instant crypto delivery.',
+        description: 'Verified Douyin accounts from ¥135. Real followers and high authority. Instant USDT delivery.',
         url: `${SITE_URL}/en/douyin/`,
     },
 };
@@ -40,8 +40,8 @@ function getDouyinJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: Math.round(p.price.single * 7.2),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },
