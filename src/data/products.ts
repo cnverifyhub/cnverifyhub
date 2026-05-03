@@ -219,6 +219,234 @@ const alipayProducts: Product[] = [
     },
 ];
 
+/* ---------- Douyin Products ---------- */
+const douyinProducts: Product[] = [
+    {
+        id: 'douyin-fresh',
+        slug: 'douyin-fresh',
+        category: 'douyin',
+        type: 'account',
+        tierName: { zh: '抖音全新号', en: 'Douyin Fresh Account' },
+        tierSlug: 'fresh',
+        description: { zh: '全新注册，支持手机号登录，权重正常', en: 'Freshly registered standard Douyin account' },
+        price: { single: 18.80, bulk10: 15.80, bulk50: 12.80, bulk200: 10.80, originalPrice: { single: 25.80, bulk10: 22.80, bulk50: 18.80, bulk200: 15.80 } },
+        features: [
+            { zh: '全新白号', en: 'Fresh account' },
+            { zh: '无违规记录', en: 'Clean record' },
+            { zh: '极速发货', en: 'Instant delivery' },
+        ],
+        warranty: { zh: '24小时质保', en: '24-hour warranty' },
+        deliveryTime: { zh: '5-15分钟', en: '5-15 minutes' },
+        stockCount: 25,
+        sortOrder: 1,
+        ...commonFields
+    },
+    {
+        id: 'douyin-verified',
+        slug: 'douyin-verified',
+        category: 'douyin',
+        type: 'account',
+        tierName: { zh: '抖音实名号', en: 'Douyin Verified Account' },
+        tierSlug: 'verified',
+        description: { zh: '已完成实名认证的高质量抖音号', en: 'High-quality ID-verified Douyin' },
+        price: { single: 38.80, bulk10: 38.80, bulk50: 28.80, bulk200: 28.80, originalPrice: { single: 48.80, bulk10: 48.80, bulk50: 38.80, bulk200: 38.80 } },
+        features: [
+            { zh: '实名认证完成', en: 'ID verification done' },
+            { zh: '权重更高', en: 'Higher weight' },
+            { zh: '直播功能开通', en: 'Live enabled' },
+        ],
+        warranty: { zh: '48小时质保', en: '48-hour warranty' },
+        deliveryTime: { zh: '1-4小时', en: '1-4 hours' },
+        stockCount: 15,
+        popular: true,
+        badge: { zh: '最畅销', en: 'Best selling' },
+        sortOrder: 2,
+        ...commonFields
+    },
+    {
+        id: 'douyin-aged',
+        slug: 'douyin-aged',
+        category: 'douyin',
+        type: 'account',
+        tierName: { zh: '抖音老号 (1年+)', en: 'Douyin Aged (1+ Year)' },
+        tierSlug: 'aged',
+        description: { zh: '注册满一年以上的抖音号', en: '1+ year old Douyin account' },
+        price: { single: 28.80, bulk10: 26.80, bulk50: 24.80, bulk200: 22.80, originalPrice: { single: 38.80, bulk10: 36.80, bulk50: 34.80, bulk200: 32.80 } },
+        features: [
+            { zh: '注册1年+', en: '1+ year old' },
+            { zh: '账号权重高', en: 'High weight' },
+        ],
+        warranty: { zh: '48小时质保', en: '48-hour warranty' },
+        deliveryTime: { zh: '2-8小时', en: '2-8 hours' },
+        stockCount: 17,
+        sortOrder: 6,
+        ...commonFields
+    },
+];
+
+/* ---------- QQ Products ---------- */
+const qqProducts: Product[] = [
+    {
+        id: 'qq-fresh',
+        slug: 'qq-fresh',
+        category: 'qq',
+        type: 'account',
+        tierName: { zh: 'QQ全新号', en: 'QQ Fresh Account' },
+        tierSlug: 'fresh',
+        description: { zh: '全新正常注册QQ号', en: 'Freshly registered standard QQ' },
+        price: { single: 18.80, bulk10: 8.80, bulk50: 8.80, bulk200: 9.80, originalPrice: { single: 24.80, bulk10: 14.80, bulk50: 14.80, bulk200: 15.80 } },
+        features: [
+            { zh: '全新注册', en: 'Fresh account' },
+            { zh: '手机号绑定', en: 'Phone bound' },
+        ],
+        warranty: { zh: '24小时质保', en: '24-hour warranty' },
+        deliveryTime: { zh: '5-15分钟', en: '5-15 minutes' },
+        stockCount: 19,
+        sortOrder: 1,
+        ...commonFields
+    },
+    {
+        id: 'qq-aged-pro',
+        slug: 'qq-aged-pro',
+        category: 'qq',
+        type: 'account',
+        tierName: { zh: 'QQ高级老号', en: 'QQ Aged Account' },
+        tierSlug: 'aged',
+        description: { zh: '高质量QQ老号，权重高', en: 'High-quality aged QQ account' },
+        price: { single: 38.80, bulk10: 28.80, bulk50: 28.80, bulk200: 18.80, originalPrice: { single: 48.80, bulk10: 38.80, bulk50: 38.80, bulk200: 28.80 } },
+        features: [
+            { zh: '16级太阳', en: 'Sun level (16+)' },
+            { zh: '高等级权限', en: 'High level' },
+        ],
+        warranty: { zh: '48小时质保', en: '48-hour warranty' },
+        deliveryTime: { zh: '1-4小时', en: '1-4 hours' },
+        stockCount: 11,
+        popular: true,
+        sortOrder: 2,
+        ...commonFields
+    },
+    {
+        id: 'qq-super-vip',
+        slug: 'qq-super-vip',
+        category: 'qq',
+        type: 'account',
+        tierName: { zh: 'QQ超级VIP版', en: 'QQ Super VIP Status' },
+        tierSlug: 'vip',
+        description: { zh: '自带超级会员的优质号码', en: 'Premium number with Super VIP included' },
+        price: { single: 118.80, bulk10: 108.80, bulk50: 98.80, bulk200: 78.80, originalPrice: { single: 128.80, bulk10: 118.80, bulk50: 108.80, bulk200: 88.80 } },
+        features: [
+            { zh: 'QQ会员特权', en: 'VIP privileges' },
+            { zh: '专属标识', en: 'VIP badge' },
+        ],
+        warranty: { zh: '48小时质保', en: '48-hour warranty' },
+        deliveryTime: { zh: '2-6小时', en: '2-6 hours' },
+        stockCount: 15,
+        sortOrder: 3,
+        ...commonFields
+    },
+];
+
+/* ---------- Xianyu Products ---------- */
+const xianyuProducts: Product[] = [
+    {
+        id: 'xianyu-standard',
+        slug: 'xianyu-standard',
+        category: 'xianyu',
+        type: 'account',
+        tierName: { zh: '闲鱼标准实名号', en: 'Xianyu Standard Verified' },
+        tierSlug: 'standard',
+        description: { zh: '标准闲鱼二手交易账号，安全可靠', en: 'Standard Xianyu account' },
+        price: { single: 48.80, bulk10: 45.80, bulk50: 45.80, bulk200: 42.80, originalPrice: { single: 55.80, bulk10: 52.80, bulk50: 52.80, bulk200: 49.80 } },
+        features: [
+            { zh: '已实名认证', en: 'ID Verified' },
+            { zh: '支付宝关联', en: 'Alipay Linked' },
+        ],
+        warranty: { zh: '48小时质保', en: '48-hour warranty' },
+        deliveryTime: { zh: '1-4小时', en: '1-4 hours' },
+        stockCount: 15,
+        sortOrder: 1,
+        ...commonFields
+    },
+    {
+        id: 'xianyu-aged',
+        slug: 'xianyu-aged',
+        category: 'xianyu',
+        type: 'account',
+        tierName: { zh: '闲鱼优质老号', en: 'Xianyu Premium Aged' },
+        tierSlug: 'aged',
+        description: { zh: '高信誉分闲鱼老号', en: 'High credit score aged Xianyu account' },
+        price: { single: 68.80, bulk10: 65.80, bulk50: 65.80, bulk200: 62.80, originalPrice: { single: 75.80, bulk10: 72.80, bulk50: 72.80, bulk200: 69.80 } },
+        features: [
+            { zh: '高芝麻信用积分', en: 'High Zhima Credit' },
+        ],
+        warranty: { zh: '72小时质保', en: '72-hour warranty' },
+        deliveryTime: { zh: '2-6小时', en: '2-6 hours' },
+        stockCount: 8,
+        popular: true,
+        sortOrder: 2,
+        ...commonFields
+    }
+];
+
+/* ---------- Taobao Products ---------- */
+const taobaoProducts: Product[] = [
+    {
+        id: 'taobao-basic',
+        slug: 'taobao-basic',
+        category: 'taobao',
+        type: 'account',
+        tierName: { zh: '淘宝基础买家号', en: 'Taobao Basic Buyer' },
+        tierSlug: 'basic',
+        description: { zh: '淘宝购物基础白号', en: 'Fresh Taobao account' },
+        price: { single: 15.80, bulk10: 12.80, bulk50: 12.80, bulk200: 10.80, originalPrice: { single: 25.80, bulk10: 22.80, bulk50: 22.80, bulk200: 18.80 } },
+        stockCount: 25,
+        sortOrder: 1,
+        ...commonFields
+    },
+    {
+        id: 'taobao-vip',
+        slug: 'taobao-vip',
+        category: 'taobao',
+        type: 'account',
+        tierName: { zh: '淘宝VIP老号', en: 'Taobao VIP Aged Account' },
+        tierSlug: 'vip-aged',
+        description: { zh: '高等级淘气值老号', en: 'High Taoqi score aged account' },
+        price: { single: 48.80, bulk10: 42.80, bulk50: 42.80, bulk200: 38.80, originalPrice: { single: 58.80, bulk10: 52.80, bulk50: 52.80, bulk200: 48.80 } },
+        features: [
+            { zh: '高淘气值', en: 'High Taoqi value' },
+        ],
+        warranty: { zh: '72小时质保', en: '72-hour warranty' },
+        deliveryTime: { zh: '1-4小时', en: '1-4 hours' },
+        stockCount: 12,
+        popular: true,
+        sortOrder: 2,
+        ...commonFields
+    },
+];
+
+/* ---------- Xiaohongshu Products ---------- */
+const xiaohongshuProducts: Product[] = [
+    {
+        id: 'xiaohongshu-basic',
+        slug: 'xiaohongshu-basic',
+        category: 'xiaohongshu',
+        type: 'account',
+        tierName: { zh: '小红书基础号', en: 'Xiaohongshu Basic' },
+        tierSlug: 'basic',
+        description: { zh: '高质量新注册账号', en: 'High-quality fresh account' },
+        price: { single: 18.80, bulk10: 15.80, bulk50: 12.80, bulk200: 10.80, originalPrice: { single: 25.80, bulk10: 22.80, bulk50: 18.80, bulk200: 15.80 } },
+        features: [
+            { zh: '手机号注册', en: 'Phone registered' },
+            { zh: '可正常点赞评论', en: 'Can like & comment' },
+        ],
+        warranty: { zh: '24小时质保', en: '24-hour warranty' },
+        deliveryTime: { zh: '15-30分钟', en: '15-30 mins' },
+        stockCount: 30,
+        sortOrder: 1,
+        ...commonFields
+    },
+];
+
 /* ---------- Bundle Products ---------- */
 const bundleProducts: Product[] = [
     {
@@ -231,16 +459,13 @@ const bundleProducts: Product[] = [
         tierName: { zh: '支付宝+闲鱼 组合账号', en: 'Alipay + Xianyu Combo Account' },
         tierSlug: 'alipay-xianyu-bundle',
         description: { zh: '一站解决闲鱼登录难题，支付宝实名认证+闲鱼账号绑定发货', en: 'One-stop solution for Xianyu login. Verified Alipay + linked Xianyu account.' },
-        price: { 
-            single: 168.00, bulk10: 144.00, bulk50: 144.00, bulk200: 144.00,
-            originalPrice: { single: 280.00, bulk10: 240.00, bulk50: 240.00, bulk200: 240.00 }
-        },
+        price: { single: 168.00, bulk10: 144.00, bulk50: 144.00, bulk200: 144.00 },
         includes: ['支付宝实名账号', '关联闲鱼号', '使用指南'],
         requirements: { zh: '无特殊要求，到手即用', en: 'No special requirements, ready to use' },
         deliveryMethod: 'auto',
         stockCount: 47,
         popular: true,
-        badge: { zh: '特惠价', en: 'Promo' },
+        badge: { zh: '热门推荐', en: 'Top Pick' },
         sortOrder: 1,
     },
     {
@@ -253,10 +478,7 @@ const bundleProducts: Product[] = [
         tierName: { zh: '支付宝+淘宝 购物套装', en: 'Alipay + Taobao Shopping Bundle' },
         tierSlug: 'alipay-taobao-bundle',
         description: { zh: '支付宝实名认证+淘宝买家号，支持历史订单查询', en: 'Verified Alipay + Taobao buyer account with purchase history.' },
-        price: { 
-            single: 192.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00,
-            originalPrice: { single: 320.00, bulk10: 250.00, bulk50: 250.00, bulk200: 250.00 }
-        },
+        price: { single: 192.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 },
         includes: ['支付宝实名', '淘宝买家号', '地址设置指南'],
         stockCount: 32,
         sortOrder: 2,
@@ -271,10 +493,7 @@ const bundleProducts: Product[] = [
         tierName: { zh: '支付宝企业+1688 批发套装', en: 'Alipay Business + 1688 Wholesale Bundle' },
         tierSlug: 'alipay-1688-bundle',
         description: { zh: '企业支付宝+1688卖家/买家号，适合一件代发', en: 'Enterprise Alipay + 1688 seller/buyer account.' },
-        price: { 
-            single: 528.00, bulk10: 468.00, bulk50: 468.00, bulk200: 468.00,
-            originalPrice: { single: 880.00, bulk10: 780.00, bulk50: 780.00, bulk200: 780.00 }
-        },
+        price: { single: 528.00, bulk10: 468.00, bulk50: 468.00, bulk200: 468.00 },
         stockCount: 15,
         sortOrder: 3,
     },
@@ -288,10 +507,7 @@ const bundleProducts: Product[] = [
         tierName: { zh: '微信+京东 购物套装', en: 'WeChat + JD.com Bundle' },
         tierSlug: 'wechat-jd-bundle',
         description: { zh: '已实名微信+京东买家号，支付已关联', en: 'Verified WeChat + JD buyer account.' },
-        price: { 
-            single: 210.00, bulk10: 186.00, bulk50: 186.00, bulk200: 186.00,
-            originalPrice: { single: 350.00, bulk10: 310.00, bulk50: 310.00, bulk200: 310.00 }
-        },
+        price: { single: 210.00, bulk10: 186.00, bulk50: 186.00, bulk200: 186.00 },
         stockCount: 22,
         sortOrder: 4,
     },
@@ -305,10 +521,7 @@ const bundleProducts: Product[] = [
         tierName: { zh: '全平台电商套装', en: 'Full E-Commerce Suite' },
         tierSlug: 'full-ecommerce-suite',
         description: { zh: '支付宝+微信+闲鱼+淘宝+1688 全套账号', en: 'Full suite including all major platforms.' },
-        price: { 
-            single: 1728.00, bulk10: 1560.00, bulk50: 1560.00, bulk200: 1560.00,
-            originalPrice: { single: 2880.00, bulk10: 2600.00, bulk50: 2600.00, bulk200: 2600.00 }
-        },
+        price: { single: 1728.00, bulk10: 1560.00, bulk50: 1560.00, bulk200: 1560.00 },
         stockCount: 5,
         popular: true,
         sortOrder: 5,
@@ -327,10 +540,7 @@ const verificationProducts: Product[] = [
         tierName: { zh: '护照实名代认证', en: 'Passport KYC' },
         tierSlug: 'passport-kyc',
         description: { zh: '提供支付宝、微信及各类跨境平台护照实名代办', en: 'Assisted KYC verification using global passports.' },
-        price: { 
-            single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00,
-            originalPrice: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 }
-        },
+        price: { single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00 },
         requirements: { zh: '需要提供护照清晰照片', en: 'Clear passport photo required' },
         deliveryMethod: 'manual',
         stockCount: 99,
@@ -346,10 +556,7 @@ const verificationProducts: Product[] = [
         tierName: { zh: '人脸验证服务', en: 'Face Verify' },
         tierSlug: 'face-verify',
         description: { zh: '解决APP登录过程中遇到的人脸验证难题', en: 'Bypass face recognition hurdles for apps.' },
-        price: { 
-            single: 48.00, bulk10: 48.00, bulk50: 48.00, bulk200: 48.00,
-            originalPrice: { single: 80.00, bulk10: 80.00, bulk50: 80.00, bulk200: 80.00 }
-        },
+        price: { single: 48.00, bulk10: 48.00, bulk50: 48.00, bulk200: 48.00 },
         deliveryMethod: 'manual',
         stockCount: 99,
         sortOrder: 2,
@@ -364,10 +571,7 @@ const verificationProducts: Product[] = [
         tierName: { zh: '全套认证包', en: 'KYC Package' },
         tierSlug: 'kyc-package',
         description: { zh: '包含身份证、手持、人脸全套验证资料', en: 'Includes ID, holding ID photo, and face data.' },
-        price: { 
-            single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00,
-            originalPrice: { single: 250.00, bulk10: 250.00, bulk50: 250.00, bulk200: 250.00 }
-        },
+        price: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 },
         deliveryMethod: 'manual',
         stockCount: 99,
         sortOrder: 3,
@@ -382,10 +586,7 @@ const verificationProducts: Product[] = [
         tierName: { zh: '微信实名', en: 'Wechat Realname' },
         tierSlug: 'wechat-realname',
         description: { zh: '为您的微信账号激活支付及实名功能', en: 'Activate payment and ID status for your WeChat.' },
-        price: { 
-            single: 72.00, bulk10: 72.00, bulk50: 72.00, bulk200: 72.00,
-            originalPrice: { single: 120.00, bulk10: 120.00, bulk50: 120.00, bulk200: 120.00 }
-        },
+        price: { single: 72.00, bulk10: 72.00, bulk50: 72.00, bulk200: 72.00 },
         deliveryMethod: 'manual',
         stockCount: 99,
         sortOrder: 4,
@@ -400,10 +601,7 @@ const verificationProducts: Product[] = [
         tierName: { zh: '支付宝实名', en: 'Alipay Realname' },
         tierSlug: 'alipay-realname',
         description: { zh: '为您的支付宝账号激活全功能实名', en: 'Full feature ID activation for Alipay.' },
-        price: { 
-            single: 72.00, bulk10: 72.00, bulk50: 72.00, bulk200: 72.00,
-            originalPrice: { single: 120.00, bulk10: 120.00, bulk50: 120.00, bulk200: 120.00 }
-        },
+        price: { single: 72.00, bulk10: 72.00, bulk50: 72.00, bulk200: 72.00 },
         deliveryMethod: 'manual',
         stockCount: 99,
         sortOrder: 5,
@@ -422,10 +620,7 @@ const tradingProducts: Product[] = [
         tierName: { zh: 'XM 账号', en: 'XM Account' },
         tierSlug: 'xm-account',
         description: { zh: '已通过KYC认证的XM外汇交易账户', en: 'Verified XM account ready for forex trading.' },
-        price: { 
-            single: 180.00, bulk10: 180.00, bulk50: 180.00, bulk200: 180.00,
-            originalPrice: { single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00 }
-        },
+        price: { single: 180.00, bulk10: 180.00, bulk50: 180.00, bulk200: 180.00 },
         deliveryMethod: 'manual',
         stockCount: 10,
         sortOrder: 1,
@@ -440,10 +635,7 @@ const tradingProducts: Product[] = [
         tierName: { zh: 'HFM 账号', en: 'HFM Account' },
         tierSlug: 'hfm-account',
         description: { zh: '已通过KYC认证的HFM(HotForex)账户', en: 'Verified HFM account.' },
-        price: { 
-            single: 180.00, bulk10: 180.00, bulk50: 180.00, bulk200: 180.00,
-            originalPrice: { single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00 }
-        },
+        price: { single: 180.00, bulk10: 180.00, bulk50: 180.00, bulk200: 180.00 },
         deliveryMethod: 'manual',
         stockCount: 8,
         sortOrder: 2,
@@ -458,10 +650,7 @@ const tradingProducts: Product[] = [
         tierName: { zh: 'Neteller 账号', en: 'Neteller Account' },
         tierSlug: 'neteller-account',
         description: { zh: '已实名认证的Neteller电子钱包', en: 'Verified Neteller e-wallet.' },
-        price: { 
-            single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00,
-            originalPrice: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 }
-        },
+        price: { single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00 },
         deliveryMethod: 'manual',
         stockCount: 15,
         sortOrder: 3,
@@ -476,10 +665,7 @@ const tradingProducts: Product[] = [
         tierName: { zh: 'Skrill 账号', en: 'Skrill Account' },
         tierSlug: 'skrill-account',
         description: { zh: '已实名认证的Skrill电子钱包', en: 'Verified Skrill e-wallet.' },
-        price: { 
-            single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00,
-            originalPrice: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 }
-        },
+        price: { single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00 },
         deliveryMethod: 'manual',
         stockCount: 12,
         sortOrder: 4,
@@ -494,10 +680,7 @@ const tradingProducts: Product[] = [
         tierName: { zh: 'Payoneer 账号', en: 'Payoneer Account' },
         tierSlug: 'payoneer-account',
         description: { zh: '已通过KYC的Payoneer账户，支持全球收款', en: 'Verified Payoneer account for global payments.' },
-        price: { 
-            single: 270.00, bulk10: 270.00, bulk50: 270.00, bulk200: 270.00,
-            originalPrice: { single: 450.00, bulk10: 450.00, bulk50: 450.00, bulk200: 450.00 }
-        },
+        price: { single: 270.00, bulk10: 270.00, bulk50: 270.00, bulk200: 270.00 },
         deliveryMethod: 'manual',
         stockCount: 5,
         sortOrder: 5,
@@ -512,10 +695,7 @@ const tradingProducts: Product[] = [
         tierName: { zh: 'Wise 账号', en: 'Wise Account' },
         tierSlug: 'wise-account',
         description: { zh: '已完成实名验证的Wise账户，支持多币种', en: 'Verified Wise multi-currency account.' },
-        price: { 
-            single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00,
-            originalPrice: { single: 500.00, bulk10: 500.00, bulk50: 500.00, bulk200: 500.00 }
-        },
+        price: { single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00 },
         deliveryMethod: 'manual',
         stockCount: 3,
         sortOrder: 6,
@@ -525,6 +705,11 @@ const tradingProducts: Product[] = [
 export const allProducts: Product[] = [
     ...wechatProducts,
     ...alipayProducts,
+    ...douyinProducts,
+    ...qqProducts,
+    ...xianyuProducts,
+    ...taobaoProducts,
+    ...xiaohongshuProducts,
     ...bundleProducts,
     ...verificationProducts,
     ...tradingProducts,
