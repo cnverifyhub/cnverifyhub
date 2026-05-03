@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
-import { getProductsByCategory } from '@/data/products';
+import { getProductsByCategory, getLowestPrice } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
+import { calculateYuan, formatYuan } from '@/lib/utils';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'Buy Verified Douyin Accounts | CNWePro',
-        description: 'Douyin accounts with real followers and high authority. Instant crypto delivery.',
+        description: `Verified Douyin accounts with followers and high authority starting from ${formatYuan(getLowestPrice('douyin'))}. Instant crypto delivery.`,
         url: `${SITE_URL}/en/douyin/`,
     },
 };
@@ -40,8 +41,8 @@ function getDouyinJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: calculateYuan(p.price.single),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

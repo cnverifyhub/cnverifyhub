@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
-import { getProductsByCategory } from '@/data/products';
+import { getProductsByCategory, getLowestPrice } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
+import { calculateYuan, formatYuan } from '@/lib/utils';
 import { FAQAccordion } from '@/components/ui/FAQAccordion';
 import { faqData } from '@/data/faq';
 
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'Buy WeChat Account - Verified & Aged | CNWePro',
-        description: 'Fresh WeChat accounts from $18. Verified accounts from $28. Instant crypto delivery safely.',
+        description: `Verified WeChat accounts starting from ${formatYuan(getLowestPrice('wechat'))}. Instant crypto delivery safely.`,
         url: `${SITE_URL}/en/wechat/`,
     },
 };
@@ -43,8 +44,8 @@ function getWeChatJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: calculateYuan(p.price.single),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

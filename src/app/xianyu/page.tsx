@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
-import { getProductsByCategory } from '@/data/products';
+import { getProductsByCategory, getLowestPrice } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
+import { calculateYuan, formatYuan } from '@/lib/utils';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -14,8 +15,8 @@ export const metadata: Metadata = {
         languages: { 'zh-CN': `${SITE_URL}/xianyu/`, 'en': `${SITE_URL}/en/xianyu/` },
     },
     openGraph: {
-        title: '闲鱼账号购买 - 优质实名老号 | CNWePro',
-        description: '闲鱼实名号¥48起 | 优质老号¥68起 | USDT支付秒发货',
+        title: '闲鱼实名账号现货 - 权重高·不限流 | CNWePro',
+        description: `闲鱼实名号${formatYuan(getLowestPrice('xianyu'))}起 | USDT支付自动发货`,
     },
 };
 
@@ -39,8 +40,8 @@ function getXianyuJsonLd() {
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'USD',
-                    price: p.price.single,
+                    priceCurrency: 'CNY',
+                    price: calculateYuan(p.price.single),
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

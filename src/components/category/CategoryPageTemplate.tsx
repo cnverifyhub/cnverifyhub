@@ -7,7 +7,7 @@ import { t, type Lang } from '@/lib/i18n';
 import type { CategoryId } from '@/types';
 import { Shield, ShieldCheck, CheckCircle2, Zap, Clock, Info, MessageCircle, Wallet, Music, Tv2, ShoppingBag, Store, Heart, Camera } from 'lucide-react';
 import { MobileStickyBuyBar } from '@/components/layout/MobileStickyBuyBar';
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, BundleIcon, VerificationIcon, FintechIcon } from '@/components/ui/BrandIcons';
 
 const iconMap: Record<string, React.ElementType> = {
     wechat: WeChatIcon,
@@ -29,7 +29,10 @@ const iconColors: Record<string, string> = {
     qq: "text-sky-500",
     xianyu: "text-amber-500",
     taobao: "text-orange-500",
-    xiaohongshu: "text-red-500"
+    xiaohongshu: "text-red-500",
+    bundle: "text-purple-500",
+    verification: "text-indigo-500",
+    fintech: "text-emerald-500"
 };
 
 const watermarkMap: Record<string, React.ElementType> = {
