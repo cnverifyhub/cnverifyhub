@@ -19,7 +19,7 @@ const iconMap: Record<string, React.ElementType> = {
     xiaohongshu: XiaohongshuIcon,
     bundle: Package,
     verification: ShieldCheck,
-    fintech: Landmark
+    trading: Landmark
 };
 
 const iconColors: Record<string, string> = {
@@ -32,7 +32,7 @@ const iconColors: Record<string, string> = {
     xiaohongshu: "text-red-500",
     bundle: "text-purple-500",
     verification: "text-indigo-500",
-    fintech: "text-emerald-500"
+    trading: "text-amber-500"
 };
 
 const watermarkMap: Record<string, React.ElementType> = {
@@ -45,7 +45,7 @@ const watermarkMap: Record<string, React.ElementType> = {
     xiaohongshu: Camera,
     bundle: Package,
     verification: ShieldCheck,
-    fintech: Landmark
+    trading: Landmark
 };
 
 interface CategoryPageTemplateProps {

@@ -55,17 +55,17 @@ const iconMap: Record<string, { icon: React.ReactNode, accentColor: string, text
         accentColor: '#6366f1',
         textColor: 'text-[#6366f1]'
     },
-    fintech: { 
+    trading: { 
         icon: <FintechIcon className="w-full h-full" />, 
-        accentColor: '#10b981',
-        textColor: 'text-[#10b981]'
+        accentColor: '#f59e0b',
+        textColor: 'text-[#f59e0b]'
     },
 };
 
 export function CategoryCards({ lang }: { lang: Lang }) {
-    const accountCategories = categories.filter(c => !['bundle', 'verification', 'fintech'].includes(c.id));
+    const accountCategories = categories.filter(c => !['bundle', 'verification', 'trading'].includes(c.id));
     const bundleCategories = categories.filter(c => c.id === 'bundle');
-    const serviceCategories = categories.filter(c => ['verification', 'fintech'].includes(c.id));
+    const serviceCategories = categories.filter(c => ['verification', 'trading'].includes(c.id));
 
     const renderCategoryGrid = (categoryList: typeof categories, title: string) => (
         <div className="mb-20 last:mb-0">

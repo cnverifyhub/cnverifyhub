@@ -1,4 +1,4 @@
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, BundleIcon, VerificationIcon, FintechIcon } from '@/components/ui/BrandIcons';
 import { getLocalizedPath, t, type Lang } from '@/lib/i18n';
 import Link from 'next/link';
 
@@ -15,6 +15,9 @@ const categories = [
     { id: 'xianyu', name: { zh: '闲鱼号', en: 'Xianyu' }, icon: XianyuIcon, color: 'text-amber-500', href: '/xianyu/' },
     { id: 'taobao', name: { zh: '淘宝号', en: 'Taobao' }, icon: TaobaoIcon, color: 'text-orange-500', href: '/taobao/' },
     { id: 'xiaohongshu', name: { zh: '小红书', en: 'RED' }, icon: XiaohongshuIcon, color: 'text-red-500', href: '/xiaohongshu/' },
+    { id: 'bundle', name: { zh: '组合套装', en: 'Bundle' }, icon: BundleIcon, color: 'text-purple-500', href: '/bundle/' },
+    { id: 'verification', name: { zh: '实名认证', en: 'Verify' }, icon: VerificationIcon, color: 'text-indigo-500', href: '/verification/' },
+    { id: 'trading', name: { zh: '金融交易', en: 'Trading' }, icon: FintechIcon, color: 'text-amber-500', href: '/trading/' },
 ];
 
 export function RelatedCategories({ currentCategory, lang }: RelatedCategoriesProps) {

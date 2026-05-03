@@ -27,7 +27,7 @@ const iconMap: Record<string, React.ElementType> = {
     xiaohongshu: XiaohongshuIcon,
     bundle: Package,
     verification: ShieldCheck,
-    fintech: Landmark,
+    trading: Landmark,
 };
 
 const iconColors: Record<string, string> = {
@@ -40,7 +40,7 @@ const iconColors: Record<string, string> = {
     xiaohongshu: "text-red-500",
     bundle: "text-purple-500",
     verification: "text-indigo-500",
-    fintech: "text-emerald-500",
+    trading: "text-amber-500",
 };
 
 interface ProductPageTemplateProps {
@@ -192,7 +192,7 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                     </Link>
                     <ChevronLeft className="w-4 h-4 rotate-180" />
                     <span className="text-slate-900 dark:text-slate-300 font-medium truncate">
-                        {product.tierName[lang]}
+                        {product.name?.[lang] || product.tierName[lang]}
                     </span>
                 </nav>
 
@@ -215,7 +215,7 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                                 </Link>
                                 
                                 <h1 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white leading-tight mb-4">
-                                    {product.tierName[lang]}
+                                    {product.name?.[lang] || product.tierName[lang]}
                                     <span className="block text-sm md:text-base font-medium text-slate-500 mt-2">
                                         {product.description[lang]}
                                     </span>

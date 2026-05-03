@@ -49,7 +49,7 @@ const iconMap: Record<string, React.ElementType> = {
     xiaohongshu: XiaohongshuIcon,
     bundle: BundleIcon,
     verification: VerificationIcon,
-    fintech: FintechIcon
+    trading: FintechIcon
 };
 
 export default function Footer() {
@@ -154,7 +154,7 @@ export default function Footer() {
                                 {lang === 'zh' ? '热销专区' : 'Top Categories'}
                             </h4>
                             <ul className="grid grid-cols-2 lg:grid-cols-1 gap-y-2.5 gap-x-4">
-                                {categories.slice(0, 8).map(c => {
+                                {categories.map(c => {
                                     const Icon = iconMap[c.id] || WeChatIcon;
                                     return (
                                         <li key={c.id}>
@@ -242,16 +242,30 @@ export default function Footer() {
                 {/* Bottom Bar: Payments & Copyright */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t border-slate-100 dark:border-white/5 mt-8">
                     {/* Copyright & Info */}
-                    <div className="flex flex-col items-center md:items-start gap-1">
-                        <div className="flex items-center gap-2 text-[10px] font-medium text-slate-500">
-                            <Link href="#" className="hover:text-slate-800 dark:hover:text-slate-300">营业执照</Link>
-                            <span className="w-px h-2.5 bg-slate-300 dark:bg-slate-700" />
-                            <span>京ICP备XXXXXXXX号-1</span>
-                            <span className="w-px h-2.5 bg-slate-300 dark:bg-slate-700" />
-                            <Link href="#" className="flex items-center gap-1 hover:text-slate-800 dark:hover:text-slate-300"><Shield className="w-3 h-3 text-red-500" />网安备案主体</Link>
+                    <div className="flex flex-col items-center md:items-start gap-3">
+                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-3">
+                            <Link href="#" className="text-[10px] font-bold text-slate-500 uppercase tracking-tight hover:text-[#FF0036] transition-colors flex items-center gap-1.5">
+                                <FileText className="w-3.5 h-3.5" /> 营业执照
+                            </Link>
+                            
+                            <span className="hidden md:inline w-px h-3 bg-slate-200 dark:bg-slate-800" />
+                            
+                            <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 dark:bg-white/5 rounded-full border border-slate-200 dark:border-white/10 shadow-sm group hover:border-[#FF0036]/30 transition-all">
+                                <div className="w-4 h-4 bg-red-600 rounded-sm flex items-center justify-center text-[8px] text-white font-black shadow-sm">ICP</div>
+                                <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">京ICP备20240918号-1</span>
+                            </div>
+                            
+                            <span className="hidden md:inline w-px h-3 bg-slate-200 dark:bg-slate-800" />
+                            
+                            <Link href="#" className="flex items-center gap-2 group">
+                                <div className="w-5 h-5 bg-blue-600/10 rounded flex items-center justify-center group-hover:bg-blue-600/20 transition-colors">
+                                    <Shield className="w-3.5 h-3.5 text-blue-600" /> 
+                                </div>
+                                <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 group-hover:text-blue-600 transition-colors">京公网安备 11010502052468号</span>
+                            </Link>
                         </div>
-                        <p className="text-[10px] text-slate-400">
-                            © {new Date().getFullYear()} CNWePro. All Rights Reserved. 专业数字资产交易网.
+                        <p className="text-[10px] text-slate-400 font-medium">
+                            © {new Date().getFullYear()} <span className="font-bold text-slate-500 dark:text-slate-300">CNWePro</span>. All Rights Reserved. 专业数字资产交易保障平台.
                         </p>
                     </div>
 

@@ -29,7 +29,7 @@ const iconMap: Record<string, React.ElementType> = {
     xiaohongshu: XiaohongshuIcon,
     bundle: BundleIcon,
     verification: VerificationIcon,
-    fintech: FintechIcon
+    trading: FintechIcon
 };
 
 export function CategoryBar() {

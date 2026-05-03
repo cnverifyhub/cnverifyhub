@@ -34,25 +34,43 @@ export interface PricingTier {
 
 export interface Product {
     id: string;
-    slug?: string;
+    slug: string; // Unified slug
+    name?: { zh: string; en: string }; // New standardized name field
+    nameEn?: string; // Shortcut for EN name if needed
     category: CategoryId;
-    subcategory?: string;
-    type?: ProductType;
+    subcategory?: string; // e.g., "alipay-xianyu", "xm-trading"
+    type: ProductType; // account, bundle, service, document
+    
+    // Legacy support
     tierName: { zh: string; en: string };
     tierSlug: string;
+    
     description: { zh: string; en: string };
     price: PricingTier;
     compareAtPrice?: number;
-    currency?: 'CNY' | 'USD' | 'USDT';
-    features?: Array<{ zh: string; en: string }>;
-    includes?: string[];
-    requirements?: { zh?: string; en?: string; buyerNeeds?: string; technical?: string };
-    deliveryMethod?: 'auto' | 'manual' | 'scheduled';
+    currency: 'CNY' | 'USD' | 'USDT';
+    
+    variants?: ProductVariant[];
+    includes?: string[]; // list of what's included
+    requirements?: { 
+        zh?: string; 
+        en?: string; 
+        buyerNeeds?: string; 
+        technical?: string;
+        list?: string[]; // New list format
+    };
+    
+    deliveryMethod: 'auto' | 'manual' | 'scheduled';
     deliveryTime?: { zh: string; en: string };
-    warranty?: { zh: string; en: string };
+    
+    stockStatus?: 'in-stock' | 'low-stock' | 'out-of-stock';
     stockCount: number;
+    
     popular?: boolean;
     badge?: { zh: string; en: string };
+    features?: Array<{ zh: string; en: string }>;
+    warranty?: { zh: string; en: string };
+    
     sortOrder: number;
     image?: string;
     featuredImage?: string;
@@ -74,8 +92,8 @@ export interface Product {
     // Legacy fields (for backward compatibility)
     bundleContents?: Array<{
         item: string;
-        name: string;
-        description: string;
+        name: { zh: string; en: string };
+        description?: { zh: string; en: string };
         verificationLevel?: string;
         linkStatus?: string;
         includes: string[];

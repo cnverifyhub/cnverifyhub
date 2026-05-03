@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-
+import matter from 'gray-matter';
 import { marked } from 'marked';
 
 export interface BlogPost {
@@ -37,21 +37,24 @@ export function getAllPosts(lang: 'zh' | 'en'): BlogPost[] {
     
     const fileNames = fs.readdirSync(dir);
     const posts: BlogPost[] = fileNames
-        .filter(fileName => fileName.endsWith('.json') && fileName !== 'manifest.json')
+        .filter(fileName => fileName.endsWith('.mdx'))
         .map(fileName => {
             const fullPath = path.join(dir, fileName);
             try {
                 const fileContents = fs.readFileSync(fullPath, 'utf8');
-                const post = JSON.parse(fileContents) as BlogPost;
+                const { data, content } = matter(fileContents);
                 
-                // Parse markdown content to HTML
-                const markdownContent = post.content;
-                post.content = marked.parse(markdownContent) as string;
+                const post = {
+                    ...data,
+                    content: marked.parse(content) as string,
+                    slug: data.slug || fileName.replace(/\.mdx$/, '')
+                } as BlogPost;
                 
-                // Calculate word count and reading time dynamically if missing or thin
-                const plainText = markdownContent.replace(/<[^>]*>/g, '');
-                post.wordCount = plainText.trim().split(/\s+/).length + (plainText.match(/[\u4e00-\u9fa5]/g)?.length || 0);
-                post.readingTime = `${Math.ceil(post.wordCount / 250)} min`;
+                // Calculate word count and reading time dynamically
+                const plainText = content.replace(/<[^>]*>/g, '');
+                const wordCount = plainText.trim().split(/\s+/).length + (plainText.match(/[\u4e00-\u9fa5]/g)?.length || 0);
+                post.wordCount = wordCount;
+                post.readingTime = `${Math.ceil(wordCount / 200)} min`;
                 
                 return post;
             } catch (err) {
@@ -67,22 +70,25 @@ export function getAllPosts(lang: 'zh' | 'en'): BlogPost[] {
 
 export function getPostBySlug(slug: string, lang: 'zh' | 'en'): BlogPost | null {
     const dir = getBlogDirectory(lang);
-    const fullPath = path.join(dir, `${slug}.json`);
+    const fullPath = path.join(dir, `${slug}.mdx`);
     
     if (!fs.existsSync(fullPath)) return null;
     
     try {
         const fileContents = fs.readFileSync(fullPath, 'utf8');
-        const post = JSON.parse(fileContents) as BlogPost;
+        const { data, content } = matter(fileContents);
         
-        // Parse markdown content to HTML
-        const markdownContent = post.content;
-        post.content = marked.parse(markdownContent) as string;
+        const post = {
+            ...data,
+            content: marked.parse(content) as string,
+            slug: data.slug || slug
+        } as BlogPost;
         
         // Dynamic stats
-        const plainText = markdownContent.replace(/<[^>]*>/g, '');
-        post.wordCount = plainText.trim().split(/\s+/).length + (plainText.match(/[\u4e00-\u9fa5]/g)?.length || 0);
-        post.readingTime = `${Math.ceil(post.wordCount / 250)} min`;
+        const plainText = content.replace(/<[^>]*>/g, '');
+        const wordCount = plainText.trim().split(/\s+/).length + (plainText.match(/[\u4e00-\u9fa5]/g)?.length || 0);
+        post.wordCount = wordCount;
+        post.readingTime = `${Math.ceil(wordCount / 200)} min`;
         
         return post;
     } catch (err) {
@@ -97,6 +103,7 @@ export function getAllSlugs(): string[] {
     
     const fileNames = fs.readdirSync(dir);
     return fileNames
-        .filter(fileName => fileName.endsWith('.json') && fileName !== 'manifest.json')
-        .map(fileName => fileName.replace(/\.json$/, ''));
+        .filter(fileName => fileName.endsWith('.mdx'))
+        .map(fileName => fileName.replace(/\.mdx$/, ''));
 }
+

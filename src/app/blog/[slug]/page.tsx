@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 import Image from 'next/image';
 import { ReadingProgress, ShareButtons, TableOfContents, ScrollProgressBar } from '@/components/blog/BlogClientFeatures';
 
-export default function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: { params: { slug: string } }) {
     const post = getPostBySlug(params.slug, 'zh');
     const lang = 'zh';
 
@@ -125,7 +125,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                                 </div>
                                 <div>
                                     <div className="font-bold text-sm text-slate-900 dark:text-white">CNWePro Team</div>
-                                    <div className="text-xs text-slate-500">{post.readingTime} · {post.wordCount.toLocaleString()} {lang === 'zh' ? '字' : 'words'}</div>
+                                    <div className="text-xs text-slate-500">{post.readingTime} · {post.wordCount.toLocaleString()} 字</div>
                                 </div>
                             </div>
                             <div className="flex flex-col items-end gap-1">

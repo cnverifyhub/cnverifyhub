@@ -23,7 +23,7 @@ const ICON_COMPONENTS: Record<string, React.ElementType> = {
     xiaohongshu: XiaohongshuIcon,
     bundle: BundleIcon,
     verification: VerificationIcon,
-    fintech: FintechIcon
+    trading: FintechIcon
 };
 
 interface PricingCardProps {
@@ -41,7 +41,7 @@ const BRAND_CONFIG: Record<string, { color: string; bg: string; iconBg: string; 
     xiaohongshu: { color: '#ff2442', bg: 'bg-[#ff2442]/5', iconBg: '#ff2442', shadow: 'shadow-red-500/20', glow: 'group-hover:shadow-red-500/30' },
     bundle:      { color: '#8b5cf6', bg: 'bg-[#8b5cf6]/5', iconBg: '#8b5cf6', shadow: 'shadow-purple-500/20', glow: 'group-hover:shadow-purple-500/30' },
     verification:{ color: '#6366f1', bg: 'bg-[#6366f1]/5', iconBg: '#6366f1', shadow: 'shadow-indigo-500/20', glow: 'group-hover:shadow-indigo-500/30' },
-    fintech:     { color: '#10b981', bg: 'bg-[#10b981]/5', iconBg: '#10b981', shadow: 'shadow-emerald-500/20', glow: 'group-hover:shadow-emerald-500/30' },
+    trading:     { color: '#f59e0b', bg: 'bg-[#f59e0b]/10', iconBg: '#f59e0b', shadow: 'shadow-amber-500/20', glow: 'group-hover:shadow-amber-500/30' },
 };
 
 export function PricingCard({ product, lang }: PricingCardProps) {
@@ -157,7 +157,7 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                             {lang === 'zh' ? '官方特选' : 'PREMIUM'}
                         </span>
                         <h3 className="text-lg sm:text-xl font-black text-slate-900 dark:text-white leading-tight line-clamp-1 group-hover:text-[#FF5000] transition-colors">
-                            {product.tierName[lang]}
+                            {product.name?.[lang] || product.tierName[lang]}
                         </h3>
                     </div>
                     <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed font-medium">

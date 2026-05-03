@@ -12,7 +12,29 @@ import {
     Smartphone, Link as LinkIcon, Lock, ArrowRight, XCircle
 } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
-import { AlipayIcon, XianyuIcon } from '@/components/ui/BrandIcons';
+import { AlipayIcon, XianyuIcon, DouyinIcon, TaobaoIcon, WeChatIcon, BundleIcon, FullSuiteIcon, WechatJdIcon } from '@/components/ui/BrandIcons';
+
+const ICON_MAP: Record<string, React.ElementType> = {
+    alipay: AlipayIcon,
+    xianyu: XianyuIcon,
+    douyin: DouyinIcon,
+    taobao: TaobaoIcon,
+    wechat: WeChatIcon,
+    jd:     WechatJdIcon,
+    bundle: BundleIcon,
+    suite:  FullSuiteIcon
+};
+
+const COLOR_MAP: Record<string, string> = {
+    alipay: 'blue',
+    xianyu: 'amber',
+    douyin: 'slate',
+    taobao: 'orange',
+    wechat: 'emerald',
+    jd:     'red',
+    bundle: 'purple',
+    suite:  'indigo'
+};
 
 interface BundleProductPageTemplateProps {
     productId: string;
@@ -170,48 +192,112 @@ export function BundleProductPageTemplate({ productId, lang }: BundleProductPage
                         {lang === 'zh' ? '组合内包含什么？' : "What's Included?"}
                     </h2>
                     <div className="grid md:grid-cols-2 gap-4">
-                        {/* Alipay Card */}
-                        <div className="bg-white dark:bg-dark-800 p-5 rounded-2xl border-2 border-blue-100 dark:border-blue-900/30 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-blue-500/10 rounded-bl-full pointer-events-none"></div>
-                            <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-xl flex items-center justify-center mb-4">
-                                <AlipayIcon className="w-8 h-8" />
-                            </div>
-                            <h3 className="text-lg font-bold text-blue-600 dark:text-blue-400 mb-2">1. {lang === 'zh' ? '支付宝实名账号' : 'Verified Alipay'}</h3>
-                            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 h-10">
-                                {lang === 'zh' ? '已实名认证，可正常收付款，支持闲鱼/淘宝一键登录。' : 'Real-name verified. Ready for payments and 1-click Xianyu login.'}
-                            </p>
-                            <ul className="space-y-2">
-                                {bundleContents?.[0]?.includes.map((item, i) => (
-                                    <li key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 font-medium">
-                                        <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                        {bundleContents?.map((content, idx) => {
+                            const iconKey = content.name[lang].toLowerCase().includes('alipay') || content.name[lang].toLowerCase().includes('支付宝') ? 'alipay' :
+                                           content.name[lang].toLowerCase().includes('xianyu') || content.name[lang].toLowerCase().includes('闲鱼') ? 'xianyu' :
+                                           content.name[lang].toLowerCase().includes('wechat') || content.name[lang].toLowerCase().includes('微信') ? 'wechat' :
+                                           content.name[lang].toLowerCase().includes('taobao') || content.name[lang].toLowerCase().includes('淘宝') ? 'taobao' :
+                                           content.name[lang].toLowerCase().includes('douyin') || content.name[lang].toLowerCase().includes('抖音') ? 'douyin' :
+                                           content.name[lang].toLowerCase().includes('jd')     || content.name[lang].toLowerCase().includes('京东') ? 'jd' : 'bundle';
+                            
+                            const Icon = ICON_MAP[iconKey] || BundleIcon;
+                            const colorKey = COLOR_MAP[iconKey] || 'slate';
+                            
+                            interface ColorConfig {
+                                border: string;
+                                bg: string;
+                                text: string;
+                                dot: string;
+                                shadow: string;
+                            }
 
-                        {/* Xianyu Card */}
-                        <div className="bg-white dark:bg-dark-800 p-5 rounded-2xl border-2 border-amber-100 dark:border-amber-900/30 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/10 rounded-bl-full pointer-events-none"></div>
-                            <div className="w-12 h-12 bg-amber-50 dark:bg-amber-900/20 rounded-xl flex items-center justify-center mb-4">
-                                <XianyuIcon className="w-8 h-8" />
-                            </div>
-                            <div className="absolute top-4 right-4 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
-                                <LinkIcon className="w-3 h-3" /> {lang === 'zh' ? '已关联' : 'Pre-linked'}
-                            </div>
-                            <h3 className="text-lg font-bold text-amber-500 mb-2">2. {lang === 'zh' ? '闲鱼卖家账号' : 'Xianyu Seller Account'}</h3>
-                            <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 h-10">
-                                {lang === 'zh' ? '已与上述支付宝完成底层绑定，可直接免手机号登录发布商品。' : 'Pre-linked to the Alipay account. Login directly to start selling.'}
-                            </p>
-                            <ul className="space-y-2">
-                                {bundleContents?.[1]?.includes.map((item, i) => (
-                                    <li key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 font-medium">
-                                        <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0" />
-                                        {item}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                            const colorConfigs: Record<string, ColorConfig> = {
+                                blue: {
+                                    border: 'border-blue-100 dark:border-blue-900/30',
+                                    bg: 'bg-blue-50/50 dark:bg-blue-900/10',
+                                    text: 'text-blue-600 dark:text-blue-400',
+                                    dot: 'bg-blue-500/10',
+                                    shadow: 'shadow-blue-500/5'
+                                },
+                                amber: {
+                                    border: 'border-amber-100 dark:border-amber-900/30',
+                                    bg: 'bg-amber-50/50 dark:bg-amber-900/10',
+                                    text: 'text-amber-500',
+                                    dot: 'bg-amber-500/10',
+                                    shadow: 'shadow-amber-500/5'
+                                },
+                                emerald: {
+                                    border: 'border-emerald-100 dark:border-emerald-900/30',
+                                    bg: 'bg-emerald-50/50 dark:bg-emerald-900/10',
+                                    text: 'text-emerald-600 dark:text-emerald-400',
+                                    dot: 'bg-emerald-500/10',
+                                    shadow: 'shadow-emerald-500/5'
+                                },
+                                orange: {
+                                    border: 'border-orange-100 dark:border-orange-900/30',
+                                    bg: 'bg-orange-50/50 dark:bg-orange-900/10',
+                                    text: 'text-orange-500',
+                                    dot: 'bg-orange-500/10',
+                                    shadow: 'shadow-orange-500/5'
+                                },
+                                slate: {
+                                    border: 'border-slate-100 dark:border-slate-900/30',
+                                    bg: 'bg-slate-50/50 dark:bg-slate-900/10',
+                                    text: 'text-slate-600 dark:text-slate-400',
+                                    dot: 'bg-slate-500/10',
+                                    shadow: 'shadow-slate-500/5'
+                                },
+                                red: {
+                                    border: 'border-red-100 dark:border-red-900/30',
+                                    bg: 'bg-red-50/50 dark:bg-red-900/10',
+                                    text: 'text-red-500',
+                                    dot: 'bg-red-500/10',
+                                    shadow: 'shadow-red-500/5'
+                                },
+                                purple: {
+                                    border: 'border-purple-100 dark:border-purple-900/30',
+                                    bg: 'bg-purple-50/50 dark:bg-purple-900/10',
+                                    text: 'text-purple-600 dark:text-purple-400',
+                                    dot: 'bg-purple-500/10',
+                                    shadow: 'shadow-purple-500/5'
+                                },
+                                indigo: {
+                                    border: 'border-indigo-100 dark:border-indigo-900/30',
+                                    bg: 'bg-indigo-50/50 dark:bg-indigo-900/10',
+                                    text: 'text-indigo-600 dark:text-indigo-400',
+                                    dot: 'bg-indigo-500/10',
+                                    shadow: 'shadow-indigo-500/5'
+                                }
+                            };
+
+                            const colors = colorConfigs[colorKey] || colorConfigs.slate;
+
+                            return (
+                                <div key={idx} className={`bg-white dark:bg-dark-800 p-5 rounded-2xl border-2 relative overflow-hidden ${colors.border}`}>
+                                    <div className={`absolute top-0 right-0 w-24 h-24 rounded-bl-full pointer-events-none opacity-10 ${colors.bg}`}></div>
+                                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${colors.bg} ${colors.text}`}>
+                                        <Icon className="w-8 h-8" />
+                                    </div>
+                                    {idx > 0 && (
+                                        <div className="absolute top-4 right-4 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
+                                            <LinkIcon className="w-3 h-3" /> {lang === 'zh' ? '已关联' : 'Pre-linked'}
+                                        </div>
+                                    )}
+                                    <h3 className={`text-lg font-bold mb-2 ${colors.text}`}>{idx + 1}. {content.name[lang]}</h3>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400 mb-4 h-10">
+                                        {content.description?.[lang] || (lang === 'zh' ? '已实名认证，可正常收付款，即开即用。' : 'Real-name verified. Ready for immediate use.')}
+                                    </p>
+                                    <ul className="space-y-2">
+                                        {content.includes.map((item, i) => (
+                                            <li key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 font-medium">
+                                                <CheckCircle2 className={`w-4 h-4 shrink-0 ${colors.text}`} />
+                                                {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            );
+                        })}
                     </div>
                 </section>
 

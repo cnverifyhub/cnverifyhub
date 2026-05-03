@@ -22,7 +22,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
     xiaohongshu: <XiaohongshuIcon className="w-full h-full" />,
     bundle: <BundleIcon className="w-full h-full" />,
     verification: <VerificationIcon className="w-full h-full" />,
-    fintech: <FintechIcon className="w-full h-full" />,
+    trading: <FintechIcon className="w-full h-full" />,
 };
 
 export default function Header() {

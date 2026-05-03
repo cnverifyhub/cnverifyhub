@@ -437,7 +437,7 @@ export function Hero({ lang }: { lang: Lang }) {
                             </div>
                             <div>
                                 <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
-                                    <AnimatedCounter end={10} suffix="K+" duration={2500} />
+                                    <AnimatedCounter end={12} suffix=",480+" duration={2500} />
                                 </p>
                                 <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.customers', lang)}</p>
                             </div>

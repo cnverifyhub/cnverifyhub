@@ -57,7 +57,7 @@ const trustItems = {
 
 export function WhyChooseUs({ lang }: WhyChooseUsProps) {
     const [count, setCount] = useState(0);
-    const targetCount = 5284;
+    const targetCount = 12480;
     const items = trustItems[lang] || trustItems.zh;
 
     useEffect(() => {

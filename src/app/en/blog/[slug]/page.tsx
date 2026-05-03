@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 import Image from 'next/image';
 import { ReadingProgress, ShareButtons, TableOfContents } from '@/components/blog/BlogClientFeatures';
 
-export default function EnBlogPostPage({ params }: { params: { slug: string } }) {
+export default async function EnBlogPostPage({ params }: { params: { slug: string } }) {
     const post = getPostBySlug(params.slug, 'en');
     const lang = 'en';
 
@@ -128,7 +128,7 @@ export default function EnBlogPostPage({ params }: { params: { slug: string } })
                                 </div>
                                 <div>
                                     <div className="font-bold text-sm text-slate-900 dark:text-white">CNWePro Team</div>
-                                    <div className="text-xs text-slate-500">{Math.ceil(post.content.length / 500)} min read</div>
+                                    <div className="text-xs text-slate-500">{post.readingTime} · {post.wordCount.toLocaleString()} words</div>
                                 </div>
                             </div>
                             <ShareButtons title={post.title} url={postUrl} lang={lang} />

@@ -29,7 +29,7 @@ const ICON_COMPONENTS: Record<string, React.ElementType> = {
     xiaohongshu: XiaohongshuIcon,
     bundle: BundleIcon,
     verification: VerificationIcon,
-    fintech: FintechIcon,
+    trading: FintechIcon,
     
     // New Bundles
     'bundle-alipay-xianyu': AlipayXianyuIcon,
@@ -425,7 +425,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                                                 <div className="flex-1 flex flex-col justify-between">
                                                     <div>
                                                         <h4 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base line-clamp-2 leading-tight">
-                                                            {product.tierName[lang]}
+                                                            {product.name?.[lang] || product.tierName[lang]}
                                                         </h4>
                                                         <p className="text-xs text-slate-500 mt-1 line-clamp-1">{product.description[lang]}</p>
                                                     </div>

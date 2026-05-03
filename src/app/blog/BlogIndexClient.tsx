@@ -147,7 +147,7 @@ export default function BlogIndexClient({ posts, lang }: BlogIndexClientProps) {
                                         <ChevronRight className="w-4 h-4" />
                                     </div>
                                     <span className="text-xs text-slate-400 font-medium bg-slate-50 dark:bg-dark-800 px-2 py-1 rounded-md">
-                                        {Math.ceil(post.content.length / 500)} {lang === 'zh' ? '分钟阅读' : 'min read'}
+                                        {post.readingTime}
                                     </span>
                                 </div>
                             </div>
