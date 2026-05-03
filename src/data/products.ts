@@ -231,13 +231,16 @@ const bundleProducts: Product[] = [
         tierName: { zh: '支付宝+闲鱼 组合账号', en: 'Alipay + Xianyu Combo Account' },
         tierSlug: 'alipay-xianyu-bundle',
         description: { zh: '一站解决闲鱼登录难题，支付宝实名认证+闲鱼账号绑定发货', en: 'One-stop solution for Xianyu login. Verified Alipay + linked Xianyu account.' },
-        price: { single: 280.00, bulk10: 240.00, bulk50: 240.00, bulk200: 240.00 },
+        price: { 
+            single: 168.00, bulk10: 144.00, bulk50: 144.00, bulk200: 144.00,
+            originalPrice: { single: 280.00, bulk10: 240.00, bulk50: 240.00, bulk200: 240.00 }
+        },
         includes: ['支付宝实名账号', '关联闲鱼号', '使用指南'],
         requirements: { zh: '无特殊要求，到手即用', en: 'No special requirements, ready to use' },
         deliveryMethod: 'auto',
         stockCount: 47,
         popular: true,
-        badge: { zh: '热门推荐', en: 'Top Pick' },
+        badge: { zh: '特惠价', en: 'Promo' },
         sortOrder: 1,
     },
     {
@@ -250,7 +253,10 @@ const bundleProducts: Product[] = [
         tierName: { zh: '支付宝+淘宝 购物套装', en: 'Alipay + Taobao Shopping Bundle' },
         tierSlug: 'alipay-taobao-bundle',
         description: { zh: '支付宝实名认证+淘宝买家号，支持历史订单查询', en: 'Verified Alipay + Taobao buyer account with purchase history.' },
-        price: { single: 320.00, bulk10: 250.00, bulk50: 250.00, bulk200: 250.00 },
+        price: { 
+            single: 192.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00,
+            originalPrice: { single: 320.00, bulk10: 250.00, bulk50: 250.00, bulk200: 250.00 }
+        },
         includes: ['支付宝实名', '淘宝买家号', '地址设置指南'],
         stockCount: 32,
         sortOrder: 2,
@@ -265,7 +271,10 @@ const bundleProducts: Product[] = [
         tierName: { zh: '支付宝企业+1688 批发套装', en: 'Alipay Business + 1688 Wholesale Bundle' },
         tierSlug: 'alipay-1688-bundle',
         description: { zh: '企业支付宝+1688卖家/买家号，适合一件代发', en: 'Enterprise Alipay + 1688 seller/buyer account.' },
-        price: { single: 880.00, bulk10: 780.00, bulk50: 780.00, bulk200: 780.00 },
+        price: { 
+            single: 528.00, bulk10: 468.00, bulk50: 468.00, bulk200: 468.00,
+            originalPrice: { single: 880.00, bulk10: 780.00, bulk50: 780.00, bulk200: 780.00 }
+        },
         stockCount: 15,
         sortOrder: 3,
     },
@@ -279,7 +288,10 @@ const bundleProducts: Product[] = [
         tierName: { zh: '微信+京东 购物套装', en: 'WeChat + JD.com Bundle' },
         tierSlug: 'wechat-jd-bundle',
         description: { zh: '已实名微信+京东买家号，支付已关联', en: 'Verified WeChat + JD buyer account.' },
-        price: { single: 350.00, bulk10: 310.00, bulk50: 310.00, bulk200: 310.00 },
+        price: { 
+            single: 210.00, bulk10: 186.00, bulk50: 186.00, bulk200: 186.00,
+            originalPrice: { single: 350.00, bulk10: 310.00, bulk50: 310.00, bulk200: 310.00 }
+        },
         stockCount: 22,
         sortOrder: 4,
     },
@@ -293,7 +305,10 @@ const bundleProducts: Product[] = [
         tierName: { zh: '全平台电商套装', en: 'Full E-Commerce Suite' },
         tierSlug: 'full-ecommerce-suite',
         description: { zh: '支付宝+微信+闲鱼+淘宝+1688 全套账号', en: 'Full suite including all major platforms.' },
-        price: { single: 2880.00, bulk10: 2600.00, bulk50: 2600.00, bulk200: 2600.00 },
+        price: { 
+            single: 1728.00, bulk10: 1560.00, bulk50: 1560.00, bulk200: 1560.00,
+            originalPrice: { single: 2880.00, bulk10: 2600.00, bulk50: 2600.00, bulk200: 2600.00 }
+        },
         stockCount: 5,
         popular: true,
         sortOrder: 5,
@@ -312,7 +327,10 @@ const verificationProducts: Product[] = [
         tierName: { zh: '护照实名代认证', en: 'Passport KYC' },
         tierSlug: 'passport-kyc',
         description: { zh: '提供支付宝、微信及各类跨境平台护照实名代办', en: 'Assisted KYC verification using global passports.' },
-        price: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 },
+        price: { 
+            single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00,
+            originalPrice: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 }
+        },
         requirements: { zh: '需要提供护照清晰照片', en: 'Clear passport photo required' },
         deliveryMethod: 'manual',
         stockCount: 99,
@@ -328,7 +346,10 @@ const verificationProducts: Product[] = [
         tierName: { zh: '人脸验证服务', en: 'Face Verify' },
         tierSlug: 'face-verify',
         description: { zh: '解决APP登录过程中遇到的人脸验证难题', en: 'Bypass face recognition hurdles for apps.' },
-        price: { single: 80.00, bulk10: 80.00, bulk50: 80.00, bulk200: 80.00 },
+        price: { 
+            single: 48.00, bulk10: 48.00, bulk50: 48.00, bulk200: 48.00,
+            originalPrice: { single: 80.00, bulk10: 80.00, bulk50: 80.00, bulk200: 80.00 }
+        },
         deliveryMethod: 'manual',
         stockCount: 99,
         sortOrder: 2,
@@ -343,7 +364,10 @@ const verificationProducts: Product[] = [
         tierName: { zh: '全套认证包', en: 'KYC Package' },
         tierSlug: 'kyc-package',
         description: { zh: '包含身份证、手持、人脸全套验证资料', en: 'Includes ID, holding ID photo, and face data.' },
-        price: { single: 250.00, bulk10: 250.00, bulk50: 250.00, bulk200: 250.00 },
+        price: { 
+            single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00,
+            originalPrice: { single: 250.00, bulk10: 250.00, bulk50: 250.00, bulk200: 250.00 }
+        },
         deliveryMethod: 'manual',
         stockCount: 99,
         sortOrder: 3,
@@ -358,7 +382,10 @@ const verificationProducts: Product[] = [
         tierName: { zh: '微信实名', en: 'Wechat Realname' },
         tierSlug: 'wechat-realname',
         description: { zh: '为您的微信账号激活支付及实名功能', en: 'Activate payment and ID status for your WeChat.' },
-        price: { single: 120.00, bulk10: 120.00, bulk50: 120.00, bulk200: 120.00 },
+        price: { 
+            single: 72.00, bulk10: 72.00, bulk50: 72.00, bulk200: 72.00,
+            originalPrice: { single: 120.00, bulk10: 120.00, bulk50: 120.00, bulk200: 120.00 }
+        },
         deliveryMethod: 'manual',
         stockCount: 99,
         sortOrder: 4,
@@ -373,7 +400,10 @@ const verificationProducts: Product[] = [
         tierName: { zh: '支付宝实名', en: 'Alipay Realname' },
         tierSlug: 'alipay-realname',
         description: { zh: '为您的支付宝账号激活全功能实名', en: 'Full feature ID activation for Alipay.' },
-        price: { single: 120.00, bulk10: 120.00, bulk50: 120.00, bulk200: 120.00 },
+        price: { 
+            single: 72.00, bulk10: 72.00, bulk50: 72.00, bulk200: 72.00,
+            originalPrice: { single: 120.00, bulk10: 120.00, bulk50: 120.00, bulk200: 120.00 }
+        },
         deliveryMethod: 'manual',
         stockCount: 99,
         sortOrder: 5,
@@ -392,7 +422,10 @@ const tradingProducts: Product[] = [
         tierName: { zh: 'XM 账号', en: 'XM Account' },
         tierSlug: 'xm-account',
         description: { zh: '已通过KYC认证的XM外汇交易账户', en: 'Verified XM account ready for forex trading.' },
-        price: { single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00 },
+        price: { 
+            single: 180.00, bulk10: 180.00, bulk50: 180.00, bulk200: 180.00,
+            originalPrice: { single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00 }
+        },
         deliveryMethod: 'manual',
         stockCount: 10,
         sortOrder: 1,
@@ -407,7 +440,10 @@ const tradingProducts: Product[] = [
         tierName: { zh: 'HFM 账号', en: 'HFM Account' },
         tierSlug: 'hfm-account',
         description: { zh: '已通过KYC认证的HFM(HotForex)账户', en: 'Verified HFM account.' },
-        price: { single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00 },
+        price: { 
+            single: 180.00, bulk10: 180.00, bulk50: 180.00, bulk200: 180.00,
+            originalPrice: { single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00 }
+        },
         deliveryMethod: 'manual',
         stockCount: 8,
         sortOrder: 2,
@@ -422,7 +458,10 @@ const tradingProducts: Product[] = [
         tierName: { zh: 'Neteller 账号', en: 'Neteller Account' },
         tierSlug: 'neteller-account',
         description: { zh: '已实名认证的Neteller电子钱包', en: 'Verified Neteller e-wallet.' },
-        price: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 },
+        price: { 
+            single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00,
+            originalPrice: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 }
+        },
         deliveryMethod: 'manual',
         stockCount: 15,
         sortOrder: 3,
@@ -437,7 +476,10 @@ const tradingProducts: Product[] = [
         tierName: { zh: 'Skrill 账号', en: 'Skrill Account' },
         tierSlug: 'skrill-account',
         description: { zh: '已实名认证的Skrill电子钱包', en: 'Verified Skrill e-wallet.' },
-        price: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 },
+        price: { 
+            single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00,
+            originalPrice: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 }
+        },
         deliveryMethod: 'manual',
         stockCount: 12,
         sortOrder: 4,
@@ -452,7 +494,10 @@ const tradingProducts: Product[] = [
         tierName: { zh: 'Payoneer 账号', en: 'Payoneer Account' },
         tierSlug: 'payoneer-account',
         description: { zh: '已通过KYC的Payoneer账户，支持全球收款', en: 'Verified Payoneer account for global payments.' },
-        price: { single: 450.00, bulk10: 450.00, bulk50: 450.00, bulk200: 450.00 },
+        price: { 
+            single: 270.00, bulk10: 270.00, bulk50: 270.00, bulk200: 270.00,
+            originalPrice: { single: 450.00, bulk10: 450.00, bulk50: 450.00, bulk200: 450.00 }
+        },
         deliveryMethod: 'manual',
         stockCount: 5,
         sortOrder: 5,
@@ -467,7 +512,10 @@ const tradingProducts: Product[] = [
         tierName: { zh: 'Wise 账号', en: 'Wise Account' },
         tierSlug: 'wise-account',
         description: { zh: '已完成实名验证的Wise账户，支持多币种', en: 'Verified Wise multi-currency account.' },
-        price: { single: 500.00, bulk10: 500.00, bulk50: 500.00, bulk200: 500.00 },
+        price: { 
+            single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00,
+            originalPrice: { single: 500.00, bulk10: 500.00, bulk50: 500.00, bulk200: 500.00 }
+        },
         deliveryMethod: 'manual',
         stockCount: 3,
         sortOrder: 6,
