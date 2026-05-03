@@ -9,7 +9,7 @@ import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { formatYuan } from '@/lib/utils';
 import {
     ChevronLeft, ShieldCheck, Zap, Clock, Star, Users, MessageCircle, Wallet, Music, Tv2,
-    ShoppingCart, CheckCircle2, AlertCircle, Scissors, Eye
+    ShoppingCart, CheckCircle2, AlertCircle, Scissors, Eye, Package, Landmark
 } from 'lucide-react';
 import { StockBadge } from '../ui/StockBadge';
 import { SlashPriceModal } from '../ui/SlashPriceModal';
@@ -25,6 +25,9 @@ const iconMap: Record<string, React.ElementType> = {
     xianyu: XianyuIcon,
     taobao: TaobaoIcon,
     xiaohongshu: XiaohongshuIcon,
+    bundle: Package,
+    verification: ShieldCheck,
+    fintech: Landmark,
 };
 
 const iconColors: Record<string, string> = {
@@ -35,6 +38,9 @@ const iconColors: Record<string, string> = {
     xianyu: "text-amber-500",
     taobao: "text-orange-500",
     xiaohongshu: "text-red-500",
+    bundle: "text-purple-500",
+    verification: "text-indigo-500",
+    fintech: "text-emerald-500",
 };
 
 interface ProductPageTemplateProps {
@@ -265,7 +271,7 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
 
                             {/* Features Grid */}
                             <div className="grid grid-cols-2 gap-3 mb-4">
-                                {product.features?.map((feature, i) => (
+                                {product.features.map((feature, i) => (
                                     <div key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
                                         <div className="w-5 h-5 rounded-full bg-success-100 dark:bg-success-900/30 flex items-center justify-center shrink-0">
                                             <CheckCircle2 className="w-3.5 h-3.5 text-success-600 dark:text-success-400" />
@@ -285,18 +291,14 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                             </button>
 
                             <div className="flex flex-wrap items-center gap-4 py-4 border-t border-slate-100 dark:border-slate-800">
-                                {product.warranty && (
-                                    <div className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400">
-                                        <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                                        <span>{product.warranty[lang]}</span>
-                                    </div>
-                                )}
-                                {product.deliveryTime && (
-                                    <div className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400">
-                                        <Clock className="w-4 h-4 text-primary-500" />
-                                        <span>{lang === 'zh' ? '预计发货：' : 'Est. Delivery: '}{product.deliveryTime[lang]}</span>
-                                    </div>
-                                )}
+                                <div className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400">
+                                    <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                                    <span>{product.warranty[lang]}</span>
+                                </div>
+                                <div className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400">
+                                    <Clock className="w-4 h-4 text-primary-500" />
+                                    <span>{lang === 'zh' ? '预计发货：' : 'Est. Delivery: '}{product.deliveryTime[lang]}</span>
+                                </div>
                             </div>
 
                             {/* Shop Ratings (Taobao Style) */}

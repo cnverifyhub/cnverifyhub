@@ -4,7 +4,6 @@ import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 import { FAQAccordion } from '@/components/ui/FAQAccordion';
 import { faqData } from '@/data/faq';
-import { calculateYuan } from '@/lib/utils';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -18,7 +17,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: '微信号购买 - 实名·绑卡·企业号现货 | CNWePro',
-        description: '微信白号¥207起 | 实名号¥279起 | 绑卡号¥417起 | USDT支付秒发货',
+        description: '微信白号¥28起 | 实名号¥38起 | 绑卡号¥58起 | USDT支付秒发货',
     },
 };
 
@@ -38,13 +37,13 @@ function getWeChatJsonLd() {
             item: {
                 '@type': 'Product',
                 name: p.tierName.zh,
-                description: p.features?.map(f => f.zh).join(', ') || p.description.zh,
+                description: p.features.map(f => f.zh).join(', '),
                 url: `${SITE_URL}/wechat/`,
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'CNY',
-                    price: calculateYuan(p.price.single),
+                    priceCurrency: 'USD',
+                    price: p.price.single,
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

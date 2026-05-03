@@ -181,7 +181,7 @@ export function BundleProductPageTemplate({ productId, lang }: BundleProductPage
                                 {lang === 'zh' ? '已实名认证，可正常收付款，支持闲鱼/淘宝一键登录。' : 'Real-name verified. Ready for payments and 1-click Xianyu login.'}
                             </p>
                             <ul className="space-y-2">
-                                {(bundleContents?.[0]?.includes || []).map((item, i) => (
+                                {bundleContents?.[0]?.includes.map((item, i) => (
                                     <li key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 font-medium">
                                         <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
                                         {item}
@@ -204,7 +204,7 @@ export function BundleProductPageTemplate({ productId, lang }: BundleProductPage
                                 {lang === 'zh' ? '已与上述支付宝完成底层绑定，可直接免手机号登录发布商品。' : 'Pre-linked to the Alipay account. Login directly to start selling.'}
                             </p>
                             <ul className="space-y-2">
-                                {(bundleContents?.[1]?.includes || []).map((item, i) => (
+                                {bundleContents?.[1]?.includes.map((item, i) => (
                                     <li key={i} className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300 font-medium">
                                         <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0" />
                                         {item}

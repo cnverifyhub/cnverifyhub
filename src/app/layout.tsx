@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter, Noto_Sans_SC } from 'next/font/google';
 import Script from 'next/script';
 import { GoogleTagManager } from '@next/third-parties/google';
@@ -62,7 +62,6 @@ export const metadata: Metadata = {
             { url: '/logo.png' },
         ],
     },
-    themeColor: '#FF0036',
     openGraph: {
         type: 'website',
         siteName: 'CNWePro',
@@ -170,6 +169,10 @@ const breadcrumbJsonLd = {
         { '@type': 'ListItem', position: 4, name: '抖音账号', item: `${SITE_URL}/douyin/` },
         { '@type': 'ListItem', position: 5, name: 'QQ账号', item: `${SITE_URL}/qq/` },
     ],
+};
+
+export const viewport: Viewport = {
+    themeColor: '#FF0036',
 };
 
 export default function RootLayout({

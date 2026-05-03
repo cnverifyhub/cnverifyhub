@@ -14,9 +14,9 @@ interface ProductPreviewProps {
         category: string;
         tierName: { zh: string; en: string };
         description: { zh: string; en: string };
-        features?: Array<{ zh: string; en: string }>;
-        warranty?: { zh: string; en: string };
-        deliveryTime?: { zh: string; en: string };
+        features: Array<{ zh: string; en: string }>;
+        warranty: { zh: string; en: string };
+        deliveryTime: { zh: string; en: string };
         price: {
             single: number;
             bulk10: number;
@@ -181,7 +181,7 @@ export function ProductPreview({ isOpen, onClose, product, lang }: ProductPrevie
                             {isZh ? '包含功能' : 'Included Features'}
                         </span>
                         <div className="grid grid-cols-1 gap-1.5">
-                            {product.features?.map((feature, i) => (
+                            {product.features.map((feature, i) => (
                                 <div key={i} className="flex items-center gap-2 text-sm">
                                     <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
                                         <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
@@ -208,27 +208,23 @@ export function ProductPreview({ isOpen, onClose, product, lang }: ProductPrevie
                             </div>
                         </div>
                         {/* Warranty */}
-                        {product.warranty && (
-                            <div className="flex-1 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-800">
-                                <span className="text-[10px] text-slate-400 font-bold uppercase">{isZh ? '质保' : 'Warranty'}</span>
-                                <div className="flex items-center gap-1.5 mt-1">
-                                    <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0" />
-                                    <span className="font-bold text-sm text-slate-900 dark:text-white">{product.warranty[lang]}</span>
-                                </div>
-                                <p className="text-[10px] text-slate-400 mt-1">{isZh ? '72小时内质量问题免费换号' : 'Free replacement within 72h'}</p>
+                        <div className="flex-1 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 border border-slate-100 dark:border-slate-800">
+                            <span className="text-[10px] text-slate-400 font-bold uppercase">{isZh ? '质保' : 'Warranty'}</span>
+                            <div className="flex items-center gap-1.5 mt-1">
+                                <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0" />
+                                <span className="font-bold text-sm text-slate-900 dark:text-white">{product.warranty[lang]}</span>
                             </div>
-                        )}
+                            <p className="text-[10px] text-slate-400 mt-1">{isZh ? '72小时内质量问题免费换号' : 'Free replacement within 72h'}</p>
+                        </div>
                     </div>
 
                     {/* Delivery Time */}
-                    {product.deliveryTime && (
-                        <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/15 rounded-xl p-3 border border-blue-100 dark:border-blue-900/30">
-                            <Clock className="w-4 h-4 text-blue-500 shrink-0" />
-                            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                                {isZh ? '预计发货：' : 'Est. Delivery: '}{product.deliveryTime[lang]}
-                            </span>
-                        </div>
-                    )}
+                    <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/15 rounded-xl p-3 border border-blue-100 dark:border-blue-900/30">
+                        <Clock className="w-4 h-4 text-blue-500 shrink-0" />
+                        <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                            {isZh ? '预计发货：' : 'Est. Delivery: '}{product.deliveryTime[lang]}
+                        </span>
+                    </div>
 
                     {/* Price + Action */}
                     <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">

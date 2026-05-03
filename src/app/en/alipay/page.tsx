@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
 import { getProductsByCategory } from '@/data/products';
-import { calculateYuan } from '@/lib/utils';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
@@ -36,13 +35,13 @@ function getAlipayJsonLd() {
             item: {
                 '@type': 'Product',
                 name: p.tierName.en,
-                description: p.features?.map(f => f.en).join(', ') || p.description.en,
+                description: p.features.map(f => f.en).join(', '),
                 url: `${SITE_URL}/en/alipay/`,
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'CNY',
-                    price: calculateYuan(p.price.single),
+                    priceCurrency: 'USD',
+                    price: p.price.single,
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

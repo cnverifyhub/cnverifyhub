@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin as supabase } from '@/lib/supabase/admin';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/orders/service - List service orders (Admin only)
  * POST /api/orders/service - Create a service order manually (if needed)

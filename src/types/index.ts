@@ -34,22 +34,22 @@ export interface PricingTier {
 
 export interface Product {
     id: string;
-    slug?: string;
+    slug: string;
     category: CategoryId;
     subcategory?: string;
-    type?: ProductType;
+    type: ProductType;
     tierName: { zh: string; en: string };
     tierSlug: string;
     description: { zh: string; en: string };
     price: PricingTier;
     compareAtPrice?: number;
-    currency?: 'CNY' | 'USD' | 'USDT';
-    features?: Array<{ zh: string; en: string }>;
-    includes?: string[];
-    requirements?: { zh?: string; en?: string; buyerNeeds?: string; technical?: string };
-    deliveryMethod?: 'auto' | 'manual' | 'scheduled';
-    deliveryTime?: { zh: string; en: string };
-    warranty?: { zh: string; en: string };
+    currency: 'CNY' | 'USD' | 'USDT';
+    features: Array<{ zh: string; en: string }>;
+    includes: string[];
+    requirements?: { zh: string; en: string; buyerNeeds?: string; technical?: string };
+    deliveryMethod: 'auto' | 'manual' | 'scheduled';
+    deliveryTime: { zh: string; en: string };
+    warrantyHours: number;
     stockCount: number;
     popular?: boolean;
     badge?: { zh: string; en: string };
@@ -60,7 +60,7 @@ export interface Product {
     soldCount?: number;
     rating?: number;
     reviewCount?: number;
-    isPublished?: boolean;
+    isPublished: boolean;
     seoTitle?: string;
     seoDescription?: string;
     
@@ -78,7 +78,7 @@ export interface Product {
         description: string;
         verificationLevel?: string;
         linkStatus?: string;
-        includes?: string[];
+        includes: string[];
     }>;
     whyBundle?: { zh: string; en: string };
     useCases?: string[];

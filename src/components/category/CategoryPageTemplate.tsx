@@ -7,7 +7,7 @@ import { t, type Lang } from '@/lib/i18n';
 import type { CategoryId } from '@/types';
 import { Shield, ShieldCheck, CheckCircle2, Zap, Clock, Info, MessageCircle, Wallet, Music, Tv2, ShoppingBag, Store, Heart, Camera } from 'lucide-react';
 import { MobileStickyBuyBar } from '@/components/layout/MobileStickyBuyBar';
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, BundleIcon, VerificationIcon, FintechIcon } from '@/components/ui/BrandIcons';
+import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
 
 const iconMap: Record<string, React.ElementType> = {
     wechat: WeChatIcon,
