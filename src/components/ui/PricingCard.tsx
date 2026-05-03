@@ -166,14 +166,14 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                 </Link>
 
                 <div className="flex flex-wrap gap-2 mb-6">
-                    {product.features.slice(0, 2).map((feature, i) => (
+                    {product.features?.slice(0, 2).map((feature, i) => (
                         <span key={i} className="text-[10px] font-bold bg-slate-50 dark:bg-white/5 text-slate-500 dark:text-slate-400 px-3 py-1.5 rounded-xl border border-slate-100 dark:border-white/5">
                             {feature[lang]}
                         </span>
                     ))}
                     <span className="text-[10px] font-black bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 px-3 py-1.5 rounded-xl border border-emerald-100 dark:border-emerald-500/20 flex items-center gap-1.5">
                         <ShieldCheck className="w-3.5 h-3.5" />
-                        {product.warranty[lang]}{lang === 'zh' ? '质保' : ' Warranty'}
+                        {product.warranty?.[lang]}{lang === 'zh' ? '质保' : ' Warranty'}
                     </span>
                 </div>
 

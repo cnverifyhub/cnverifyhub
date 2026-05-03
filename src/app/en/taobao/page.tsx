@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
-import { getProductsByCategory, getLowestPrice } from '@/data/products';
+import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
-import { calculateYuan, formatYuan } from '@/lib/utils';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -16,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'Buy Taobao Account - Verified & VIP Aged | CNWePro',
-        description: `Verified Taobao buyer accounts starting from ${formatYuan(getLowestPrice('taobao'))}. VIP aged accounts available. Instant delivery via USDT.`,
+        description: 'Taobao buyer accounts from $15. VIP aged accounts from $48. Instant delivery via USDT.',
         url: `${SITE_URL}/en/taobao/`,
     },
 };
@@ -36,13 +35,13 @@ function getTaobaoJsonLd() {
             item: {
                 '@type': 'Product',
                 name: p.tierName.en,
-                description: p.features.map(f => f.en).join(', '),
+                description: p.features?.map(f => f.en).join(', ') || '',
                 url: `${SITE_URL}/en/taobao/`,
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'CNY',
-                    price: calculateYuan(p.price.single),
+                    priceCurrency: 'USD',
+                    price: p.price.single,
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

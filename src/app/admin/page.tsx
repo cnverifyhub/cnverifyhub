@@ -9,7 +9,7 @@ import {
     Plus, Trash2, Users, Box, Settings, ClipboardList, Send, Loader2, Database
 } from 'lucide-react';
 import { getProductById } from '@/data/products';
-import { calculateYuan, formatUsdt, formatYuan, USDT_TO_CNY } from '@/lib/utils';
+import { cn, formatYuan } from '@/lib/utils';
 import { supabase } from '@/lib/supabase/client';
 
 type Tab = 'orders' | 'services' | 'fraud' | 'users' | 'products' | 'settings';
@@ -538,7 +538,7 @@ export default function AdminDashboardPage() {
             return d.toDateString() === now.toDateString();
         }).length;
         const revenue = orders.filter(o => o.status === 'completed' || o.status === 'paid').reduce((sum, o) => sum + o.totalAmount, 0);
-        const revenueRMB = revenue * USDT_TO_CNY; // ~7.2 CNY per USDT
+        const revenueRMB = revenue * 7.2; // ~7.2 CNY per USDT
         const verified = orders.filter(o => o.txVerified).length;
         const uniqueEmails = new Set(orders.map(o => o.email)).size;
         const repeatCustomers = orders.length - uniqueEmails;
@@ -1223,7 +1223,7 @@ export default function AdminDashboardPage() {
                                                     {/* Payment Amount + TXID link */}
                                                     <td className="px-3 py-3">
                                                         <div className="text-sm font-bold text-slate-900 dark:text-white">${order.totalAmount.toFixed(2)}</div>
-                                                        <div className="text-[10px] text-slate-400">≈¥{(order.totalAmount * USDT_TO_CNY).toFixed(0)}</div>
+                                                        <div className="text-[10px] text-slate-400">≈¥{(order.totalAmount * 7.2).toFixed(0)}</div>
                                                         {order.txid ? (
                                                             <a href={getExplorerUrl(order.txid, order.paymentNetwork || 'trc20')} target="_blank" rel="noopener noreferrer" className="text-[10px] text-blue-500 font-mono hover:underline truncate block max-w-[100px]" title={order.txid}>
                                                                 {order.txid.slice(0, 10)}...

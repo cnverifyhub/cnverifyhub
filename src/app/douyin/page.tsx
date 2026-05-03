@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
-import { getProductsByCategory, getLowestPrice } from '@/data/products';
+import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
-import { calculateYuan, formatYuan } from '@/lib/utils';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -15,8 +14,8 @@ export const metadata: Metadata = {
         languages: { 'zh-CN': `${SITE_URL}/douyin/`, 'en': `${SITE_URL}/en/douyin/` },
     },
     openGraph: {
-        title: '抖音账号购买 - 实名号·千粉号·等级号现货 | CNWePro',
-        description: `抖音白号${formatYuan(getLowestPrice('douyin'))}起 | USDT支付秒发货`,
+        title: '抖音号购买 - 千粉万粉号·蓝V企业号 | CNWePro',
+        description: '高权重抖音号批发，带橱窗直播权限。USDT支付，72小时质保。',
     },
 };
 
@@ -35,13 +34,13 @@ function getDouyinJsonLd() {
             item: {
                 '@type': 'Product',
                 name: p.tierName.zh,
-                description: p.features.map(f => f.zh).join(', '),
+                description: p.features?.map(f => f.zh).join(', ') || '',
                 url: `${SITE_URL}/douyin/`,
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'CNY',
-                    price: calculateYuan(p.price.single),
+                    priceCurrency: 'USD',
+                    price: p.price.single,
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
-import { getProductsByCategory, getLowestPrice } from '@/data/products';
+import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
-import { calculateYuan, formatYuan } from '@/lib/utils';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -16,7 +15,7 @@ export const metadata: Metadata = {
     },
     openGraph: {
         title: 'QQ高等级号·靓号现货交易 | CNWePro',
-        description: `QQ太阳号${formatYuan(getLowestPrice('qq'))}起 | 严选老号防找回 | USDT加密支付`,
+        description: '严选老号防找回，太阳号、靓号极速发货。支持USDT加密支付。',
     },
 };
 
@@ -35,13 +34,13 @@ function getQQJsonLd() {
             item: {
                 '@type': 'Product',
                 name: p.tierName.zh,
-                description: p.features.map(f => f.zh).join(', '),
+                description: p.features?.map(f => f.zh).join(', ') || '',
                 url: `${SITE_URL}/qq/`,
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'CNY',
-                    price: calculateYuan(p.price.single),
+                    priceCurrency: 'USD',
+                    price: p.price.single,
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

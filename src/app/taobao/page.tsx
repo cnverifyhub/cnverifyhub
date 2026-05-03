@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
-import { getProductsByCategory, getLowestPrice } from '@/data/products';
+import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
-import { calculateYuan, formatYuan } from '@/lib/utils';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -15,8 +14,8 @@ export const metadata: Metadata = {
         languages: { 'zh-CN': `${SITE_URL}/taobao/`, 'en': `${SITE_URL}/en/taobao/` },
     },
     openGraph: {
-        title: '淘宝账号购买 - 优质买家老号现货 | CNWePro',
-        description: `淘宝优质号${formatYuan(getLowestPrice('taobao'))}起 | USDT支付秒发货`,
+        title: '淘宝账号购买 - 优质买家老号 | CNWePro',
+        description: '淘宝白号¥15起 | VIP老号¥48起 | USDT支付秒发货',
     },
 };
 
@@ -35,13 +34,13 @@ function getTaobaoJsonLd() {
             item: {
                 '@type': 'Product',
                 name: p.tierName.zh,
-                description: p.features.map(f => f.zh).join(', '),
+                description: p.features?.map(f => f.zh).join(', ') || '',
                 url: `${SITE_URL}/taobao/`,
                 brand: { '@type': 'Brand', name: 'CNWePro' },
                 offers: {
                     '@type': 'Offer',
-                    priceCurrency: 'CNY',
-                    price: calculateYuan(p.price.single),
+                    priceCurrency: 'USD',
+                    price: p.price.single,
                     availability: 'https://schema.org/InStock',
                     seller: { '@type': 'Organization', name: 'CNWePro' },
                 },

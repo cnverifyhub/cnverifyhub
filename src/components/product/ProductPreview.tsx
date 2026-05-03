@@ -3,31 +3,14 @@
 import { useState, useEffect } from 'react';
 import { X, ShieldCheck, CheckCircle2, Clock, AlertTriangle, QrCode, Eye, Star, Zap } from 'lucide-react';
 import { type Lang } from '@/lib/i18n';
+import type { Product } from '@/types';
 import { formatYuan } from '@/lib/utils';
 import { QRCodeSVG } from 'qrcode.react';
 
 interface ProductPreviewProps {
     isOpen: boolean;
     onClose: () => void;
-    product: {
-        id: string;
-        category: string;
-        tierName: { zh: string; en: string };
-        description: { zh: string; en: string };
-        features: Array<{ zh: string; en: string }>;
-        warranty: { zh: string; en: string };
-        deliveryTime: { zh: string; en: string };
-        price: {
-            single: number;
-            bulk10: number;
-            bulk50: number;
-            bulk200: number;
-            originalPrice?: { single: number };
-        };
-        stockCount: number;
-        badge?: { zh: string; en: string };
-        popular?: boolean;
-    };
+    product: Product;
     lang: Lang;
 }
 
@@ -181,7 +164,7 @@ export function ProductPreview({ isOpen, onClose, product, lang }: ProductPrevie
                             {isZh ? '包含功能' : 'Included Features'}
                         </span>
                         <div className="grid grid-cols-1 gap-1.5">
-                            {product.features.map((feature, i) => (
+                            {product.features?.map((feature, i) => (
                                 <div key={i} className="flex items-center gap-2 text-sm">
                                     <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
                                         <CheckCircle2 className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
@@ -212,7 +195,7 @@ export function ProductPreview({ isOpen, onClose, product, lang }: ProductPrevie
                             <span className="text-[10px] text-slate-400 font-bold uppercase">{isZh ? '质保' : 'Warranty'}</span>
                             <div className="flex items-center gap-1.5 mt-1">
                                 <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0" />
-                                <span className="font-bold text-sm text-slate-900 dark:text-white">{product.warranty[lang]}</span>
+                                <span className="font-bold text-sm text-slate-900 dark:text-white">{product.warranty?.[lang]}</span>
                             </div>
                             <p className="text-[10px] text-slate-400 mt-1">{isZh ? '72小时内质量问题免费换号' : 'Free replacement within 72h'}</p>
                         </div>
@@ -222,7 +205,7 @@ export function ProductPreview({ isOpen, onClose, product, lang }: ProductPrevie
                     <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/15 rounded-xl p-3 border border-blue-100 dark:border-blue-900/30">
                         <Clock className="w-4 h-4 text-blue-500 shrink-0" />
                         <span className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                            {isZh ? '预计发货：' : 'Est. Delivery: '}{product.deliveryTime[lang]}
+                            {isZh ? '预计发货：' : 'Est. Delivery: '}{product.deliveryTime?.[lang]}
                         </span>
                     </div>
 

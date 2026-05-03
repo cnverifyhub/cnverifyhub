@@ -1,12 +1,17 @@
 <svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="512" height="512" rx="112" fill="#6366F1"/>
-  <rect x="128" y="96" width="256" height="320" rx="20" fill="white" fill-opacity="0.2"/>
-  <path d="M128 116C128 104.954 136.954 96 148 96H364C375.046 96 384 104.954 384 116V396C384 407.046 375.046 416 364 416H148C136.954 416 128 407.046 128 396V116Z" fill="#4F46E5"/>
-  <rect x="160" y="144" width="192" height="24" rx="4" fill="white" fill-opacity="0.3"/>
-  <rect x="160" y="184" width="128" height="16" rx="4" fill="white" fill-opacity="0.3"/>
-  <circle cx="256" cy="288" r="48" stroke="white" stroke-width="8" stroke-opacity="0.5"/>
-  <path d="M224 288C224 270.327 238.327 256 256 256C273.673 256 288 270.327 288 288H224Z" fill="white" fill-opacity="0.5"/>
-  <circle cx="360" cy="360" r="80" fill="white"/>
-  <circle cx="360" cy="360" r="64" fill="#10B981"/>
-  <path d="M328 360L349.333 381.333L392 338.667" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <linearGradient id="blueGrad" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3B82F6"/>
+      <stop offset="1" stop-color="#1E40AF"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="115" fill="url(#blueGrad)"/>
+  <path d="M160 120H320V392H160V120Z" fill="white" stroke="white" stroke-width="20" stroke-linejoin="round"/>
+  <rect x="180" y="160" width="120" height="20" rx="4" fill="#3B82F6"/>
+  <rect x="180" y="200" width="80" height="20" rx="4" fill="#3B82F6"/>
+  <circle cx="240" cy="300" r="40" fill="#3B82F6" opacity="0.2"/>
+  
+  <!-- Checkmark -->
+  <circle cx="380" cy="380" r="80" fill="#07C160" stroke="white" stroke-width="16"/>
+  <path d="M340 380L370 410L420 360" stroke="white" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
