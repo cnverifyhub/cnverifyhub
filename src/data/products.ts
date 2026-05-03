@@ -466,6 +466,7 @@ const bundleProducts: Product[] = [
         stockCount: 47,
         popular: true,
         badge: { zh: '热门推荐', en: 'Top Pick' },
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.taobao.idlefish/512',
         sortOrder: 1,
     },
     {
@@ -481,6 +482,7 @@ const bundleProducts: Product[] = [
         price: { single: 192.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 },
         includes: ['支付宝实名', '淘宝买家号', '地址设置指南'],
         stockCount: 32,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.taobao.taobao/512',
         sortOrder: 2,
     },
     {
@@ -495,6 +497,7 @@ const bundleProducts: Product[] = [
         description: { zh: '企业支付宝+1688卖家/买家号，适合一件代发', en: 'Enterprise Alipay + 1688 seller/buyer account.' },
         price: { single: 528.00, bulk10: 468.00, bulk50: 468.00, bulk200: 468.00 },
         stockCount: 15,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.alibaba.wireless/512',
         sortOrder: 3,
     },
     {
@@ -509,6 +512,7 @@ const bundleProducts: Product[] = [
         description: { zh: '已实名微信+京东买家号，支付已关联', en: 'Verified WeChat + JD buyer account.' },
         price: { single: 210.00, bulk10: 186.00, bulk50: 186.00, bulk200: 186.00 },
         stockCount: 22,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.jingdong.app.mall/512',
         sortOrder: 4,
     },
     {
@@ -524,6 +528,7 @@ const bundleProducts: Product[] = [
         price: { single: 1728.00, bulk10: 1560.00, bulk50: 1560.00, bulk200: 1560.00 },
         stockCount: 5,
         popular: true,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.android.vending/512',
         sortOrder: 5,
     },
 ];
@@ -544,6 +549,7 @@ const verificationProducts: Product[] = [
         requirements: { zh: '需要提供护照清晰照片', en: 'Clear passport photo required' },
         deliveryMethod: 'manual',
         stockCount: 99,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/org.jmrtd.scanner/512',
         sortOrder: 1,
     },
     {
@@ -559,6 +565,7 @@ const verificationProducts: Product[] = [
         price: { single: 48.00, bulk10: 48.00, bulk50: 48.00, bulk200: 48.00 },
         deliveryMethod: 'manual',
         stockCount: 99,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.facephi.selphi.demo/512',
         sortOrder: 2,
     },
     {
@@ -574,6 +581,7 @@ const verificationProducts: Product[] = [
         price: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 },
         deliveryMethod: 'manual',
         stockCount: 99,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.shuftipro.kyc/512',
         sortOrder: 3,
     },
     {
@@ -589,6 +597,7 @@ const verificationProducts: Product[] = [
         price: { single: 72.00, bulk10: 72.00, bulk50: 72.00, bulk200: 72.00 },
         deliveryMethod: 'manual',
         stockCount: 99,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.tencent.mm/512',
         sortOrder: 4,
     },
     {
@@ -604,6 +613,7 @@ const verificationProducts: Product[] = [
         price: { single: 72.00, bulk10: 72.00, bulk50: 72.00, bulk200: 72.00 },
         deliveryMethod: 'manual',
         stockCount: 99,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.eg.android.AlipayGphone/512',
         sortOrder: 5,
     },
 ];
@@ -623,6 +633,7 @@ const tradingProducts: Product[] = [
         price: { single: 180.00, bulk10: 180.00, bulk50: 180.00, bulk200: 180.00 },
         deliveryMethod: 'manual',
         stockCount: 10,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.xm.webapp/512',
         sortOrder: 1,
     },
     {
@@ -638,6 +649,7 @@ const tradingProducts: Product[] = [
         price: { single: 180.00, bulk10: 180.00, bulk50: 180.00, bulk200: 180.00 },
         deliveryMethod: 'manual',
         stockCount: 8,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.hotforex.www.hotforex/512',
         sortOrder: 2,
     },
     {
@@ -653,6 +665,7 @@ const tradingProducts: Product[] = [
         price: { single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00 },
         deliveryMethod: 'manual',
         stockCount: 15,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.moneybookers.skrillpayments.neteller/512',
         sortOrder: 3,
     },
     {
@@ -668,6 +681,7 @@ const tradingProducts: Product[] = [
         price: { single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00 },
         deliveryMethod: 'manual',
         stockCount: 12,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.moneybookers.skrillpayments/512',
         sortOrder: 4,
     },
     {
@@ -683,6 +697,7 @@ const tradingProducts: Product[] = [
         price: { single: 270.00, bulk10: 270.00, bulk50: 270.00, bulk200: 270.00 },
         deliveryMethod: 'manual',
         stockCount: 5,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.payoneer.android/512',
         sortOrder: 5,
     },
     {
@@ -698,6 +713,7 @@ const tradingProducts: Product[] = [
         price: { single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00 },
         deliveryMethod: 'manual',
         stockCount: 3,
+        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.transferwise.android/512',
         sortOrder: 6,
     },
 ];
