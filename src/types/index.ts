@@ -49,7 +49,7 @@ export interface Product {
     requirements?: { zh: string; en: string; buyerNeeds?: string; technical?: string };
     deliveryMethod: 'auto' | 'manual' | 'scheduled';
     deliveryTime: { zh: string; en: string };
-    warrantyHours: number;
+    warranty: { zh: string; en: string };
     stockCount: number;
     popular?: boolean;
     badge?: { zh: string; en: string };
