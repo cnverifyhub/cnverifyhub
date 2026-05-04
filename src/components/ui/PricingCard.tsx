@@ -119,7 +119,16 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                         className={`relative w-28 h-28 sm:w-32 sm:h-32 rounded-[22.5%] overflow-hidden shadow-2xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 flex items-center justify-center p-0`}
                         style={{ backgroundColor: config.iconBg }}
                     >
-                        {(() => {
+                        {product.image ? (
+                            <Image 
+                                src={product.image} 
+                                alt={product.tierName[lang]} 
+                                fill
+                                className="object-cover"
+                                sizes="(max-width: 640px) 112px, 128px"
+                                priority={product.popular}
+                            />
+                        ) : (() => {
                             const Icon = ICON_COMPONENTS[product.category] || WeChatIcon;
                             return <Icon className="w-full h-full" />;
                         })()}

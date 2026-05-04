@@ -16,6 +16,7 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
+      { protocol: 'https', hostname: 'play-lh.googleusercontent.com' },
       { protocol: 'https', hostname: 'cnwepro.com', pathname: '/images/**' },
       { protocol: 'https', hostname: '*.vercel.app', pathname: '/images/**' },
     ],
@@ -32,7 +33,7 @@ const nextConfig = {
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://hm.baidu.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://images.unsplash.com https://api.dicebear.com; connect-src 'self' https://otgewrynnrqmtsyvlzrj.supabase.co https://hm.baidu.com https://www.google-analytics.com; font-src 'self' data:;"
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://hm.baidu.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://images.unsplash.com https://api.dicebear.com https://play-lh.googleusercontent.com; connect-src 'self' https://otgewrynnrqmtsyvlzrj.supabase.co https://hm.baidu.com https://www.google-analytics.com; font-src 'self' data:;"
           },
           // Preconnect to Supabase and Baidu Analytics for faster resolution
           {
