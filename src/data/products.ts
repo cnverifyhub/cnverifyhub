@@ -466,7 +466,7 @@ const bundleProducts: Product[] = [
         stockCount: 47,
         popular: true,
         badge: { zh: '热门推荐', en: 'Top Pick' },
-        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.taobao.idlefish/512',
+        image: 'https://play-lh.googleusercontent.com/eaX5GSrLgAvCTKAe8N0baDkKA0gJ3siyG9X28sfmSO8yBmKVfPDQyJ3y_AvcCr8DSYU=s512-rw',
         sortOrder: 1,
     },
     {
@@ -482,7 +482,7 @@ const bundleProducts: Product[] = [
         price: { single: 192.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 },
         includes: ['支付宝实名', '淘宝买家号', '地址设置指南'],
         stockCount: 32,
-        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.taobao.taobao/512',
+        image: 'https://play-lh.googleusercontent.com/6F3ONMR_UowQyqKud-bqqz5iWHGtleHEWTPZEoUiWPJj02R9hPL-agPCt_C3KYQLYi8=s512-rw',
         sortOrder: 2,
     },
     {
@@ -497,7 +497,7 @@ const bundleProducts: Product[] = [
         description: { zh: '企业支付宝+1688卖家/买家号，适合一件代发', en: 'Enterprise Alipay + 1688 seller/buyer account.' },
         price: { single: 528.00, bulk10: 468.00, bulk50: 468.00, bulk200: 468.00 },
         stockCount: 15,
-        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.alibaba.wireless/512',
+        image: 'https://play-lh.googleusercontent.com/0QjGmfF5AG7R3APWO60g_Nx3Et_XUEEMnngxln-GJx7HLz6lV5Hu2im8mP2UzKIalhmN=s512-rw',
         sortOrder: 3,
     },
     {
@@ -512,7 +512,7 @@ const bundleProducts: Product[] = [
         description: { zh: '已实名微信+京东买家号，支付已关联', en: 'Verified WeChat + JD buyer account.' },
         price: { single: 210.00, bulk10: 186.00, bulk50: 186.00, bulk200: 186.00 },
         stockCount: 22,
-        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.jingdong.app.mall/512',
+        image: 'https://play-lh.googleusercontent.com/LWaIZ0sOjW3gUC0yNXIrPGZe9jxNDDpqv9TI-IguAcHvtX30bCTlcNhDaXpu1s5ZBiQ=s512-rw',
         sortOrder: 4,
     },
     {
@@ -633,7 +633,7 @@ const tradingProducts: Product[] = [
         price: { single: 180.00, bulk10: 180.00, bulk50: 180.00, bulk200: 180.00 },
         deliveryMethod: 'manual',
         stockCount: 10,
-        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.xm.webapp/512',
+        image: 'https://play-lh.googleusercontent.com/RpHrO7HPONgaIf95gQ1RIvAf0TpG-QJksy-9QKCyd_hEP3UMY8SwlyqIhkrM1R0mO0ph6ZdkRlKr9jKbuL3U=s512-rw',
         sortOrder: 1,
     },
     {
@@ -649,7 +649,7 @@ const tradingProducts: Product[] = [
         price: { single: 180.00, bulk10: 180.00, bulk50: 180.00, bulk200: 180.00 },
         deliveryMethod: 'manual',
         stockCount: 8,
-        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.hotforex.www.hotforex/512',
+        image: 'https://play-lh.googleusercontent.com/0XuuQxrd59d3zjF_pcVIKYomU_qVm5q94ITYrPyx8KT6RCZ0DjausMLKy7W2PFgAWQ=s512-rw',
         sortOrder: 2,
     },
     {
@@ -665,7 +665,7 @@ const tradingProducts: Product[] = [
         price: { single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00 },
         deliveryMethod: 'manual',
         stockCount: 15,
-        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.moneybookers.skrillpayments.neteller/512',
+        image: 'https://play-lh.googleusercontent.com/ijDhJYBK12iYXNvuAABa_nMc-WGTKGWoDzg3NRy-KjXXqxNVZIOC3jP9jpg-lXMO_HhZqVCwasxW455CpNULsg=s512-rw',
         sortOrder: 3,
     },
     {
@@ -681,7 +681,7 @@ const tradingProducts: Product[] = [
         price: { single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00 },
         deliveryMethod: 'manual',
         stockCount: 12,
-        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.moneybookers.skrillpayments/512',
+        image: 'https://play-lh.googleusercontent.com/XiQe-KRLN5tckY8lTU_9Zz3328cDuuk-8bkniQgJaGikwrIoNgr6n3t8VIz6oR1DbLA=s512-rw',
         sortOrder: 4,
     },
     {
@@ -697,7 +697,7 @@ const tradingProducts: Product[] = [
         price: { single: 270.00, bulk10: 270.00, bulk50: 270.00, bulk200: 270.00 },
         deliveryMethod: 'manual',
         stockCount: 5,
-        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.payoneer.android/512',
+        image: 'https://play-lh.googleusercontent.com/e6la-fdbXc3m60Jh0zLsZn-YHYqipHMB3q_yGqnkt_Z0K9J_r4RefEn1kq49wPDHuT0=s512-rw',
         sortOrder: 5,
     },
     {
@@ -713,7 +713,7 @@ const tradingProducts: Product[] = [
         price: { single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00 },
         deliveryMethod: 'manual',
         stockCount: 3,
-        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.transferwise.android/512',
+        image: 'https://play-lh.googleusercontent.com/SuO-_SDMbY15BPZt6EshX_8ivk0_BCOq4qdb7r5PcdmsuA3cbGm6_cJAuwiNuPY3jhlvfXLH6m1UahEERdAX9A=s512-rw',
         sortOrder: 6,
     },
 ];
