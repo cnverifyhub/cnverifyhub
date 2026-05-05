@@ -229,7 +229,7 @@ const douyinProducts: Product[] = [
         tierName: { zh: '抖音全新号', en: 'Douyin Fresh Account' },
         tierSlug: 'fresh',
         description: { zh: '全新注册，支持手机号登录，权重正常', en: 'Freshly registered standard Douyin account' },
-        price: { single: 18.80, bulk10: 15.80, bulk50: 12.80, bulk200: 10.80, originalPrice: { single: 25.80, bulk10: 22.80, bulk50: 18.80, bulk200: 15.80 } },
+        price: { single: 24.44, bulk10: 15.80, bulk50: 12.80, bulk200: 10.80, originalPrice: { single: 25.80, bulk10: 22.80, bulk50: 18.80, bulk200: 15.80 } },
         features: [
             { zh: '全新白号', en: 'Fresh account' },
             { zh: '无违规记录', en: 'Clean record' },
@@ -249,7 +249,7 @@ const douyinProducts: Product[] = [
         tierName: { zh: '抖音实名号', en: 'Douyin Verified Account' },
         tierSlug: 'verified',
         description: { zh: '已完成实名认证的高质量抖音号', en: 'High-quality ID-verified Douyin' },
-        price: { single: 38.80, bulk10: 38.80, bulk50: 28.80, bulk200: 28.80, originalPrice: { single: 48.80, bulk10: 48.80, bulk50: 38.80, bulk200: 38.80 } },
+        price: { single: 50.44, bulk10: 38.80, bulk50: 28.80, bulk200: 28.80, originalPrice: { single: 48.80, bulk10: 48.80, bulk50: 38.80, bulk200: 38.80 } },
         features: [
             { zh: '实名认证完成', en: 'ID verification done' },
             { zh: '权重更高', en: 'Higher weight' },
@@ -271,7 +271,7 @@ const douyinProducts: Product[] = [
         tierName: { zh: '抖音老号 (1年+)', en: 'Douyin Aged (1+ Year)' },
         tierSlug: 'aged',
         description: { zh: '注册满一年以上的抖音号', en: '1+ year old Douyin account' },
-        price: { single: 28.80, bulk10: 26.80, bulk50: 24.80, bulk200: 22.80, originalPrice: { single: 38.80, bulk10: 36.80, bulk50: 34.80, bulk200: 32.80 } },
+        price: { single: 37.44, bulk10: 26.80, bulk50: 24.80, bulk200: 22.80, originalPrice: { single: 38.80, bulk10: 36.80, bulk50: 34.80, bulk200: 32.80 } },
         features: [
             { zh: '注册1年+', en: '1+ year old' },
             { zh: '账号权重高', en: 'High weight' },
@@ -294,7 +294,7 @@ const qqProducts: Product[] = [
         tierName: { zh: 'QQ全新号', en: 'QQ Fresh Account' },
         tierSlug: 'fresh',
         description: { zh: '全新正常注册QQ号', en: 'Freshly registered standard QQ' },
-        price: { single: 25.80, bulk10: 8.80, bulk50: 8.80, bulk200: 9.80, originalPrice: { single: 34.80, bulk10: 14.80, bulk50: 14.80, bulk200: 15.80 } },
+        price: { single: 33.54, bulk10: 8.80, bulk50: 8.80, bulk200: 9.80, originalPrice: { single: 34.80, bulk10: 14.80, bulk50: 14.80, bulk200: 15.80 } },
         features: [
             { zh: '全新注册', en: 'Fresh account' },
             { zh: '手机号绑定', en: 'Phone bound' },
@@ -313,7 +313,7 @@ const qqProducts: Product[] = [
         tierName: { zh: 'QQ高级老号', en: 'QQ Aged Account' },
         tierSlug: 'aged',
         description: { zh: '高质量QQ老号，权重高', en: 'High-quality aged QQ account' },
-        price: { single: 38.80, bulk10: 28.80, bulk50: 28.80, bulk200: 18.80, originalPrice: { single: 48.80, bulk10: 38.80, bulk50: 38.80, bulk200: 28.80 } },
+        price: { single: 50.44, bulk10: 28.80, bulk50: 28.80, bulk200: 18.80, originalPrice: { single: 48.80, bulk10: 38.80, bulk50: 38.80, bulk200: 28.80 } },
         features: [
             { zh: '16级太阳', en: 'Sun level (16+)' },
             { zh: '高等级权限', en: 'High level' },
@@ -333,7 +333,7 @@ const qqProducts: Product[] = [
         tierName: { zh: 'QQ超级VIP版', en: 'QQ Super VIP Status' },
         tierSlug: 'vip',
         description: { zh: '自带超级会员的优质号码', en: 'Premium number with Super VIP included' },
-        price: { single: 118.80, bulk10: 108.80, bulk50: 98.80, bulk200: 78.80, originalPrice: { single: 128.80, bulk10: 118.80, bulk50: 108.80, bulk200: 88.80 } },
+        price: { single: 154.44, bulk10: 108.80, bulk50: 98.80, bulk200: 78.80, originalPrice: { single: 128.80, bulk10: 118.80, bulk50: 108.80, bulk200: 88.80 } },
         features: [
             { zh: 'QQ会员特权', en: 'VIP privileges' },
             { zh: '专属标识', en: 'VIP badge' },
@@ -398,7 +398,7 @@ const taobaoProducts: Product[] = [
         tierName: { zh: '淘宝基础买家号', en: 'Taobao Basic Buyer' },
         tierSlug: 'basic',
         description: { zh: '淘宝购物基础白号', en: 'Fresh Taobao account' },
-        price: { single: 22.40, bulk10: 12.80, bulk50: 12.80, bulk200: 10.80, originalPrice: { single: 32.40, bulk10: 22.80, bulk50: 22.80, bulk200: 18.80 } },
+        price: { single: 29.12, bulk10: 12.80, bulk50: 12.80, bulk200: 10.80, originalPrice: { single: 32.40, bulk10: 22.80, bulk50: 22.80, bulk200: 18.80 } },
         stockCount: 25,
         sortOrder: 1,
         ...commonFields
@@ -411,7 +411,7 @@ const taobaoProducts: Product[] = [
         tierName: { zh: '淘宝VIP老号', en: 'Taobao VIP Aged Account' },
         tierSlug: 'vip-aged',
         description: { zh: '高等级淘气值老号', en: 'High Taoqi score aged account' },
-        price: { single: 48.80, bulk10: 42.80, bulk50: 42.80, bulk200: 38.80, originalPrice: { single: 58.80, bulk10: 52.80, bulk50: 52.80, bulk200: 48.80 } },
+        price: { single: 63.44, bulk10: 42.80, bulk50: 42.80, bulk200: 38.80, originalPrice: { single: 58.80, bulk10: 52.80, bulk50: 52.80, bulk200: 48.80 } },
         features: [
             { zh: '高淘气值', en: 'High Taoqi value' },
         ],
@@ -434,7 +434,7 @@ const xiaohongshuProducts: Product[] = [
         tierName: { zh: '小红书基础号', en: 'Xiaohongshu Basic' },
         tierSlug: 'basic',
         description: { zh: '高质量新注册账号', en: 'High-quality fresh account' },
-        price: { single: 18.80, bulk10: 15.80, bulk50: 12.80, bulk200: 10.80, originalPrice: { single: 25.80, bulk10: 22.80, bulk50: 18.80, bulk200: 15.80 } },
+        price: { single: 24.44, bulk10: 15.80, bulk50: 12.80, bulk200: 10.80, originalPrice: { single: 25.80, bulk10: 22.80, bulk50: 18.80, bulk200: 15.80 } },
         features: [
             { zh: '手机号注册', en: 'Phone registered' },
             { zh: '可正常点赞评论', en: 'Can like & comment' },
