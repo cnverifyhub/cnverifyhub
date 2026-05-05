@@ -9,7 +9,7 @@ export default function CheckoutPage() {
     return (
         <div className="min-h-screen bg-slate-50/50 dark:bg-dark-950">
             <Suspense fallback={<div className="py-32 text-center">Loading checkout...</div>}>
-                <div className="section-container pt-12 pb-32 md:pt-24 md:pb-48 animate-fade-in">
+                <div className="section-container pt-12 pb-32 md:pt-24 md:pb-48 animate-fade-in mb-16 md:mb-24">
                     <div className="text-center mb-10">
                         <h1 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white mb-4">
                             {t('checkout.title', 'zh')}

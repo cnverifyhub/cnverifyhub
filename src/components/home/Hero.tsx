@@ -385,6 +385,12 @@ export function Hero({ lang }: { lang: Lang }) {
                             <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2.5 py-1 rounded">
                                 <Headset className="w-3.5 h-3.5" /> {lang === 'zh' ? '售后无忧' : '24/7 Support'}
                             </span>
+                            <span className="flex items-center gap-1 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-2.5 py-1 rounded">
+                                <BadgeCheck className="w-3.5 h-3.5" /> {lang === 'zh' ? '实名专场' : 'KYC Center'}
+                            </span>
+                            <span className="flex items-center gap-1 text-[11px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2.5 py-1 rounded">
+                                <TrendingUp className="w-3.5 h-3.5" /> {lang === 'zh' ? '量化交易' : 'Trading Ready'}
+                            </span>
                         </div>
 
                         {/* ===== Journey Stepper (交易流程) ===== */}
@@ -431,26 +437,32 @@ export function Hero({ lang }: { lang: Lang }) {
                         </div>
 
                         {/* Stats Bar */}
-                        <div className="w-full grid grid-cols-1 min-[400px]:grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 md:gap-12 mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-slate-100 dark:border-slate-800/50 px-2 sm:px-0 animate-fade-in-up min-w-0" style={{ animationDelay: '500ms' }}>
+                        <div className="w-full grid grid-cols-1 min-[400px]:grid-cols-2 sm:grid-cols-5 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-slate-100 dark:border-slate-800/50 px-2 sm:px-0 animate-fade-in-up min-w-0" style={{ animationDelay: '500ms' }}>
                             <div>
-                                <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+                                <p className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
                                     <AnimatedCounter end={50} suffix="K+" duration={2500} />
                                 </p>
-                                <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.orders', lang)}</p>
+                                <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.orders', lang)}</p>
                             </div>
                             <div>
-                                <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+                                <p className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
                                     <AnimatedCounter end={12} suffix=",480+" duration={2500} />
                                 </p>
-                                <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.customers', lang)}</p>
+                                <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.customers', lang)}</p>
                             </div>
                             <div>
-                                <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">30 min</p>
-                                <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.delivery', lang)}</p>
+                                <p className="text-xl sm:text-2xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                                    <AnimatedCounter end={3} suffix=",120+" duration={2500} />
+                                </p>
+                                <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">{lang === 'zh' ? '累计实名成功' : 'Verified KYC'}</p>
                             </div>
                             <div>
-                                <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">24/7</p>
-                                <p className="text-xs sm:text-sm text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.support', lang)}</p>
+                                <p className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">30 min</p>
+                                <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.delivery', lang)}</p>
+                            </div>
+                            <div>
+                                <p className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">24/7</p>
+                                <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.support', lang)}</p>
                             </div>
                         </div>
 

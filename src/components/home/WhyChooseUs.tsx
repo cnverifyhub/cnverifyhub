@@ -56,27 +56,7 @@ const trustItems = {
 };
 
 export function WhyChooseUs({ lang }: WhyChooseUsProps) {
-    const [count, setCount] = useState(0);
-    const targetCount = 12480;
     const items = trustItems[lang] || trustItems.zh;
-
-    useEffect(() => {
-        let start = 0;
-        const duration = 2000; // 2 seconds
-        const increment = Math.ceil(targetCount / (duration / 16)); // ~60fps
-
-        const timer = setInterval(() => {
-            start += increment;
-            if (start >= targetCount) {
-                setCount(targetCount);
-                clearInterval(timer);
-            } else {
-                setCount(start);
-            }
-        }, 16);
-
-        return () => clearInterval(timer);
-    }, []);
 
     return (
         <section className="py-16 md:py-24 bg-slate-50 dark:bg-dark-950/50">
@@ -112,27 +92,7 @@ export function WhyChooseUs({ lang }: WhyChooseUsProps) {
                     ))}
                 </div>
 
-                {/* Real-time Counter Animation */}
-                <div className="mt-16 bg-white dark:bg-dark-900 rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-red-500/5 border border-red-100 dark:border-red-900/20 text-center relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#e4393c] via-[#ffd700] to-[#e4393c]"></div>
-                    
-                    <div className="relative z-10 flex flex-col items-center">
-                        <span className="text-slate-500 dark:text-slate-400 text-sm font-bold uppercase tracking-[0.2em] mb-4">
-                            诚信经营 · 全球可信
-                        </span>
-                        <div className="flex items-baseline gap-1 animate-pulse-slow">
-                            <span className="text-sm md:text-xl font-bold text-slate-700 dark:text-slate-300">已服务</span>
-                            <span className="text-5xl md:text-7xl font-black text-[#e4393c] tabular-nums tracking-tighter drop-shadow-sm">
-                                {count.toLocaleString()}
-                            </span>
-                            <span className="text-lg md:text-2xl font-bold text-[#e4393c]">+</span>
-                            <span className="text-sm md:text-xl font-bold text-slate-700 dark:text-slate-300 ml-1">客户</span>
-                        </div>
-                        <p className="mt-6 text-slate-500 dark:text-slate-400 text-sm italic font-medium">
-                            数据每分钟自动更新 · 累计完成交易 12,045+ 次
-                        </p>
-                    </div>
-                </div>
+                {/* Removed customer counter as requested (until real data is higher) */}
             </div>
         </section>
     );

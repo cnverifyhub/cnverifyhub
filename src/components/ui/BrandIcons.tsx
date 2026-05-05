@@ -16,8 +16,8 @@ const ICON_PATHS: Record<string, string> = {
     xiaohongshu:  '/images/categories/xiaohongshu.webp',
     telegram:     '/images/categories/telegram.png',
     bundle:       '/icons/alipay-xianyu-bundle.svg',
-    verification: '/icons/passport-verification.svg',
-    fintech:      '/icons/wise-account.svg',
+    verification: '/images/categories/verification.png',
+    fintech:      '/images/categories/fintech.png',
     
     // New Bundles
     'bundle-alipay-xianyu': '/icons/alipay-xianyu-bundle.svg',

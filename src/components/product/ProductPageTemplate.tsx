@@ -15,9 +15,15 @@ import { StockBadge } from '../ui/StockBadge';
 import { SlashPriceModal } from '../ui/SlashPriceModal';
 import { ProductPreview } from './ProductPreview';
 import { useCartStore } from '@/store/cartStore';
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
+import { 
+    WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, 
+    BundleIcon, VerificationIcon, FintechIcon,
+    PassportVerifyIcon, FaceVerifyIcon, KycPackageIcon, WechatRealnameIcon, AlipayRealnameIcon,
+    XmIcon, HfmIcon, NetellerIcon, SkrillIcon, PayoneerIcon, WiseIcon
+} from '@/components/ui/BrandIcons';
 
 const iconMap: Record<string, React.ElementType> = {
+    // Categories
     wechat: WeChatIcon,
     alipay: AlipayIcon,
     douyin: DouyinIcon,
@@ -25,9 +31,23 @@ const iconMap: Record<string, React.ElementType> = {
     xianyu: XianyuIcon,
     taobao: TaobaoIcon,
     xiaohongshu: XiaohongshuIcon,
-    bundle: Package,
-    verification: ShieldCheck,
-    trading: Landmark,
+    bundle: BundleIcon,
+    verification: VerificationIcon,
+    trading: FintechIcon,
+    
+    // Specific Products
+    'verify-passport': PassportVerifyIcon,
+    'verify-face': FaceVerifyIcon,
+    'verify-kyc': KycPackageIcon,
+    'verify-wechat': WechatRealnameIcon,
+    'verify-alipay': AlipayRealnameIcon,
+    'xm-account': XmIcon,
+    'hfm-account': HfmIcon,
+    'neteller-account': NetellerIcon,
+    'skrill-account': SkrillIcon,
+    'payoneer-account': PayoneerIcon,
+    'wise-account': WiseIcon,
+    wise: WiseIcon
 };
 
 const iconColors: Record<string, string> = {
@@ -41,6 +61,7 @@ const iconColors: Record<string, string> = {
     bundle: "text-purple-500",
     verification: "text-indigo-500",
     trading: "text-amber-500",
+    wise: "text-[#9FE870]",
 };
 
 interface ProductPageTemplateProps {
@@ -178,23 +199,24 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
     const isOutOfStock = product.stockCount === 0;
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-dark-950 pt-20 pb-24 font-sans">
-            <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-
-                {/* Breadcrumbs */}
-                <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6">
-                    <Link href={getLocalizedPath('/', lang)} className="hover:text-primary-600 transition-colors">
-                        {lang === 'zh' ? '首页' : 'Home'}
-                    </Link>
-                    <ChevronLeft className="w-4 h-4 rotate-180" />
-                    <Link href={getLocalizedPath(`/${product.category}`, lang)} className="hover:text-primary-600 transition-colors">
-                        {category?.name[lang]}
-                    </Link>
-                    <ChevronLeft className="w-4 h-4 rotate-180" />
-                    <span className="text-slate-900 dark:text-slate-300 font-medium truncate">
-                        {product.name?.[lang] || product.tierName[lang]}
-                    </span>
-                </nav>
+        <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0a0a0f]">
+            <div className="flex-grow">
+                <div className="max-w-7xl mx-auto px-4 pt-4 pb-20 sm:pt-6 sm:pb-32">
+                    {/* Breadcrumbs */}
+                    <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6">
+                        <Link href={getLocalizedPath('/', lang)} className="hover:text-[#FF0036] transition-colors">
+                            {lang === 'zh' ? '首页' : 'Home'}
+                        </Link>
+                        <ChevronLeft className="w-4 h-4 rotate-180" />
+                        <Link href={getLocalizedPath(`/${product.category}`, lang)} className="hover:text-[#FF0036] transition-colors">
+                            {category?.name[lang]}
+                        </Link>
+                        <ChevronLeft className="w-4 h-4 rotate-180" />
+                        <span className="text-slate-900 dark:text-slate-300 font-medium truncate">
+                            {product.name?.[lang] || product.tierName[lang]}
+                        </span>
+                    </nav>
+                </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
@@ -222,32 +244,43 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                                 </h1>
 
                                 <div className="flex flex-wrap items-center gap-2 mt-auto">
-                                    <div className={`p-2 rounded-xl bg-white dark:bg-dark-800 shadow-sm border border-slate-100 dark:border-slate-800 ${category ? iconColors[category.id] : ''}`}>
-                                        {(() => {
-                                            const BrandIcon = (category && iconMap[category.id]) || MessageCircle;
-                                            return <BrandIcon className="w-8 h-8 md:w-10 md:h-10" />;
-                                        })()}
-                                    </div>
-                                    <div className="h-10 w-px bg-slate-200 dark:bg-slate-800 mx-2 hidden sm:block"></div>
-                                    <div className="flex flex-col text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                                        <span>Official CNWePro</span>
-                                        <span className="text-red-500">Premium Digital Good</span>
-                                    </div>
-                                </div>
+                                     <div className={`p-2 rounded-xl bg-white dark:bg-dark-800 shadow-sm border border-slate-100 dark:border-slate-800 ${category ? iconColors[category.id] : ''}`}>
+                                         {(() => {
+                                             const BrandIcon = iconMap[product.id] || (category && iconMap[category.id]) || MessageCircle;
+                                             return <BrandIcon className="w-8 h-8 md:w-10 md:h-10" />;
+                                         })()}
+                                     </div>
+                                     <div className="h-10 w-px bg-slate-200 dark:bg-slate-800 mx-2 hidden sm:block"></div>
+                                     <div className="flex flex-col text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                                         <span>Official CNWePro</span>
+                                         <span className="text-red-500">Premium Digital Good</span>
+                                     </div>
+                                 </div>
                             </div>
 
-                            {/* Right: AI-Generated Product Imagery */}
+                            {/* Right: AI-Generated Product Imagery / Real Product Image */}
                             <div className="w-full md:w-[42%] relative overflow-hidden flex items-center justify-center bg-slate-100 dark:bg-slate-800">
-                                {category && (
-                                    <Image
-                                        src={`/images/products/${category.id}.png`}
-                                        alt={category.name[lang]}
-                                        fill
-                                        priority
-                                        className="object-cover transition-transform duration-700 hover:scale-105"
-                                        sizes="(max-width: 768px) 100vw, 40vw"
-                                    />
-                                )}
+                                {(() => {
+                                    const imageSrc = product.image || 
+                                                    (['wechat', 'alipay', 'douyin', 'qq', 'xianyu', 'taobao', 'xiaohongshu'].includes(category.id) 
+                                                        ? `/images/products/${category.id}.png` 
+                                                        : (category.id === 'trading' 
+                                                            ? '/images/categories/fintech.png' 
+                                                            : (category.id === 'bundle'
+                                                                ? '/images/categories/bundle.png'
+                                                                : `/images/categories/${category.id}.png`)));
+                                    
+                                    return (
+                                        <Image
+                                            src={imageSrc}
+                                            alt={product.tierName[lang]}
+                                            fill
+                                            priority
+                                            className="object-cover transition-transform duration-700 hover:scale-110"
+                                            sizes="(max-width: 768px) 100vw, 40vw"
+                                        />
+                                    );
+                                })()}
                             </div>
                         </div>
 
@@ -625,6 +658,7 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                 lang={lang}
                 productName={product.tierName[lang]}
             />
+            {/* Footer added to product pages - fixes missing footer bug - REMOVED: Now handled by ClientLayoutWrapper */}
         </div>
     );
 }

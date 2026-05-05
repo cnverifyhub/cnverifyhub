@@ -4,16 +4,22 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { Check, ShieldCheck, Clock, ShoppingCart, Zap, Users, ArrowRight } from 'lucide-react';
+import { Check, ShieldCheck, Clock, ShoppingCart, Zap, Users, ArrowRight, BadgeCheck } from 'lucide-react';
 import { Badge } from './Badge';
 import { StockBadge } from './StockBadge';
 import type { Product } from '@/types';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { calculateYuan, formatYuan } from '@/lib/utils';
 import { useCartStore } from '@/store/cartStore';
-import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, BundleIcon, VerificationIcon, FintechIcon } from './BrandIcons';
+import { 
+    WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, 
+    BundleIcon, VerificationIcon, FintechIcon,
+    PassportVerifyIcon, FaceVerifyIcon, KycPackageIcon, WechatRealnameIcon, AlipayRealnameIcon,
+    XmIcon, HfmIcon, NetellerIcon, SkrillIcon, PayoneerIcon, WiseIcon
+} from './BrandIcons';
 
 const ICON_COMPONENTS: Record<string, React.ElementType> = {
+    // Categories
     wechat: WeChatIcon,
     alipay: AlipayIcon,
     douyin: DouyinIcon,
@@ -23,7 +29,23 @@ const ICON_COMPONENTS: Record<string, React.ElementType> = {
     xiaohongshu: XiaohongshuIcon,
     bundle: BundleIcon,
     verification: VerificationIcon,
-    trading: FintechIcon
+    trading: FintechIcon,
+    
+    // Specific Products (Verification)
+    'verify-passport': PassportVerifyIcon,
+    'verify-face': FaceVerifyIcon,
+    'verify-kyc': KycPackageIcon,
+    'verify-wechat': WechatRealnameIcon,
+    'verify-alipay': AlipayRealnameIcon,
+    
+    // Specific Products (Trading)
+    'xm-account': XmIcon,
+    'hfm-account': HfmIcon,
+    'neteller-account': NetellerIcon,
+    'skrill-account': SkrillIcon,
+    'payoneer-account': PayoneerIcon,
+    'wise-account': WiseIcon,
+    wise: WiseIcon
 };
 
 interface PricingCardProps {
@@ -42,6 +64,7 @@ const BRAND_CONFIG: Record<string, { color: string; bg: string; iconBg: string; 
     bundle:      { color: '#8b5cf6', bg: 'bg-[#8b5cf6]/5', iconBg: '#8b5cf6', shadow: 'shadow-purple-500/20', glow: 'group-hover:shadow-purple-500/30' },
     verification:{ color: '#6366f1', bg: 'bg-[#6366f1]/5', iconBg: '#6366f1', shadow: 'shadow-indigo-500/20', glow: 'group-hover:shadow-indigo-500/30' },
     trading:     { color: '#f59e0b', bg: 'bg-[#f59e0b]/10', iconBg: '#f59e0b', shadow: 'shadow-amber-500/20', glow: 'group-hover:shadow-amber-500/30' },
+    wise:        { color: '#9FE870', bg: 'bg-[#9FE870]/10', iconBg: '#9FE870', shadow: 'shadow-[#9FE870]/20', glow: 'group-hover:shadow-[#9FE870]/30' },
 };
 
 export function PricingCard({ product, lang }: PricingCardProps) {
@@ -129,7 +152,7 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                                 priority={product.popular}
                             />
                         ) : (() => {
-                            const Icon = ICON_COMPONENTS[product.category] || WeChatIcon;
+                            const Icon = ICON_COMPONENTS[product.id] || ICON_COMPONENTS[product.category] || WeChatIcon;
                             return <Icon className="w-full h-full" />;
                         })()}
                     </div>
@@ -184,6 +207,12 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                         <ShieldCheck className="w-3.5 h-3.5" />
                         {product.warranty?.[lang]}{lang === 'zh' ? '质保' : ' Warranty'}
                     </span>
+                    {product.category === 'verification' && (
+                        <span className="text-[10px] font-black bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400 px-3 py-1.5 rounded-xl border border-indigo-100 dark:border-indigo-500/20 flex items-center gap-1.5">
+                            <BadgeCheck className="w-3.5 h-3.5" />
+                            {lang === 'zh' ? '99% 成功率' : '99% Success Rate'}
+                        </span>
+                    )}
                 </div>
 
                 {product.popular && !isOutOfStock && (

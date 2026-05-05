@@ -1,5 +1,4 @@
-<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="512" height="512" rx="115" fill="#00B9FF"/>
-  <path d="M120 120H200L256 280L312 120H392L312 392H200L120 120Z" fill="white"/>
-  <path d="M256 220L312 392H200L256 220Z" fill="#00B9FF" fill-opacity="0.2"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 24 24" fill="none">
+  <rect width="24" height="24" rx="5" fill="#9FE870"/>
+  <path d="M6.488 7.469L0 15.05h11.585l1.301-3.576H7.922l3.033-3.507l.01-.092L8.993 4.48h8.873l-6.878 18.925h4.706L24 .595H2.543z" fill="#003300"/>
 </svg>

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { PopularProducts } from '@/components/home/PopularProducts';
+import PricingTable from '@/components/pricing/PricingTable';
 import { allProducts } from '@/data/products';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
@@ -49,15 +49,15 @@ export default function PricingPage() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
-            <div className="text-center section-container mb-8">
+            <div className="text-center section-container mb-16">
                 <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-6">
                     详细价格总览
                 </h1>
-                <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-medium">
                     全网最具竞争力的价格，量大从优。以下是我们的所有账号套餐。如果需要采购超过200个账号，请联系客服获取渠道特价。
                 </p>
             </div>
-            <PopularProducts lang="zh" />
+            <PricingTable lang="zh" />
         </div>
     );
 }

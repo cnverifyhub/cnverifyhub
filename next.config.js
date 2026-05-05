@@ -33,7 +33,7 @@ const nextConfig = {
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://hm.baidu.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://images.unsplash.com https://api.dicebear.com https://play-lh.googleusercontent.com; connect-src 'self' https://otgewrynnrqmtsyvlzrj.supabase.co https://hm.baidu.com https://www.google-analytics.com; font-src 'self' data:;"
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://hm.baidu.com https://www.googletagmanager.com https://*.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://images.unsplash.com https://api.dicebear.com https://play-lh.googleusercontent.com https://www.google-analytics.com https://*.google-analytics.com; connect-src 'self' https://otgewrynnrqmtsyvlzrj.supabase.co https://hm.baidu.com https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:;"
           },
           // Preconnect to Supabase and Baidu Analytics for faster resolution
           {

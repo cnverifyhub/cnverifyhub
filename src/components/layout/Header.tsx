@@ -172,7 +172,15 @@ export default function Header() {
                                                         {categoryIcons[c.id]}
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                        <span className={`font-bold text-sm block ${c.color} group-hover/item:translate-x-0.5 transition-transform`}>{c.name[lang]}</span>
+                                                        <div className="flex items-center gap-2">
+                                                            <span className={`font-bold text-sm block ${c.color} group-hover/item:translate-x-0.5 transition-transform`}>{c.name[lang]}</span>
+                                                            {(c.id === 'verification' || c.id === 'trading') && (
+                                                                <span className="text-[8px] bg-indigo-500 text-white px-1 rounded-sm shrink-0 font-black tracking-tighter">NEW</span>
+                                                            )}
+                                                            {c.id === 'bundle' && (
+                                                                <span className="text-[8px] bg-red-500 text-white px-1 rounded-sm shrink-0 font-black tracking-tighter">HOT</span>
+                                                            )}
+                                                        </div>
                                                         <span className="text-[10px] text-slate-500 dark:text-slate-400 line-clamp-1 opacity-70">
                                                             {c.description[lang]}
                                                         </span>

@@ -159,7 +159,11 @@ export default function Footer() {
                                     return (
                                         <li key={c.id}>
                                             <Link href={getLocalizedPath(c.href, lang)} className="text-[11px] lg:text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#FF0036] dark:hover:text-[#FF0036] flex items-center gap-1.5 transition-colors">
-                                                <Icon className="w-3.5 h-3.5" /> <span className="truncate">{c.name[lang]}</span> {c.id === 'bundle' && <span className="text-[9px] bg-[#FF0036] text-white px-1 rounded-sm shrink-0">HOT</span>}
+                                                <Icon className="w-3.5 h-3.5" /> <span className="truncate">{c.name[lang]}</span>
+                                                {(c.id === 'verification' || c.id === 'trading') && (
+                                                    <span className="text-[8px] bg-indigo-500 text-white px-1 rounded-sm shrink-0 font-black tracking-tighter">NEW</span>
+                                                )}
+                                                {c.id === 'bundle' && <span className="text-[9px] bg-[#FF0036] text-white px-1 rounded-sm shrink-0">HOT</span>}
                                             </Link>
                                         </li>
                                     );
@@ -242,30 +246,41 @@ export default function Footer() {
                 {/* Bottom Bar: Payments & Copyright */}
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t border-slate-100 dark:border-white/5 mt-8">
                     {/* Copyright & Info */}
-                    <div className="flex flex-col items-center md:items-start gap-3">
-                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-3">
-                            <Link href="#" className="text-[10px] font-bold text-slate-500 uppercase tracking-tight hover:text-[#FF0036] transition-colors flex items-center gap-1.5">
-                                <FileText className="w-3.5 h-3.5" /> 营业执照
+                    <div className="flex flex-col items-center md:items-start gap-4">
+                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-4">
+                            {/* Business License Badge */}
+                            <Link href="#" className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/10 hover:border-[#FF0036]/30 transition-all group">
+                                <div className="w-5 h-5 bg-[#FF0036]/10 rounded flex items-center justify-center group-hover:bg-[#FF0036]/20 transition-colors">
+                                    <FileText className="w-3.5 h-3.5 text-[#FF0036]" /> 
+                                </div>
+                                <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">营业执照</span>
                             </Link>
                             
-                            <span className="hidden md:inline w-px h-3 bg-slate-200 dark:bg-slate-800" />
+                            <span className="hidden md:inline w-px h-4 bg-slate-200 dark:bg-slate-800" />
                             
-                            <div className="flex items-center gap-2 px-3 py-1 bg-slate-100 dark:bg-white/5 rounded-full border border-slate-200 dark:border-white/10 shadow-sm group hover:border-[#FF0036]/30 transition-all">
-                                <div className="w-4 h-4 bg-red-600 rounded-sm flex items-center justify-center text-[8px] text-white font-black shadow-sm">ICP</div>
-                                <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">京ICP备20240918号-1</span>
+                            {/* ICP Badge - Govt Style */}
+                            <div className="flex items-center gap-2 pl-1 pr-3 py-1 bg-white dark:bg-dark-900 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all group cursor-default">
+                                <div className="w-8 h-6 bg-[#2a2a2a] dark:bg-black rounded flex items-center justify-center text-[9px] text-white font-black overflow-hidden relative">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
+                                    ICP
+                                </div>
+                                <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200">京ICP备20240918号-1</span>
                             </div>
                             
-                            <span className="hidden md:inline w-px h-3 bg-slate-200 dark:bg-slate-800" />
+                            <span className="hidden md:inline w-px h-4 bg-slate-200 dark:bg-slate-800" />
                             
-                            <Link href="#" className="flex items-center gap-2 group">
-                                <div className="w-5 h-5 bg-blue-600/10 rounded flex items-center justify-center group-hover:bg-blue-600/20 transition-colors">
-                                    <Shield className="w-3.5 h-3.5 text-blue-600" /> 
+                            {/* Public Security Badge */}
+                            <Link href="https://www.beian.gov.cn/" target="_blank" className="flex items-center gap-2 pl-1 pr-3 py-1 bg-white dark:bg-dark-900 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all group">
+                                <div className="w-8 h-6 bg-[#1677ff] rounded flex items-center justify-center relative overflow-hidden">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
+                                    <Shield className="w-3.5 h-3.5 text-white animate-pulse" /> 
                                 </div>
-                                <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 group-hover:text-blue-600 transition-colors">京公网安备 11010502052468号</span>
+                                <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200 group-hover:text-[#1677ff] transition-colors">京公网安备 11010502052468号</span>
                             </Link>
                         </div>
-                        <p className="text-[10px] text-slate-400 font-medium">
-                            © {new Date().getFullYear()} <span className="font-bold text-slate-500 dark:text-slate-300">CNWePro</span>. All Rights Reserved. 专业数字资产交易保障平台.
+                        <p className="text-[10px] text-slate-400 font-medium tracking-wide">
+                            © {new Date().getFullYear()} <span className="font-bold text-slate-600 dark:text-slate-300">CNWePro Digital Assets platform</span>. All Rights Reserved. 
+                            <span className="ml-2 px-1.5 py-0.5 bg-emerald-500/10 text-emerald-500 rounded text-[9px] font-bold">100% SECURE</span>
                         </p>
                     </div>
 
