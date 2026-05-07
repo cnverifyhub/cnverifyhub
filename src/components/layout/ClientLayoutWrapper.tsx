@@ -7,6 +7,7 @@ import MobileNav from '@/components/layout/MobileNav';
 import { CartDrawer } from '@/components/cart/CartDrawer';
 import { GsapAnimations } from '@/components/ui/GsapAnimations';
 import { SalesTicker } from '@/components/ui/SalesTicker';
+import BaiduPush from '@/components/layout/BaiduPush';
 
 export function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname() || '';
@@ -28,6 +29,7 @@ export function ClientLayoutWrapper({ children }: { children: React.ReactNode })
     // Render the standard website layout
     return (
         <div className="flex flex-col min-h-screen pt-[66px] md:pt-[70px]">
+            <BaiduPush />
             <Header />
             <main className="flex-grow">
                 {children}

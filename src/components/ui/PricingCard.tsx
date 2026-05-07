@@ -100,17 +100,22 @@ export function PricingCard({ product, lang }: PricingCardProps) {
         name: product.tierName[lang],
         description: product.description[lang],
         image: `https://cnwepro.com/images/categories/${product.category}.webp`,
+        brand: {
+            '@type': 'Brand',
+            'name': 'CNWePro'
+        },
         offers: {
             '@type': 'Offer',
-            priceCurrency: 'CNY',
-            price: calculateYuan(product.price.single),
+            priceCurrency: 'USDT',
+            price: product.price.single,
+            itemCondition: 'https://schema.org/NewCondition',
             availability: isOutOfStock ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
             url: `https://cnwepro.com/product/${product.id}`
         },
         aggregateRating: {
             '@type': 'AggregateRating',
-            ratingValue: '4.9',
-            reviewCount: Math.max(120, soldCount)
+            ratingValue: (product as any).rating || '4.9',
+            reviewCount: (product as any).review_count || Math.max(120, soldCount)
         }
     };
 
@@ -277,6 +282,23 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                                 e.preventDefault();
                                 e.stopPropagation();
                                 addItem(product.id, 1);
+                                // GTM tracking
+                                if (typeof window !== 'undefined' && (window as any).dataLayer) {
+                                    (window as any).dataLayer.push({
+                                        event: 'add_to_cart',
+                                        ecommerce: {
+                                            currency: 'USDT',
+                                            value: product.price.single,
+                                            items: [{
+                                                item_id: product.id,
+                                                item_name: product.tierName.en,
+                                                item_category: product.category,
+                                                price: product.price.single,
+                                                quantity: 1
+                                            }]
+                                        }
+                                    });
+                                }
                             }}
                             className="w-16 h-14 bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black rounded-2xl flex items-center justify-center transition-all duration-300 border border-slate-200 dark:border-white/5 active:scale-90"
                         >
