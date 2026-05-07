@@ -34,6 +34,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
         { url: `${SITE_URL}/contact/`, lastModified: now, changeFrequency: 'monthly', priority: 0.5, alternates: getAlternates('/contact/') },
         { url: `${SITE_URL}/en/contact/`, lastModified: now, changeFrequency: 'monthly', priority: 0.5, alternates: getAlternates('/contact/') },
+
+        { url: `${SITE_URL}/privacy/`, lastModified: now, changeFrequency: 'yearly', priority: 0.3, alternates: getAlternates('/privacy/') },
+        { url: `${SITE_URL}/en/privacy/`, lastModified: now, changeFrequency: 'yearly', priority: 0.3, alternates: getAlternates('/privacy/') },
     ];
 
     // 2. Category Routes

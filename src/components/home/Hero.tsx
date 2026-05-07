@@ -201,7 +201,7 @@ function FloatingCoupon({ lang }: { lang: Lang }) {
                 >
                     <X className="w-3 h-3" />
                 </button>
-                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')] opacity-10 pointer-events-none"></div>
+                <div className="absolute inset-0 bg-[url('/images/patterns/natural-paper.png')] opacity-10 pointer-events-none"></div>
                 <Gift className="w-8 h-8 mx-auto mb-2 drop-shadow-lg text-yellow-300" />
                 <p className="text-center text-[10px] font-black leading-tight uppercase tracking-tighter">
                     {lang === 'zh' ? '新人红包' : 'NEW GIFT'}
@@ -258,7 +258,7 @@ export function Hero({ lang }: { lang: Lang }) {
             <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-orange-500/5 dark:bg-orange-900/10 rounded-full blur-[140px] translate-y-1/2 -translate-x-1/3 -z-10 animate-float" style={{ animationDelay: '2s' }}></div>
             
             {/* Custom pattern overlay */}
-            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none -z-15 bg-[url('https://www.transparenttextures.com/patterns/gplay.png')]"></div>
+            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none -z-15 bg-[url('/images/patterns/gplay.png')]"></div>
 
             {/* Danmu Layer */}
             <DanmuLayer lang={lang} />
@@ -377,7 +377,8 @@ export function Hero({ lang }: { lang: Lang }) {
 
                         {/* CTA Buttons with Bounce on Primary */}
                         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-                            <Link href="#pricing" className="hero-cta-bounce text-center whitespace-normal break-words w-full sm:w-auto px-4 sm:px-10 py-3.5 sm:py-4 text-base sm:text-lg font-black rounded-2xl transition-all duration-300 bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] hover:from-[#ff2a2d] hover:to-[#cc0000] text-white shadow-[0_8px_20px_rgba(255,42,45,0.3)] hover:shadow-[0_12px_30px_rgba(255,42,45,0.45)] active:scale-95 border-b-4 border-[#cc0000] flex justify-center items-center relative overflow-hidden">
+                            <Link href="#pricing" className="hero-cta-bounce text-center whitespace-normal break-words w-full sm:w-auto px-4 sm:px-10 py-3.5 sm:py-4 text-base sm:text-lg font-black rounded-2xl transition-all duration-300 bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] hover:from-[#ff2a2d] hover:to-[#cc0000] text-white shadow-[0_8px_20px_rgba(255,42,45,0.3)] hover:shadow-[0_12px_30px_rgba(255,42,45,0.45)] active:scale-95 border-b-4 border-[#cc0000] flex justify-center items-center gap-2 relative overflow-hidden">
+                                <Zap className="w-5 h-5 fill-current animate-pulse" />
                                 <span className="relative z-10">{t('hero.cta.primary', lang)}</span>
                                 {/* Shine sweep effect */}
                                 <span className="absolute inset-0 hero-shine" />

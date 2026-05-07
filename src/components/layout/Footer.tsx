@@ -199,8 +199,8 @@ export default function Footer() {
                                 {[
                                     { label: '博客首页', en: 'Blog Home', icon: FileText, href: getLocalizedPath('/blog', lang) },
                                     { label: '最新文章', en: 'Latest Posts', icon: AlertTriangle, href: getLocalizedPath('/blog', lang) },
-                                    { label: '安全指南', en: 'Security Guide', icon: ShieldCheck, href: getLocalizedPath('/blog/wechat-security-guide', lang) },
-                                    { label: '营销技巧', en: 'Marketing Tips', icon: ArrowUpRight, href: getLocalizedPath('/blog/wechat-marketing-strategies', lang) }
+                                    { label: '安全指南', en: 'Security Guide', icon: ShieldCheck, href: getLocalizedPath('/blog/avoid-wechat-account-suspension', lang) },
+                                    { label: '实名教程', en: 'KYC Tutorial', icon: ArrowUpRight, href: getLocalizedPath('/blog/wechat-passport-realname-verification', lang) }
                                 ].map((item, idx) => (
                                     <li key={idx}>
                                         <Link href={item.href} className="text-[11px] lg:text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-500 flex items-center gap-1.5 transition-colors">
