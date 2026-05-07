@@ -290,7 +290,13 @@ export default function AdminDashboardPage() {
                     priceUsdt: editingProduct.price_usdt,
                     isActive: editingProduct.is_active,
                     nameEn: editingProduct.name_en,
-                    nameZh: editingProduct.name_zh
+                    nameZh: editingProduct.name_zh,
+                    descEn: editingProduct.description_en,
+                    descZh: editingProduct.description_zh,
+                    soldCount: editingProduct.sold_count,
+                    rating: editingProduct.rating,
+                    reviewCount: editingProduct.review_count,
+                    isPublished: editingProduct.is_published
                 })
             });
             const d = await res.json();
@@ -542,7 +548,20 @@ export default function AdminDashboardPage() {
         const verified = orders.filter(o => o.txVerified).length;
         const uniqueEmails = new Set(orders.map(o => o.email)).size;
         const repeatCustomers = orders.length - uniqueEmails;
-        return { total, pending, completed, paid, today, revenue, revenueRMB, verified, uniqueEmails, repeatCustomers };
+
+        // Calculate 7-day revenue trend
+        const now = new Date();
+        const last7Days = Array.from({ length: 7 }, (_, i) => {
+            const d = new Date();
+            d.setDate(now.getDate() - (6 - i));
+            const dayStr = d.toDateString();
+            const dayRevenue = orders
+                .filter(o => (o.status === 'completed' || o.status === 'paid') && new Date(o.createdAt).toDateString() === dayStr)
+                .reduce((sum, o) => sum + o.totalAmount, 0);
+            return { day: d.toLocaleDateString(undefined, { weekday: 'short' }), revenue: dayRevenue };
+        });
+
+        return { total, pending, completed, paid, today, revenue, revenueRMB, verified, uniqueEmails, repeatCustomers, last7Days };
     }, [orders]);
 
     const filteredOrders = useMemo(() => {
@@ -1081,13 +1100,20 @@ export default function AdminDashboardPage() {
                                 <h2 className="text-xl font-black text-white">Order Management</h2>
                                 <p className="text-xs mt-0.5" style={{color:'#64748b'}}>Manage all orders and process deliveries</p>
                             </div>
-                            <button onClick={fetchOrders}
-                                className="px-3 py-2 text-xs font-bold rounded-xl flex gap-1.5 items-center text-slate-300 hover:text-white transition-all shrink-0"
-                                style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}
-                            >
-                                {isLoadingOrders ? <Clock className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-                                Refresh
-                            </button>
+                            <div className="flex gap-2 shrink-0">
+                                <button onClick={() => setIsCreateOrderOpen(true)}
+                                    className="px-3 py-2 text-xs font-bold rounded-xl flex gap-1.5 items-center text-white transition-all"
+                                    style={{background:'linear-gradient(135deg,#3b82f6,#2563eb)'}}>
+                                    <Plus className="w-3.5 h-3.5" /> New Order
+                                </button>
+                                <button onClick={fetchOrders}
+                                    className="px-3 py-2 text-xs font-bold rounded-xl flex gap-1.5 items-center text-slate-300 hover:text-white transition-all"
+                                    style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}
+                                >
+                                    {isLoadingOrders ? <Clock className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+                                    Refresh
+                                </button>
+                            </div>
                         </header>
 
                         <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
@@ -1109,6 +1135,36 @@ export default function AdminDashboardPage() {
                                     <div className="text-[10px] mt-0.5" style={{color:'#64748b'}}>{s.label}</div>
                                 </div>
                             ))}
+                        </div>
+
+                        {/* Revenue Trend Chart */}
+                        <div className="mb-6 p-5 rounded-2xl" style={{background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.06)'}}>
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-xs font-black uppercase tracking-widest text-slate-500">7-Day Revenue Trend (USDT)</h3>
+                                <div className="text-[10px] text-emerald-400 font-bold px-2 py-0.5 bg-emerald-500/10 rounded-full">Live Data</div>
+                            </div>
+                            <div className="flex items-end justify-between gap-2 h-32 pt-2">
+                                {stats.last7Days.map((day, i) => {
+                                    const maxRev = Math.max(...stats.last7Days.map(d => d.revenue), 10);
+                                    const height = (day.revenue / maxRev) * 100;
+                                    return (
+                                        <div key={i} className="flex-1 flex flex-col items-center group">
+                                            <div className="relative w-full flex flex-col items-center">
+                                                {/* Tooltip */}
+                                                <div className="absolute -top-8 bg-slate-900 text-[10px] text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-10 border border-white/10">
+                                                    ${day.revenue.toFixed(1)}
+                                                </div>
+                                                {/* Bar */}
+                                                <div 
+                                                    className="w-full max-w-[40px] rounded-t-lg transition-all duration-500 bg-gradient-to-t from-blue-600/20 to-blue-500 group-hover:to-blue-400"
+                                                    style={{ height: `${Math.max(height, 5)}%` }}
+                                                />
+                                            </div>
+                                            <span className="text-[9px] font-bold text-slate-500 mt-2">{day.day}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </div>
 
                         <div className="rounded-2xl overflow-hidden" style={{background:'rgba(255,255,255,0.04)',border:'1px solid rgba(255,255,255,0.08)'}}>
@@ -1811,6 +1867,49 @@ export default function AdminDashboardPage() {
                                     />
                                 </div>
                                 <div className="col-span-2">
+                                    <label className="block text-xs font-bold mb-1 uppercase tracking-wider" style={{color:'#64748b'}}>Description (EN)</label>
+                                    <textarea 
+                                        rows={3}
+                                        value={editingProduct.description_en || ''} 
+                                        onChange={e => setEditingProduct({...editingProduct, description_en: e.target.value})}
+                                        className="w-full px-4 py-2.5 rounded-xl text-sm text-white outline-none focus:ring-2 focus:ring-violet-500"
+                                        style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}
+                                    />
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="block text-xs font-bold mb-1 uppercase tracking-wider" style={{color:'#64748b'}}>Description (ZH)</label>
+                                    <textarea 
+                                        rows={3}
+                                        value={editingProduct.description_zh || ''} 
+                                        onChange={e => setEditingProduct({...editingProduct, description_zh: e.target.value})}
+                                        className="w-full px-4 py-2.5 rounded-xl text-sm text-white outline-none focus:ring-2 focus:ring-violet-500"
+                                        style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold mb-1 uppercase tracking-wider" style={{color:'#64748b'}}>Sold Count</label>
+                                    <input 
+                                        type="number" 
+                                        value={editingProduct.sold_count || 0} 
+                                        onChange={e => setEditingProduct({...editingProduct, sold_count: parseInt(e.target.value)})}
+                                        className="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-white outline-none focus:ring-2 focus:ring-violet-500"
+                                        style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold mb-1 uppercase tracking-wider" style={{color:'#64748b'}}>Rating (0-5)</label>
+                                    <input 
+                                        type="number" 
+                                        step="0.1"
+                                        min="0"
+                                        max="5"
+                                        value={editingProduct.rating || 0} 
+                                        onChange={e => setEditingProduct({...editingProduct, rating: parseFloat(e.target.value)})}
+                                        className="w-full px-4 py-2.5 rounded-xl text-sm font-bold text-white outline-none focus:ring-2 focus:ring-violet-500"
+                                        style={{background:'rgba(255,255,255,0.06)',border:'1px solid rgba(255,255,255,0.1)'}}
+                                    />
+                                </div>
+                                <div className="col-span-2 flex gap-6">
                                     <label className="flex items-center gap-2 cursor-pointer">
                                         <input 
                                             type="checkbox" 
@@ -1818,7 +1917,16 @@ export default function AdminDashboardPage() {
                                             onChange={e => setEditingProduct({...editingProduct, is_active: e.target.checked})}
                                             className="w-4 h-4 rounded accent-violet-600"
                                         />
-                                        <span className="text-sm font-bold text-white">Product is Active</span>
+                                        <span className="text-sm font-bold text-white">Active</span>
+                                    </label>
+                                    <label className="flex items-center gap-2 cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            checked={editingProduct.is_published} 
+                                            onChange={e => setEditingProduct({...editingProduct, is_published: e.target.checked})}
+                                            className="w-4 h-4 rounded accent-emerald-600"
+                                        />
+                                        <span className="text-sm font-bold text-white">Published</span>
                                     </label>
                                 </div>
                             </div>

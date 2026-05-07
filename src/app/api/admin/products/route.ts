@@ -30,7 +30,11 @@ export async function PATCH(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { id, stockCount, priceUsdt, isActive, nameEn, nameZh } = await request.json();
+        const { 
+            id, stockCount, priceUsdt, isActive, nameEn, nameZh,
+            descEn, descZh, soldCount, rating, reviewCount,
+            seoTitle, seoDesc, isPublished
+        } = await request.json();
 
         if (!id) {
             return NextResponse.json({ error: 'Product ID is required' }, { status: 400 });
@@ -42,6 +46,16 @@ export async function PATCH(request: NextRequest) {
         if (typeof isActive === 'boolean') updateFields.is_active = isActive;
         if (nameEn) updateFields.name_en = nameEn;
         if (nameZh) updateFields.name_zh = nameZh;
+        
+        // Extended fields
+        if (descEn !== undefined) updateFields.description_en = descEn;
+        if (descZh !== undefined) updateFields.description_zh = descZh;
+        if (typeof soldCount === 'number') updateFields.sold_count = soldCount;
+        if (typeof rating === 'number') updateFields.rating = rating;
+        if (typeof reviewCount === 'number') updateFields.review_count = reviewCount;
+        if (seoTitle) updateFields.seo_title = seoTitle;
+        if (seoDesc) updateFields.seo_description = seoDesc;
+        if (typeof isPublished === 'boolean') updateFields.is_published = isPublished;
 
         const { error } = await supabase
             .from('products')
