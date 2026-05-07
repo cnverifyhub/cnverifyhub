@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getAllSlugs, getPostBySlug, getAllPosts } from '@/lib/blog';
 import { notFound } from 'next/navigation';
-import { Calendar, Tag, ChevronLeft, ChevronRight, ShieldCheck, Bookmark, Share2 } from 'lucide-react';
+import { Calendar, Tag, ChevronLeft, ChevronRight, ShieldCheck, Bookmark, Share2, BadgeCheck, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 
 // --- SSG: Pre-render every blog post at build time ---
@@ -114,25 +114,29 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                             </div>
                         </div>
                         
-                        <h1 className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white mb-6 leading-[1.2] tracking-tight">
+                        <h1 className="text-3xl md:text-6xl font-black text-slate-900 dark:text-white mb-6 leading-[1.1] tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-slate-400">
                             {post.title}
                         </h1>
                         
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 py-6 border-y border-slate-200 dark:border-slate-800">
-                            <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white font-bold shadow-md shadow-red-500/20">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 py-6 border-y border-slate-200 dark:border-slate-800 relative overflow-hidden">
+                            <div className="absolute inset-0 bg-[#FF0036]/[0.02] -skew-y-3 translate-y-12" />
+                            <div className="flex items-center gap-3 relative z-10">
+                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#FF0036] to-[#FF8C00] flex items-center justify-center text-white font-black shadow-lg shadow-[#FF0036]/20">
                                     CW
                                 </div>
                                 <div>
-                                    <div className="font-bold text-sm text-slate-900 dark:text-white">CNWePro Team</div>
-                                    <div className="text-xs text-slate-500">{post.readingTime} · {post.wordCount.toLocaleString()} 字</div>
+                                    <div className="font-black text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+                                        CNWePro Team
+                                        <BadgeCheck className="w-4 h-4 text-[#FF0036]" />
+                                    </div>
+                                    <div className="text-[10px] uppercase font-black tracking-widest text-slate-400">{post.readingTime} · {post.wordCount.toLocaleString()} {lang === 'zh' ? '字' : 'WORDS'}</div>
                                 </div>
                             </div>
-                            <div className="flex flex-col items-end gap-1">
+                            <div className="flex flex-col items-end gap-1 relative z-10">
                                 <ShareButtons title={post.title} url={postUrl} lang={lang} />
                                 {post.modifiedDate && post.modifiedDate !== post.publishDate && (
-                                    <div className="text-[10px] text-slate-400 italic">
-                                        {lang === 'zh' ? '最后更新于：' : 'Last updated: '} {post.modifiedDate}
+                                    <div className="text-[10px] text-slate-400 font-black uppercase tracking-tighter italic">
+                                        {lang === 'zh' ? '最后更新于：' : 'UPDATED: '} {post.modifiedDate}
                                     </div>
                                 )}
                             </div>
@@ -161,15 +165,21 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                             <div dangerouslySetInnerHTML={{ __html: post.content }} />
                         </div>
                         
-                        <aside className="hidden lg:block">
+                        <aside className="hidden lg:block sticky top-32 h-fit">
                             <TableOfContents lang={lang} />
                             
-                            <div className="mt-8 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl p-6 text-white text-center shadow-lg shadow-red-500/20">
-                                <h4 className="font-black text-lg mb-2">需要优质账号？</h4>
-                                <p className="text-white/80 text-sm mb-6">全网最低价，5分钟自动发货</p>
-                                <Link href="/" className="block w-full bg-white text-red-600 font-bold py-3 rounded-xl hover:scale-105 transition-transform">
-                                    立即选购
-                                </Link>
+                            <div className="mt-8 relative group overflow-hidden rounded-[2rem] bg-slate-950 p-8 text-white text-center shadow-2xl shadow-red-500/20">
+                                <div className="absolute inset-0 bg-gradient-to-br from-[#FF0036] to-[#FF8C00] opacity-90" />
+                                <div className="absolute inset-0 opacity-10 mix-blend-overlay" style={{ backgroundImage: 'url(/images/patterns/natural-paper.png)' }} />
+                                
+                                <div className="relative z-10">
+                                    <ShoppingCart className="w-10 h-10 text-white mx-auto mb-4 opacity-50" />
+                                    <h4 className="font-black text-xl mb-2">{lang === 'zh' ? '需要优质账号？' : 'Need Premium Accounts?'}</h4>
+                                    <p className="text-white/80 text-xs font-bold uppercase tracking-widest mb-8">{lang === 'zh' ? '全网最低价 · 5分钟自动发货' : 'Best Price · Instant Delivery'}</p>
+                                    <Link href="/" className="block w-full bg-white text-[#FF0036] font-black py-4 rounded-2xl hover:scale-105 transition-transform shadow-xl shadow-black/20 uppercase tracking-widest text-sm">
+                                        {lang === 'zh' ? '立即选购' : 'SHOP NOW'}
+                                    </Link>
+                                </div>
                             </div>
                         </aside>
 

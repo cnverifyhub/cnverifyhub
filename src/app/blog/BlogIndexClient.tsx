@@ -109,9 +109,12 @@ export default function BlogIndexClient({ posts, lang }: BlogIndexClientProps) {
                 {featuredPost && (
                     <Link
                         href={`${blogBase}/${featuredPost.slug}`}
-                        className="group relative block w-full mb-16 rounded-[2rem] overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-dark-900 shadow-2xl hover:shadow-red-500/10 transition-all duration-500"
+                        className="group relative block w-full mb-16 rounded-[2.5rem] overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#1c1c1e] shadow-2xl hover:shadow-[#FF0036]/20 transition-all duration-500"
                     >
-                        <div className="flex flex-col lg:flex-row min-h-[450px]">
+                        {/* Background Texture Pattern */}
+                        <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" style={{ backgroundImage: 'url(/images/patterns/natural-paper.png)' }} />
+                        
+                        <div className="flex flex-col lg:flex-row min-h-[450px] relative z-10">
                             <div className="w-full lg:w-[60%] relative min-h-[300px] overflow-hidden">
                                 {featuredPost.featuredImage ? (
                                     <Image 
@@ -141,15 +144,15 @@ export default function BlogIndexClient({ posts, lang }: BlogIndexClientProps) {
                                         {featuredPost.publishDate}
                                     </div>
                                 </div>
-                                <h2 className="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white mb-6 group-hover:text-red-600 transition-colors leading-[1.2]">
+                                <h2 className="text-3xl lg:text-5xl font-black text-slate-900 dark:text-white mb-6 group-hover:text-[#FF0036] transition-colors leading-[1.1] tracking-tighter">
                                     {featuredPost.title}
                                 </h2>
                                 <p className="text-lg text-slate-600 dark:text-slate-400 mb-8 line-clamp-3 leading-relaxed">
                                     {featuredPost.excerpt}
                                 </p>
                                 <div className="flex items-center gap-4">
-                                    <div className="flex items-center text-base font-black text-red-500 gap-2 group-hover:translate-x-2 transition-transform">
-                                        {lang === 'zh' ? '立即阅读' : 'Read Now'}
+                                    <div className="flex items-center text-base font-black text-[#FF0036] gap-2 group-hover:translate-x-2 transition-transform bg-[#FF0036]/5 px-4 py-2 rounded-xl">
+                                        {lang === 'zh' ? '立即抢购' : 'READ NOW'}
                                         <ChevronRight className="w-5 h-5" />
                                     </div>
                                     <span className="text-xs text-slate-400 font-bold bg-white/50 dark:bg-white/5 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800">
@@ -175,8 +178,10 @@ export default function BlogIndexClient({ posts, lang }: BlogIndexClientProps) {
                         <Link
                             key={post.slug}
                             href={`${blogBase}/${post.slug}`}
-                            className="group flex flex-col bg-white dark:bg-dark-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 hover:shadow-2xl hover:shadow-red-500/10 hover:-translate-y-2 transition-all duration-300"
+                            className="group flex flex-col bg-white dark:bg-[#1c1c1e] rounded-[2rem] overflow-hidden border border-slate-100 dark:border-white/5 hover:shadow-2xl hover:shadow-[#FF0036]/10 hover:-translate-y-2 transition-all duration-500 relative"
                         >
+                            {/* Texture Overlay */}
+                            <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'url(/images/patterns/gplay.png)' }} />
                             <div className="aspect-[16/10] bg-slate-100 dark:bg-slate-800 relative overflow-hidden shrink-0">
                                 {post.featuredImage ? (
                                     <Image 
@@ -202,7 +207,7 @@ export default function BlogIndexClient({ posts, lang }: BlogIndexClientProps) {
                                     <Calendar className="w-3.5 h-3.5" />
                                     {post.publishDate}
                                 </div>
-                                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-3 group-hover:text-red-500 transition-colors line-clamp-2">
+                                <h2 className="text-xl font-black text-slate-900 dark:text-white mb-3 group-hover:text-[#FF0036] transition-colors line-clamp-2 leading-tight">
                                     {post.title}
                                 </h2>
                                 <p className="text-sm text-slate-500 dark:text-slate-400 line-clamp-3 mb-6 leading-relaxed flex-1">
