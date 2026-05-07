@@ -106,6 +106,7 @@ export interface Product {
         note: string;
     };
     risks?: { zh: string; en: string };
+    hasGooglePlay?: boolean;
 }
 
 export interface ProductVariant {

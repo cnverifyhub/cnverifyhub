@@ -90,7 +90,7 @@ export const categories: Category[] = [
     {
         id: 'trading',
         name: { zh: '金融交易账户', en: 'FinTech & Trading' },
-        description: { zh: '已实名认证的XM、HFM、Neteller、Payoneer等金融账户', en: 'Verified accounts for XM, HFM, Neteller, Skrill, and Payoneer' },
+        description: { zh: '已实名认证的XM、HFM、Neteller、Payoneer、Revolut等金融账户', en: 'Verified accounts for XM, HFM, Neteller, Skrill, Payoneer, and Revolut' },
         icon: 'fintech',
         color: 'text-emerald-500',
         gradient: 'from-emerald-500 to-teal-600',
@@ -575,6 +575,7 @@ const bundleProducts: Product[] = [
         stockCount: 47,
         popular: true,
         badge: { zh: '热门推荐', en: 'Top Pick' },
+        hasGooglePlay: true,
         sortOrder: 1,
     },
     {
@@ -590,6 +591,7 @@ const bundleProducts: Product[] = [
         price: { single: 60.00, bulk10: 55.00, bulk50: 50.00, bulk200: 45.00, originalPrice: { single: 192.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 } },
         includes: ['支付宝实名', '淘宝买家号', '地址设置指南'],
         stockCount: 32,
+        hasGooglePlay: true,
         sortOrder: 2,
     },
     {
@@ -605,6 +607,7 @@ const bundleProducts: Product[] = [
         price: { single: 75.00, bulk10: 70.00, bulk50: 65.00, bulk200: 60.00, originalPrice: { single: 528.00, bulk10: 468.00, bulk50: 468.00, bulk200: 468.00 } },
         includes: ['企业支付宝', '1688批发号', '代发权限指南'],
         stockCount: 15,
+        hasGooglePlay: true,
         sortOrder: 3,
     },
     {
@@ -620,6 +623,7 @@ const bundleProducts: Product[] = [
         price: { single: 85.00, bulk10: 80.00, bulk50: 75.00, bulk200: 70.00, originalPrice: { single: 258.00, bulk10: 218.00, bulk50: 198.00, bulk200: 178.00 } },
         includes: ['实名微信', '京东账号', '京东白条额度说明'],
         stockCount: 22,
+        hasGooglePlay: true,
         sortOrder: 4,
     },
     {
@@ -636,6 +640,7 @@ const bundleProducts: Product[] = [
         includes: ['四平台全通号', '独立实名资料', '长期维护教程'],
         stockCount: 10,
         popular: true,
+        hasGooglePlay: true,
         sortOrder: 5,
     },
 ];
@@ -734,6 +739,7 @@ const tradingProducts: Product[] = [
         price: { single: 28.80, bulk10: 28.80, bulk50: 28.80, bulk200: 28.80, originalPrice: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 } },
         deliveryMethod: 'manual',
         stockCount: 5,
+        hasGooglePlay: true,
         sortOrder: 1,
     },
     {
@@ -749,6 +755,7 @@ const tradingProducts: Product[] = [
         price: { single: 26.80, bulk10: 26.80, bulk50: 26.80, bulk200: 26.80, originalPrice: { single: 120.00, bulk10: 120.00, bulk50: 120.00, bulk200: 120.00 } },
         deliveryMethod: 'manual',
         stockCount: 8,
+        hasGooglePlay: true,
         sortOrder: 2,
     },
     {
@@ -764,6 +771,7 @@ const tradingProducts: Product[] = [
         price: { single: 32.40, bulk10: 32.40, bulk50: 32.40, bulk200: 32.40, originalPrice: { single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00 } },
         deliveryMethod: 'manual',
         stockCount: 15,
+        hasGooglePlay: true,
         sortOrder: 3,
     },
     {
@@ -779,6 +787,7 @@ const tradingProducts: Product[] = [
         price: { single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00 },
         deliveryMethod: 'manual',
         stockCount: 12,
+        hasGooglePlay: true,
         sortOrder: 4,
     },
     {
@@ -794,6 +803,7 @@ const tradingProducts: Product[] = [
         price: { single: 50.50, bulk10: 50.50, bulk50: 50.50, bulk200: 50.50, originalPrice: { single: 270.00, bulk10: 270.00, bulk50: 270.00, bulk200: 270.00 } },
         deliveryMethod: 'manual',
         stockCount: 5,
+        hasGooglePlay: true,
         sortOrder: 5,
     },
     {
@@ -809,7 +819,24 @@ const tradingProducts: Product[] = [
         price: { single: 45.80, bulk10: 45.80, bulk50: 45.80, bulk200: 45.80, originalPrice: { single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00 } },
         deliveryMethod: 'manual',
         stockCount: 3,
+        hasGooglePlay: true,
         sortOrder: 6,
+    },
+    {
+        ...commonFields,
+        id: 'revolut-account',
+        slug: 'revolut-account',
+        name: { zh: 'Revolut 个人/商业账户', en: 'Revolut Personal/Business' },
+        category: 'trading',
+        type: 'account',
+        tierName: { zh: 'Revolut 账号', en: 'Revolut Account' },
+        tierSlug: 'revolut-account',
+        description: { zh: '已完成KYC验证的Revolut账户，支持多币种及虚拟卡', en: 'Verified Revolut account with multi-currency and virtual cards.' },
+        price: { single: 55.00, bulk10: 55.00, bulk50: 55.00, bulk200: 55.00, originalPrice: { single: 350.00, bulk10: 350.00, bulk50: 350.00, bulk200: 350.00 } },
+        deliveryMethod: 'manual',
+        stockCount: 5,
+        hasGooglePlay: true,
+        sortOrder: 7,
     },
 ];
 
