@@ -40,6 +40,8 @@ const ICON_PATHS: Record<string, string> = {
     'skrill-account':       '/icons/skrill-account.svg',
     'payoneer-account':     '/icons/payoneer-account.svg',
     'wise-account':         '/icons/wise-account.svg',
+    'revolut-account':      '/icons/revolut.svg',
+    'google-play':          '/icons/google-play.svg',
 };
 
 function BrandIcon({ name, className }: { name: string; className?: string }) {
@@ -123,3 +125,5 @@ export function NetellerIcon({ className }: BrandIconProps) { return <BrandIcon 
 export function SkrillIcon({ className }: BrandIconProps) { return <BrandIcon name="skrill-account" className={className} />; }
 export function PayoneerIcon({ className }: BrandIconProps) { return <BrandIcon name="payoneer-account" className={className} />; }
 export function WiseIcon({ className }: BrandIconProps) { return <BrandIcon name="wise-account" className={className} />; }
+export function RevolutIcon({ className }: BrandIconProps) { return <BrandIcon name="revolut-account" className={className} />; }
+export function GooglePlayIcon({ className }: BrandIconProps) { return <BrandIcon name="google-play" className={className} />; }
