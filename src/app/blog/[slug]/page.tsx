@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getAllSlugs, getPostBySlug, getAllPosts } from '@/lib/blog';
 import { notFound } from 'next/navigation';
-import { Calendar, Tag, ChevronLeft, ShieldCheck, Bookmark, Share2 } from 'lucide-react';
+import { Calendar, Tag, ChevronLeft, ChevronRight, ShieldCheck, Bookmark, Share2 } from 'lucide-react';
 import Link from 'next/link';
 
 // --- SSG: Pre-render every blog post at build time ---
@@ -98,9 +98,9 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                     <div className="max-w-4xl mx-auto mb-10">
                         <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-slate-500 mb-8">
                             <Link href="/" className="hover:text-red-500 transition-colors">首页</Link>
-                            <ChevronLeft className="w-3 h-3 rotate-180" />
+                            <ChevronRight className="w-3 h-3 text-slate-300" />
                             <Link href="/blog" className="hover:text-red-500 transition-colors">博客</Link>
-                            <ChevronLeft className="w-3 h-3 rotate-180" />
+                            <ChevronRight className="w-3 h-3 text-slate-300" />
                             <span className="text-slate-400">{post.category}</span>
                         </div>
 

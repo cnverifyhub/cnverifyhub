@@ -48,15 +48,18 @@ export default function BlogIndexClient({ posts, lang }: BlogIndexClientProps) {
         });
     }, [posts, searchQuery, selectedCategory, lang]);
 
-    // Pagination
-    const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-    const paginatedPosts = filteredPosts.slice(
+    // Reset page when filters change
+    useMemo(() => { setCurrentPage(1); }, [searchQuery, selectedCategory]);
+
+    const featuredPost = searchQuery === '' && selectedCategory === 'all' && currentPage === 1 ? filteredPosts[0] : null;
+    const regularPosts = featuredPost ? filteredPosts.slice(1) : filteredPosts;
+
+    const displayPosts = regularPosts.slice(
         (currentPage - 1) * POSTS_PER_PAGE,
         currentPage * POSTS_PER_PAGE
     );
 
-    // Reset page when filters change
-    useMemo(() => { setCurrentPage(1); }, [searchQuery, selectedCategory]);
+    const totalPages = Math.ceil(regularPosts.length / POSTS_PER_PAGE);
 
     return (
         <main className="pt-24 pb-20">
@@ -102,9 +105,73 @@ export default function BlogIndexClient({ posts, lang }: BlogIndexClientProps) {
                     </div>
                 </div>
 
+                {/* Featured Post Hero */}
+                {featuredPost && (
+                    <Link
+                        href={`${blogBase}/${featuredPost.slug}`}
+                        className="group relative block w-full mb-16 rounded-[2rem] overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-dark-900 shadow-2xl hover:shadow-red-500/10 transition-all duration-500"
+                    >
+                        <div className="flex flex-col lg:flex-row min-h-[450px]">
+                            <div className="w-full lg:w-[60%] relative min-h-[300px] overflow-hidden">
+                                {featuredPost.featuredImage ? (
+                                    <Image 
+                                        src={featuredPost.featuredImage} 
+                                        alt={featuredPost.title} 
+                                        fill 
+                                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                                        priority
+                                    />
+                                ) : (
+                                    <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center">
+                                        <Tag className="w-24 h-24 text-white/20" />
+                                    </div>
+                                )}
+                                <div className="absolute top-6 left-6">
+                                    <span className="px-4 py-2 rounded-xl bg-red-600 text-white text-xs font-black uppercase tracking-widest shadow-xl">
+                                        {lang === 'zh' ? '精选文章' : 'Featured Post'}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="w-full lg:w-[40%] p-8 lg:p-12 flex flex-col justify-center">
+                                <div className="flex items-center gap-3 text-xs font-bold text-slate-500 mb-6 uppercase tracking-widest">
+                                    <span className="text-red-500">{getCategoryName(featuredPost.category)}</span>
+                                    <span className="w-1 h-1 rounded-full bg-slate-300" />
+                                    <div className="flex items-center gap-1.5">
+                                        <Calendar className="w-3.5 h-3.5" />
+                                        {featuredPost.publishDate}
+                                    </div>
+                                </div>
+                                <h2 className="text-3xl lg:text-4xl font-black text-slate-900 dark:text-white mb-6 group-hover:text-red-600 transition-colors leading-[1.2]">
+                                    {featuredPost.title}
+                                </h2>
+                                <p className="text-lg text-slate-600 dark:text-slate-400 mb-8 line-clamp-3 leading-relaxed">
+                                    {featuredPost.excerpt}
+                                </p>
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center text-base font-black text-red-500 gap-2 group-hover:translate-x-2 transition-transform">
+                                        {lang === 'zh' ? '立即阅读' : 'Read Now'}
+                                        <ChevronRight className="w-5 h-5" />
+                                    </div>
+                                    <span className="text-xs text-slate-400 font-bold bg-white/50 dark:bg-white/5 backdrop-blur-sm px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800">
+                                        {featuredPost.readingTime}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </Link>
+                )}
+
+                {/* Blog Grid Header */}
+                {featuredPost && (
+                    <div className="flex items-center gap-4 mb-8">
+                        <h3 className="text-xl font-black text-slate-900 dark:text-white">{lang === 'zh' ? '更多阅读' : 'More Posts'}</h3>
+                        <div className="h-px flex-1 bg-slate-200 dark:bg-slate-800" />
+                    </div>
+                )}
+
                 {/* Blog Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {paginatedPosts.map((post) => (
+                    {displayPosts.map((post) => (
                         <Link
                             key={post.slug}
                             href={`${blogBase}/${post.slug}`}
@@ -195,6 +262,37 @@ export default function BlogIndexClient({ posts, lang }: BlogIndexClientProps) {
                         </button>
                     </div>
                 )}
+
+                {/* Subscription Section */}
+                <div className="mt-24 relative overflow-hidden rounded-[2.5rem] bg-slate-900 dark:bg-black p-8 md:p-16 text-center border border-white/10 shadow-2xl">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-red-600/20 blur-[100px] -z-10" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-600/10 blur-[100px] -z-10" />
+                    
+                    <div className="max-w-2xl mx-auto">
+                        <h3 className="text-3xl md:text-4xl font-black text-white mb-4">
+                            {lang === 'zh' ? '获取最新的安全指南' : 'Get Latest Security Guides'}
+                        </h3>
+                        <p className="text-slate-400 text-lg mb-8 leading-relaxed">
+                            {lang === 'zh' 
+                                ? '加入 5,000+ 订阅者，每周获取中国主流社交平台运营技巧与安全更新。' 
+                                : 'Join 5,000+ subscribers and get weekly tips on Chinese social media operations.'}
+                        </p>
+                        <form className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
+                            <input 
+                                type="email" 
+                                placeholder={lang === 'zh' ? '您的邮箱地址' : 'Your email address'} 
+                                className="flex-1 px-6 py-4 rounded-2xl bg-white/5 border border-white/10 text-white outline-none focus:ring-2 focus:ring-red-500 transition-all text-sm"
+                                required
+                            />
+                            <button className="px-8 py-4 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-sm shadow-xl shadow-red-600/20 transition-all hover:scale-105 active:scale-95">
+                                {lang === 'zh' ? '立即订阅' : 'Subscribe'}
+                            </button>
+                        </form>
+                        <p className="mt-4 text-[10px] text-slate-500 font-medium">
+                            {lang === 'zh' ? '您的数据受到保护。您可以随时取消订阅。' : 'Your data is protected. Unsubscribe at any time.'}
+                        </p>
+                    </div>
+                </div>
             </div>
         </main>
     );
