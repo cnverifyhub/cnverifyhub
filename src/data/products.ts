@@ -575,7 +575,6 @@ const bundleProducts: Product[] = [
         stockCount: 47,
         popular: true,
         badge: { zh: '热门推荐', en: 'Top Pick' },
-        image: 'https://play-lh.googleusercontent.com/eaX5GSrLgAvCTKAe8N0baDkKA0gJ3siyG9X28sfmSO8yBmKVfPDQyJ3y_AvcCr8DSYU=s512-rw',
         sortOrder: 1,
     },
     {
@@ -591,7 +590,6 @@ const bundleProducts: Product[] = [
         price: { single: 60.00, bulk10: 55.00, bulk50: 50.00, bulk200: 45.00, originalPrice: { single: 192.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 } },
         includes: ['支付宝实名', '淘宝买家号', '地址设置指南'],
         stockCount: 32,
-        image: 'https://play-lh.googleusercontent.com/6F3ONMR_UowQyqKud-bqqz5iWHGtleHEWTPZEoUiWPJj02R9hPL-agPCt_C3KYQLYi8=s512-rw',
         sortOrder: 2,
     },
     {
@@ -607,7 +605,6 @@ const bundleProducts: Product[] = [
         price: { single: 75.00, bulk10: 70.00, bulk50: 65.00, bulk200: 60.00, originalPrice: { single: 528.00, bulk10: 468.00, bulk50: 468.00, bulk200: 468.00 } },
         includes: ['企业支付宝', '1688批发号', '代发权限指南'],
         stockCount: 15,
-        image: 'https://play-lh.googleusercontent.com/0QjGmfF5AG7R3APWO60g_Nx3Et_XUEEMnngxln-GJx7HLz6lV5Hu2im8mP2UzKIalhmN=s512-rw',
         sortOrder: 3,
     },
     {
@@ -623,7 +620,6 @@ const bundleProducts: Product[] = [
         price: { single: 85.00, bulk10: 80.00, bulk50: 75.00, bulk200: 70.00, originalPrice: { single: 258.00, bulk10: 218.00, bulk50: 198.00, bulk200: 178.00 } },
         includes: ['实名微信', '京东账号', '京东白条额度说明'],
         stockCount: 22,
-        image: 'https://play-lh.googleusercontent.com/LWaIZ0sOjW3gUC0yNXIrPGZe9jxNDDpqv9TI-IguAcHvtX30bCTlcNhDaXpu1s5ZBiQ=s512-rw',
         sortOrder: 4,
     },
     {
@@ -640,7 +636,6 @@ const bundleProducts: Product[] = [
         includes: ['四平台全通号', '独立实名资料', '长期维护教程'],
         stockCount: 10,
         popular: true,
-        image: 'https://play-lh.googleusercontent.com/v3/app/icon/com.android.vending/512',
         sortOrder: 5,
     },
 ];
@@ -739,7 +734,6 @@ const tradingProducts: Product[] = [
         price: { single: 28.80, bulk10: 28.80, bulk50: 28.80, bulk200: 28.80, originalPrice: { single: 150.00, bulk10: 150.00, bulk50: 150.00, bulk200: 150.00 } },
         deliveryMethod: 'manual',
         stockCount: 5,
-        image: 'https://play-lh.googleusercontent.com/RpHrO7HPONgaIf95gQ1RIvAf0TpG-QJksy-9QKCyd_hEP3UMY8SwlyqIhkrM1R0mO0ph6ZdkRlKr9jKbuL3U=s512-rw',
         sortOrder: 1,
     },
     {
@@ -755,7 +749,6 @@ const tradingProducts: Product[] = [
         price: { single: 26.80, bulk10: 26.80, bulk50: 26.80, bulk200: 26.80, originalPrice: { single: 120.00, bulk10: 120.00, bulk50: 120.00, bulk200: 120.00 } },
         deliveryMethod: 'manual',
         stockCount: 8,
-        image: 'https://play-lh.googleusercontent.com/0XuuQxrd59d3zjF_pcVIKYomU_qVm5q94ITYrPyx8KT6RCZ0DjausMLKy7W2PFgAWQ=s512-rw',
         sortOrder: 2,
     },
     {
@@ -771,7 +764,6 @@ const tradingProducts: Product[] = [
         price: { single: 32.40, bulk10: 32.40, bulk50: 32.40, bulk200: 32.40, originalPrice: { single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00 } },
         deliveryMethod: 'manual',
         stockCount: 15,
-        image: 'https://play-lh.googleusercontent.com/ijDhJYBK12iYXNvuAABa_nMc-WGTKGWoDzg3NRy-KjXXqxNVZIOC3jP9jpg-lXMO_HhZqVCwasxW455CpNULsg=s512-rw',
         sortOrder: 3,
     },
     {
@@ -787,7 +779,6 @@ const tradingProducts: Product[] = [
         price: { single: 90.00, bulk10: 90.00, bulk50: 90.00, bulk200: 90.00 },
         deliveryMethod: 'manual',
         stockCount: 12,
-        image: 'https://play-lh.googleusercontent.com/XiQe-KRLN5tckY8lTU_9Zz3328cDuuk-8bkniQgJaGikwrIoNgr6n3t8VIz6oR1DbLA=s512-rw',
         sortOrder: 4,
     },
     {
@@ -803,7 +794,6 @@ const tradingProducts: Product[] = [
         price: { single: 50.50, bulk10: 50.50, bulk50: 50.50, bulk200: 50.50, originalPrice: { single: 270.00, bulk10: 270.00, bulk50: 270.00, bulk200: 270.00 } },
         deliveryMethod: 'manual',
         stockCount: 5,
-        image: 'https://play-lh.googleusercontent.com/e6la-fdbXc3m60Jh0zLsZn-YHYqipHMB3q_yGqnkt_Z0K9J_r4RefEn1kq49wPDHuT0=s512-rw',
         sortOrder: 5,
     },
     {
@@ -819,7 +809,6 @@ const tradingProducts: Product[] = [
         price: { single: 45.80, bulk10: 45.80, bulk50: 45.80, bulk200: 45.80, originalPrice: { single: 300.00, bulk10: 300.00, bulk50: 300.00, bulk200: 300.00 } },
         deliveryMethod: 'manual',
         stockCount: 3,
-        image: 'https://play-lh.googleusercontent.com/SuO-_SDMbY15BPZt6EshX_8ivk0_BCOq4qdb7r5PcdmsuA3cbGm6_cJAuwiNuPY3jhlvfXLH6m1UahEERdAX9A=s512-rw',
         sortOrder: 6,
     },
 ];

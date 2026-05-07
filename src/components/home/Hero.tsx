@@ -347,6 +347,34 @@ export function Hero({ lang }: { lang: Lang }) {
                             {t('hero.subtitle', lang)}
                         </p>
 
+                        {/* Direct Access to New Services */}
+                        <div className="flex flex-wrap justify-center gap-3 mt-8 sm:mt-10 animate-fade-in-up" style={{ animationDelay: '350ms' }}>
+                            <Link 
+                                href={getLocalizedPath('/verification', lang)}
+                                className="group flex items-center gap-2.5 px-5 py-2.5 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 rounded-2xl hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                            >
+                                <div className="w-6 h-6 bg-white dark:bg-dark-900 rounded-lg flex items-center justify-center p-1 shadow-sm group-hover:scale-110 transition-transform">
+                                    <VerificationIcon className="w-full h-full" />
+                                </div>
+                                <div className="flex flex-col items-start">
+                                    <span className="text-[10px] font-black text-indigo-400 leading-none uppercase tracking-widest mb-1">New Service</span>
+                                    <span className="text-xs font-black text-indigo-700 dark:text-indigo-300">{lang === 'zh' ? '实名代认证' : 'KYC Verification'}</span>
+                                </div>
+                            </Link>
+                            <Link 
+                                href={getLocalizedPath('/trading', lang)}
+                                className="group flex items-center gap-2.5 px-5 py-2.5 bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded-2xl hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                            >
+                                <div className="w-6 h-6 bg-white dark:bg-dark-900 rounded-lg flex items-center justify-center p-1 shadow-sm group-hover:scale-110 transition-transform">
+                                    <FintechIcon className="w-full h-full" />
+                                </div>
+                                <div className="flex flex-col items-start">
+                                    <span className="text-[10px] font-black text-amber-500 leading-none uppercase tracking-widest mb-1">High Authority</span>
+                                    <span className="text-xs font-black text-amber-700 dark:text-amber-300">{lang === 'zh' ? '金融交易账户' : 'Trading Accounts'}</span>
+                                </div>
+                            </Link>
+                        </div>
+
                         {/* CTA Buttons with Bounce on Primary */}
                         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
                             <Link href="#pricing" className="hero-cta-bounce text-center whitespace-normal break-words w-full sm:w-auto px-4 sm:px-10 py-3.5 sm:py-4 text-base sm:text-lg font-black rounded-2xl transition-all duration-300 bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] hover:from-[#ff2a2d] hover:to-[#cc0000] text-white shadow-[0_8px_20px_rgba(255,42,45,0.3)] hover:shadow-[0_12px_30px_rgba(255,42,45,0.45)] active:scale-95 border-b-4 border-[#cc0000] flex justify-center items-center relative overflow-hidden">

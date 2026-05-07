@@ -196,14 +196,14 @@ export default function Header() {
 
                         {/* Desktop Actions */}
                         <div className="hidden lg:flex items-center gap-1.5">
-                            <Link
-                                href={switchLangPath}
-                                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors rounded-xl hover:bg-slate-100/80 dark:hover:bg-white/5"
-                                title={lang === 'zh' ? 'Switch to English' : '切换到中文'}
-                            >
-                                <Globe className="w-4 h-4" />
-                                <span className="text-xs font-semibold">{lang === 'zh' ? 'EN' : 'CN'}</span>
-                            </Link>
+                             <Link
+                                 href={switchLangPath}
+                                 className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors rounded-xl hover:bg-slate-100/80 dark:hover:bg-white/5 border border-transparent hover:border-slate-200 dark:hover:border-white/10"
+                                 title={lang === 'zh' ? 'Switch to English' : '切换到中文'}
+                             >
+                                 <Globe className="w-3.5 h-3.5" />
+                                 <span className="text-[10px] font-black uppercase tracking-widest">{lang === 'zh' ? 'English' : '中文'}</span>
+                             </Link>
 
                             <Link
                                 href={getLocalizedPath('/account', lang)}
@@ -402,6 +402,16 @@ export default function Header() {
                                         <User className="w-4 h-4" />
                                         {lang === 'zh' ? '登录 / 注册' : 'Login / Sign Up'}
                                     </Link>
+                                    
+                                    <Link
+                                        href={switchLangPath}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="flex items-center justify-center gap-2 h-12 bg-slate-100 dark:bg-white/5 border-2 border-transparent text-slate-600 dark:text-slate-400 font-bold rounded-2xl active:scale-95 transition-all"
+                                    >
+                                        <Globe className="w-4 h-4" />
+                                        {lang === 'zh' ? 'Switch to English' : '切换到中文'}
+                                    </Link>
+
                                     <Link
                                         href={getLocalizedPath('/contact', lang)}
                                         onClick={() => setMobileMenuOpen(false)}

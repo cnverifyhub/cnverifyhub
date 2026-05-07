@@ -258,24 +258,33 @@ export default function Footer() {
                             
                             <span className="hidden md:inline w-px h-4 bg-slate-200 dark:bg-slate-800" />
                             
-                            {/* ICP Badge - Govt Style */}
-                            <div className="flex items-center gap-2 pl-1 pr-3 py-1 bg-white dark:bg-dark-900 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all group cursor-default">
-                                <div className="w-8 h-6 bg-[#2a2a2a] dark:bg-black rounded flex items-center justify-center text-[9px] text-white font-black overflow-hidden relative">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
-                                    ICP
+                            {/* ICP Badge - Govt Style Upgrade */}
+                            <div className="flex items-center gap-2 pl-1 pr-3 py-1 bg-[#f0f2f5] dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all group cursor-default relative overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none" />
+                                <div className="w-10 h-7 bg-[#2f3542] dark:bg-black rounded shadow-inner flex flex-col items-center justify-center text-white font-black overflow-hidden relative shrink-0">
+                                    <div className="absolute inset-x-0 top-0 h-0.5 bg-red-500" />
+                                    <span className="text-[9px] leading-none mb-0.5 tracking-tighter">ICP</span>
+                                    <span className="text-[7px] leading-none opacity-60 font-medium">CERTIFIED</span>
                                 </div>
-                                <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200">京ICP备20240918号-1</span>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-black text-slate-700 dark:text-slate-200 leading-tight">京ICP备20240918号-1</span>
+                                    <span className="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter">{lang === 'zh' ? '工业和信息化部' : 'MIIT REGISTERED'}</span>
+                                </div>
                             </div>
                             
                             <span className="hidden md:inline w-px h-4 bg-slate-200 dark:bg-slate-800" />
                             
-                            {/* Public Security Badge */}
-                            <Link href="https://www.beian.gov.cn/" target="_blank" className="flex items-center gap-2 pl-1 pr-3 py-1 bg-white dark:bg-dark-900 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all group">
-                                <div className="w-8 h-6 bg-[#1677ff] rounded flex items-center justify-center relative overflow-hidden">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
-                                    <Shield className="w-3.5 h-3.5 text-white animate-pulse" /> 
+                            {/* Public Security Badge - Govt Style Upgrade */}
+                            <Link href="https://www.beian.gov.cn/" target="_blank" className="flex items-center gap-2 pl-1 pr-3 py-1 bg-[#f0f2f5] dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none" />
+                                <div className="w-10 h-7 bg-[#1e3799] rounded shadow-inner flex items-center justify-center relative overflow-hidden shrink-0">
+                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2)_0%,transparent_70%)]" />
+                                    <Shield className="w-4 h-4 text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.5)] animate-pulse" /> 
                                 </div>
-                                <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200 group-hover:text-[#1677ff] transition-colors">京公网安备 11010502052468号</span>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] font-black text-slate-700 dark:text-slate-200 leading-tight group-hover:text-[#1e3799] transition-colors">京公网安备 11010502052468号</span>
+                                    <span className="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter">{lang === 'zh' ? '公安网备案' : 'PUBLIC SECURITY'}</span>
+                                </div>
                             </Link>
                         </div>
                         <p className="text-[10px] text-slate-400 font-medium tracking-wide">
