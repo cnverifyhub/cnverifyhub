@@ -15,7 +15,7 @@ import {
     WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, 
     BundleIcon, VerificationIcon, FintechIcon,
     PassportVerifyIcon, FaceVerifyIcon, KycPackageIcon, WechatRealnameIcon, AlipayRealnameIcon,
-    XmIcon, HfmIcon, NetellerIcon, SkrillIcon, PayoneerIcon, WiseIcon
+    XmIcon, HfmIcon, NetellerIcon, SkrillIcon, PayoneerIcon, WiseIcon, RevolutIcon, GooglePlayIcon
 } from './BrandIcons';
 
 const ICON_COMPONENTS: Record<string, React.ElementType> = {
@@ -45,7 +45,8 @@ const ICON_COMPONENTS: Record<string, React.ElementType> = {
     'skrill-account': SkrillIcon,
     'payoneer-account': PayoneerIcon,
     'wise-account': WiseIcon,
-    wise: WiseIcon
+    wise: WiseIcon,
+    'revolut-account': RevolutIcon
 };
 
 interface PricingCardProps {
@@ -163,6 +164,13 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                     </div>
                     {/* Shadow underneath */}
                     <div className={`absolute bottom-4 w-20 h-4 bg-black/10 dark:bg-black/40 blur-xl rounded-full scale-x-150 transition-transform duration-500 group-hover:scale-x-110`} />
+                    
+                    {/* Google Play Store Badge */}
+                    {product.hasGooglePlay && (
+                        <div className="absolute -bottom-2 -right-2 bg-white dark:bg-dark-900 p-1.5 rounded-xl shadow-lg border border-slate-100 dark:border-white/10 z-20 group-hover:scale-110 transition-transform">
+                            <GooglePlayIcon className="w-8 h-8" />
+                        </div>
+                    )}
                 </div>
 
                 <div className="absolute bottom-6 inset-x-0 px-6 flex justify-between items-end text-slate-900 dark:text-white z-20">
