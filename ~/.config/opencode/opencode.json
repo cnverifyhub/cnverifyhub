@@ -1,0 +1,17 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "enabled_providers": ["openrouter", "opencode", "moonshot"],
+  "provider": {
+    "openrouter": {
+      "models": {
+        "qwen/qwen3-coder:free": {},
+        "google/gemini-2.0-flash-001:free": {},
+        "deepseek/deepseek-chat-v3-0324:free": {},
+        "meta-llama/llama-4-maverick:free": {},
+        "mistralai/mistral-7b-instruct:free": {}
+      }
+    },
+    "opencode": {},
+    "moonshot": {}
+  }
+}

@@ -226,6 +226,22 @@
     to { opacity: 1; }
   }
 
+  /* Neon pulse utility */
+  .animate-neon-pulse {
+    animation: neonPulse 2.5s ease-in-out infinite;
+  }
+
+  /* Reduced-motion safety — disable all custom animations */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
   /* Content visibility for performance */
   .content-auto {
     content-visibility: auto;
