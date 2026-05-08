@@ -73,6 +73,11 @@ const config: Config = {
                     850: '#151525',
                     900: '#10101e',
                     950: '#0a0a16',
+                    980: '#060610',
+                },
+                surface: {
+                    glass: 'rgba(255,255,255,0.04)',
+                    'glass-border': 'rgba(255,255,255,0.08)',
                 },
             },
             fontFamily: {
@@ -82,6 +87,14 @@ const config: Config = {
                     '-apple-system',
                     'BlinkMacSystemFont',
                     'PingFang SC',
+                    'Microsoft YaHei',
+                    'SimHei',
+                    'sans-serif',
+                ],
+                chinese: [
+                    'Noto Sans SC',
+                    'PingFang SC',
+                    'Source Han Sans CN',
                     'Microsoft YaHei',
                     'SimHei',
                     'sans-serif',
@@ -96,11 +109,15 @@ const config: Config = {
                 'scale-in': 'scaleIn 0.4s ease-out forwards',
                 'pulse-slow': 'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite',
                 'float': 'float 6s ease-in-out infinite',
+                'float-card': 'floatCard 4s ease-in-out infinite',
                 'shimmer': 'shimmer 2s linear infinite',
                 'count-up': 'countUp 0.8s ease-out forwards',
                 'glow': 'glow 2s ease-in-out infinite alternate',
+                'neon-pulse': 'neonPulse 2.5s ease-in-out infinite',
                 'spin-slow': 'spin 8s linear infinite',
                 'icon-bounce': 'iconBounce 0.5s ease-out',
+                'ticker-scroll': 'tickerScroll 30s linear infinite',
+                'social-proof-in': 'socialProofIn 0.4s ease-out forwards',
             },
             keyframes: {
                 fadeIn: {
@@ -146,6 +163,22 @@ const config: Config = {
                     '70%': { transform: 'translateY(-6px) scale(1.06)' },
                     '100%': { transform: 'translateY(-4px) scale(1.05)' },
                 },
+                floatCard: {
+                    '0%, 100%': { transform: 'translateY(0px)' },
+                    '50%': { transform: 'translateY(-8px)' },
+                },
+                neonPulse: {
+                    '0%, 100%': { boxShadow: '0 0 10px rgba(255,0,54,0.3), 0 0 20px rgba(255,0,54,0.1)' },
+                    '50%': { boxShadow: '0 0 25px rgba(255,0,54,0.6), 0 0 50px rgba(255,0,54,0.25)' },
+                },
+                tickerScroll: {
+                    '0%': { transform: 'translateX(0)' },
+                    '100%': { transform: 'translateX(-50%)' },
+                },
+                socialProofIn: {
+                    '0%': { opacity: '0', transform: 'translateY(12px) scale(0.96)' },
+                    '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+                },
             },
             backgroundImage: {
                 'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
@@ -157,10 +190,13 @@ const config: Config = {
             boxShadow: {
                 'glass': '0 8px 32px rgba(0,0,0,0.12)',
                 'glass-lg': '0 16px 48px rgba(0,0,0,0.15)',
-                'neon-red': '0 0 30px rgba(229,57,53,0.25)',
+                'glass-heavy': '0 24px 64px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)',
+                'neon-red': '0 0 30px rgba(255,0,54,0.35), 0 0 60px rgba(255,0,54,0.15)',
+                'neon-red-sm': '0 0 12px rgba(255,0,54,0.4)',
                 'neon-blue': '0 0 30px rgba(30,136,229,0.25)',
-                'neon-gold': '0 0 30px rgba(255,179,0,0.25)',
+                'neon-gold': '0 0 30px rgba(255,179,0,0.3), 0 0 60px rgba(255,179,0,0.1)',
                 'inner-glow': 'inset 0 1px 0 rgba(255,255,255,0.1)',
+                'card-hover': '0 20px 60px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,0,54,0.2)',
             },
         },
     },

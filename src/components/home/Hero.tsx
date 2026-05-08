@@ -2,97 +2,46 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import { ShieldCheck, Zap, Headset, Award, Lock, ChevronRight, Gift, X, Crown, TrendingUp, MessageSquare, Star, Truck, BadgeCheck, Send } from 'lucide-react';
+import { ShieldCheck, Zap, Headset, Award, Lock, ChevronRight, Gift, X, Crown, TrendingUp, MessageSquare, Star, Truck, BadgeCheck, Send, Users } from 'lucide-react';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { categories } from '@/data/products';
 import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, BundleIcon, VerificationIcon, FintechIcon } from '@/components/ui/BrandIcons';
+import { motion, AnimatePresence } from 'framer-motion';
 
-const iconMap: Record<string, React.ReactNode> = {
-    wechat: <WeChatIcon className="w-full h-full" />,
-    alipay: <AlipayIcon className="w-full h-full" />,
-    douyin: <DouyinIcon className="w-full h-full" />,
-    qq: <QQIcon className="w-full h-full" />,
-    xianyu: <XianyuIcon className="w-full h-full" />,
-    taobao: <TaobaoIcon className="w-full h-full" />,
-    xiaohongshu: <XiaohongshuIcon className="w-full h-full" />,
-    bundle: <BundleIcon className="w-full h-full" />,
-    verification: <VerificationIcon className="w-full h-full" />,
-    trading: <FintechIcon className="w-full h-full" />,
-};
-
-/* ============================================
-   Danmu (弹幕) floating comments
-   ============================================ */
+/* ── Danmu ──────────────────────────────────────────── */
 const danmuMessages = {
-    zh: [
-        '账号已收到，质量很好！', '发货速度超快👍', '第三次购买了，非常靠谱',
-        '客服态度很好，售后有保障', '微信号登录正常，好评！', '批量购买价格很实惠',
-        '支付宝号秒发货', '抖音号粉丝数量真实', 'QQ号质量很好',
-        '资金担保交易很安心', '老客户了，品质一直稳定', '推荐给朋友了',
-        '第一次买就成功了', '客服回复很快', '价格比同行便宜很多',
-        '闲鱼号直接上架秒出单', '淘宝店铺号权重很高', '小红书号粉丝真实活跃',
-        '闲鱼芝麻信用号太好用了', '批量买淘宝号享大折扣',
-    ],
-    en: [
-        'Account received, great quality!', 'Super fast delivery 👍', 'Third purchase, very reliable',
-        'Customer service is excellent', 'WeChat logged in fine, A+', 'Bulk prices are amazing',
-        'Alipay delivered instantly', 'Douyin followers are real', 'QQ account quality is solid',
-        'Escrow payment feels safe', 'Regular customer, always consistent', 'Recommended to friends',
-        'First buy was a success', 'Support replied fast', 'Prices much cheaper than competitors',
-        'Xianyu account listed items instantly', 'Taobao store has high weight score', 'Xiaohongshu followers are all real',
-        'Xianyu Zhima credit account is amazing', 'Bulk Taobao accounts huge discount',
-    ],
+    zh: ['账号已收到，质量很好！','发货速度超快👍','第三次购买了，非常靠谱','客服态度很好，售后有保障','微信号登录正常，好评！','批量购买价格很实惠','支付宝号秒发货','抖音号粉丝数量真实','QQ号质量很好','资金担保交易很安心','老客户了，品质一直稳定','推荐给朋友了','闲鱼芝麻信用号太好用了'],
+    en: ['Account received, great quality!','Super fast delivery 👍','Third purchase, very reliable','Customer service is excellent','WeChat logged in fine, A+','Bulk prices are amazing','Alipay delivered instantly','Douyin followers are real','QQ account quality is solid','Escrow payment feels safe','Regular customer, always consistent','Recommended to friends','Xianyu Zhima credit account is amazing'],
 };
 
 function DanmuLayer({ lang }: { lang: Lang }) {
     const [mounted, setMounted] = useState(false);
     const [bullets, setBullets] = useState<{ id: number; text: string; top: number; duration: number }[]>([]);
-
     useEffect(() => {
         setMounted(true);
         const msgs = danmuMessages[lang];
-        let counter = 0;
-        let index = 0;
+        let counter = 0, index = 0;
         const spawn = () => {
-            const text = msgs[index % msgs.length];
-            index++;
-            const top = 5 + (counter * 37 % 80);  // deterministic position
-            const duration = 12 + (counter % 5) * 2; // deterministic duration 12-20s
             const id = counter++;
-            setBullets(prev => [...prev.slice(-12), { id, text, top, duration }]);
+            setBullets(prev => [...prev.slice(-10), { id, text: msgs[index++ % msgs.length], top: 5 + (id * 37 % 80), duration: 12 + (id % 5) * 2 }]);
         };
         spawn();
-        const intervalId = setInterval(spawn, 3000);
-        return () => clearInterval(intervalId);
+        const iv = setInterval(spawn, 3500);
+        return () => clearInterval(iv);
     }, [lang]);
-
-    // ✅ Render nothing on server — prevents hydration mismatch
     if (!mounted) return null;
-
     return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: -1 }} aria-hidden="true">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none" style={{ zIndex: 0 }} aria-hidden="true">
             {bullets.map(b => (
-                <span
-                    key={b.id}
-                    className="absolute whitespace-nowrap text-[11px] sm:text-xs font-medium text-slate-400/40 dark:text-slate-500/30"
-                    style={{
-                        top: `${b.top}%`,
-                        right: '-300px',
-                        animation: `danmu-scroll ${b.duration}s linear forwards`,
-                    }}
-                >
-                    {b.text}
-                </span>
+                <span key={b.id} className="absolute whitespace-nowrap text-[11px] font-medium text-white/10" style={{ top: `${b.top}%`, right: '-300px', animation: `danmu-scroll ${b.duration}s linear forwards` }}>{b.text}</span>
             ))}
         </div>
     );
 }
 
-/* ============================================
-   Live Purchase Waterfall (实时成交瀑布流)
-   ============================================ */
-const purchasePool = {
+/* ── Social Proof Strip ─────────────────────────────── */
+const proofItems = {
     zh: [
         { user: '138****9021', item: '微信实名号', time: '刚刚' },
         { user: '159****3347', item: '支付宝花呗号', time: '1分钟前' },
@@ -101,12 +50,6 @@ const purchasePool = {
         { user: '135****8890', item: '微信企业号', time: '5分钟前' },
         { user: '150****2218', item: '支付宝绑卡号', time: '6分钟前' },
         { user: '188****6633', item: '微信老号3年', time: '8分钟前' },
-        { user: '166****4419', item: '抖音万粉号', time: '10分钟前' },
-        { user: '139****7755', item: 'QQ靓号', time: '12分钟前' },
-        { user: '155****3301', item: '支付宝企业号', time: '15分钟前' },
-        { user: '182****5508', item: '闲鱼芝麻信用号', time: '17分钟前' },
-        { user: '176****9912', item: '淘宝皇冠店铺', time: '20分钟前' },
-        { user: '131****6643', item: '小红书万粉号', time: '22分钟前' },
     ],
     en: [
         { user: '138****9021', item: 'WeChat Verified', time: 'Just now' },
@@ -116,129 +59,61 @@ const purchasePool = {
         { user: '135****8890', item: 'WeChat Business', time: '5 min ago' },
         { user: '150****2218', item: 'Alipay Bank-Linked', time: '6 min ago' },
         { user: '188****6633', item: 'WeChat 3yr Aged', time: '8 min ago' },
-        { user: '166****4419', item: 'Douyin 10K+', time: '10 min ago' },
-        { user: '139****7755', item: 'QQ Premium', time: '12 min ago' },
-        { user: '155****3301', item: 'Alipay Business', time: '15 min ago' },
-        { user: '182****5508', item: 'Xianyu Zhima Credit', time: '17 min ago' },
-        { user: '176****9912', item: 'Taobao Crown Store', time: '20 min ago' },
-        { user: '131****6643', item: 'Xiaohongshu 10K+', time: '22 min ago' },
     ],
 };
 
-function LivePurchaseWaterfall({ lang }: { lang: Lang }) {
-    const [visibleIdx, setVisibleIdx] = useState(0);
-    const pool = purchasePool[lang];
-
+function SocialProofStrip({ lang }: { lang: Lang }) {
+    const [idx, setIdx] = useState(0);
+    const items = proofItems[lang];
     useEffect(() => {
-        const interval = setInterval(() => {
-            setVisibleIdx(prev => (prev + 1) % pool.length);
-        }, 3500);
-        return () => clearInterval(interval);
-    }, [pool.length]);
-
-    const visible = useMemo(() => {
-        const items = [];
-        for (let i = 0; i < 4; i++) {
-            items.push(pool[(visibleIdx + i) % pool.length]);
-        }
-        return items;
-    }, [visibleIdx, pool]);
-
+        const iv = setInterval(() => setIdx(p => (p + 1) % items.length), 3000);
+        return () => clearInterval(iv);
+    }, [items.length]);
     return (
-        <div className="hidden lg:flex flex-col gap-2 w-56 xl:w-64">
-            <div className="flex items-center gap-1.5 mb-1">
-                <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
-                </span>
-                <span className="text-[10px] font-black text-red-600 dark:text-red-400 uppercase tracking-wider">
-                    {lang === 'zh' ? '实时成交' : 'Live Orders'}
-                </span>
-            </div>
-            <div className="space-y-1.5 overflow-hidden">
-                {visible.map((p, i) => (
-                    <div
-                        key={`${p.user}-${i}`}
-                        className="flex items-center gap-2 bg-white/70 dark:bg-slate-800/50 backdrop-blur-sm rounded-lg px-3 py-2 border border-slate-100 dark:border-slate-700/50 shadow-sm animate-fade-in-up"
-                        style={{ animationDelay: `${i * 80}ms` }}
-                    >
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-orange-400 to-red-500 flex items-center justify-center text-white text-[9px] font-black shrink-0">
-                            {p.user.slice(0, 2)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <p className="text-[10px] font-bold text-slate-700 dark:text-slate-300 truncate">{p.user} <span className="text-slate-400">|</span> {p.item}</p>
-                            <p className="text-[9px] text-slate-400">{p.time}</p>
-                        </div>
-                        <BadgeCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                    </div>
-                ))}
-            </div>
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 w-full max-w-2xl">
+            {[0, 1, 2, 3].map(offset => {
+                const p = items[(idx + offset) % items.length];
+                return (
+                    <motion.div key={`${p.user}-${offset}`} layout className="flex items-center gap-2 shrink-0 bg-white/8 backdrop-blur border border-white/10 rounded-xl px-3 py-2 text-white">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#FF5000] to-[#FF0036] flex items-center justify-center text-[9px] font-black shrink-0">{p.user.slice(0,2)}</div>
+                        <div><p className="text-[10px] font-bold whitespace-nowrap">{p.user} · {p.item}</p><p className="text-[9px] text-white/40">{p.time}</p></div>
+                        <BadgeCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    </motion.div>
+                );
+            })}
         </div>
     );
 }
 
-/* ============================================
-   Floating Coupon (红包/优惠券)
-   ============================================ */
+/* ── Floating Coupon ────────────────────────────────── */
 function FloatingCoupon({ lang }: { lang: Lang }) {
     const [dismissed, setDismissed] = useState(false);
-    const [isVisible, setIsVisible] = useState(false);
-
-    useEffect(() => {
-        const timer = setTimeout(() => setIsVisible(true), 30000);
-        return () => clearTimeout(timer);
-    }, []);
-
-    if (dismissed || !isVisible) return null;
-
+    const [visible, setVisible] = useState(false);
+    useEffect(() => { const t = setTimeout(() => setVisible(true), 30000); return () => clearTimeout(t); }, []);
+    if (dismissed || !visible) return null;
     return (
-        <div className="fixed right-2 sm:right-3 top-1/3 sm:top-1/3 z-40 animate-bounce-slow scale-75 origin-right sm:scale-100">
-            <div className="relative bg-gradient-to-b from-[#ff4d4f] to-[#FF0036] text-white rounded-2xl p-4 pb-5 shadow-[0_20px_40px_-10px_rgba(255,0,54,0.4)] w-[76px] cursor-pointer group sm:hover:scale-110 transition-transform active:scale-95"
-                onClick={() => window.location.href = '#pricing'}>
-                <button
-                    onClick={(e) => { e.stopPropagation(); setDismissed(true); }}
-                    className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white text-[#FF0036] flex items-center justify-center text-[10px] shadow-xl hover:bg-[#FF0036] hover:text-white transition-colors border-2 border-[#FF0036]/10"
-                >
-                    <X className="w-3 h-3" />
-                </button>
-                <div className="absolute inset-0 bg-[url('/images/patterns/natural-paper.png')] opacity-10 pointer-events-none"></div>
+        <div className="fixed right-3 top-1/3 z-40 animate-float-card scale-75 sm:scale-100 origin-right">
+            <div className="relative bg-gradient-to-b from-[#ff4d4f] to-[#FF0036] text-white rounded-2xl p-4 pb-5 shadow-[0_20px_40px_-10px_rgba(255,0,54,0.5)] w-[76px] cursor-pointer" onClick={() => window.location.href = '#pricing'}>
+                <button onClick={e => { e.stopPropagation(); setDismissed(true); }} className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white text-[#FF0036] flex items-center justify-center text-[10px] shadow-xl border-2 border-[#FF0036]/10"><X className="w-3 h-3" /></button>
                 <Gift className="w-8 h-8 mx-auto mb-2 drop-shadow-lg text-yellow-300" />
-                <p className="text-center text-[10px] font-black leading-tight uppercase tracking-tighter">
-                    {lang === 'zh' ? '新人红包' : 'NEW GIFT'}
-                </p>
-                <div className="bg-gradient-to-b from-yellow-300 to-yellow-500 text-red-700 rounded-xl py-1.5 mt-2 text-center shadow-inner border border-yellow-200/50">
-                    <span className="text-lg font-black tracking-tighter">15U</span>
-                </div>
-                <p className="text-center text-[9px] mt-2 opacity-90 font-black animate-pulse">
-                    {lang === 'zh' ? '立即抢' : 'GRAB IT'}
-                </p>
-                {/* Scalloped edge */}
-                <div className="absolute bottom-0 left-0 right-0 h-3 flex justify-between px-1.5 overflow-hidden translate-y-1.5">
-                    {[...Array(6)].map((_, i) => (
-                        <div key={i} className="w-3 h-3 rounded-full bg-white dark:bg-dark-950 -mb-2 shadow-inner" />
-                    ))}
-                </div>
+                <p className="text-center text-[10px] font-black leading-tight uppercase">{lang === 'zh' ? '新人红包' : 'NEW GIFT'}</p>
+                <div className="bg-gradient-to-b from-yellow-300 to-yellow-500 text-red-700 rounded-xl py-1.5 mt-2 text-center"><span className="text-lg font-black">15U</span></div>
+                <p className="text-center text-[9px] mt-2 opacity-90 font-black animate-pulse">{lang === 'zh' ? '立即抢' : 'GRAB IT'}</p>
+                <div className="absolute bottom-0 left-0 right-0 h-3 flex justify-between px-1.5 overflow-hidden translate-y-1.5">{[...Array(6)].map((_,i) => <div key={i} className="w-3 h-3 rounded-full bg-[#0d0d14] -mb-2" />)}</div>
             </div>
         </div>
     );
 }
 
-/* ============================================
-   Gold Seal (假一赔十)
-   ============================================ */
+/* ── Gold Seal ──────────────────────────────────────── */
 function GoldSeal({ lang }: { lang: Lang }) {
     return (
-        <div className="hidden md:flex absolute -bottom-2 -right-4 lg:right-0 w-24 h-24 lg:w-28 lg:h-28 animate-spin-very-slow z-10">
-            <div className="w-full h-full rounded-full bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 shadow-lg shadow-amber-500/30 flex items-center justify-center border-[3px] border-yellow-300/70 relative">
-                {/* Inner decorative ring */}
+        <div className="hidden md:flex absolute -bottom-4 right-4 lg:right-8 w-24 h-24 lg:w-28 lg:h-28 animate-spin-very-slow z-10">
+            <div className="w-full h-full rounded-full bg-gradient-to-br from-yellow-400 via-amber-500 to-yellow-600 shadow-neon-gold flex items-center justify-center border-[3px] border-yellow-300/70 relative">
                 <div className="absolute inset-2 rounded-full border-2 border-dashed border-yellow-300/50" />
                 <div className="text-center z-10 animate-counter-spin-very-slow">
-                    <p className="text-[11px] lg:text-xs font-black text-red-800 leading-tight">
-                        {lang === 'zh' ? '假一赔十' : 'FAKE=10x'}
-                    </p>
-                    <p className="text-[8px] lg:text-[9px] font-bold text-red-700/80 mt-0.5">
-                        {lang === 'zh' ? '品质保证' : 'REFUND'}
-                    </p>
+                    <p className="text-[11px] lg:text-xs font-black text-red-800 leading-tight">{lang === 'zh' ? '假一赔十' : 'FAKE=10x'}</p>
+                    <p className="text-[8px] font-bold text-red-700/80 mt-0.5">{lang === 'zh' ? '品质保证' : 'REFUND'}</p>
                     <Award className="w-4 h-4 text-red-700 mx-auto mt-0.5" />
                 </div>
             </div>
@@ -246,261 +121,159 @@ function GoldSeal({ lang }: { lang: Lang }) {
     );
 }
 
-/* ============================================
-   Main Hero Component
-   ============================================ */
+/* ── Main Hero ──────────────────────────────────────── */
 export function Hero({ lang }: { lang: Lang }) {
     return (
-        <section className="relative overflow-hidden pt-16 sm:pt-24 pb-12 sm:pb-16 lg:pt-32 lg:pb-24">
-            {/* Background gradients - Taobao Red Theme */}
-            <div className="absolute inset-0 bg-white dark:bg-dark-950 -z-20"></div>
-            <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#FF0036]/5 dark:bg-[#FF0036]/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2 -z-10 animate-pulse-slow"></div>
-            <div className="absolute bottom-0 left-0 w-[700px] h-[700px] bg-orange-500/5 dark:bg-orange-900/10 rounded-full blur-[140px] translate-y-1/2 -translate-x-1/3 -z-10 animate-float" style={{ animationDelay: '2s' }}></div>
-            
-            {/* Custom pattern overlay */}
-            <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none -z-15 bg-[url('/images/patterns/gplay.png')]"></div>
+        <section className="relative overflow-hidden pt-16 sm:pt-24 pb-16 lg:pt-32 lg:pb-28" style={{ background: 'linear-gradient(160deg, #0d0d14 0%, #1a0a0a 40%, #0d0d14 100%)' }}>
+            {/* Radial glow blobs */}
+            <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-[#FF0036]/8 rounded-full blur-[160px] -translate-y-1/3 translate-x-1/3 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#FF5000]/6 rounded-full blur-[140px] translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+            <div className="absolute inset-0 opacity-[0.04] pointer-events-none bg-[url('/images/patterns/gplay.png')]" />
 
-            {/* Danmu Layer */}
             <DanmuLayer lang={lang} />
-
-            {/* Floating Coupon */}
             <FloatingCoupon lang={lang} />
 
-            <div className="section-container">
-                <div className="flex w-full min-w-0 gap-6 xl:gap-10">
+            <div className="section-container relative z-10">
+                <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
 
-                    {/* ===== Left: Taobao-Style Category Sidebar ===== */}
-                    <div className="hidden lg:flex flex-col w-48 xl:w-52 shrink-0 pt-2">
-                        <div className="bg-white/80 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-slate-100 dark:border-slate-700/50 shadow-lg overflow-hidden ring-1 ring-black/5">
-                            <div className="bg-gradient-to-r from-[#FF0036] to-[#FF5000] px-4 py-3">
-                                <p className="text-white text-sm font-black tracking-widest flex items-center gap-2 uppercase">
-                                    <Crown className="w-4 h-4 text-yellow-300" />
-                                    {lang === 'zh' ? '全部分类' : 'CATEGORIES'}
-                                </p>
-                            </div>
-                            {categories.map((cat, i) => (
-                                <Link
-                                    key={cat.id}
-                                    href={getLocalizedPath(cat.href, lang)}
-                                    className="flex items-center gap-2.5 px-4 py-3 hover:bg-red-50/60 dark:hover:bg-red-900/10 transition-colors border-b border-slate-50 dark:border-slate-800/50 last:border-b-0 group"
-                                >
-                                    <div className="shrink-0 transition-transform duration-300 group-hover:scale-110 group-hover:-translate-y-0.5">
-                                        <div className="w-9 h-9 flex items-center justify-center shrink-0">
-                                            {iconMap[cat.id] || (
-                                                <div className={`w-full h-full flex items-center justify-center text-xs font-black ${cat.color} bg-white rounded-[10px]`}>
-                                                    {cat.name.en.slice(0, 2)}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-xs font-bold text-slate-700 dark:text-slate-300 truncate group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
-                                            {cat.name[lang]}
-                                        </p>
-                                    </div>
-                                    {i < 2 && (
-                                        <span className="text-[8px] font-black bg-red-500 text-white rounded px-1 py-0.5">HOT</span>
-                                    )}
-                                    <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-red-400 transition-colors" />
-                                </Link>
-                            ))}
-                            {/* VIP Bulk Banner inside sidebar */}
-                            <div className="mx-3 my-3 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/10 dark:to-yellow-900/10 border border-amber-200/60 dark:border-amber-800/30 rounded-xl p-2.5">
-                                <p className="text-[10px] font-black text-amber-700 dark:text-amber-400 flex items-center gap-1">
-                                    <TrendingUp className="w-3 h-3" />
-                                    {lang === 'zh' ? '批量VIP: 50+享7折' : 'VIP: 50+ = 30% OFF'}
-                                </p>
-                                <p className="text-[9px] text-amber-600/70 dark:text-amber-500/60 mt-0.5">
-                                    {lang === 'zh' ? '联系专属客服获取最优报价' : 'Contact VIP agent for best rates'}
-                                </p>
+                    {/* Live online badge */}
+                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 backdrop-blur">
+                        <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" /><span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" /></span>
+                        <Users className="w-3.5 h-3.5 text-white/50" />
+                        <span className="text-[11px] font-black text-white/70 uppercase tracking-widest">{lang === 'zh' ? '实时在线 3,241人' : '3,241 Online Now'}</span>
+                    </motion.div>
+
+                    {/* Announcement bar */}
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }} className="w-full max-w-2xl mx-auto mb-8 bg-[#FF0036]/10 border border-[#FF0036]/20 rounded-full py-1.5 px-3 flex items-center gap-3 overflow-hidden">
+                        <span className="bg-gradient-to-r from-[#ff4d4f] to-[#FF0036] text-white text-[9px] sm:text-xs font-black px-2.5 py-0.5 rounded-full shrink-0 flex items-center gap-1">
+                            <Zap className="w-3 h-3 fill-current" />{lang === 'zh' ? '福利' : 'DEAL'}
+                        </span>
+                        <div className="flex-1 text-[10px] sm:text-xs text-[#FF6B6B] font-bold whitespace-nowrap overflow-hidden">
+                            <div className="animate-[pulse_3s_ease-in-out_infinite]">
+                                {lang === 'zh' ? '🔥 满700¥限时直降100¥｜支持USDT TRC20/BEP20｜假一赔十担保' : '🔥 Orders 700¥+ save 100¥ | USDT TRC20/BEP20 | 10x Refund Guarantee'}
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
 
-                    {/* ===== Center: Main Hero Content ===== */}
-                    <div className="flex-1 min-w-0 w-full flex flex-col items-center text-center relative">
-                        {/* Marquee Announcement */}
-                        <div className="w-full max-w-2xl mx-auto mb-6 sm:mb-8 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/10 dark:to-orange-900/10 border border-red-100 dark:border-red-900/30 rounded-full py-1 sm:py-1.5 px-2 sm:px-3 flex items-center gap-2 sm:gap-3 overflow-hidden shadow-inner animate-fade-in-up">
-                            <span className="bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] text-white text-[9px] sm:text-xs font-black px-2 sm:px-2.5 py-0.5 rounded-full shrink-0 shadow-sm pr-2 sm:pr-3 flex items-center gap-1">
-                                <Zap className="w-3 h-3 fill-current" />
-                                <span className="hidden sm:inline">{lang === 'zh' ? '最新限时福利' : 'LATEST DEAL'}</span>
-                                <span className="sm:hidden">{lang === 'zh' ? '福利' : 'DEAL'}</span>
-                            </span>
-                            <div className="flex-1 min-w-0 relative h-5 overflow-hidden text-[10px] sm:text-sm text-red-600 dark:text-red-400 font-bold whitespace-nowrap flex items-center">
-                                <div className="animate-[pulse_3s_ease-in-out_infinite]">
-                                    {lang === 'zh'
-                                        ? '🔥 特惠狂欢开启！满700¥限时直降100¥，库存有限，先到先得！平台全线支持支付宝/微信支付，购买更放心！'
-                                        : '🔥 Shopping Festival! Orders over 700¥ save 100¥! Alipay/WeChat payments enabled!'}
-                                </div>
+                    {/* H1 */}
+                    <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.6 }} className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tighter text-white mb-6 leading-[1.05]">
+                        {t('hero.title.line1', lang)}{' '}
+                        <br className="hidden sm:block" />
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF0036] via-[#FF5000] to-[#FF8C00]">
+                            {t('hero.title.highlight', lang)}
+                        </span>
+                    </motion.h1>
+
+                    {/* Subtitle with brand chips */}
+                    <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="text-sm sm:text-lg text-white/60 mb-3 max-w-2xl leading-relaxed">
+                        {t('hero.subtitle', lang)}
+                    </motion.p>
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="flex flex-wrap justify-center gap-2 mb-8">
+                        {[
+                            { label: lang === 'zh' ? '微信' : 'WeChat', color: 'bg-[#07C160]/15 text-[#07C160] border-[#07C160]/30' },
+                            { label: lang === 'zh' ? '支付宝' : 'Alipay', color: 'bg-[#1677ff]/15 text-[#1677ff] border-[#1677ff]/30' },
+                            { label: lang === 'zh' ? '抖音' : 'Douyin', color: 'bg-white/10 text-white/80 border-white/15' },
+                            { label: lang === 'zh' ? '淘宝/闲鱼' : 'Taobao/Xianyu', color: 'bg-[#FF5000]/15 text-[#FF8C00] border-[#FF5000]/30' },
+                            { label: lang === 'zh' ? '小红书' : 'Xiaohongshu', color: 'bg-rose-500/15 text-rose-400 border-rose-500/30' },
+                        ].map((c, i) => (
+                            <span key={i} className={`text-xs font-bold px-3 py-1 rounded-full border backdrop-blur ${c.color}`}>{c.label}</span>
+                        ))}
+                    </motion.div>
+
+                    {/* CTA Buttons */}
+                    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto mb-6 px-4 sm:px-0">
+                        <Link href="#pricing" className="hero-cta-bounce relative overflow-hidden text-center w-full sm:w-auto px-10 py-4 text-base sm:text-lg font-black rounded-2xl text-white bg-gradient-to-r from-[#ff4d4f] to-[#FF0036] border-b-4 border-[#cc0000] shadow-[0_8px_32px_rgba(255,0,54,0.4)] hover:shadow-[0_12px_48px_rgba(255,0,54,0.55)] hover:-translate-y-1 transition-all duration-200 active:scale-95 flex justify-center items-center gap-2">
+                            <Zap className="w-5 h-5 fill-current animate-pulse" />
+                            <span className="relative z-10">{t('hero.cta.primary', lang)}</span>
+                            <span className="absolute inset-0 hero-shine" />
+                        </Link>
+                        <div className="flex gap-3">
+                            <a href="https://t.me/CNVerifyHub" target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-4 text-sm font-bold rounded-2xl border border-white/15 text-white/80 hover:bg-white/8 hover:border-white/25 transition-all backdrop-blur">
+                                <Send className="w-4 h-4" />{t('hero.cta.channel', lang)}
+                            </a>
+                            <a href="https://t.me/cnwechatpro" target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-4 text-sm font-bold rounded-2xl border border-white/15 text-white/80 hover:bg-white/8 hover:border-white/25 transition-all backdrop-blur">
+                                <MessageSquare className="w-4 h-4" />{t('hero.cta.personal', lang)}
+                            </a>
+                        </div>
+                    </motion.div>
+
+                    {/* Trust badges */}
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="flex flex-wrap justify-center gap-2 mb-8">
+                        {[
+                            { icon: <ShieldCheck className="w-3.5 h-3.5" />, label: lang === 'zh' ? '官方正品' : 'Verified', color: 'text-red-400 bg-red-500/10 border-red-500/20' },
+                            { icon: <Zap className="w-3.5 h-3.5" />, label: lang === 'zh' ? '极速发货' : 'Instant', color: 'text-orange-400 bg-orange-500/10 border-orange-500/20' },
+                            { icon: <Headset className="w-3.5 h-3.5" />, label: '24/7', color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' },
+                            { icon: <BadgeCheck className="w-3.5 h-3.5" />, label: lang === 'zh' ? '实名专场' : 'KYC', color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20' },
+                            { icon: <TrendingUp className="w-3.5 h-3.5" />, label: lang === 'zh' ? '量化交易' : 'Trading', color: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+                            { icon: <Lock className="w-3.5 h-3.5" />, label: 'SSL', color: 'text-teal-400 bg-teal-500/10 border-teal-500/20' },
+                        ].map((b, i) => (
+                            <span key={i} className={`flex items-center gap-1.5 text-[11px] font-bold px-2.5 py-1 rounded-lg border ${b.color}`}>{b.icon}{b.label}</span>
+                        ))}
+                    </motion.div>
+
+                    {/* Service shortcut chips */}
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }} className="flex flex-wrap justify-center gap-3 mb-10">
+                        <Link href={getLocalizedPath('/verification', lang)} className="group flex items-center gap-2.5 px-5 py-2.5 bg-indigo-500/10 border border-indigo-500/20 rounded-2xl hover:bg-indigo-500/20 hover:-translate-y-0.5 transition-all">
+                            <VerificationIcon className="w-5 h-5" />
+                            <div className="flex flex-col items-start">
+                                <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">New</span>
+                                <span className="text-xs font-black text-indigo-300">{lang === 'zh' ? '实名代认证' : 'KYC Verification'}</span>
                             </div>
-                        </div>
-
-                        <h1 className="w-full text-3xl leading-[1.1] sm:text-4xl md:text-5xl lg:text-7xl font-black tracking-tighter text-slate-900 dark:text-white mb-6 sm:mb-8 animate-fade-in-up whitespace-normal break-words sm:px-2" style={{ animationDelay: '100ms' }}>
-                            {t('hero.title.line1', lang)}{' '}
-                            <br className="hidden md:block" />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF0036] via-[#FF5000] to-[#FF8C00] drop-shadow-sm px-2">
-                                {t('hero.title.highlight', lang)}
-                            </span>
-                        </h1>
-
-                        <p className="w-full max-w-[100vw] text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-400 mb-6 sm:mb-8 leading-relaxed px-4 animate-fade-in-up md:text-balance break-words" style={{ animationDelay: '200ms' }}>
-                            {t('hero.subtitle', lang)}
-                        </p>
-
-                        {/* Direct Access to New Services */}
-                        <div className="flex flex-wrap justify-center gap-3 mt-8 sm:mt-10 animate-fade-in-up" style={{ animationDelay: '350ms' }}>
-                            <Link 
-                                href={getLocalizedPath('/verification', lang)}
-                                className="group flex items-center gap-2.5 px-5 py-2.5 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 rounded-2xl hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
-                            >
-                                <div className="w-6 h-6 bg-white dark:bg-dark-900 rounded-lg flex items-center justify-center p-1 shadow-sm group-hover:scale-110 transition-transform">
-                                    <VerificationIcon className="w-full h-full" />
-                                </div>
-                                <div className="flex flex-col items-start">
-                                    <span className="text-[10px] font-black text-indigo-400 leading-none uppercase tracking-widest mb-1">New Service</span>
-                                    <span className="text-xs font-black text-indigo-700 dark:text-indigo-300">{lang === 'zh' ? '实名代认证' : 'KYC Verification'}</span>
-                                </div>
-                            </Link>
-                            <Link 
-                                href={getLocalizedPath('/trading', lang)}
-                                className="group flex items-center gap-2.5 px-5 py-2.5 bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded-2xl hover:bg-amber-100 dark:hover:bg-amber-500/20 transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5"
-                            >
-                                <div className="w-6 h-6 bg-white dark:bg-dark-900 rounded-lg flex items-center justify-center p-1 shadow-sm group-hover:scale-110 transition-transform">
-                                    <FintechIcon className="w-full h-full" />
-                                </div>
-                                <div className="flex flex-col items-start">
-                                    <span className="text-[10px] font-black text-amber-500 leading-none uppercase tracking-widest mb-1">High Authority</span>
-                                    <span className="text-xs font-black text-amber-700 dark:text-amber-300">{lang === 'zh' ? '金融交易账户' : 'Trading Accounts'}</span>
-                                </div>
-                            </Link>
-                        </div>
-
-                        {/* CTA Buttons with Bounce on Primary */}
-                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 w-full sm:w-auto px-4 sm:px-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
-                            <Link href="#pricing" className="hero-cta-bounce text-center whitespace-normal break-words w-full sm:w-auto px-4 sm:px-10 py-3.5 sm:py-4 text-base sm:text-lg font-black rounded-2xl transition-all duration-300 bg-gradient-to-r from-[#ff4d4f] to-[#ff2a2d] hover:from-[#ff2a2d] hover:to-[#cc0000] text-white shadow-[0_8px_20px_rgba(255,42,45,0.3)] hover:shadow-[0_12px_30px_rgba(255,42,45,0.45)] active:scale-95 border-b-4 border-[#cc0000] flex justify-center items-center gap-2 relative overflow-hidden">
-                                <Zap className="w-5 h-5 fill-current animate-pulse" />
-                                <span className="relative z-10">{t('hero.cta.primary', lang)}</span>
-                                {/* Shine sweep effect */}
-                                <span className="absolute inset-0 hero-shine" />
-                            </Link>
-                            <div className="flex flex-col min-[400px]:flex-row gap-3 w-full sm:w-auto">
-                                <a
-                                    href="https://t.me/CNVerifyHub"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="btn-outline flex-1 sm:flex-none px-4 sm:px-6 py-3.5 sm:py-4 text-sm sm:text-base border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white flex items-center justify-center gap-2"
-                                >
-                                    <Send className="w-4 h-4" /> {t('hero.cta.channel', lang)}
-                                </a>
-                                <a
-                                    href="https://t.me/cnwechatpro"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="btn-outline flex-1 sm:flex-none px-4 sm:px-6 py-3.5 sm:py-4 text-sm sm:text-base border-2 border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-dark-900/50 backdrop-blur hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white flex items-center justify-center gap-2"
-                                >
-                                    <MessageSquare className="w-4 h-4" /> {t('hero.cta.personal', lang)}
-                                </a>
+                        </Link>
+                        <Link href={getLocalizedPath('/trading', lang)} className="group flex items-center gap-2.5 px-5 py-2.5 bg-amber-500/10 border border-amber-500/20 rounded-2xl hover:bg-amber-500/20 hover:-translate-y-0.5 transition-all">
+                            <FintechIcon className="w-5 h-5" />
+                            <div className="flex flex-col items-start">
+                                <span className="text-[9px] font-black text-amber-400 uppercase tracking-widest">Hot</span>
+                                <span className="text-xs font-black text-amber-300">{lang === 'zh' ? '金融交易账户' : 'Trading Accounts'}</span>
                             </div>
-                        </div>
+                        </Link>
+                    </motion.div>
 
-                        {/* Dense Trust Cluster under CTA */}
-                        <div className="w-full max-w-[100vw] flex flex-wrap justify-center items-center gap-2 sm:gap-3 mt-5 px-2 animate-fade-in-up" style={{ animationDelay: '350ms' }}>
-                            <span className="flex items-center gap-1 text-[11px] font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 px-2.5 py-1 rounded">
-                                <ShieldCheck className="w-3.5 h-3.5" /> {lang === 'zh' ? '官方正品保护' : 'Official Verified'}
-                            </span>
-                            <span className="flex items-center gap-1 text-[11px] font-bold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20 px-2.5 py-1 rounded">
-                                <Zap className="w-3.5 h-3.5" /> {lang === 'zh' ? '极速发货' : 'Instant Delivery'}
-                            </span>
-                            <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-2.5 py-1 rounded">
-                                <Headset className="w-3.5 h-3.5" /> {lang === 'zh' ? '售后无忧' : '24/7 Support'}
-                            </span>
-                            <span className="flex items-center gap-1 text-[11px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-2.5 py-1 rounded">
-                                <BadgeCheck className="w-3.5 h-3.5" /> {lang === 'zh' ? '实名专场' : 'KYC Center'}
-                            </span>
-                            <span className="flex items-center gap-1 text-[11px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 px-2.5 py-1 rounded">
-                                <TrendingUp className="w-3.5 h-3.5" /> {lang === 'zh' ? '量化交易' : 'Trading Ready'}
-                            </span>
-                        </div>
+                    {/* Social Proof Strip */}
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="w-full flex flex-col items-center gap-2 mb-10">
+                        <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-1">{lang === 'zh' ? '🔴 实时成交' : '🔴 Live Orders'}</p>
+                        <SocialProofStrip lang={lang} />
+                    </motion.div>
 
-                        {/* ===== Journey Stepper (交易流程) ===== */}
-                        <div className="w-full max-w-xl mx-auto mt-8 sm:mt-10 px-2 sm:px-0 animate-fade-in-up flex min-w-0" style={{ animationDelay: '400ms' }}>
-                            <div className="flex-1 min-w-0 flex items-center justify-between bg-white/60 dark:bg-slate-800/40 backdrop-blur-sm rounded-2xl px-3 sm:px-4 py-2 sm:py-3 border border-slate-100 dark:border-slate-700/50 shadow-sm overflow-x-auto scrolbar-hide">
-                                {[
-                                    { icon: <Star className="w-4 h-4" />, label: lang === 'zh' ? '选择账号' : 'Select', num: '1' },
-                                    { icon: <Lock className="w-4 h-4" />, label: lang === 'zh' ? '扫码支付' : 'Pay QR', num: '2' },
-                                    { icon: <Truck className="w-4 h-4" />, label: lang === 'zh' ? '自动发货' : 'Delivery', num: '3' },
-                                    { icon: <ShieldCheck className="w-4 h-4" />, label: lang === 'zh' ? '验证使用' : 'Verify', num: '4' },
-                                ].map((step, i) => (
-                                    <div key={i} className="flex items-center gap-1 shrink-0">
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center text-white text-[9px] sm:text-[10px] font-black shadow-sm">
-                                                {step.num}
-                                            </div>
-                                            <div className="text-left text-[8px] min-[400px]:text-[9px] sm:text-[10px] md:block">
-                                                <p className="font-bold text-slate-700 dark:text-slate-300 leading-none whitespace-nowrap">{step.label}</p>
-                                            </div>
-                                        </div>
-                                        {i < 3 && (
-                                            <div className="flex-shrink-0 w-3 sm:w-6 lg:w-12 h-[1px] bg-gradient-to-r from-red-300 to-orange-300 dark:from-red-800 dark:to-orange-800 mx-0.5 sm:mx-2" />
-                                        )}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* ===== Trust Matrix (信任矩阵) ===== */}
-                        <div className="w-full flex flex-wrap justify-center gap-2 sm:gap-3 mt-8 max-w-lg px-2 sm:px-0 animate-fade-in-up" style={{ animationDelay: '450ms' }}>
+                    {/* Journey Steps */}
+                    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="w-full max-w-xl mx-auto mb-10">
+                        <div className="flex items-center justify-between bg-white/5 backdrop-blur border border-white/8 rounded-2xl px-4 py-3">
                             {[
-                                { icon: <Lock className="w-4 h-4" />, label: 'SSL', color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/20 dark:text-emerald-400 border-emerald-100 dark:border-emerald-800/30' },
-                                { icon: <ShieldCheck className="w-4 h-4" />, label: 'TRC-20', color: 'text-blue-600 bg-blue-50 dark:bg-blue-900/20 dark:text-blue-400 border-blue-100 dark:border-blue-800/30' },
-                                { icon: <Award className="w-4 h-4" />, label: lang === 'zh' ? '担保' : 'Escrow', color: 'text-amber-600 bg-amber-50 dark:bg-amber-900/20 dark:text-amber-400 border-amber-100 dark:border-amber-800/30' },
-                                { icon: <Zap className="w-4 h-4" />, label: lang === 'zh' ? '无痕' : 'Clean', color: 'text-purple-600 bg-purple-50 dark:bg-purple-900/20 dark:text-purple-400 border-purple-100 dark:border-purple-800/30' },
-                                { icon: <MessageSquare className="w-4 h-4" />, label: lang === 'zh' ? '真实' : 'Legit', color: 'text-rose-600 bg-rose-50 dark:bg-rose-900/20 dark:text-rose-400 border-rose-100 dark:border-rose-800/30' },
-                                { icon: <BadgeCheck className="w-4 h-4" />, label: lang === 'zh' ? '正品' : 'Auth', color: 'text-teal-600 bg-teal-50 dark:bg-teal-900/20 dark:text-teal-400 border-teal-100 dark:border-teal-800/30' },
-                            ].map((badge, i) => (
-                                <div key={i} className={`flex flex-col items-center gap-1 py-2 px-3 sm:px-1 rounded-xl border ${badge.color} transition-transform hover:scale-105 shrink-0`}>
-                                    {badge.icon}
-                                    <span className="text-[9px] font-black">{badge.label}</span>
+                                { icon: <Star className="w-4 h-4" />, label: lang === 'zh' ? '选择账号' : 'Select', num: '1' },
+                                { icon: <Lock className="w-4 h-4" />, label: lang === 'zh' ? '扫码支付' : 'Pay QR', num: '2' },
+                                { icon: <Truck className="w-4 h-4" />, label: lang === 'zh' ? '自动发货' : 'Delivery', num: '3' },
+                                { icon: <ShieldCheck className="w-4 h-4" />, label: lang === 'zh' ? '验证使用' : 'Verify', num: '4' },
+                            ].map((step, i) => (
+                                <div key={i} className="flex items-center gap-1 shrink-0">
+                                    <div className="flex items-center gap-1.5">
+                                        <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#FF5000] to-[#FF0036] flex items-center justify-center text-white text-[10px] font-black shadow-neon-red-sm">{step.num}</div>
+                                        <p className="text-[10px] font-bold text-white/70 whitespace-nowrap hidden sm:block">{step.label}</p>
+                                    </div>
+                                    {i < 3 && <div className="w-4 sm:w-10 h-px bg-gradient-to-r from-[#FF0036]/40 to-[#FF5000]/20 mx-1 sm:mx-2" />}
                                 </div>
                             ))}
                         </div>
+                    </motion.div>
 
-                        {/* Stats Bar */}
-                        <div className="w-full grid grid-cols-1 min-[400px]:grid-cols-2 sm:grid-cols-5 gap-4 sm:gap-6 md:gap-8 mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-slate-100 dark:border-slate-800/50 px-2 sm:px-0 animate-fade-in-up min-w-0" style={{ animationDelay: '500ms' }}>
-                            <div>
-                                <p className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
-                                    <AnimatedCounter end={50} suffix="K+" duration={2500} />
+                    {/* Stats Row */}
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="w-full grid grid-cols-2 sm:grid-cols-5 gap-0 border-t border-white/8 pt-8">
+                        {[
+                            { end: 50, suffix: 'K+', label: t('hero.stat.orders', lang) },
+                            { end: 12, suffix: ',480+', label: t('hero.stat.customers', lang) },
+                            { end: 3, suffix: ',120+', label: lang === 'zh' ? '累计实名成功' : 'Verified KYC', color: 'text-indigo-400' },
+                            { val: '30 min', label: t('hero.stat.delivery', lang) },
+                            { val: '24/7', label: t('hero.stat.support', lang) },
+                        ].map((s, i) => (
+                            <div key={i} className={`text-center px-2 py-2 ${i > 0 ? 'border-l border-white/8' : ''}`}>
+                                <p className={`text-xl sm:text-2xl font-extrabold ${(s as any).color || 'text-white'}`}>
+                                    {(s as any).val ?? <AnimatedCounter end={(s as any).end} suffix={(s as any).suffix} duration={2500} />}
                                 </p>
-                                <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.orders', lang)}</p>
+                                <p className="text-[10px] text-white/40 mt-1">{s.label}</p>
                             </div>
-                            <div>
-                                <p className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
-                                    <AnimatedCounter end={12} suffix=",480+" duration={2500} />
-                                </p>
-                                <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.customers', lang)}</p>
-                            </div>
-                            <div>
-                                <p className="text-xl sm:text-2xl font-extrabold text-indigo-600 dark:text-indigo-400">
-                                    <AnimatedCounter end={3} suffix=",120+" duration={2500} />
-                                </p>
-                                <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">{lang === 'zh' ? '累计实名成功' : 'Verified KYC'}</p>
-                            </div>
-                            <div>
-                                <p className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">30 min</p>
-                                <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.delivery', lang)}</p>
-                            </div>
-                            <div>
-                                <p className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">24/7</p>
-                                <p className="text-[10px] sm:text-xs text-slate-500 mt-0.5 sm:mt-1">{t('hero.stat.support', lang)}</p>
-                            </div>
-                        </div>
+                        ))}
+                    </motion.div>
 
-                        {/* Gold Seal positioned relative to center content */}
-                        <GoldSeal lang={lang} />
-                    </div>
-
-                    {/* ===== Right: Live Purchase Waterfall ===== */}
-                    <LivePurchaseWaterfall lang={lang} />
+                    <GoldSeal lang={lang} />
                 </div>
             </div>
         </section>

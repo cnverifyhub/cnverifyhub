@@ -1,65 +1,28 @@
+'use client';
+
 import Link from 'next/link';
 import { ArrowRight, Zap, Flame } from 'lucide-react';
 import { categories, getTotalStock, getLowestPrice } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { formatYuan } from '@/lib/utils';
-import { 
-    WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, 
+import { motion } from 'framer-motion';
+import {
+    WeChatIcon, AlipayIcon, DouyinIcon, QQIcon,
     XianyuIcon, TaobaoIcon, XiaohongshuIcon,
     BundleIcon, VerificationIcon, FintechIcon
 } from '@/components/ui/BrandIcons';
 
-const iconMap: Record<string, { icon: React.ReactNode, accentColor: string, textColor: string }> = {
-    wechat: { 
-        icon: <WeChatIcon className="w-full h-full" />, 
-        accentColor: '#07c160',
-        textColor: 'text-[#07c160]'
-    },
-    alipay: { 
-        icon: <AlipayIcon className="w-full h-full" />, 
-        accentColor: '#1677ff',
-        textColor: 'text-[#1677ff]'
-    },
-    douyin: { 
-        icon: <DouyinIcon className="w-full h-full" />, 
-        accentColor: '#000000',
-        textColor: 'text-slate-900 dark:text-white'
-    },
-    qq: { 
-        icon: <QQIcon className="w-full h-full" />, 
-        accentColor: '#12b7f5',
-        textColor: 'text-slate-900 dark:text-white'
-    },
-    xianyu: { 
-        icon: <XianyuIcon className="w-full h-full" />, 
-        accentColor: '#ffe400',
-        textColor: 'text-slate-900 dark:text-white'
-    },
-    taobao: { 
-        icon: <TaobaoIcon className="w-full h-full" />, 
-        accentColor: '#ff5000',
-        textColor: 'text-[#ff5000]'
-    },
-    xiaohongshu: { 
-        icon: <XiaohongshuIcon className="w-full h-full" />, 
-        accentColor: '#ff2442',
-        textColor: 'text-slate-900 dark:text-white'
-    },
-    bundle: { 
-        icon: <BundleIcon className="w-full h-full" />, 
-        accentColor: '#8b5cf6',
-        textColor: 'text-[#8b5cf6]'
-    },
-    verification: { 
-        icon: <VerificationIcon className="w-full h-full" />, 
-        accentColor: '#6366f1',
-        textColor: 'text-[#6366f1]'
-    },
-    trading: { 
-        icon: <FintechIcon className="w-full h-full" />, 
-        accentColor: '#f59e0b',
-        textColor: 'text-[#f59e0b]'
-    },
+const iconMap: Record<string, { icon: React.ReactNode; accentColor: string; textColor: string }> = {
+    wechat:       { icon: <WeChatIcon className="w-full h-full" />,       accentColor: '#07c160', textColor: 'text-[#07c160]' },
+    alipay:       { icon: <AlipayIcon className="w-full h-full" />,       accentColor: '#1677ff', textColor: 'text-[#1677ff]' },
+    douyin:       { icon: <DouyinIcon className="w-full h-full" />,       accentColor: '#ffffff', textColor: 'text-white' },
+    qq:           { icon: <QQIcon className="w-full h-full" />,           accentColor: '#12b7f5', textColor: 'text-[#12b7f5]' },
+    xianyu:       { icon: <XianyuIcon className="w-full h-full" />,       accentColor: '#ffe400', textColor: 'text-yellow-300' },
+    taobao:       { icon: <TaobaoIcon className="w-full h-full" />,       accentColor: '#ff5000', textColor: 'text-[#ff5000]' },
+    xiaohongshu:  { icon: <XiaohongshuIcon className="w-full h-full" />, accentColor: '#ff2442', textColor: 'text-rose-400' },
+    bundle:       { icon: <BundleIcon className="w-full h-full" />,       accentColor: '#8b5cf6', textColor: 'text-violet-400' },
+    verification: { icon: <VerificationIcon className="w-full h-full" />, accentColor: '#6366f1', textColor: 'text-indigo-400' },
+    trading:      { icon: <FintechIcon className="w-full h-full" />,      accentColor: '#f59e0b', textColor: 'text-amber-400' },
 };
 
 export function CategoryCards({ lang }: { lang: Lang }) {
@@ -67,93 +30,72 @@ export function CategoryCards({ lang }: { lang: Lang }) {
     const bundleCategories = categories.filter(c => c.id === 'bundle');
     const serviceCategories = categories.filter(c => ['verification', 'trading'].includes(c.id));
 
-    const renderCategoryGrid = (categoryList: typeof categories, title: string) => (
+    const renderGrid = (list: typeof categories, title: string, label?: string) => (
         <div className="mb-20 last:mb-0">
-            <div className="flex items-center gap-4 mb-10">
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent" />
-                <h3 className="text-xl md:text-2xl font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.3em]">
-                    {title}
-                </h3>
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent" />
+            {/* Section header */}
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-3">
+                    {label && (
+                        <span className="text-[10px] font-black text-[#FF0036] bg-[#FF0036]/10 border border-[#FF0036]/20 px-2.5 py-1 rounded-full uppercase tracking-widest">
+                            {label}
+                        </span>
+                    )}
+                    <h3 className="text-lg md:text-xl font-black text-white uppercase tracking-[0.2em]">{title}</h3>
+                </div>
+                <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent ml-6" />
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-                {categoryList.map((category) => {
-                    const stock = getTotalStock(category.id);
-                    const lowestPrice = getLowestPrice(category.id);
-                    const config = iconMap[category.id] || iconMap.wechat;
-
+            {/* Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
+                {list.map((cat, i) => {
+                    const stock = getTotalStock(cat.id);
+                    const lowestPrice = getLowestPrice(cat.id);
+                    const cfg = iconMap[cat.id] || iconMap.wechat;
+                    const isHot = i < 2;
+                    const isNew = i >= 2 && i < 4;
                     return (
-                        <Link
-                            key={category.id}
-                            href={getLocalizedPath(category.href, lang)}
-                            className="group relative bg-white dark:bg-dark-950/40 rounded-3xl p-4 sm:p-6 border border-slate-100 dark:border-white/5 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 dark:hover:shadow-black/50 transition-all duration-500 hover:-translate-y-2 overflow-hidden flex flex-col h-full"
+                        <motion.div
+                            key={cat.id}
+                            initial={{ opacity: 0, y: 24 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.07, duration: 0.5 }}
                         >
-                            {/* Hot Search Badges */}
-                            {category.id === 'wechat' && (
-                                <div className="absolute top-0 right-0 bg-gradient-to-l from-[#ff4d4f] to-[#ff8c00] text-white text-[9px] sm:text-xs font-black px-2 sm:px-3 py-1 sm:py-1.5 rounded-bl-xl z-20 shadow-sm flex items-center gap-1">
-                                    <Flame className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-current animate-pulse" />
-                                    热搜霸榜
+                            <Link
+                                href={getLocalizedPath(cat.href, lang)}
+                                className="group relative flex flex-col items-center text-center p-5 rounded-2xl border border-white/8 bg-white/[0.04] backdrop-blur hover:-translate-y-1.5 transition-all duration-300 overflow-hidden h-full"
+                            >
+                                {/* Hover radial glow */}
+                                <div
+                                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-2xl"
+                                    style={{ background: `radial-gradient(circle at 50% 0%, ${cfg.accentColor}20 0%, transparent 70%)` }}
+                                />
+                                {/* Badges */}
+                                {isHot && (
+                                    <span className="absolute top-2 right-2 text-[8px] font-black bg-gradient-to-r from-[#FF0036] to-[#FF5000] text-white px-1.5 py-0.5 rounded-full flex items-center gap-0.5 z-10">
+                                        <Flame className="w-2.5 h-2.5 fill-current" />HOT
+                                    </span>
+                                )}
+                                {isNew && !isHot && (
+                                    <span className="absolute top-2 right-2 text-[8px] font-black bg-white/10 text-white/70 px-1.5 py-0.5 rounded-full border border-white/15 z-10">NEW</span>
+                                )}
+                                {/* Icon */}
+                                <div className="w-14 h-14 mb-3 group-hover:scale-110 transition-transform duration-300 relative z-10">{cfg.icon}</div>
+                                {/* Name */}
+                                <p className={`text-sm font-black mb-0.5 relative z-10 ${cfg.textColor}`}>{cat.name['zh']}</p>
+                                <p className="text-[10px] text-white/40 font-medium mb-3 relative z-10">{cat.name['en']}</p>
+                                {/* Stats block */}
+                                <div className="w-full bg-white/5 rounded-xl p-2.5 mt-auto relative z-10">
+                                    <p className="text-[9px] text-white/40 uppercase tracking-wider mb-0.5">起售价</p>
+                                    <p className="text-base font-black text-white tabular-nums">{formatYuan(lowestPrice)}</p>
+                                    <p className="text-[9px] text-emerald-400 mt-0.5">库存 {stock}+</p>
                                 </div>
-                            )}
-                            {category.id === 'bundle' && (
-                                <div className="absolute top-0 right-0 bg-gradient-to-l from-[#8b5cf6] to-[#6366f1] text-white text-[9px] sm:text-xs font-black px-2 sm:px-3 py-1 sm:py-1.5 rounded-bl-xl z-20 shadow-sm flex items-center gap-1">
-                                    <Zap className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-current" />
-                                    极速发货
+                                {/* Arrow */}
+                                <div className="absolute bottom-3 right-3 w-6 h-6 rounded-full bg-white/8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                    <ArrowRight className="w-3.5 h-3.5 text-white" />
                                 </div>
-                            )}
-
-                            <div className="relative z-10 flex flex-col h-full">
-                                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 mb-4 sm:mb-6 text-center sm:text-left">
-                                    <div className="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 shrink-0 transform group-hover:scale-110 transition-transform duration-500">
-                                        {config.icon}
-                                    </div>
-                                    <div className="flex-1 pt-0 sm:pt-1">
-                                        <h3 className={`text-lg sm:text-xl md:text-2xl font-black ${config.textColor} tracking-tight mb-1 sm:mb-2`}>
-                                            {category.name[lang]}
-                                        </h3>
-                                        <div className="flex flex-wrap justify-center sm:justify-start gap-1.5">
-                                            <span className="text-[8px] sm:text-[10px] font-bold bg-slate-50 text-slate-500 dark:bg-white/5 px-2 py-0.5 rounded-md border border-slate-100 dark:border-white/5">官方质保</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <p className="text-[10px] sm:text-xs md:text-sm text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mb-4 sm:mb-6 opacity-90 font-medium hidden sm:block">
-                                    {category.description[lang]}
-                                </p>
-
-                                <div className="mt-auto">
-                                    <div className="flex items-center justify-between mb-3 sm:mb-4 px-1">
-                                        <div className="flex items-center gap-1.5">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-[#07c160] animate-pulse" />
-                                            <span className="text-[9px] sm:text-[11px] font-bold text-slate-500 dark:text-slate-400">
-                                                有货
-                                            </span>
-                                        </div>
-                                        <span className="text-xs sm:text-sm font-black text-slate-900 dark:text-white flex items-center gap-0.5">
-                                            {stock} <span className="opacity-40 font-bold ml-1">PCS</span>
-                                        </span>
-                                    </div>
-
-                                    <div className="bg-[#f8f9fb] dark:bg-white/5 p-3 sm:p-4 rounded-2xl flex items-center justify-between group-hover:bg-[#fff0f0] dark:group-hover:bg-red-500/5 transition-colors duration-300">
-                                        <div className="flex flex-col">
-                                            <span className="text-[8px] sm:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1 leading-none">
-                                                STARTING AT
-                                            </span>
-                                            <div className="flex items-baseline gap-1">
-                                                <span className="text-xl sm:text-2xl md:text-3xl font-black text-[#07c160] tracking-tighter">
-                                                    {formatYuan(lowestPrice)}
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-white/10 flex items-center justify-center group-hover:bg-[#ff5000] group-hover:scale-110 transition-all duration-300 shadow-sm group-hover:shadow-lg group-hover:shadow-orange-500/25">
-                                            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 group-hover:text-white" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </Link>
+                            </Link>
+                        </motion.div>
                     );
                 })}
             </div>
@@ -161,20 +103,24 @@ export function CategoryCards({ lang }: { lang: Lang }) {
     );
 
     return (
-        <section id="categories" className="py-20 bg-white dark:bg-dark-900/50">
+        <section id="categories" className="py-20" style={{ background: 'linear-gradient(180deg, #0d0d14 0%, #111118 100%)' }}>
             <div className="section-container">
+                {/* Section title */}
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-6 tracking-tight">
+                    <p className="text-[11px] font-black text-[#FF0036] uppercase tracking-[0.4em] mb-3">
+                        🔥 {lang === 'zh' ? '全部分类' : 'ALL CATEGORIES'}
+                    </p>
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4 tracking-tight">
                         {t('home.categories.title', lang)}
                     </h2>
-                    <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">
+                    <p className="text-base text-white/50 max-w-2xl mx-auto font-medium">
                         {t('home.categories.subtitle', lang)}
                     </p>
                 </div>
 
-                {renderCategoryGrid(accountCategories, lang === 'zh' ? '全球数字账号' : 'GLOBAL ACCOUNTS')}
-                {renderCategoryGrid(bundleCategories, lang === 'zh' ? '多平台组合包' : 'COMBO BUNDLES')}
-                {renderCategoryGrid(serviceCategories, lang === 'zh' ? '专业认证服务' : 'PROFESSIONAL SERVICES')}
+                {renderGrid(accountCategories, lang === 'zh' ? '全球数字账号' : 'GLOBAL ACCOUNTS', lang === 'zh' ? '热销' : 'POPULAR')}
+                {renderGrid(bundleCategories,  lang === 'zh' ? '多平台组合包' : 'COMBO BUNDLES',   'VIP')}
+                {renderGrid(serviceCategories, lang === 'zh' ? '专业认证服务' : 'PRO SERVICES',     lang === 'zh' ? '新品' : 'NEW')}
             </div>
         </section>
     );

@@ -15,7 +15,15 @@
     --color-accent: 22 119 255; /* #1677FF - Alipay Blue */
     --gradient-hero: linear-gradient(135deg, #FF0036 0%, #FF5000 50%, #FF8C00 100%);
     --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-    --font-chinese: 'Source Han Sans', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    --font-chinese: 'Noto Sans SC', 'PingFang SC', 'Source Han Sans CN', 'Microsoft YaHei', sans-serif;
+    /* v2 Glass Surface Tokens */
+    --surface-glass: rgba(255, 255, 255, 0.04);
+    --surface-glass-border: rgba(255, 255, 255, 0.08);
+    --surface-glass-hover: rgba(255, 255, 255, 0.07);
+    --glow-red: 0 0 30px rgba(255,0,54,0.4), 0 0 60px rgba(255,0,54,0.15);
+    --glow-gold: 0 0 30px rgba(255,179,0,0.35), 0 0 60px rgba(255,179,0,0.1);
+    --hero-bg: #0d0d14;
+    --card-border: rgba(255,255,255,0.08);
   }
 
   html {
@@ -78,13 +86,18 @@
    ============================================ */
 @layer components {
 
-  /* Glass Card */
+  /* Glass Card v2 — dark-first */
   .glass-card {
-    @apply bg-white/80 dark:bg-white/5 backdrop-blur-xl border border-white/20 dark:border-white/10 rounded-2xl shadow-glass;
+    @apply bg-white/5 backdrop-blur-xl border border-white/8 rounded-2xl;
+    box-shadow: var(--glow-red, none);
   }
 
   .glass-card-hover {
-    @apply glass-card transition-all duration-300 hover:shadow-glass-lg hover:-translate-y-1 hover:border-primary-200/50 dark:hover:border-primary-500/30;
+    @apply glass-card transition-all duration-300 hover:-translate-y-1.5;
+  }
+  .glass-card-hover:hover {
+    box-shadow: var(--glow-red);
+    border-color: rgba(255,0,54,0.25);
   }
 
   /* Text Gradient */

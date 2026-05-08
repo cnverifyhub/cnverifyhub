@@ -95,16 +95,16 @@ export default function Footer() {
     ];
 
     return (
-        <footer className="relative bg-white dark:bg-[#0a0a0f] pt-10 pb-20 md:pb-8 overflow-hidden z-20 border-t-2 border-[#FF0036] shadow-[0_-4px_20px_rgba(0,0,0,0.05)] dark:shadow-[0_-4px_20px_rgba(255,255,255,0.02)]">
+        <footer className="relative pt-10 pb-20 md:pb-8 overflow-hidden z-20 border-t border-[#FF0036]/30" style={{ background: '#0a0a0f' }}>
             {/* Background Aesthetics */}
-            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#FF0036] to-transparent opacity-50" />
+            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#FF0036] to-transparent opacity-40" />
             <div className="absolute -left-20 top-20 w-96 h-96 bg-[#FF0036]/5 blur-[80px] rounded-full pointer-events-none" />
             <div className="absolute -right-20 bottom-0 w-96 h-96 bg-[#1677ff]/5 blur-[80px] rounded-full pointer-events-none" />
             
             <div className="max-w-7xl mx-auto px-4 relative z-30">
                 
-                {/* 1. High-Density Trust Badges Banner (Taobao Style) */}
-                <div className="flex flex-wrap justify-between items-center gap-4 py-6 border-b border-slate-100 dark:border-white/5 mb-8">
+                {/* Trust Badges Banner */}
+                <div className="flex flex-wrap justify-between items-center gap-4 py-6 border-b border-white/8 mb-8">
                     {[
                         { icon: Zap, title: lang === 'zh' ? '极速秒发' : 'Instant Delivery', color: 'text-[#FF5000]' },
                         { icon: ShieldCheck, title: lang === 'zh' ? '正规一手渠道' : 'Verified Source', color: 'text-[#07C160]' },
@@ -112,10 +112,10 @@ export default function Footer() {
                         { icon: Lock, title: lang === 'zh' ? '加密担保交易' : 'Escrow Secured', color: 'text-[#1677ff]' }
                     ].map((item, idx) => (
                         <div key={idx} className="flex items-center gap-2 lg:gap-3 group">
-                            <div className={`w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center ${item.color} group-hover:scale-110 transition-transform`}>
+                            <div className={`w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center ${item.color} group-hover:scale-110 transition-transform`}>
                                 <item.icon className="w-4 h-4 lg:w-5 lg:h-5" />
                             </div>
-                            <span className="font-bold text-slate-800 dark:text-slate-100 text-xs lg:text-sm tracking-wide">{item.title}</span>
+                            <span className="font-bold text-white/80 text-xs lg:text-sm tracking-wide">{item.title}</span>
                         </div>
                     ))}
                 </div>
