@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
+import { WiseIcon, XmIcon, NetellerIcon, SkrillIcon, HfmIcon, RevolutIcon, PayoneerIcon } from '@/components/icons/FinancialBrandIcons';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
 
@@ -32,14 +33,39 @@ export default function TradingPage() {
                         保障您的个人信息安全与资金链路隐蔽。
                     </p>
                     
-                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200 mt-8 mb-4">
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200 mt-12 mb-6 text-center">
                         支持账户类型
                     </h3>
-                    <ul className="space-y-2 text-slate-600 dark:text-slate-400">
-                        <li><strong>外汇经纪商：</strong>XM、HFM (HotForex) 等主流平台已认证交易账户。</li>
-                        <li><strong>电子钱包：</strong>Neteller、Skrill 等全球通用支付钱包。</li>
-                        <li><strong>跨境收款：</strong>Payoneer (派安盈)、Wise 等多币种收款与换汇账户。</li>
-                    </ul>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-8 not-prose">
+                        <div className="flex flex-col items-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700/50 hover:shadow-md transition-shadow">
+                            <WiseIcon className="w-12 h-12 mb-3" />
+                            <span className="text-sm font-bold text-slate-800 dark:text-slate-200">Wise</span>
+                        </div>
+                        <div className="flex flex-col items-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700/50 hover:shadow-md transition-shadow">
+                            <XmIcon className="w-12 h-12 mb-3" />
+                            <span className="text-sm font-bold text-slate-800 dark:text-slate-200">XM Trading</span>
+                        </div>
+                        <div className="flex flex-col items-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700/50 hover:shadow-md transition-shadow">
+                            <NetellerIcon className="w-12 h-12 mb-3" />
+                            <span className="text-sm font-bold text-slate-800 dark:text-slate-200">Neteller</span>
+                        </div>
+                        <div className="flex flex-col items-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700/50 hover:shadow-md transition-shadow">
+                            <SkrillIcon className="w-12 h-12 mb-3" />
+                            <span className="text-sm font-bold text-slate-800 dark:text-slate-200">Skrill</span>
+                        </div>
+                        <div className="flex flex-col items-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700/50 hover:shadow-md transition-shadow">
+                            <HfmIcon className="w-12 h-12 mb-3" />
+                            <span className="text-sm font-bold text-slate-800 dark:text-slate-200">HFM</span>
+                        </div>
+                        <div className="flex flex-col items-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700/50 hover:shadow-md transition-shadow">
+                            <RevolutIcon className="w-12 h-12 mb-3" />
+                            <span className="text-sm font-bold text-slate-800 dark:text-slate-200">Revolut</span>
+                        </div>
+                        <div className="flex flex-col items-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700/50 hover:shadow-md transition-shadow">
+                            <PayoneerIcon className="w-12 h-12 mb-3" />
+                            <span className="text-sm font-bold text-slate-800 dark:text-slate-200">Payoneer</span>
+                        </div>
+                    </div>
                 </div>
             </section>
 
