@@ -50,17 +50,17 @@ export function ContactForm({ lang }: { lang: Lang }) {
                         </div>
                         <div>
                             <h3 className="font-bold text-slate-900 dark:text-white">Telegram</h3>
-                            <p className="text-sm text-slate-500">@CNWePro_Support (24/7)</p>
+                            <p className="text-sm text-slate-500">@CNVerifyHub_Support (24/7)</p>
                         </div>
                     </a>
 
-                    <a href="mailto:support@cnwepro.com" className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-primary-500 dark:hover:border-primary-500 transition-colors group">
+                    <a href="mailto:cnverifyhub@gmail.com" className="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-primary-500 dark:hover:border-primary-500 transition-colors group">
                         <div className="w-12 h-12 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-500 rounded-xl flex items-center justify-center group-hover:bg-primary-500 group-hover:text-white transition-colors">
                             <Mail className="w-6 h-6" />
                         </div>
                         <div>
                             <h3 className="font-bold text-slate-900 dark:text-white">Email</h3>
-                            <p className="text-sm text-slate-500">support@cnwepro.com</p>
+                            <p className="text-sm text-slate-500">cnverifyhub@gmail.com</p>
                         </div>
                     </a>
                 </div>

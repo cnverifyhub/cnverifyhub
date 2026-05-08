@@ -1,7 +1,7 @@
 import { supabaseAdmin as supabase } from '@/lib/supabase/admin';
 
 /* ============================================
-   Fraud Detection Rules Engine — CNWePro
+   Fraud Detection Rules Engine — CNVerifyHub
    Local rules-based (no AI costs)
    Designed for Chinese/HK crypto marketplace patterns
    ============================================ */

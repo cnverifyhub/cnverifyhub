@@ -127,7 +127,7 @@ export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess
 
     const qrValue = method === 'usdt'
         ? usdtAddress
-        : `https://cnwepro.com/pay/${method}/${orderId}`;
+        : `https://CNVerifyHub.com/pay/${method}/${orderId}`;
 
     return (
         <AnimatePresence>

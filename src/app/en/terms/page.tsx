@@ -12,7 +12,7 @@ export default function TermsPageEn() {
             icon: FileText,
             title: 'Service Agreement',
             content: [
-                'CNWePro is a digital account marketplace providing account services for Chinese social media and payment platforms including WeChat, Alipay, Douyin, and QQ.',
+                'CNVerifyHub is a digital account marketplace providing account services for Chinese social media and payment platforms including WeChat, Alipay, Douyin, and QQ.',
                 'By using our services, you acknowledge that you have read, understood, and agree to all terms of this agreement.',
                 'All accounts sold are intended for legitimate business purposes only (e.g., marketing, business testing). Users assume all risks associated with account usage.',
                 'We reserve the right to modify this agreement at any time. Changes take effect immediately upon publication on the website.',
@@ -65,7 +65,7 @@ export default function TermsPageEn() {
             title: 'Dispute Resolution',
             content: [
                 'In case of transaction disputes, both parties should first attempt to resolve through friendly negotiation.',
-                'All complaints and disputes should be submitted via Telegram support (@cnwechatpro) or email (support@cnwepro.com).',
+                'All complaints and disputes should be submitted via Telegram support (@cnwechatpro) or email (cnverifyhub@gmail.com).',
                 'We commit to providing an initial response within 24 hours of receiving a complaint.',
             ]
         },
@@ -82,7 +82,7 @@ export default function TermsPageEn() {
                     Terms of Service & Policy
                 </h1>
                 <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                    Please read the following terms carefully. By using CNWePro services, you agree to this agreement.
+                    Please read the following terms carefully. By using CNVerifyHub services, you agree to this agreement.
                 </p>
             </div>
 
@@ -123,14 +123,14 @@ export default function TermsPageEn() {
                     <a href="https://t.me/cnwechatpro" target="_blank" rel="noopener noreferrer" className="btn-primary">
                         Telegram Support
                     </a>
-                    <a href="mailto:support@cnwepro.com" className="btn-outline">
+                    <a href="mailto:cnverifyhub@gmail.com" className="btn-outline">
                         Email Us
                     </a>
                 </div>
             </div>
 
             <p className="text-center text-xs text-slate-400 mt-8">
-                Last Updated: March 12, 2026 · © CNWePro All Rights Reserved
+                Last Updated: March 12, 2026 · © CNVerifyHub All Rights Reserved
             </p>
         </div>
     );

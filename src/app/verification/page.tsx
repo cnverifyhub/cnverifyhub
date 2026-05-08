@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: '实名认证代办服务 - 护照实名认证, 人脸识别验证',
@@ -26,7 +26,7 @@ export default function VerificationPage() {
                         专业实名认证代办服务
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        由于政策限制，许多海外用户在登录中国应用时会遇到严苛的实名要求。CNWePro 提供全方位的认证支持服务，
+                        由于政策限制，许多海外用户在登录中国应用时会遇到严苛的实名要求。CNVerifyHub 提供全方位的认证支持服务，
                         帮助您跨越身份验证障碍，恢复账号全功能。
                     </p>
                     

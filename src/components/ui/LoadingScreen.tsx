@@ -23,7 +23,7 @@ export default function LoadingScreen() {
                 <div className="absolute inset-4 border-4 border-transparent border-t-gold-500 rounded-full animate-spin-slow" style={{ animationDuration: '4s' }}></div>
 
                 {/* Logo */}
-                <Image src="/logo.png" alt="CNWePro Logo" width={48} height={48} className="w-12 h-12 object-contain drop-shadow-lg animate-pulse-slow" />
+                <Image src="/logo.png" alt="CNVerifyHub Logo" width={48} height={48} className="w-12 h-12 object-contain drop-shadow-lg animate-pulse-slow" />
             </div>
             <p className="mt-8 text-slate-500 dark:text-slate-400 font-medium tracking-widest uppercase text-sm animate-pulse">
                 Loading...

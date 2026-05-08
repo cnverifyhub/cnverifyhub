@@ -661,7 +661,7 @@ export default function AdminDashboardPage() {
                     </div>
                     <div className="text-center mb-8">
                         <h1 className="text-2xl font-black text-white mb-2">Admin Dashboard</h1>
-                        <p className="text-slate-400 text-sm">CNWePro Control Center</p>
+                        <p className="text-slate-400 text-sm">CNVerifyHub Control Center</p>
                     </div>
                     <form onSubmit={handleLogin} className="space-y-4">
                         {loginError && (
@@ -682,7 +682,7 @@ export default function AdminDashboardPage() {
                             Access Dashboard
                         </button>
                     </form>
-                    <p className="text-center text-xs text-slate-600 mt-6">Secured · CNWePro Admin v2.0</p>
+                    <p className="text-center text-xs text-slate-600 mt-6">Secured · CNVerifyHub Admin v2.0</p>
                 </div>
             </div>
         );
@@ -716,7 +716,7 @@ export default function AdminDashboardPage() {
                         <div className="w-8 h-8 bg-gradient-to-br from-violet-600 to-blue-600 rounded-lg flex items-center justify-center">
                             <LayoutDashboard className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-white font-black text-sm tracking-tight">CNWePro Admin</span>
+                        <span className="text-white font-black text-sm tracking-tight">CNVerifyHub Admin</span>
                     </div>
                     {isMobile && (
                         <button onClick={() => setSidebarOpen(false)} className="text-slate-500 hover:text-white transition-colors">
@@ -768,7 +768,7 @@ export default function AdminDashboardPage() {
                 {/* Mobile Top Bar */}
                 {isMobile && (
                     <div className="sticky top-0 z-30 px-4 py-3 flex items-center justify-between" style={{background:'rgba(7,7,17,0.9)',borderBottom:'1px solid rgba(255,255,255,0.07)',backdropFilter:'blur(20px)'}}>
-                        <span className="font-black text-white text-sm">CNWePro Admin</span>
+                        <span className="font-black text-white text-sm">CNVerifyHub Admin</span>
                         <span className="text-xs font-mono" style={{color:'#475569'}}>v2.0</span>
                     </div>
                 )}

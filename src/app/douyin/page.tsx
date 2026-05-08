@@ -3,7 +3,7 @@ import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: '抖音号购买 - 千粉号·万粉号·蓝V企业号出售',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         languages: { 'zh-CN': `${SITE_URL}/douyin/`, 'en': `${SITE_URL}/en/douyin/` },
     },
     openGraph: {
-        title: '抖音号购买 - 千粉万粉号·蓝V企业号 | CNWePro',
+        title: '抖音号购买 - 千粉万粉号·蓝V企业号 | CNVerifyHub',
         description: '高权重抖音号批发，带橱窗直播权限。USDT支付，72小时质保。',
     },
 };
@@ -36,13 +36,13 @@ function getDouyinJsonLd() {
                 name: p.tierName.zh,
                 description: p.features?.map(f => f.zh).join(', ') || '',
                 url: `${SITE_URL}/douyin/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -65,7 +65,7 @@ export default function DouyinPage() {
                         抖音号购买指南
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        CNWePro 是国内领先的抖音账号交易服务商，专为直播带货、短视频矩阵运营、企业营销提供
+                        CNVerifyHub 是国内领先的抖音账号交易服务商，专为直播带货、短视频矩阵运营、企业营销提供
                         高纯净度的抖音号源。我们的账号均经过养号测试，不限流、不异常。支持使用 
                         <strong>USDT加密货币</strong> 全球支付，付款后系统 <strong>24小时自动发货</strong>，
                         助您快速抢占流量红利。

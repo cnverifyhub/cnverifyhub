@@ -4,7 +4,7 @@ import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 import { WiseIcon, XmIcon, NetellerIcon, SkrillIcon, HfmIcon, RevolutIcon, PayoneerIcon } from '@/components/icons/FinancialBrandIcons';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: '金融交易账户 - 已实名认证XM, HFM, Payoneer, Wise账户',
@@ -28,7 +28,7 @@ export default function TradingPage() {
                         全球金融账户交易指南
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        CNWePro 为全球交易者提供安全、已认证的金融与支付账户。我们的账户均由真实身份完成 KYC 验证，
+                        CNVerifyHub 为全球交易者提供安全、已认证的金融与支付账户。我们的账户均由真实身份完成 KYC 验证，
                         适用于外汇交易、跨境收款及全球电子钱包支付。支持 <strong>USDT</strong> 匿名支付，
                         保障您的个人信息安全与资金链路隐蔽。
                     </p>

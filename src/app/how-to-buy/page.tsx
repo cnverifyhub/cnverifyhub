@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import { ShoppingCart, Search, CreditCard, Download, ShieldCheck, HelpCircle, Send, CheckCircle2, ArrowRight, Wallet, Smartphone, Clock } from 'lucide-react';
 import Link from 'next/link';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
-    title: '如何购买 - 购买指南 | How to Buy - CNWePro',
-    description: '5分钟学会在CNWePro购买微信、支付宝、抖音、QQ账号。支持USDT TRC20支付，即买即用。Step-by-step guide to buying Chinese social accounts with USDT.',
+    title: '如何购买 - 购买指南 | How to Buy - CNVerifyHub',
+    description: '5分钟学会在CNVerifyHub购买微信、支付宝、抖音、QQ账号。支持USDT TRC20支付，即买即用。Step-by-step guide to buying Chinese social accounts with USDT.',
     alternates: {
         canonical: `${SITE_URL}/how-to-buy/`,
         languages: { 'zh-CN': `${SITE_URL}/how-to-buy/`, 'en': `${SITE_URL}/en/how-to-buy/` },

@@ -3,7 +3,7 @@ import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: 'Buy Xiaohongshu Account - Verified, Aged, 1K+ Followers | RED Accounts',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         languages: { 'en': `${SITE_URL}/en/xiaohongshu/`, 'zh-CN': `${SITE_URL}/xiaohongshu/` },
     },
     openGraph: {
-        title: 'Buy Xiaohongshu Account - Verified & Aged | CNWePro',
+        title: 'Buy Xiaohongshu Account - Verified & Aged | CNVerifyHub',
         description: 'RED/Xiaohongshu accounts from $18. High-follower marketing accounts available. Instant delivery.',
         url: `${SITE_URL}/en/xiaohongshu/`,
     },
@@ -37,13 +37,13 @@ function getXiaohongshuJsonLd() {
                 name: p.tierName.en,
                 description: p.features?.map(f => f.en).join(', ') || '',
                 url: `${SITE_URL}/en/xiaohongshu/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -67,7 +67,7 @@ export default function XiaohongshuPageEn() {
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                         Xiaohongshu (RED) is China's leading lifestyle and social commerce platform. 
-                        CNWePro provides premium Xiaohongshu accounts ranging from fresh basic profiles to high-authorityaged accounts with 1K+ or 10K+ followers. 
+                        CNVerifyHub provides premium Xiaohongshu accounts ranging from fresh basic profiles to high-authorityaged accounts with 1K+ or 10K+ followers. 
                         Every account is simulation-warmed for high trust and ban resistance. 
                         We support <strong>USDT</strong> payments and offer <strong>instant automated delivery</strong>.
                     </p>

@@ -147,7 +147,7 @@ export default function SignupPage() {
                         <UserPlus className="w-10 h-10 text-white" />
                     </motion.div>
                     <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">创建账号</h1>
-                    <p className="text-slate-500">Create your CNWePro account</p>
+                    <p className="text-slate-500">Create your CNVerifyHub account</p>
                 </div>
 
                 {/* Form */}

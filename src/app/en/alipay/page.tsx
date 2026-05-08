@@ -3,7 +3,7 @@ import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnverifyhub.com';
 
 export const metadata: Metadata = {
     title: 'Buy Alipay Account - Personal, Verified, Enterprise | Alipay for Sale',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         languages: { 'en': `${SITE_URL}/en/alipay/`, 'zh-CN': `${SITE_URL}/alipay/` },
     },
     openGraph: {
-        title: 'Buy Verified Alipay Accounts | CNWePro',
+        title: 'Buy Verified Alipay Accounts | CNVerifyHub',
         description: 'Verified Alipay personal & enterprise accounts. Instant USDT delivery.',
         url: `${SITE_URL}/en/alipay/`,
     },
@@ -37,13 +37,13 @@ function getAlipayJsonLd() {
                 name: p.tierName.en,
                 description: p.features?.map(f => f.en).join(', ') || '',
                 url: `${SITE_URL}/en/alipay/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -66,7 +66,7 @@ export default function AlipayPageEn() {
                         Alipay Account Buying Guide
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        Buy verified Alipay accounts securely at CNWePro. All accounts have passed
+                        Buy verified Alipay accounts securely at CNVerifyHub. All accounts have passed
                         Alipay's rigorous risk control checks and support core features like bank transfers, QR code
                         payments, online purchasing, and balance management. We specialize in providing the international 
                         market with stable payment tools for China. Pay anonymously with <strong>USDT cryptocurrency</strong> and

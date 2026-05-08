@@ -90,7 +90,7 @@ export default function SignupPageEn() {
                         <UserPlus className="w-10 h-10 text-white" />
                     </div>
                     <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Create Account</h1>
-                    <p className="text-slate-500">Join the CNWePro marketplace</p>
+                    <p className="text-slate-500">Join the CNVerifyHub marketplace</p>
                 </div>
 
                 <div className="glass-card p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl">

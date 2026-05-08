@@ -3,7 +3,7 @@ import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: 'Buy QQ Account - VIP, Sun Level, High Grade | QQ Number for Sale',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         languages: { 'en': `${SITE_URL}/en/qq/`, 'zh-CN': `${SITE_URL}/qq/` },
     },
     openGraph: {
-        title: 'Buy Premium QQ Accounts | CNWePro',
+        title: 'Buy Premium QQ Accounts | CNVerifyHub',
         description: 'Aged QQ numbers with high levels (Sun/Moon). Instant crypto delivery.',
         url: `${SITE_URL}/en/qq/`,
     },
@@ -37,13 +37,13 @@ function getQQJsonLd() {
                 name: p.tierName.en,
                 description: p.features?.map(f => f.en).join(', ') || '',
                 url: `${SITE_URL}/en/qq/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -67,7 +67,7 @@ export default function QQPageEn() {
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                         QQ is Tencent's classic instant messaging platform with hundreds of millions of active
-                        users in China, deeply integrated into gaming and youth culture. CNWePro offers bulk 
+                        users in China, deeply integrated into gaming and youth culture. CNVerifyHub offers bulk 
                         and premium aged QQ accounts at various grading levels — from basic numbers to Sun-level (16+) 
                         and premium vanity sequences. All accounts are anti-ban guaranteed. Pay with <strong>USDT</strong> and 
                         get automated instant delivery within 5 minutes.

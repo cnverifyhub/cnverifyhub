@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: '组合套装账号 - 支付宝+闲鱼/淘宝/1688实名组合',
-    description: 'CNWePro 多平台组合账号套装：支付宝+闲鱼、支付宝+淘宝、微信+京东等。已预先绑定，到手即用，一站式解决关联验证难题。',
+    description: 'CNVerifyHub 多平台组合账号套装：支付宝+闲鱼、支付宝+淘宝、微信+京东等。已预先绑定，到手即用，一站式解决关联验证难题。',
     keywords: '支付宝闲鱼组合号, 淘宝实名套装, 1688批发账号, 微信京东组合',
     alternates: {
         canonical: `${SITE_URL}/bundle/`,

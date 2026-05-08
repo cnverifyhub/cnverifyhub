@@ -7,7 +7,7 @@ export type { Lang };
 const translations = {
     zh: {
         // Site
-        'site.name': 'CNWePro',
+        'site.name': 'CNVerifyHub',
         'site.tagline': '专业中国数字账号交易平台',
         'site.description': '安全可靠的微信、支付宝、抖音、QQ账号交易平台。实名认证号、绑卡号、白号、老号应有尽有。USDT支付，即时发货。',
 
@@ -166,7 +166,7 @@ const translations = {
         'footer.support': '客服支持',
         'footer.legal': '法律声明',
         'footer.disclaimer': '免责声明：本平台仅提供账号交易中介服务，用户需遵守相关平台的使用条款和当地法律法规。',
-        'footer.copyright': '© 2025 CNWePro. All rights reserved.',
+        'footer.copyright': '© 2025 CNVerifyHub. All rights reserved.',
 
         // Common
         'common.learnMore': '了解更多',
@@ -181,7 +181,7 @@ const translations = {
     },
 
     en: {
-        'site.name': 'CNWePro',
+        'site.name': 'CNVerifyHub',
         'site.tagline': 'Professional Chinese Digital Account Marketplace',
         'site.description': 'Secure marketplace for WeChat, Alipay, Douyin, QQ accounts. Verified, ID-linked, aged accounts available. USDT payment, instant delivery.',
 
@@ -328,7 +328,7 @@ const translations = {
         'footer.support': 'Support',
         'footer.legal': 'Legal',
         'footer.disclaimer': 'Disclaimer: This platform provides account trading intermediary services only. Users must comply with platform terms of service and local laws.',
-        'footer.copyright': '© 2025 CNWePro. All rights reserved.',
+        'footer.copyright': '© 2025 CNVerifyHub. All rights reserved.',
 
         'common.learnMore': 'Learn More',
         'common.backToHome': 'Back to Home',

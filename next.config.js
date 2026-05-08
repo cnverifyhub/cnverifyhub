@@ -17,7 +17,7 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'play-lh.googleusercontent.com' },
-      { protocol: 'https', hostname: 'cnwepro.com', pathname: '/images/**' },
+      { protocol: 'https', hostname: 'cnverifyhub.com', pathname: '/images/**' },
       { protocol: 'https', hostname: '*.vercel.app', pathname: '/images/**' },
     ],
   },

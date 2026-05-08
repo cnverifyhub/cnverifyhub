@@ -120,7 +120,7 @@ export const useOrderStore = create<OrderState>()(
             }
         })),
         {
-            name: 'cnwepro-orders-db',
+            name: 'CNVerifyHub-orders-db',
             // Only persist orders to local storage. Don't indefinitely persist admin auth session without re-login.
             partialize: (state: OrderState) => ({
                 orders: state.orders

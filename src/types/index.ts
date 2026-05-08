@@ -1,5 +1,5 @@
 /* ============================================
-   cnwepro.com — Core Type Definitions
+   CNVerifyHub.com — Core Type Definitions
    ============================================ */
 
 export type Lang = 'zh' | 'en';

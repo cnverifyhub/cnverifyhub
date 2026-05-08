@@ -3,7 +3,7 @@ import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: 'QQ号购买 - 太阳号·皇冠号·靓号特卖',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         languages: { 'zh-CN': `${SITE_URL}/qq/`, 'en': `${SITE_URL}/en/qq/` },
     },
     openGraph: {
-        title: 'QQ高等级号·靓号现货交易 | CNWePro',
+        title: 'QQ高等级号·靓号现货交易 | CNVerifyHub',
         description: '严选老号防找回，太阳号、靓号极速发货。支持USDT加密支付。',
     },
 };
@@ -36,13 +36,13 @@ function getQQJsonLd() {
                 name: p.tierName.zh,
                 description: p.features?.map(f => f.zh).join(', ') || '',
                 url: `${SITE_URL}/qq/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -65,7 +65,7 @@ export default function QQPage() {
                         QQ账号购买指南
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        CNWePro 是全网信誉极佳的QQ号直供平台，常年储备各等级高防封QQ账号。
+                        CNVerifyHub 是全网信誉极佳的QQ号直供平台，常年储备各等级高防封QQ账号。
                         无论您是用于社群引流营销、游戏防沉迷绑定、还是追求极致稀有的短位靓号，
                         我们的库存都能满足。100%纯净IP注册或长期挂机活号，承诺 <strong>绝不拉回绝不二次销售</strong>。
                         5分钟系统自动发货，保障您的业务平稳不中断。

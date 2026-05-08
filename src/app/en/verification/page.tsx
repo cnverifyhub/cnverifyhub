@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: 'Verification Services - Passport KYC, Face Recognition Assistance',
@@ -27,7 +27,7 @@ export default function EnglishVerificationPage() {
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                         Due to policy restrictions, many international users face strict real-name requirements 
-                        when using Chinese apps. CNWePro provides comprehensive authentication support 
+                        when using Chinese apps. CNVerifyHub provides comprehensive authentication support 
                         to help you overcome these hurdles and restore full account functionality.
                     </p>
                     

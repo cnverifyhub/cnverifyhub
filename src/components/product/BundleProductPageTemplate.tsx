@@ -323,7 +323,7 @@ export function BundleProductPageTemplate({ productId, lang }: BundleProductPage
                         </div>
                         <div className="bg-gradient-to-br from-purple-500 to-indigo-600 p-4 rounded-xl text-white">
                             <h4 className="font-bold flex items-center gap-2 mb-3">
-                                <CheckCircle2 className="w-4 h-4" /> {lang === 'zh' ? 'CNWePro 预定组合' : 'CNWePro Pre-linked Bundle'}
+                                <CheckCircle2 className="w-4 h-4" /> {lang === 'zh' ? 'CNVerifyHub 预定组合' : 'CNVerifyHub Pre-linked Bundle'}
                             </h4>
                             <ul className="space-y-2 text-sm font-medium text-white/90">
                                 <li>✅ {lang === 'zh' ? '完全跳过中国手机号验证' : 'Bypass China phone verification completely'}</li>

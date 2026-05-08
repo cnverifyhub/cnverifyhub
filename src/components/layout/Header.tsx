@@ -108,12 +108,12 @@ export default function Header() {
                         {/* Logo */}
                         <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 group shrink-0">
                             <div className="relative">
-                                <Image src="/logo.png" alt="CNWePro Logo" width={40} height={40} className="w-9 h-9 sm:w-10 sm:h-10 object-contain group-hover:scale-110 transition-transform duration-300" />
+                                <Image src="/logo.png" alt="CNVerifyHub Logo" width={40} height={40} className="w-9 h-9 sm:w-10 sm:h-10 object-contain group-hover:scale-110 transition-transform duration-300" />
                                 <div className="absolute -inset-1 bg-gradient-to-r from-red-500/20 to-orange-400/20 rounded-full opacity-0 group-hover:opacity-100 transition-opacity blur-md" />
                             </div>
                             <div className="flex flex-col">
                                 <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 dark:text-white leading-none">
-                                    CNWePro
+                                    CNVerifyHub
                                 </span>
                                 <span className="text-[9px] font-semibold text-slate-400 dark:text-slate-500 tracking-widest uppercase leading-none mt-0.5 hidden sm:block">
                                     {lang === 'zh' ? '专业账号平台' : 'ACCOUNT MARKETPLACE'}

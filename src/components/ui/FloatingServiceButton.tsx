@@ -12,7 +12,7 @@ export function FloatingServiceButton() {
             {isOpen && (
                 <div className="flex flex-col gap-3 mb-2 animate-fade-in-up">
                     <a
-                        href="https://t.me/cnwepro"
+                        href="https://t.me/CNVerifyHub"
                         target="_blank"
                         rel="noreferrer"
                         className="flex items-center gap-3 bg-white dark:bg-dark-900 border border-slate-100 dark:border-slate-800 p-2 pr-4 rounded-full shadow-lg hover:-translate-x-2 transition-all duration-300 group"
@@ -24,7 +24,7 @@ export function FloatingServiceButton() {
                     </a>
                     
                     <a
-                        href="mailto:support@cnwepro.com"
+                        href="mailto:cnverifyhub@gmail.com"
                         className="flex items-center gap-3 bg-white dark:bg-dark-900 border border-slate-100 dark:border-slate-800 p-2 pr-4 rounded-full shadow-lg hover:-translate-x-2 transition-all duration-300 group"
                     >
                         <div className="w-10 h-10 rounded-full bg-[#e4393c] flex items-center justify-center text-white shadow-md group-hover:bg-red-500">

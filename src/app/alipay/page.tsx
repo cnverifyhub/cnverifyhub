@@ -3,7 +3,7 @@ import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: '支付宝账号购买 - 实名号·企业号·商家号现货',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         languages: { 'zh-CN': `${SITE_URL}/alipay/`, 'en': `${SITE_URL}/en/alipay/` },
     },
     openGraph: {
-        title: '支付宝账号购买 - 实名·企业·商家号 | CNWePro',
+        title: '支付宝账号购买 - 实名·企业·商家号 | CNVerifyHub',
         description: '支付宝个人号¥38起 | 企业号¥88起 | USDT支付秒发货',
     },
 };
@@ -36,13 +36,13 @@ function getAlipayJsonLd() {
                 name: p.tierName.zh,
                 description: p.features?.map(f => f.zh).join(', ') || '',
                 url: `${SITE_URL}/alipay/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -65,7 +65,7 @@ export default function AlipayPage() {
                         支付宝账号购买指南
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        CNWePro 提供各类支付宝账号的专业批发服务。从个人实名号到企业户，
+                        CNVerifyHub 提供各类支付宝账号的专业批发服务。从个人实名号到企业户，
                         所有账号均已通过风控认证，可正常使用转账、收款、扫码支付等核心功能。
                         <strong>USDT加密支付</strong>，<strong>5分钟自动发货</strong>，<strong>72小时质保</strong>。
                     </p>

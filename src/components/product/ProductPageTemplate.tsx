@@ -252,7 +252,7 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                                      </div>
                                      <div className="h-10 w-px bg-slate-200 dark:bg-slate-800 mx-2 hidden sm:block"></div>
                                      <div className="flex flex-col text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                                         <span>Official CNWePro</span>
+                                         <span>Official CNVerifyHub</span>
                                          <span className="text-red-500">Premium Digital Good</span>
                                      </div>
                                  </div>
@@ -340,7 +340,7 @@ export function ProductPageTemplate({ productId, lang }: ProductPageTemplateProp
                                     <div className="w-8 h-8 rounded bg-gradient-to-r from-red-600 to-orange-500 text-white flex items-center justify-center font-bold text-xs shadow-md">
                                         店
                                     </div>
-                                    <span className="font-bold text-sm text-slate-900 dark:text-white">CNWePro {lang === 'zh' ? '官方旗舰店' : 'Official Store'}</span>
+                                    <span className="font-bold text-sm text-slate-900 dark:text-white">CNVerifyHub {lang === 'zh' ? '官方旗舰店' : 'Official Store'}</span>
                                     <span className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white text-[10px] px-1.5 py-0.5 rounded font-bold ml-1 flex items-center gap-0.5">
                                         <ShieldCheck className="w-3 h-3" />
                                         {lang === 'zh' ? '金牌卖家' : 'Gold'}

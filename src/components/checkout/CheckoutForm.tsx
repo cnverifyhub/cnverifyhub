@@ -825,7 +825,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
 
                         <div className="mt-10 flex items-center gap-2 text-white/40 text-xs text-center border-t border-white/5 pt-4">
                             <Lock className="w-3 h-3" />
-                            <span>{lang === 'zh' ? 'CNWePro 企业级风控引擎保障' : 'Secured by CNWePro risk engine'}</span>
+                            <span>{lang === 'zh' ? 'CNVerifyHub 企业级风控引擎保障' : 'Secured by CNVerifyHub risk engine'}</span>
                         </div>
                     </div>
                 </div>

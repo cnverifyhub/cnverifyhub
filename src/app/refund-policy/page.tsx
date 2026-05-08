@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 import { ShieldCheck, Clock, CheckCircle2, XCircle, AlertTriangle, MessageCircle, Send, ArrowRight } from 'lucide-react';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
-    title: '退款与质保政策 - CNWePro | Refund & Warranty Policy',
-    description: 'CNWePro 退款政策：72小时质保、免费换号、USDT原路退款。了解完整的售后保障条款。Refund & warranty policy — 72h guarantee, free replacements, USDT refunds.',
+    title: '退款与质保政策 - CNVerifyHub | Refund & Warranty Policy',
+    description: 'CNVerifyHub 退款政策：72小时质保、免费换号、USDT原路退款。了解完整的售后保障条款。Refund & warranty policy — 72h guarantee, free replacements, USDT refunds.',
     alternates: {
         canonical: `${SITE_URL}/refund-policy/`,
         languages: { 'zh-CN': `${SITE_URL}/refund-policy/`, 'en': `${SITE_URL}/en/refund-policy/` },
@@ -49,7 +49,7 @@ export default function RefundPolicyPage() {
                         退款与质保政策
                     </h1>
                     <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
-                        CNWePro 承诺为每一位客户提供透明、公正的售后保障。所有账号均享有 <span className="font-bold text-emerald-600 dark:text-emerald-400">72 小时质量保证期</span>。
+                        CNVerifyHub 承诺为每一位客户提供透明、公正的售后保障。所有账号均享有 <span className="font-bold text-emerald-600 dark:text-emerald-400">72 小时质量保证期</span>。
                     </p>
                 </div>
             </section>
@@ -159,7 +159,7 @@ export default function RefundPolicyPage() {
                             <Send className="w-4 h-4" />
                             Telegram 客服
                         </a>
-                        <a href="mailto:support@cnwepro.com" className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-dark-800 transition-all">
+                        <a href="mailto:cnverifyhub@gmail.com" className="inline-flex items-center justify-center gap-2 px-6 py-3 border-2 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-dark-800 transition-all">
                             邮件联系
                         </a>
                     </div>

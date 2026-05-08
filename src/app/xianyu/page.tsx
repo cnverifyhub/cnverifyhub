@@ -3,7 +3,7 @@ import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: '闲鱼账号购买 - 高权重实名号·芝麻信用老号现货',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         languages: { 'zh-CN': `${SITE_URL}/xianyu/`, 'en': `${SITE_URL}/en/xianyu/` },
     },
     openGraph: {
-        title: '闲鱼账号购买 - 优质实名老号 | CNWePro',
+        title: '闲鱼账号购买 - 优质实名老号 | CNVerifyHub',
         description: '闲鱼实名号¥48起 | 优质老号¥68起 | USDT支付秒发货',
     },
 };
@@ -36,13 +36,13 @@ function getXianyuJsonLd() {
                 name: p.tierName.zh,
                 description: p.features?.map(f => f.zh).join(', ') || '',
                 url: `${SITE_URL}/xianyu/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -65,7 +65,7 @@ export default function XianyuPage() {
                         闲鱼账号购买指南
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        作为中国最大的二手交易平台，闲鱼对账号权重的要求极高。CNWePro 提供经过深度养号、高芝麻信用分的优质闲鱼账号。
+                        作为中国最大的二手交易平台，闲鱼对账号权重的要求极高。CNVerifyHub 提供经过深度养号、高芝麻信用分的优质闲鱼账号。
                         无论您是个人买家还是职业卖家，我们的账号都能助您快速起步，减少由于风控导致的封号风险。
                         支持 <strong>USDT</strong> 匿名支付，<strong>全自动秒发货</strong>。
                     </p>

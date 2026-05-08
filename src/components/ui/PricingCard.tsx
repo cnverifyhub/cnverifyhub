@@ -100,10 +100,10 @@ export function PricingCard({ product, lang }: PricingCardProps) {
         '@type': 'Product',
         name: product.tierName[lang],
         description: product.description[lang],
-        image: `https://cnwepro.com/images/categories/${product.category}.webp`,
+        image: `https://CNVerifyHub.com/images/categories/${product.category}.webp`,
         brand: {
             '@type': 'Brand',
-            'name': 'CNWePro'
+            'name': 'CNVerifyHub'
         },
         offers: {
             '@type': 'Offer',
@@ -111,7 +111,7 @@ export function PricingCard({ product, lang }: PricingCardProps) {
             price: product.price.single,
             itemCondition: 'https://schema.org/NewCondition',
             availability: isOutOfStock ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
-            url: `https://cnwepro.com/product/${product.id}`
+            url: `https://CNVerifyHub.com/product/${product.id}`
         },
         aggregateRating: {
             '@type': 'AggregateRating',

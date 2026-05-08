@@ -3,7 +3,7 @@ import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: 'Buy Taobao Account - Verified Buyer & VIP Aged | Taobao for Sale',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         languages: { 'en': `${SITE_URL}/en/taobao/`, 'zh-CN': `${SITE_URL}/taobao/` },
     },
     openGraph: {
-        title: 'Buy Taobao Account - Verified & VIP Aged | CNWePro',
+        title: 'Buy Taobao Account - Verified & VIP Aged | CNVerifyHub',
         description: 'Taobao buyer accounts from $15. VIP aged accounts from $48. Instant delivery via USDT.',
         url: `${SITE_URL}/en/taobao/`,
     },
@@ -37,13 +37,13 @@ function getTaobaoJsonLd() {
                 name: p.tierName.en,
                 description: p.features?.map(f => f.en).join(', ') || '',
                 url: `${SITE_URL}/en/taobao/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -66,7 +66,7 @@ export default function TaobaoPageEn() {
                         Taobao Buying Guide
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        Taobao is the primary portal to China's e-commerce world. CNWePro provides high-quality Taobao buyer accounts, 
+                        Taobao is the primary portal to China's e-commerce world. CNVerifyHub provides high-quality Taobao buyer accounts, 
                         ranging from fresh "white" accounts to premium VIP aged accounts with high Taoqi scores. 
                         Every account is verified for immediate use. Use with our <strong>Golden 72 Hours Anti-Ban Protocol</strong> for best results. 
                         We accept <strong>USDT</strong> and offer <strong>automated instant delivery</strong>.

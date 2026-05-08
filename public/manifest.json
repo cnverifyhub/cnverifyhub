@@ -1,6 +1,6 @@
 {
-  "name": "CNWePro",
-  "short_name": "CNWePro",
+  "name": "CNVerifyHub",
+  "short_name": "CNVerifyHub",
   "description": "Professional Chinese digital account marketplace. WeChat, Alipay, Douyin accounts with instant USDT delivery.",
   "start_url": "/",
   "display": "standalone",

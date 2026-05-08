@@ -7,10 +7,10 @@ import { PopularProducts } from '@/components/home/PopularProducts';
 import { FAQSection } from '@/components/home/FAQSection';
 import { LuckyWheel } from '@/components/home/LuckyWheel';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnverifyhub.com';
 
 export const metadata: Metadata = {
-    title: 'CNWePro - Buy Chinese Digital Accounts | WeChat, Alipay, Douyin, QQ',
+    title: 'CNVerifyHub - Buy Chinese Digital Accounts | WeChat, Alipay, Douyin, QQ',
     description: 'Professional Chinese digital account marketplace. Buy verified WeChat, Alipay, Douyin & QQ accounts with instant USDT crypto delivery. 5-minute auto-delivery, 72-hour warranty. Bulk pricing available.',
     keywords: 'buy wechat account, buy alipay account, buy douyin account, buy qq account, chinese social media accounts, buy chinese accounts with crypto, USDT payment, instant delivery, verified accounts, wechat for sale, tiktok china account',
     alternates: {
@@ -18,14 +18,14 @@ export const metadata: Metadata = {
         languages: { 'en': `${SITE_URL}/en/`, 'zh-CN': SITE_URL },
     },
     openGraph: {
-        title: 'CNWePro - Buy WeChat, Alipay, Douyin & QQ Accounts',
+        title: 'CNVerifyHub - Buy WeChat, Alipay, Douyin & QQ Accounts',
         description: 'Professional Chinese digital account marketplace. Instant USDT delivery, 72hr warranty. Bulk pricing from $18.',
         url: `${SITE_URL}/en/`,
         locale: 'en_US',
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'CNWePro - Buy Chinese Digital Accounts with USDT',
+        title: 'CNVerifyHub - Buy Chinese Digital Accounts with USDT',
         description: 'Verified WeChat, Alipay, Douyin & QQ accounts. Instant crypto delivery.',
     },
 };

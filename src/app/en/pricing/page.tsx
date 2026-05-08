@@ -2,17 +2,17 @@ import type { Metadata } from 'next';
 import PricingTable from '@/components/pricing/PricingTable';
 import { allProducts } from '@/data/products';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
-    title: 'Detailed Pricing Overview | CNWePro',
+    title: 'Detailed Pricing Overview | CNVerifyHub',
     description: 'Compare prices for WeChat, Alipay, Douyin, and QQ accounts. Bulk pricing available for 10, 50, and 200+ units. Secure USDT payments with instant delivery.',
     alternates: {
         canonical: `${SITE_URL}/en/pricing/`,
         languages: { 'zh-CN': `${SITE_URL}/pricing/`, 'en': `${SITE_URL}/en/pricing/` },
     },
     openGraph: {
-        title: 'Detailed Pricing Overview | CNWePro',
+        title: 'Detailed Pricing Overview | CNVerifyHub',
         description: 'Bulk pricing for premium Chinese digital assets starting from $20. Instant delivery via TRC20.',
     },
 };

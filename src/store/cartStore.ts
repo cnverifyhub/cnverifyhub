@@ -91,7 +91,7 @@ export const useCartStore = create<CartState>()(
             }
         }),
         {
-            name: 'cnwepro-cart',
+            name: 'CNVerifyHub-cart',
             partialize: (state) => ({ items: state.items })
         }
     )

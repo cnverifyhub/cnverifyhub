@@ -19,8 +19,8 @@ export const testimonialsData: Testimonial[] = [
         platform: 'alipay',
         date: '2025-03-01',
         text: {
-            zh: '做跨境电商需要的支付宝企业号，找了好几家都不靠谱。CNWePro的账号权重很高，稳定收款半个月了没有任何问题，价格也是同行里最有诚意的。',
-            en: 'I needed Alipay enterprise accounts for cross-border e-commerce, and other places were unreliable. CNWePro\'s accounts have high trust scores. Have been receiving funds stably for half a month with no issues. The price is also the most honest in the market.',
+            zh: '做跨境电商需要的支付宝企业号，找了好几家都不靠谱。CNVerifyHub的账号权重很高，稳定收款半个月了没有任何问题，价格也是同行里最有诚意的。',
+            en: 'I needed Alipay enterprise accounts for cross-border e-commerce, and other places were unreliable. CNVerifyHub\'s accounts have high trust scores. Have been receiving funds stably for half a month with no issues. The price is also the most honest in the market.',
         }
     },
     {
@@ -41,8 +41,8 @@ export const testimonialsData: Testimonial[] = [
         platform: 'general',
         date: '2025-01-20',
         text: {
-            zh: '作为一个长期需要各类白号的工作室负责人，CNWePro是我目前唯一的供应商。批量价格非常厚道，最重要的是提供的货源很稳，不是那种用黑卡注册的秒死号。',
-            en: 'As a studio manager needing regular supplies of fresh accounts, CNWePro is my only supplier now. The bulk pricing is very fair, and most importantly, the accounts are stable, not the easily-banned ones registered with blacklisted SIMs.',
+            zh: '作为一个长期需要各类白号的工作室负责人，CNVerifyHub是我目前唯一的供应商。批量价格非常厚道，最重要的是提供的货源很稳，不是那种用黑卡注册的秒死号。',
+            en: 'As a studio manager needing regular supplies of fresh accounts, CNVerifyHub is my only supplier now. The bulk pricing is very fair, and most importantly, the accounts are stable, not the easily-banned ones registered with blacklisted SIMs.',
         }
     }
 ];

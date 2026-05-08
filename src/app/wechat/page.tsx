@@ -5,7 +5,7 @@ import { RelatedCategories } from '@/components/category/RelatedCategories';
 import { FAQAccordion } from '@/components/ui/FAQAccordion';
 import { faqData } from '@/data/faq';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: '微信号购买 - 实名老号·绑卡号·企业号现货',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
         languages: { 'zh-CN': `${SITE_URL}/wechat/`, 'en': `${SITE_URL}/en/wechat/` },
     },
     openGraph: {
-        title: '微信号购买 - 实名·绑卡·企业号现货 | CNWePro',
+        title: '微信号购买 - 实名·绑卡·企业号现货 | CNVerifyHub',
         description: '微信白号¥28起 | 实名号¥38起 | 绑卡号¥58起 | USDT支付秒发货',
     },
 };
@@ -39,13 +39,13 @@ function getWeChatJsonLd() {
                 name: p.tierName.zh,
                 description: p.features?.map(f => f.zh).join(', ') || '',
                 url: `${SITE_URL}/wechat/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -69,7 +69,7 @@ export default function WeChatPage() {
                         微信号购买指南
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        CNWePro 是专业的微信号批发平台，提供从白号到高权重实名老号的全品类微信账号。
+                        CNVerifyHub 是专业的微信号批发平台，提供从白号到高权重实名老号的全品类微信账号。
                         我们所有微信号均经过严格质量筛选，确保登录稳定、权重达标。支持
                         <strong>USDT (TRC20)</strong> 匿名支付，付款后
                         <strong>5分钟内自动发货</strong>，所有账号享受 <strong>72小时售后质保</strong>。

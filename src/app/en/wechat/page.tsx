@@ -5,7 +5,7 @@ import { RelatedCategories } from '@/components/category/RelatedCategories';
 import { FAQAccordion } from '@/components/ui/FAQAccordion';
 import { faqData } from '@/data/faq';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnverifyhub.com';
 
 export const metadata: Metadata = {
     title: 'Buy WeChat Account - Verified, Aged, Bank-Linked | WeChat for Sale',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
         languages: { 'en': `${SITE_URL}/en/wechat/`, 'zh-CN': `${SITE_URL}/wechat/` },
     },
     openGraph: {
-        title: 'Buy WeChat Account - Verified & Aged | CNWePro',
+        title: 'Buy WeChat Account - Verified & Aged | CNVerifyHub',
         description: 'Fresh WeChat accounts from $18. Verified accounts from $28. Instant crypto delivery safely.',
         url: `${SITE_URL}/en/wechat/`,
     },
@@ -40,13 +40,13 @@ function getWeChatJsonLd() {
                 name: p.tierName.en,
                 description: p.features?.map(f => f.en).join(', ') || '',
                 url: `${SITE_URL}/en/wechat/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -70,7 +70,7 @@ export default function WeChatPageEn() {
                         WeChat Account Buying Guide
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        CNWePro is your premier destination to buy WeChat accounts. We offer a full spectrum of 
+                        CNVerifyHub is your premier destination to buy WeChat accounts. We offer a full spectrum of 
                         WeChat solutions ranging from fresh basic numbers to high-authority, ID-verified aged accounts. 
                         Every account passes our strict quality control filters to ensure maximum login stability and 
                         ban resistance. We accept <strong>USDT (TRC20)</strong> cryptocurrency for complete privacy, 

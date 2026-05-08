@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: 'FinTech & Trading Accounts - Verified XM, HFM, Payoneer, Wise',
@@ -26,7 +26,7 @@ export default function EnglishTradingPage() {
                         Global Trading & FinTech Account Guide
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        CNWePro provides secure, verified financial and payment accounts for global traders. 
+                        CNVerifyHub provides secure, verified financial and payment accounts for global traders. 
                         Our accounts are KYC-verified by real individuals, suitable for forex trading, 
                         cross-border payments, and global e-wallet usage. We support <strong>USDT</strong> payments 
                         to ensure your privacy and secure transaction flow.

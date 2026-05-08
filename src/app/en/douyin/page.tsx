@@ -3,7 +3,7 @@ import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: 'Buy Douyin Account - Followers, Blue V, Aged | TikTok China',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         languages: { 'en': `${SITE_URL}/en/douyin/`, 'zh-CN': `${SITE_URL}/douyin/` },
     },
     openGraph: {
-        title: 'Buy Verified Douyin Accounts | CNWePro',
+        title: 'Buy Verified Douyin Accounts | CNVerifyHub',
         description: 'Douyin accounts with real followers and high authority. Instant crypto delivery.',
         url: `${SITE_URL}/en/douyin/`,
     },
@@ -37,13 +37,13 @@ function getDouyinJsonLd() {
                 name: p.tierName.en,
                 description: p.features?.map(f => f.en).join(', ') || '',
                 url: `${SITE_URL}/en/douyin/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -67,7 +67,7 @@ export default function DouyinPageEn() {
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                         Douyin is China's original and most popular short-video platform (the sister app to TikTok).
-                        CNWePro offers high-authority, verified Douyin accounts with real followers, perfect for
+                        CNVerifyHub offers high-authority, verified Douyin accounts with real followers, perfect for
                         marketing campaigns, live-streaming e-commerce, and brand promotion in the lucrative
                         Chinese market. Pay securely with <strong>USDT crypto</strong> and receive credentials 
                         instantly with our <strong>72-hour quality guarantee</strong>.

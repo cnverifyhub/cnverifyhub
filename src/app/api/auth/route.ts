@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
             // Set the access cookie (expires in 30 days)
             response.cookies.set({
-                name: 'cnwepro_access',
+                name: 'CNVerifyHub_access',
                 value: 'true',
                 httpOnly: true,
                 path: '/',

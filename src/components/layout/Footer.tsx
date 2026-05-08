@@ -128,12 +128,12 @@ export default function Footer() {
                                 <Image src="/logo.png" alt="Logo" width={32} height={32} className="w-full h-full object-contain brightness-0 invert" />
                             </div>
                             <div className="flex flex-col">
-                                <span className="font-black text-xl tracking-tighter text-slate-900 dark:text-white leading-none">CNWePro</span>
+                                <span className="font-black text-xl tracking-tighter text-slate-900 dark:text-white leading-none">CNVerifyHub</span>
                                 <span className="text-[10px] font-bold text-[#FF0036] tracking-widest mt-1">官方正品 · 安全保证</span>
                             </div>
                         </Link>
                         <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 mb-4 font-medium text-justify">
-                            {lang === 'zh' ? 'CNWePro是全网领先的数字资产服务保障平台。致力于提供优质的微信、支付宝、抖音、小红书等高权重一手机房老号。使用USDT匿名结算，全网独家TRC20自动发卡验证系统。' : 'Premium Chinese Digital Asset Gateway providing high-authority accounts with exclusive instant TRC20 verification system.'}
+                            {lang === 'zh' ? 'CNVerifyHub是全网领先的数字资产服务保障平台。致力于提供优质的微信、支付宝、抖音、小红书等高权重一手机房老号。使用USDT匿名结算，全网独家TRC20自动发卡验证系统。' : 'Premium Chinese Digital Asset Gateway providing high-authority accounts with exclusive instant TRC20 verification system.'}
                         </p>
                         
                         <div className="flex items-center gap-2 mb-6">
@@ -288,7 +288,7 @@ export default function Footer() {
                             </Link>
                         </div>
                         <p className="text-[10px] text-slate-400 font-medium tracking-wide">
-                            © {new Date().getFullYear()} <span className="font-bold text-slate-600 dark:text-slate-300">CNWePro Digital Assets platform</span>. All Rights Reserved. 
+                            © {new Date().getFullYear()} <span className="font-bold text-slate-600 dark:text-slate-300">CNVerifyHub Digital Assets platform</span>. All Rights Reserved. 
                             <span className="ml-2 px-1.5 py-0.5 bg-emerald-500/10 text-emerald-500 rounded text-[9px] font-bold">100% SECURE</span>
                         </p>
                     </div>

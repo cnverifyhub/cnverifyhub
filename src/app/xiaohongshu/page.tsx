@@ -3,7 +3,7 @@ import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: '小红书账号购买 - 高权重种草号·实名老号·千粉号现货',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         languages: { 'zh-CN': `${SITE_URL}/xiaohongshu/`, 'en': `${SITE_URL}/en/xiaohongshu/` },
     },
     openGraph: {
-        title: '小红书账号购买 - 高权重营销老号 | CNWePro',
+        title: '小红书账号购买 - 高权重营销老号 | CNVerifyHub',
         description: '小红书基础号¥18起 | 千粉号¥68起 | USDT支付秒发货',
     },
 };
@@ -36,13 +36,13 @@ function getXiaohongshuJsonLd() {
                 name: p.tierName.zh,
                 description: p.features?.map(f => f.zh).join(', ') || '',
                 url: `${SITE_URL}/xiaohongshu/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -65,7 +65,7 @@ export default function XiaohongshuPage() {
                         小红书账号购买指南
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        小红书是中国领先的种草和生活方式平台。CNWePro 提供高质量的小红书账号，
+                        小红书是中国领先的种草和生活方式平台。CNVerifyHub 提供高质量的小红书账号，
                         包含适合日常互动的全新基础号，以及具备历史权重、适合品牌宣传和种草营销的高粉丝量老号。
                         所有账号均采用真实环境模拟养号，权重达标，抗封能力强。 
                         支持 <strong>USDT</strong> 支付，<strong>系统秒发货</strong>。

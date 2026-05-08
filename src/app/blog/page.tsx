@@ -5,7 +5,7 @@ import BlogIndexClient from './BlogIndexClient';
 export const revalidate = 3600; // ISR: Revalidate every hour
 
 export const metadata: Metadata = {
-    title: 'Buy Chinese Accounts — Guides, Tutorials & Tips | CNWePro Blog',
+    title: 'Buy Chinese Accounts — Guides, Tutorials & Tips | CNVerifyHub Blog',
     description: 'Expert guides on buying WeChat accounts, Alipay accounts, Douyin accounts and more. Learn how international buyers can safely purchase and use Chinese social media accounts.',
     keywords: [
         'buy WeChat account guide',
@@ -18,16 +18,16 @@ export const metadata: Metadata = {
         '购买支付宝账号',
     ],
     alternates: {
-        canonical: 'https://cnwepro.com/blog/',
+        canonical: 'https://CNVerifyHub.com/blog/',
         languages: {
-            'en': 'https://cnwepro.com/en/blog/',
-            'zh-CN': 'https://cnwepro.com/blog/',
+            'en': 'https://CNVerifyHub.com/en/blog/',
+            'zh-CN': 'https://CNVerifyHub.com/blog/',
         },
     },
     openGraph: {
-        title: 'Buy Chinese Accounts — Guides & Tutorials | CNWePro Blog',
+        title: 'Buy Chinese Accounts — Guides & Tutorials | CNVerifyHub Blog',
         description: 'Expert guides on buying WeChat, Alipay, Douyin accounts for international buyers. USDT payment accepted.',
-        url: 'https://cnwepro.com/blog/',
+        url: 'https://CNVerifyHub.com/blog/',
         type: 'website',
     },
 };

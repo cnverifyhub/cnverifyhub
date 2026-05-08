@@ -2,17 +2,17 @@ import type { Metadata } from 'next';
 import { Shield, Users, Globe, Zap, Award, Heart, CheckCircle2, Send, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
-    title: '关于我们 - CNWePro | About Us',
-    description: 'CNWePro 是专业的中国数字账号交易平台，致力于为全球用户提供安全、便捷的微信、支付宝、抖音、QQ账号服务。About CNWePro — the trusted Chinese digital account marketplace.',
+    title: '关于我们 - CNVerifyHub | About Us',
+    description: 'CNVerifyHub 是专业的中国数字账号交易平台，致力于为全球用户提供安全、便捷的微信、支付宝、抖音、QQ账号服务。About CNVerifyHub — the trusted Chinese digital account marketplace.',
     alternates: {
         canonical: `${SITE_URL}/about/`,
         languages: { 'zh-CN': `${SITE_URL}/about/`, 'en': `${SITE_URL}/en/about/` },
     },
     openGraph: {
-        title: '关于 CNWePro | About Us',
+        title: '关于 CNVerifyHub | About Us',
         description: '专业中国数字账号平台 — 50,000+ 成功订单',
     },
 };
@@ -58,7 +58,7 @@ export default function AboutPage() {
                             交易平台
                         </h1>
                         <p className="text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl mx-auto">
-                            CNWePro 致力于为全球用户提供安全、便捷、可靠的中国社交媒体与支付平台账号服务。凭借3年行业深耕，我们已成功完成超过50,000笔订单。
+                            CNVerifyHub 致力于为全球用户提供安全、便捷、可靠的中国社交媒体与支付平台账号服务。凭借3年行业深耕，我们已成功完成超过50,000笔订单。
                         </p>
                     </div>
                 </div>
@@ -89,13 +89,13 @@ export default function AboutPage() {
                     </h2>
                     <div className="bg-white dark:bg-dark-900 rounded-3xl p-8 md:p-12 border border-slate-200 dark:border-slate-800 shadow-sm">
                         <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
-                            CNWePro 诞生于一个简单的需求：海外企业和个人用户在拓展中国市场时，往往面临"无法注册中国社交账号"的难题。传统注册流程要求中国大陆手机号、身份证等本地化信息，让国际用户望而却步。
+                            CNVerifyHub 诞生于一个简单的需求：海外企业和个人用户在拓展中国市场时，往往面临"无法注册中国社交账号"的难题。传统注册流程要求中国大陆手机号、身份证等本地化信息，让国际用户望而却步。
                         </p>
                         <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
                             我们的团队深耕中国互联网行业多年，了解各平台的注册和验证机制。通过严格的供应商甄选和多重质检流程，我们确保每一个交付的账号都经过活跃度验证、安全检测和环境适配。
                         </p>
                         <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
-                            如今，CNWePro 已发展为覆盖微信、支付宝、抖音、QQ四大平台的综合性账号服务商。支持USDT等加密货币匿名支付，保护用户隐私。我们的目标是：让每一位海外用户都能轻松接入中国数字生态。
+                            如今，CNVerifyHub 已发展为覆盖微信、支付宝、抖音、QQ四大平台的综合性账号服务商。支持USDT等加密货币匿名支付，保护用户隐私。我们的目标是：让每一位海外用户都能轻松接入中国数字生态。
                         </p>
                     </div>
                 </div>

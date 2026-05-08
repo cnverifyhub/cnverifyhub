@@ -13,13 +13,13 @@ export async function generateStaticParams() {
 // --- Dynamic metadata per post (English) ---
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
     const post = getPostBySlug(params.slug, 'en');
-    if (!post) return { title: 'Post Not Found | CNWePro' };
+    if (!post) return { title: 'Post Not Found | CNVerifyHub' };
 
-    const siteUrl = 'https://cnwepro.com';
+    const siteUrl = 'https://cnverifyhub.com';
     const postUrl = `${siteUrl}/en/blog/${post.slug}/`;
 
     return {
-        title: `${post.title} | CNWePro`,
+        title: `${post.title} | CNVerifyHub`,
         description: post.excerpt.slice(0, 160),
         alternates: {
             canonical: postUrl,
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
             url: postUrl,
             type: 'article',
             publishedTime: post.publishDate,
-            authors: ['CNWePro'],
+            authors: ['CNVerifyHub'],
         },
     };
 }
@@ -48,7 +48,7 @@ export default async function EnBlogPostPage({ params }: { params: { slug: strin
 
     if (!post) notFound();
 
-    const siteUrl = 'https://cnwepro.com';
+    const siteUrl = 'https://cnverifyhub.com';
     const postUrl = `${siteUrl}/en/blog/${post.slug}/`;
 
     // Related Posts
@@ -66,10 +66,10 @@ export default async function EnBlogPostPage({ params }: { params: { slug: strin
         image: post.featuredImage ? `${siteUrl}${post.featuredImage}` : `${siteUrl}/logo.png`,
         datePublished: post.publishDate,
         dateModified: post.modifiedDate || post.publishDate,
-        author: { '@type': 'Organization', name: 'CNWePro Team', url: siteUrl },
+        author: { '@type': 'Organization', name: 'CNVerifyHub Team', url: siteUrl },
         publisher: {
             '@type': 'Organization',
-            name: 'CNWePro',
+            name: 'CNVerifyHub',
             url: siteUrl,
             logo: { '@type': 'ImageObject', url: `${siteUrl}/logo.png` },
         },
@@ -127,7 +127,7 @@ export default async function EnBlogPostPage({ params }: { params: { slug: strin
                                     CW
                                 </div>
                                 <div>
-                                    <div className="font-bold text-sm text-slate-900 dark:text-white">CNWePro Team</div>
+                                    <div className="font-bold text-sm text-slate-900 dark:text-white">CNVerifyHub Team</div>
                                     <div className="text-xs text-slate-500">{post.readingTime} · {post.wordCount.toLocaleString()} words</div>
                                 </div>
                             </div>

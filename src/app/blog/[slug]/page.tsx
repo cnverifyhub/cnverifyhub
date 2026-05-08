@@ -13,14 +13,14 @@ export async function generateStaticParams() {
 // --- Dynamic metadata per post ---
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
     const post = getPostBySlug(params.slug, 'zh');
-    if (!post) return { title: 'Post Not Found | CNWePro' };
+    if (!post) return { title: 'Post Not Found | CNVerifyHub' };
 
     const lang = 'zh';
-    const siteUrl = 'https://cnwepro.com';
+    const siteUrl = 'https://cnverifyhub.com';
     const postUrl = `${siteUrl}/blog/${post.slug}/`;
 
     return {
-        title: `${post.title} | CNWePro Blog`,
+        title: `${post.title} | CNVerifyHub Blog`,
         description: post.excerpt.slice(0, 160),
         alternates: {
             canonical: postUrl,
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
             url: postUrl,
             type: 'article',
             publishedTime: post.publishDate,
-            authors: ['CNWePro'],
+            authors: ['CNVerifyHub'],
             tags: [post.category, 'Chinese accounts', 'WeChat', 'Alipay'],
         },
     };
@@ -50,7 +50,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
     if (!post) notFound();
 
-    const siteUrl = 'https://cnwepro.com';
+    const siteUrl = 'https://cnverifyhub.com';
     const postUrl = `${siteUrl}/blog/${post.slug}/`;
 
     // Related Posts
@@ -68,8 +68,8 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         image: post.featuredImage ? `${siteUrl}${post.featuredImage}` : `${siteUrl}/logo.png`,
         datePublished: post.publishDate,
         dateModified: post.modifiedDate || post.publishDate,
-        author: { '@type': 'Organization', name: 'CNWePro Team', url: siteUrl },
-        publisher: { '@type': 'Organization', name: 'CNWePro', url: siteUrl, logo: { '@type': 'ImageObject', url: `${siteUrl}/logo.png` } },
+        author: { '@type': 'Organization', name: 'CNVerifyHub Team', url: siteUrl },
+        publisher: { '@type': 'Organization', name: 'CNVerifyHub', url: siteUrl, logo: { '@type': 'ImageObject', url: `${siteUrl}/logo.png` } },
         mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
         inLanguage: 'zh-CN',
     };
@@ -126,7 +126,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
                                 </div>
                                 <div>
                                     <div className="font-black text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
-                                        CNWePro Team
+                                        CNVerifyHub Team
                                         <BadgeCheck className="w-4 h-4 text-[#FF0036]" />
                                     </div>
                                     <div className="text-[10px] uppercase font-black tracking-widest text-slate-400">{post.readingTime} · {post.wordCount.toLocaleString()} {lang === 'zh' ? '字' : 'WORDS'}</div>

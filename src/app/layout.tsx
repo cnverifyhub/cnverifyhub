@@ -6,7 +6,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 import { ClientLayoutWrapper } from '@/components/layout/ClientLayoutWrapper';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 // Font Optimization: Zero CLS Loading via Google Fonts (Downloaded at build time)
 const inter = Inter({
@@ -26,8 +26,8 @@ const notoSansSC = Noto_Sans_SC({
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
     title: {
-        template: '%s | CNWePro - 专业中国数字账号交易平台',
-        default: 'CNWePro - 专业中国数字账号交易平台 | Buy WeChat, Alipay, Douyin Accounts',
+        template: '%s | CNVerifyHub - 专业中国数字账号交易平台',
+        default: 'CNVerifyHub - 专业中国数字账号交易平台 | Buy WeChat, Alipay, Douyin Accounts',
     },
     description: '专业中国数字账号批发平台。微信号、支付宝账号、抖音号、QQ号现货供应。实名认证号、绑卡号、老号、白号应有尽有。USDT匿名支付，5分钟极速发货，72小时售后质保。Professional Chinese digital account marketplace — WeChat, Alipay, Douyin, QQ accounts with instant USDT delivery.',
     keywords: [
@@ -46,9 +46,9 @@ export const metadata: Metadata = {
         'chinese social media accounts', 'buy chinese accounts with crypto',
         'USDT payment chinese accounts', 'instant delivery wechat',
     ].join(', '),
-    authors: [{ name: 'CNWePro', url: SITE_URL }],
-    creator: 'CNWePro',
-    publisher: 'CNWePro',
+    authors: [{ name: 'CNVerifyHub', url: SITE_URL }],
+    creator: 'CNVerifyHub',
+    publisher: 'CNVerifyHub',
     formatDetection: {
         telephone: false,
         email: false,
@@ -64,10 +64,10 @@ export const metadata: Metadata = {
     },
     openGraph: {
         type: 'website',
-        siteName: 'CNWePro',
+        siteName: 'CNVerifyHub',
         locale: 'zh_CN',
         alternateLocale: 'en_US',
-        title: 'CNWePro - 专业中国数字账号交易平台 | Chinese Digital Accounts',
+        title: 'CNVerifyHub - 专业中国数字账号交易平台 | Chinese Digital Accounts',
         description: '微信、支付宝、抖音、QQ账号现货供应。USDT支付，5分钟发货，72小时质保。Buy verified Chinese social media accounts with instant crypto delivery.',
         url: SITE_URL,
         images: [
@@ -75,13 +75,13 @@ export const metadata: Metadata = {
                 url: `${SITE_URL}/og-image.png`,
                 width: 1200,
                 height: 630,
-                alt: 'CNWePro - 中国数字账号交易平台',
+                alt: 'CNVerifyHub - 中国数字账号交易平台',
             }
         ],
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'CNWePro - Buy WeChat, Alipay, Douyin & QQ Accounts',
+        title: 'CNVerifyHub - Buy WeChat, Alipay, Douyin & QQ Accounts',
         description: 'Professional Chinese digital account marketplace. Instant USDT delivery, 72hr warranty. 微信号、支付宝、抖音、QQ账号批发平台。',
         images: [`${SITE_URL}/og-image.png`],
     },
@@ -126,7 +126,7 @@ export const metadata: Metadata = {
 const organizationJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'CNWePro',
+    name: 'CNVerifyHub',
     url: SITE_URL,
     logo: `${SITE_URL}/icon.png`,
     description: '专业中国数字账号交易平台 - Professional Chinese digital account marketplace',
@@ -135,12 +135,12 @@ const organizationJsonLd = {
             '@type': 'ContactPoint',
             contactType: 'customer service',
             url: 'https://t.me/cnwechatpro',
-            email: 'support@cnwepro.com',
+            email: 'cnverifyhub@gmail.com',
             availableLanguage: ['Chinese', 'English'],
         }
     ],
     sameAs: [
-        'https://t.me/cnwepro',
+        'https://t.me/CNVerifyHub',
         'https://t.me/cnwechatpro',
     ],
 };
@@ -148,7 +148,7 @@ const organizationJsonLd = {
 const websiteJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'CNWePro',
+    name: 'CNVerifyHub',
     url: SITE_URL,
     description: '专业中国数字账号交易平台',
     inLanguage: ['zh-CN', 'en'],

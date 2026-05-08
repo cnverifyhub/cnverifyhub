@@ -120,7 +120,7 @@ function LoginForm() {
                         <LogIn className="w-10 h-10 text-white" />
                     </motion.div>
                     <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">欢迎回来</h1>
-                    <p className="text-slate-500 dark:text-slate-400">Welcome back to CNWePro</p>
+                    <p className="text-slate-500 dark:text-slate-400">Welcome back to CNVerifyHub</p>
                 </div>
 
                 <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl">

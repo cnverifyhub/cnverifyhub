@@ -120,7 +120,7 @@ export default function GatePage() {
 
                 {/* Telegram Hint */}
                 <div className="text-center mt-6 text-white/50 text-xs font-bold tracking-widest uppercase">
-                    PROUDLY POWERED BY <span className="text-emerald-400">CNWEPRO</span>
+                    PROUDLY POWERED BY <span className="text-emerald-400">CNVerifyHub</span>
                 </div>
 
                 <style jsx>{`

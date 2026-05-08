@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import PricingTable from '@/components/pricing/PricingTable';
 import { allProducts } from '@/data/products';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: '价格总览 - 全网最低价 | Pricing',
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
         languages: { 'zh-CN': `${SITE_URL}/pricing/`, 'en': `${SITE_URL}/en/pricing/` },
     },
     openGraph: {
-        title: '价格总览 - 微信·支付宝·抖音·QQ账号 | CNWePro',
+        title: '价格总览 - 微信·支付宝·抖音·QQ账号 | CNVerifyHub',
         description: '全品类账号阶梯定价，130¥起，支付宝/微信支付秒发货',
     },
 };
@@ -26,9 +26,9 @@ function getPricingJsonLd() {
     return {
         '@context': 'https://schema.org',
         '@type': 'Product',
-        name: 'CNWePro 中国数字账号',
+        name: 'CNVerifyHub 中国数字账号',
         description: '微信号、支付宝账号、抖音号、QQ号批发平台',
-        brand: { '@type': 'Brand', name: 'CNWePro' },
+        brand: { '@type': 'Brand', name: 'CNVerifyHub' },
         url: `${SITE_URL}/pricing/`,
         offers: {
             '@type': 'AggregateOffer',

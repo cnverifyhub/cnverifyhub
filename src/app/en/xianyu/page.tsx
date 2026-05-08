@@ -3,7 +3,7 @@ import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: 'Buy Xianyu Account - Verified & Aged | High Zhima Credit',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         languages: { 'en': `${SITE_URL}/en/xianyu/`, 'zh-CN': `${SITE_URL}/xianyu/` },
     },
     openGraph: {
-        title: 'Buy Xianyu Account - Verified & Aged | CNWePro',
+        title: 'Buy Xianyu Account - Verified & Aged | CNVerifyHub',
         description: 'Verified Xianyu accounts from $48. High credit aged accounts available. Instant delivery.',
         url: `${SITE_URL}/en/xianyu/`,
     },
@@ -37,13 +37,13 @@ function getXianyuJsonLd() {
                 name: p.tierName.en,
                 description: p.features?.map(f => f.en).join(', ') || '',
                 url: `${SITE_URL}/en/xianyu/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -67,7 +67,7 @@ export default function XianyuPageEn() {
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
                         Xianyu is China's largest second-hand marketplace, but accessing it securely from abroad requires high-authority accounts. 
-                        CNWePro provides premium Xianyu accounts with verified IDs and high Zhima Credit scores to help you trade smoothly. 
+                        CNVerifyHub provides premium Xianyu accounts with verified IDs and high Zhima Credit scores to help you trade smoothly. 
                         We support <strong>USDT</strong> payments and offer <strong>instant automated delivery</strong>.
                     </p>
                     

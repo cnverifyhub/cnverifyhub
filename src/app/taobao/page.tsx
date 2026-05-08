@@ -3,7 +3,7 @@ import { CategoryPageTemplate } from '@/components/category/CategoryPageTemplate
 import { getProductsByCategory } from '@/data/products';
 import { RelatedCategories } from '@/components/category/RelatedCategories';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
 export const metadata: Metadata = {
     title: '淘宝账号购买 - 优质买家白号·高淘气值老号现货',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         languages: { 'zh-CN': `${SITE_URL}/taobao/`, 'en': `${SITE_URL}/en/taobao/` },
     },
     openGraph: {
-        title: '淘宝账号购买 - 优质买家老号 | CNWePro',
+        title: '淘宝账号购买 - 优质买家老号 | CNVerifyHub',
         description: '淘宝白号¥15起 | VIP老号¥48起 | USDT支付秒发货',
     },
 };
@@ -36,13 +36,13 @@ function getTaobaoJsonLd() {
                 name: p.tierName.zh,
                 description: p.features?.map(f => f.zh).join(', ') || '',
                 url: `${SITE_URL}/taobao/`,
-                brand: { '@type': 'Brand', name: 'CNWePro' },
+                brand: { '@type': 'Brand', name: 'CNVerifyHub' },
                 offers: {
                     '@type': 'Offer',
                     priceCurrency: 'USD',
                     price: p.price.single,
                     availability: 'https://schema.org/InStock',
-                    seller: { '@type': 'Organization', name: 'CNWePro' },
+                    seller: { '@type': 'Organization', name: 'CNVerifyHub' },
                 },
             },
         })),
@@ -65,7 +65,7 @@ export default function TaobaoPage() {
                         淘宝账号购买指南
                     </h2>
                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed mb-4">
-                        淘宝是进入中国电商市场的门户。CNWePro 提供高质量的淘宝买家账号，包含适合批量操作的全新白号，
+                        淘宝是进入中国电商市场的门户。CNVerifyHub 提供高质量的淘宝买家账号，包含适合批量操作的全新白号，
                         以及具备高淘气值、更强抗风险能力的VIP老号。
                         我们的账号均经过严格测试，配合 <strong>Golden 72 小时防封协议</strong> 使用，效果更佳。
                         支持 <strong>USDT</strong> 支付，<strong>系统自动发货</strong>。

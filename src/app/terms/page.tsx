@@ -12,7 +12,7 @@ export default function TermsPage() {
             icon: FileText,
             title: '服务协议',
             content: [
-                'CNWePro 是一个数字账号交易平台，提供微信、支付宝、抖音、QQ 等中国社交媒体和支付平台的账号服务。',
+                'CNVerifyHub 是一个数字账号交易平台，提供微信、支付宝、抖音、QQ 等中国社交媒体和支付平台的账号服务。',
                 '使用本平台服务即表示您已阅读、理解并同意本协议的所有条款。',
                 '本平台所售账号仅供合法商业用途（如营销推广、业务测试等），用户须自行承担使用风险。',
                 '我们保留随时修改本协议的权利，修改后的协议将在网站上公布后立即生效。',
@@ -65,7 +65,7 @@ export default function TermsPage() {
             title: '争议解决',
             content: [
                 '如发生交易争议，双方应首先通过友好协商解决。',
-                '所有投诉和争议请通过 Telegram 客服（@cnwechatpro）或邮箱（support@cnwepro.com）提交。',
+                '所有投诉和争议请通过 Telegram 客服（@cnwechatpro）或邮箱（cnverifyhub@gmail.com）提交。',
                 '我们承诺在收到投诉后 24 小时内做出初步回复。',
             ]
         },
@@ -82,7 +82,7 @@ export default function TermsPage() {
                     服务条款与政策
                 </h1>
                 <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
-                    请仔细阅读以下条款。使用 CNWePro 服务即表示您同意本协议。
+                    请仔细阅读以下条款。使用 CNVerifyHub 服务即表示您同意本协议。
                 </p>
             </div>
 
@@ -123,14 +123,14 @@ export default function TermsPage() {
                     <a href="https://t.me/cnwechatpro" target="_blank" rel="noopener noreferrer" className="btn-primary">
                         Telegram 客服
                     </a>
-                    <a href="mailto:support@cnwepro.com" className="btn-outline">
+                    <a href="mailto:cnverifyhub@gmail.com" className="btn-outline">
                         邮件联系
                     </a>
                 </div>
             </div>
 
             <p className="text-center text-xs text-slate-400 mt-8">
-                最后更新：2026年3月12日 · © CNWePro 保留所有权利
+                最后更新：2026年3月12日 · © CNVerifyHub 保留所有权利
             </p>
         </div>
     );

@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Generate password reset link
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnwepro.com';
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
         const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
             type: 'recovery',
             email: order.email,
