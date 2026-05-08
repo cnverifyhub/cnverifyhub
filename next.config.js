@@ -33,13 +33,13 @@ const nextConfig = {
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://hm.baidu.com https://zz.bdstatic.com https://www.googletagmanager.com https://*.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://images.unsplash.com https://api.dicebear.com https://play-lh.googleusercontent.com https://zz.bdstatic.com https://*.bdstatic.com https://www.google-analytics.com https://*.google-analytics.com https://cdn.simpleicons.org; connect-src 'self' https://otgewrynnrqmtsyvlzrj.supabase.co https://hm.baidu.com https://zz.bdstatic.com https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:;"
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://hm.baidu.com https://zz.bdstatic.com https://www.googletagmanager.com https://*.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://images.unsplash.com https://api.dicebear.com https://play-lh.googleusercontent.com https://zz.bdstatic.com https://*.bdstatic.com https://www.google-analytics.com https://*.google-analytics.com https://cdn.simpleicons.org; connect-src 'self' https://mybzjmhyyxamldklezngu.supabase.co https://hm.baidu.com https://zz.bdstatic.com https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data:;"
           },
           // Preconnect to Supabase and Baidu Analytics for faster resolution
           {
             key: 'Link',
             value: [
-              '<https://otgewrynnrqmtsyvlzrj.supabase.co>; rel=preconnect',
+              '<https://mybzjmhyyxamldklezngu.supabase.co>; rel=preconnect',
               '<https://hm.baidu.com>; rel=dns-prefetch',
             ].join(', ')
           },
