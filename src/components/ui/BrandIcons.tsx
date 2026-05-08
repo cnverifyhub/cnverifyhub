@@ -119,11 +119,5 @@ export function WechatRealnameIcon({ className }: BrandIconProps) { return <Bran
 export function AlipayRealnameIcon({ className }: BrandIconProps) { return <BrandIcon name="verify-alipay" className={className} />; }
 
 // Trading Specifics
-export function XmIcon({ className }: BrandIconProps) { return <BrandIcon name="xm-account" className={className} />; }
-export function HfmIcon({ className }: BrandIconProps) { return <BrandIcon name="hfm-account" className={className} />; }
-export function NetellerIcon({ className }: BrandIconProps) { return <BrandIcon name="neteller-account" className={className} />; }
-export function SkrillIcon({ className }: BrandIconProps) { return <BrandIcon name="skrill-account" className={className} />; }
-export function PayoneerIcon({ className }: BrandIconProps) { return <BrandIcon name="payoneer-account" className={className} />; }
-export function WiseIcon({ className }: BrandIconProps) { return <BrandIcon name="wise-account" className={className} />; }
-export function RevolutIcon({ className }: BrandIconProps) { return <BrandIcon name="revolut-account" className={className} />; }
+export { XmIcon, HfmIcon, NetellerIcon, SkrillIcon, PayoneerIcon, WiseIcon, RevolutIcon } from '../icons/FinancialBrandIcons';
 export function GooglePlayIcon({ className }: BrandIconProps) { return <BrandIcon name="google-play" className={className} />; }
