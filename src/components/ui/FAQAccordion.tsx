@@ -17,7 +17,7 @@ export function FAQAccordion({ items, lang, limit }: FAQAccordionProps) {
     const displayItems = limit ? items.slice(0, limit) : items;
 
     return (
-        <div className="space-y-4">
+        <div className="grid gap-4">
             {/* Schema.org JSON-LD for FAQ */}
             <script
                 type="application/ld+json"
@@ -44,42 +44,61 @@ export function FAQAccordion({ items, lang, limit }: FAQAccordionProps) {
                     <div
                         key={item.id}
                         className={cn(
-                            "border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden transition-all duration-300",
-                            isOpen ? "bg-white dark:bg-dark-900 shadow-md shadow-slate-200/50 dark:shadow-none border-primary-200 dark:border-primary-900/50" : "bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-800"
+                            "group relative border transition-all duration-500 overflow-hidden rounded-2xl",
+                            isOpen 
+                                ? "bg-[#0D1526]/80 border-[#FF0036]/50 shadow-[0_0_30px_rgba(255,0,54,0.1)]" 
+                                : "bg-[#0D1526]/40 border-[#1E2D45] hover:border-[#FF0036]/30"
                         )}
                     >
+                        {/* Interactive state indicator */}
+                        <div className={cn(
+                            "absolute left-0 top-0 bottom-0 w-1 transition-all duration-500",
+                            isOpen ? "bg-[#FF0036] shadow-[0_0_15px_#FF0036]" : "bg-transparent"
+                        )} />
+
                         <button
                             onClick={() => setOpenIndex(isOpen ? null : index)}
-                            className="flex w-full items-center justify-between p-5 md:p-6 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-inset"
+                            className="flex w-full items-center justify-between p-6 md:p-8 text-left focus:outline-none relative z-10"
                             aria-expanded={isOpen}
                         >
                             <span className={cn(
-                                "font-semibold pr-8 transition-colors text-base md:text-lg",
-                                isOpen ? "text-primary-600 dark:text-primary-400" : "text-slate-900 dark:text-slate-100"
+                                "font-black transition-all duration-300 text-lg md:text-xl tracking-tight leading-snug",
+                                isOpen ? "text-white" : "text-[#7B91B0] group-hover:text-white"
                             )}>
                                 {item.question[lang]}
                             </span>
-                            <span className={cn(
-                                "flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300",
-                                isOpen ? "bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 transform rotate-180" : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400"
+                            <div className={cn(
+                                "flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 border",
+                                isOpen 
+                                    ? "bg-[#FF0036] border-[#FF0036] text-white shadow-neon-red-sm rotate-180" 
+                                    : "bg-[#060B18] border-[#1E2D45] text-[#7B91B0]"
                             )}>
                                 <ChevronDown className="w-5 h-5" />
-                            </span>
+                            </div>
                         </button>
 
                         <div
                             className={cn(
-                                "overflow-hidden transition-all duration-300 ease-in-out",
-                                isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                                "overflow-hidden transition-all duration-500 ease-in-out relative z-10",
+                                isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
                             )}
                         >
-                            <div className="p-5 md:p-6 pt-0 text-slate-600 dark:text-slate-400 leading-relaxed text-sm md:text-base border-t border-slate-100 dark:border-slate-800/50 mt-2">
-                                {item.answer[lang]}
+                            <div className="px-6 md:px-8 pb-8 pt-0 text-[#999AAA] leading-relaxed text-sm md:text-base border-t border-[#1E2D45]/50 mt-2">
+                                <div className="pt-6">
+                                    {item.answer[lang]}
+                                </div>
                             </div>
                         </div>
+                        
+                        {/* Animated background flare */}
+                        <div className={cn(
+                            "absolute top-0 right-0 w-64 h-64 bg-[#FF0036]/5 blur-[80px] rounded-full transition-opacity duration-700 pointer-events-none",
+                            isOpen ? "opacity-100" : "opacity-0"
+                        )} />
                     </div>
                 );
             })}
         </div>
+
     );
 }
