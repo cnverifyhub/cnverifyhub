@@ -4,9 +4,9 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   reactStrictMode: true,
-  transpilePackages: ['gsap', 'three', '@react-three/fiber', '@react-three/drei'],
+  transpilePackages: ['gsap', 'three', '@react-three/fiber', '@react-three/drei', 'framer-motion'],
   experimental: {
-    optimizePackageImports: ['lucide-react', 'framer-motion'],
+    optimizePackageImports: ['lucide-react'],
     optimizeServerReact: true,
   },
   images: {

@@ -1,3 +1,5 @@
+'use client';
+
 import { FAQAccordion } from '@/components/ui/FAQAccordion';
 import { faqData } from '@/data/faq';
 import { t, type Lang } from '@/lib/i18n';

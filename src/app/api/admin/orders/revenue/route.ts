@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin as supabase } from '@/lib/supabase/admin';
 
+export const dynamic = 'force-dynamic';
+
 const ADMIN_PASS = process.env.ADMIN_PASSWORD || 'Sawmik888';
 
 export async function GET(request: NextRequest) {
