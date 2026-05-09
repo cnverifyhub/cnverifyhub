@@ -3,6 +3,8 @@
 import { Star, CheckCircle2, ThumbsUp } from 'lucide-react';
 import { t, type Lang } from '@/lib/i18n';
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 const baseReviews = [
     { sku: "微信实名高级号", text: "买了好几次了，这次的号还可以。就是客服回复稍慢了一点，不过资料给了很全，防封教程也有用。给个好评吧。", en: "Bought several times, this account is okay. CS response was a bit slow, but got full details and the anti-ban tutorial helped. Good rating anyway." },
@@ -28,7 +30,6 @@ const avatarsPool = ["Felix", "Aneka", "Jasper", "Sadie", "Leo", "Mia", "Liam", 
 const colorsPool = ["f87171", "38bdf8", "4ade80", "c084fc", "fbbf24", "a3e635", "f472b6", "818cf8", "14b8a6", "fb923c", "fca5a5", "93c5fd"];
 
 const generateRandomDate = () => {
-    // 2023, 2024, 2025, 2026 strictly
     const years = [2023, 2024, 2025, 2026];
     const year = years[Math.floor(Math.random() * years.length)];
     const month = String(Math.floor(Math.random() * 12) + 1).padStart(2, '0');
@@ -36,17 +37,9 @@ const generateRandomDate = () => {
     return `${year}-${month}-${day}`;
 };
 
-import Image from 'next/image';
-
 const ReviewAvatar = ({ src, name }: { src: string, name: string }) => {
     const [error, setError] = useState(false);
-    
-    // Fallback colors based on name hash
-    const colors = [
-        'bg-blue-500', 'bg-emerald-500', 'bg-violet-500', 
-        'bg-amber-500', 'bg-rose-500', 'bg-indigo-500',
-        'bg-cyan-500', 'bg-orange-500'
-    ];
+    const colors = ['bg-blue-500', 'bg-emerald-500', 'bg-violet-500', 'bg-amber-500', 'bg-rose-500', 'bg-indigo-500', 'bg-cyan-500', 'bg-orange-500'];
     const colorIndex = name.length % colors.length;
     const fallbackColor = colors[colorIndex];
 
@@ -73,10 +66,38 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
     const [reviews, setReviews] = useState<any[]>([]);
 
     useEffect(() => {
-        // Shuffle base reviews and assign random names, avatars, and dates
-        const shuffled = [...baseReviews].sort(() =    return (
+        const shuffled = [...baseReviews].sort(() => Math.random() - 0.5);
+        const mapped = shuffled.map(review => {
+            const randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
+            const randomAvatar = avatarsPool[Math.floor(Math.random() * avatarsPool.length)];
+            const randomColor = colorsPool[Math.floor(Math.random() * colorsPool.length)];
+            const randomDate = generateRandomDate();
+            const rand = Math.random();
+            const organicRating = rand > 0.4 ? 5 : rand > 0.1 ? 4 : 3;
+
+            return {
+                ...review,
+                user: randomName,
+                avatar: `https://api.dicebear.com/7.x/notionists/svg?seed=${randomAvatar}&backgroundColor=${randomColor}`,
+                date: randomDate,
+                rating: organicRating
+            };
+        });
+        setReviews(mapped);
+    }, []);
+
+    if (reviews.length === 0) {
+        return <div className="py-24 bg-[#060B18] min-h-[400px]"></div>;
+    }
+
+    const mid = Math.ceil(reviews.length / 2);
+    const row1Reviews = reviews.slice(0, mid);
+    const row2Reviews = reviews.slice(mid);
+    const marqueeRow1 = [...row1Reviews, ...row1Reviews, ...row1Reviews, ...row1Reviews];
+    const marqueeRow2 = [...row2Reviews, ...row2Reviews, ...row2Reviews, ...row2Reviews];
+
+    return (
         <section className="py-24 bg-[#060B18] border-t border-[#1E2D45] overflow-hidden relative">
-            {/* Background decorative elements */}
             <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#FF0036]/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#FF0036]/5 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none" />
 
@@ -127,14 +148,10 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
                 </div>
             </div>
 
-            {/* Marquee Wrapper - Row 1 */}
             <div className="relative w-full flex overflow-x-hidden group mb-8">
                 <div className="animate-marquee flex gap-8 px-4 whitespace-nowrap group-hover:pause">
                     {marqueeRow1.map((review, index) => (
-                        <div
-                            key={`review-r1-${index}`}
-                            className="w-[340px] shrink-0 bg-[#0D1526]/40 backdrop-blur-md p-6 border border-[#1E2D45] hover:border-[#FF0036]/40 transition-all duration-300 rounded-2xl group/card whitespace-normal flex flex-col"
-                        >
+                        <div key={`review-r1-${index}`} className="w-[340px] shrink-0 bg-[#0D1526]/40 backdrop-blur-md p-6 border border-[#1E2D45] hover:border-[#FF0036]/40 transition-all duration-300 rounded-2xl group/card whitespace-normal flex flex-col">
                             <div className="flex items-start justify-between mb-5">
                                 <div className="flex items-center gap-4">
                                     <div className="relative">
@@ -144,56 +161,36 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
                                         </div>
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-sm font-black text-white mb-0.5">
-                                            {review.user}
-                                        </span>
+                                        <span className="text-sm font-black text-white mb-0.5">{review.user}</span>
                                         <div className="flex gap-0.5">
-                                            {[...Array(5)].map((_, i) => (
-                                                <Star
-                                                    key={`r1-star-${i}`}
-                                                    className={`w-3 h-3 ${i < review.rating ? 'fill-[#FFB800] text-[#FFB800]' : 'text-[#1E2D45]'}`}
-                                                />
-                                            ))}
+                                            {[...Array(5)].map((_, i) => <Star key={`r1-star-${i}`} className={`w-3 h-3 ${i < review.rating ? 'fill-[#FFB800] text-[#FFB800]' : 'text-[#1E2D45]'}`} />)}
                                         </div>
                                     </div>
                                 </div>
                                 <span className="text-[10px] text-[#7B91B0] font-mono opacity-60 font-bold">{review.date}</span>
                             </div>
-
-                            <p className="text-sm text-[#F0F4FF]/80 mb-6 flex-1 leading-relaxed italic">
-                                "{lang === 'zh' ? review.text : review.en}"
-                            </p>
-
+                            <p className="text-sm text-[#F0F4FF]/80 mb-6 flex-1 leading-relaxed italic">"{lang === 'zh' ? review.text : review.en}"</p>
                             <div className="pt-4 border-t border-[#1E2D45]/50 flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div className="w-1.5 h-1.5 rounded-full bg-[#FF0036] animate-pulse" />
-                                    <span className="text-[10px] font-bold text-[#7B91B0] truncate max-w-[150px]">
-                                        {review.sku}
-                                    </span>
+                                    <span className="text-[10px] font-bold text-[#7B91B0] truncate max-w-[150px]">{review.sku}</span>
                                 </div>
                                 <div className="flex items-center gap-1.5 px-2 py-1 bg-[#07C160]/10 rounded-lg">
                                     <ThumbsUp className="w-3 h-3 text-[#07C160]" />
-                                    <span className="text-[9px] font-black text-[#07C160] uppercase tracking-wider">
-                                        {lang === 'zh' ? '真实成交' : 'VERIFIED'}
-                                    </span>
+                                    <span className="text-[9px] font-black text-[#07C160] uppercase tracking-wider">{lang === 'zh' ? '真实成交' : 'VERIFIED'}</span>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
-                {/* Gradient Masks */}
                 <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#060B18] to-transparent pointer-events-none z-10" />
                 <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#060B18] to-transparent pointer-events-none z-10" />
             </div>
 
-            {/* Marquee Wrapper - Row 2 */}
             <div className="relative w-full flex overflow-x-hidden group">
                 <div className="animate-marquee-reverse flex gap-8 px-4 whitespace-nowrap group-hover:pause">
                     {marqueeRow2.map((review, index) => (
-                        <div
-                            key={`review-r2-${index}`}
-                            className="w-[340px] shrink-0 bg-[#0D1526]/40 backdrop-blur-md p-6 border border-[#1E2D45] hover:border-[#FF0036]/40 transition-all duration-300 rounded-2xl whitespace-normal flex flex-col"
-                        >
+                        <div key={`review-r2-${index}`} className="w-[340px] shrink-0 bg-[#0D1526]/40 backdrop-blur-md p-6 border border-[#1E2D45] hover:border-[#FF0036]/40 transition-all duration-300 rounded-2xl whitespace-normal flex flex-col">
                             <div className="flex items-start justify-between mb-5">
                                 <div className="flex items-center gap-4">
                                     <div className="relative">
@@ -203,74 +200,30 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
                                         </div>
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-sm font-black text-white mb-0.5">
-                                            {review.user}
-                                        </span>
+                                        <span className="text-sm font-black text-white mb-0.5">{review.user}</span>
                                         <div className="flex gap-0.5">
-                                            {[...Array(5)].map((_, i) => (
-                                                <Star
-                                                    key={`r2-star-${i}`}
-                                                    className={`w-3 h-3 ${i < review.rating ? 'fill-[#FFB800] text-[#FFB800]' : 'text-[#1E2D45]'}`}
-                                                />
-                                            ))}
+                                            {[...Array(5)].map((_, i) => <Star key={`r2-star-${i}`} className={`w-3 h-3 ${i < review.rating ? 'fill-[#FFB800] text-[#FFB800]' : 'text-[#1E2D45]'}`} />)}
                                         </div>
                                     </div>
                                 </div>
                                 <span className="text-[10px] text-[#7B91B0] font-mono opacity-60 font-bold">{review.date}</span>
                             </div>
-
-                            <p className="text-sm text-[#F0F4FF]/80 mb-6 flex-1 leading-relaxed italic">
-                                "{lang === 'zh' ? review.text : review.en}"
-                            </p>
-
+                            <p className="text-sm text-[#F0F4FF]/80 mb-6 flex-1 leading-relaxed italic">"{lang === 'zh' ? review.text : review.en}"</p>
                             <div className="pt-4 border-t border-[#1E2D45]/50 flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div className="w-1.5 h-1.5 rounded-full bg-[#FF0036] animate-pulse" />
-                                    <span className="text-[10px] font-bold text-[#7B91B0] truncate max-w-[150px]">
-                                        {review.sku}
-                                    </span>
+                                    <span className="text-[10px] font-bold text-[#7B91B0] truncate max-w-[150px]">{review.sku}</span>
                                 </div>
                                 <div className="flex items-center gap-1.5 px-2 py-1 bg-[#07C160]/10 rounded-lg">
                                     <ThumbsUp className="w-3 h-3 text-[#07C160]" />
-                                    <span className="text-[9px] font-black text-[#07C160] uppercase tracking-wider">
-                                        {lang === 'zh' ? '真实成交' : 'VERIFIED'}
-                                    </span>
+                                    <span className="text-[9px] font-black text-[#07C160] uppercase tracking-wider">{lang === 'zh' ? '真实成交' : 'VERIFIED'}</span>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
-                {/* Gradient Masks */}
                 <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#060B18] to-transparent pointer-events-none z-10" />
                 <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#060B18] to-transparent pointer-events-none z-10" />
-            </div>
-        </section>
-    );
-}m">{review.date}</span>
-                            </div>
-
-                            {/* Review Content */}
-                            <p className="text-sm text-slate-700 dark:text-slate-300 mb-4 line-clamp-3 leading-relaxed">
-                                "{lang === 'zh' ? review.text : review.en}"
-                            </p>
-
-                            {/* SKU / Product Info Footer */}
-                            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                                <span className="text-xs text-slate-500 bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded">
-                                    {lang === 'zh' ? '购买版本：' : 'Variant: '} {review.sku}
-                                </span>
-                                <div className="flex items-center gap-1 text-[10px] text-green-600 dark:text-green-500 font-medium">
-                                    <CheckCircle2 className="w-3 h-3" />
-                                    {lang === 'zh' ? '已核实' : 'Verified'}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Gradient Masks */}
-                <div className="absolute left-0 top-0 bottom-0 w-16 md:w-28 bg-gradient-to-r from-[#060B18] to-transparent pointer-events-none z-10"></div>
-                <div className="absolute right-0 top-0 bottom-0 w-16 md:w-28 bg-gradient-to-l from-[#060B18] to-transparent pointer-events-none z-10"></div>
             </div>
         </section>
     );
