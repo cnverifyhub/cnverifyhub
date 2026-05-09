@@ -17,7 +17,7 @@ import {
     XmIcon, HfmIcon, NetellerIcon, SkrillIcon, PayoneerIcon, WiseIcon, RevolutIcon, GooglePlayIcon
 } from './BrandIcons';
 
-const ICON_COMPONENTS: Record<string, React.ElementType> = {
+const ICON_COMPONENTS: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
     // Categories
     wechat: WeChatIcon, alipay: AlipayIcon, douyin: DouyinIcon,
     qq: QQIcon, xianyu: XianyuIcon, taobao: TaobaoIcon, xiaohongshu: XiaohongshuIcon,

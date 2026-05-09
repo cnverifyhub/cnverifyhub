@@ -1,14 +1,45 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
-import { Zap, ShieldCheck, Clock, ChevronRight, TrendingUp, Users, Package, Star } from 'lucide-react';
+import { Zap, ShieldCheck, Clock, ChevronRight, TrendingUp, Users, Package, Star, MousePointer2 } from 'lucide-react';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { categories, getTotalStock, getLowestPrice } from '@/data/products';
 import type { CategoryId } from '@/types';
 import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { Points, PointMaterial } from '@react-three/drei';
+
+function ParticleBackground() {
+    const ref = useRef<any>();
+    const [sphere] = useState(() => {
+        const positions = new Float32Array(3000 * 3);
+        for(let i=0; i<3000; i++) {
+            positions[i*3] = (Math.random() - 0.5) * 15;
+            positions[i*3+1] = (Math.random() - 0.5) * 15;
+            positions[i*3+2] = (Math.random() - 0.5) * 15;
+        }
+        return positions;
+    });
+
+    useFrame((state, delta) => {
+        if (ref.current) {
+            ref.current.rotation.y -= delta / 10;
+            ref.current.rotation.x -= delta / 15;
+            ref.current.position.y = (ref.current.position.y + delta * 0.2) % 5;
+        }
+    });
+
+    return (
+        <group rotation={[0, 0, Math.PI / 4]}>
+            <Points ref={ref} positions={sphere} stride={3} frustumCulled={false}>
+                <PointMaterial transparent color="#FF0036" size={0.03} sizeAttenuation={true} depthWrite={false} opacity={0.4} />
+            </Points>
+        </group>
+    );
+}
 
 /* ── Live price feed panel data ─────────────── */
 const liveFeedCategories = [
@@ -227,15 +258,35 @@ export function Hero({ lang }: { lang: Lang }) {
         { icon: <Zap className="w-4 h-4" />,           val: null,  suffix: '',   label: lang === 'zh' ? '发货时效' : 'Delivery', isCounter: false, display: '<5min' },
     ];
 
+    const splitText = (text: string, delayOffset = 0) => {
+        return text.split('').map((char, index) => (
+            <motion.span
+                key={index}
+                initial={{ opacity: 0, y: 80 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.8,
+                    ease: [0.2, 0.65, 0.3, 0.9],
+                    delay: delayOffset + index * 0.04
+                }}
+                className="inline-block"
+            >
+                {char === ' ' ? '\u00A0' : char}
+            </motion.span>
+        ));
+    };
+
     return (
         <section className="relative min-h-[calc(100vh-96px)] flex items-center overflow-hidden bg-[#060B18]">
-            {/* Glow orbs */}
-            <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-[#FF2D55]/6 rounded-full blur-[140px] -translate-x-1/3 -translate-y-1/3 pointer-events-none" />
-            <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-[#00E5FF]/5 rounded-full blur-[120px] translate-x-1/3 translate-y-1/3 pointer-events-none" />
-
-            {/* Scanline effect */}
-            <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-[0.02]">
-                <div className="absolute inset-x-0 h-px bg-white animate-scanline" />
+            {/* Particle Background */}
+            <div className="absolute inset-0 z-0">
+                <Suspense fallback={<div className="absolute inset-0 bg-[#060B18]" />}>
+                    <Canvas camera={{ position: [0, 0, 5] }}>
+                        <ParticleBackground />
+                    </Canvas>
+                </Suspense>
+                {/* Radial dark gradient overlay */}
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.85)_100%)] pointer-events-none" />
             </div>
 
             <div className="section-container relative z-10 py-16 lg:py-24 w-full">
@@ -256,18 +307,19 @@ export function Hero({ lang }: { lang: Lang }) {
                         </motion.div>
 
                         {/* H1 */}
-                        <motion.h1
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 0.1 }}
-                            className="heading-syne text-4xl sm:text-5xl xl:text-6xl text-white mb-4 leading-[1.05]"
-                        >
+                        <h1 className="heading-syne text-4xl sm:text-5xl xl:text-6xl text-white mb-4 leading-[1.05]">
                             {lang === 'zh' ? (
-                                <>中国数字资产<br /><span className="text-gradient-red">正规交易平台</span></>
+                                <>
+                                    <span className="block overflow-hidden pb-2">{splitText('中国数字资产', 0.1)}</span>
+                                    <span className="text-gradient-red block overflow-hidden pb-2">{splitText('正规交易平台', 0.5)}</span>
+                                </>
                             ) : (
-                                <>Chinese Digital<br /><span className="text-gradient-red">Asset Exchange</span></>
+                                <>
+                                    <span className="block overflow-hidden pb-2">{splitText('Chinese Digital', 0.1)}</span>
+                                    <span className="text-gradient-red block overflow-hidden pb-2">{splitText('Asset Exchange', 0.5)}</span>
+                                </>
                             )}
-                        </motion.h1>
+                        </h1>
 
                         {/* Typewriter subtitle */}
                         <motion.div
@@ -402,6 +454,21 @@ export function Hero({ lang }: { lang: Lang }) {
                             </div>
                         </div>
                     ))}
+                </motion.div>
+                
+                {/* Scroll Indicator */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 1, duration: 1 }}
+                    className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-none"
+                >
+                    <span className="text-[10px] font-mono font-medium text-[#7B91B0] uppercase tracking-[0.2em]">{lang === 'zh' ? '向下滚动' : 'Scroll'}</span>
+                    <motion.div
+                        animate={{ y: [0, 8, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                        className="w-px h-12 bg-gradient-to-b from-[#FF0036] to-transparent"
+                    />
                 </motion.div>
             </div>
         </section>

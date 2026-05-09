@@ -23,6 +23,23 @@ const config: Config = {
                     cyan: '#00E5FF',
                     gold: '#FFB800',
                 },
+                chinese: {
+                    'brand-red': 'var(--color-brand-red)',
+                    'brand-red-dark': 'var(--color-brand-red-dark)',
+                    'brand-red-glow': 'var(--color-brand-red-glow)',
+                    gold: 'var(--color-gold)',
+                    'gold-soft': 'var(--color-gold-soft)',
+                    'bg-deep': 'var(--color-bg-deep)',
+                    'bg-card': 'var(--color-bg-card)',
+                    'bg-surface': 'var(--color-bg-surface)',
+                    border: 'var(--color-border)',
+                    'border-red': 'var(--color-border-red)',
+                    'text-primary': 'var(--color-text-primary)',
+                    'text-secondary': 'var(--color-text-secondary)',
+                    success: 'var(--color-success)',
+                    warning: 'var(--color-warning)',
+                    live: 'var(--color-live)',
+                },
                 // Legacy — kept for backward compat
                 primary: {
                     50: '#FFF1F0', 100: '#FFE0DD', 200: '#FFC7C2',

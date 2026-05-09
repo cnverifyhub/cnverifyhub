@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Noto_Sans_SC } from 'next/font/google';
 import Script from 'next/script';
 import { GoogleTagManager } from '@next/third-parties/google';
 import { Analytics } from '@vercel/analytics/react';
@@ -8,20 +7,9 @@ import './globals.css';
 import { ClientLayoutWrapper } from '@/components/layout/ClientLayoutWrapper';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
-// Font Optimization: Zero CLS Loading via Google Fonts (Downloaded at build time)
-const inter = Inter({
-    subsets: ['latin'],
-    weight: ['400', '500', '700', '900'],
-    display: 'swap',
-    variable: '--font-inter',
-});
 
-const notoSansSC = Noto_Sans_SC({
-    subsets: ['latin'], // Noto_Sans_SC auto-includes Chinese glyphs
-    weight: ['400', '500', '700', '900'],
-    display: 'swap',
-    variable: '--font-noto',
-});
+
+
 
 export const metadata: Metadata = {
     metadataBase: new URL(SITE_URL),
@@ -189,7 +177,10 @@ export default function RootLayout({
                 <link rel="dns-prefetch" href="https://zz.bdstatic.com" />
                 <link rel="dns-prefetch" href="https://api.trongrid.io" />
 
-                {/* Fonts loaded via next/font/google — no manual preload needed */}
+                {/* Fonts loaded via CDN to prevent Next.js build-time fetch crashing on ECONNRESET */}
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700;800&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
 
                 {/* Canonical & hreflang for Baidu */}
                 <link rel="alternate" hrefLang="zh-CN" href={SITE_URL} />
@@ -261,7 +252,7 @@ export default function RootLayout({
                     }}
                 />
             </head>
-            <body className={`min-h-screen flex flex-col overflow-x-hidden ${inter.variable} ${notoSansSC.variable}`}>
+            <body className={`min-h-screen flex flex-col overflow-x-hidden font-sans`}>
                 <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || 'GTM-PHWJK3GG'} />
                 
                 <ClientLayoutWrapper>

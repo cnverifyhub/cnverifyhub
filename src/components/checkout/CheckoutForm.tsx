@@ -19,7 +19,7 @@ import {
     XmIcon, HfmIcon, NetellerIcon, SkrillIcon, PayoneerIcon, WiseIcon
 } from '@/components/ui/BrandIcons';
 
-const ICON_COMPONENTS: Record<string, React.ElementType> = {
+const ICON_COMPONENTS: Record<string, React.ComponentType<{ className?: string }>> = {
     wechat: WeChatIcon,
     alipay: AlipayIcon,
     douyin: DouyinIcon,

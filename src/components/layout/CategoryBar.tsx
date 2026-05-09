@@ -19,7 +19,7 @@ import {
     FintechIcon
 } from '@/components/ui/BrandIcons';
 
-const iconMap: Record<string, React.ElementType> = {
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
     wechat: WeChatIcon,
     alipay: AlipayIcon,
     douyin: DouyinIcon,

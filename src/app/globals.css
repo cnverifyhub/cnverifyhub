@@ -30,6 +30,23 @@
     --neon-cyan:     0 0 20px rgba(0,229,255,0.4), 0 0 40px rgba(0,229,255,0.15);
     --neon-gold:     0 0 20px rgba(255,184,0,0.4), 0 0 40px rgba(255,184,0,0.15);
 
+    /* Chinese Design System Tokens */
+    --color-brand-red: #FF0036;
+    --color-brand-red-dark: #C0001A;
+    --color-brand-red-glow: rgba(255, 0, 54, 0.35);
+    --color-gold: #FFD700;
+    --color-gold-soft: #E5B800;
+    --color-bg-deep: #060608;
+    --color-bg-card: #0F0F12;
+    --color-bg-surface: #161619;
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-border-red: rgba(255, 0, 54, 0.3);
+    --color-text-primary: #F5F5F7;
+    --color-text-secondary: #999AAA;
+    --color-success: #00D68F;
+    --color-warning: #FFB020;
+    --color-live: #FF3B30;
+
     /* Legacy v2 tokens — backward compat */
     --color-primary:      255 45 85;
     --color-gold:         255 184 0;
@@ -58,8 +75,8 @@
   }
 
   body {
-    background-color: var(--bg-base);
-    color: var(--text-primary);
+    background-color: var(--color-bg-deep);
+    color: var(--color-text-primary);
     font-family: var(--font-dm);
     overflow-x: hidden;
     /* Subtle cyber grid texture */
@@ -71,6 +88,14 @@
     font-family: var(--font-chinese);
     line-height: 1.8;
     word-break: break-all;
+  }
+
+  h1, h2 {
+    font-family: "Noto Serif SC", serif;
+  }
+
+  .price, .stat-number, .code {
+    font-family: "JetBrains Mono", monospace;
   }
 
   ::selection {
