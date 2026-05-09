@@ -196,7 +196,7 @@ export default function Footer() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
                     {/* Copyright */}
                     <p className="text-[10px] text-[#7B91B0] font-mono">
-                        © {new Date().getFullYear()} CNVerifyHub Digital Assets Platform. All Rights Reserved.
+                        CNVerifyHub © 2026. {lang === 'zh' ? '专业中国账号交易平台' : 'Professional Chinese Account Platform'}. All Rights Reserved.
                     </p>
 
                     {/* ICP + Public security badges */}

@@ -30,13 +30,38 @@ const categoryMeta: Record<string, { icon: React.ReactNode; color: string; desc:
 /* ── Top micro-bar ticker ─────────────────── */
 function MicroBar({ lang }: { lang: 'zh' | 'en' }) {
     const items = lang === 'zh'
-        ? ['🔥 满700¥减100¥限时活动', '⚡ USDT TRC20自动发卡', '🛡️ 全程担保交易', '🏆 已服务50,000+用户', '⏱️ 平均发货<5分钟']
-        : ['🔥 Save 100¥ on orders 700¥+', '⚡ USDT TRC20 auto-delivery', '🛡️ Full escrow protection', '🏆 50,000+ customers served', '⏱️ Avg delivery <5 min'];
+        ? [
+            '🔥 满700¥减100¥限时活动', 
+            '⚡ USDT TRC20 自动发卡', 
+            '🛡️ 全程担保交易', 
+            '🏆 已服务 50,000+ 用户', 
+            '⏱️ 平均发货 < 5分钟',
+            '💎 VIP 尊享折上折'
+          ]
+        : [
+            '🔥 Save 100¥ on orders 700¥+', 
+            '⚡ USDT TRC20 Auto-Delivery', 
+            '🛡️ Full Escrow Protection', 
+            '🏆 50,000+ Customers Served', 
+            '⏱️ Avg Delivery < 5 Min',
+            '💎 VIP Membership Discounts'
+          ];
+          
     return (
-        <div className="h-8 bg-[#030711] border-b border-[#1E2D45] overflow-hidden flex items-center">
-            <div className="flex items-center gap-0 animate-ticker-scroll whitespace-nowrap" style={{ animationDuration: '28s' }}>
-                {[...items, ...items].map((item, i) => (
-                    <span key={i} className="text-[11px] font-medium text-[#7B91B0] px-6 border-r border-[#1E2D45]">{item}</span>
+        <div className="h-8 bg-gradient-to-r from-[#FF0036] to-[#C0001A] overflow-hidden flex items-center relative group">
+            {/* Shimmer overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer-fast pointer-events-none" />
+            
+            <div className="flex items-center gap-0 animate-marquee whitespace-nowrap hover:[animation-play-state:paused] transition-[animation-play-state] duration-300">
+                {[...items, ...items, ...items].map((item, i) => (
+                    <div key={i} className="flex items-center">
+                        <span className="text-[11px] font-bold text-white px-6 tracking-wide drop-shadow-sm">
+                            {item.includes('🔥') ? (
+                                <span className="text-yellow-300 font-extrabold">{item}</span>
+                            ) : item}
+                        </span>
+                        <span className="text-[#FFD700] text-[8px] opacity-80 animate-pulse">●</span>
+                    </div>
                 ))}
             </div>
         </div>
@@ -126,9 +151,10 @@ export default function Header() {
                                     <Link
                                         key={link.label}
                                         href={link.href}
-                                        className="px-3 py-2 text-sm font-medium text-[#7B91B0] hover:text-white hover:bg-white/5 rounded-lg transition-colors"
+                                        className="relative px-3 py-2 text-sm font-medium text-[#7B91B0] hover:text-white transition-colors group/nav"
                                     >
-                                        {link.label}
+                                        <span>{link.label}</span>
+                                        <div className={`absolute bottom-1 left-3 right-3 h-0.5 bg-[#FF0036] rounded-full transition-transform duration-300 origin-center ${pathname === link.href ? 'scale-x-100' : 'scale-x-0 group-hover/nav:scale-x-100'}`} />
                                     </Link>
                                 )
                             )}

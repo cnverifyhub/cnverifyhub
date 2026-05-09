@@ -262,6 +262,9 @@
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
   }
+  .animate-shimmer-fast {
+    animation: shimmer-fast 1.5s infinite;
+  }
 
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
@@ -276,6 +279,10 @@
   @keyframes shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
+  }
+  @keyframes shimmer-fast {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
   }
   @keyframes tickerScroll {
     0% { transform: translateX(0); }

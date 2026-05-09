@@ -10,6 +10,8 @@ import type { Product } from '@/types';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { formatYuan } from '@/lib/utils';
 import { useCartStore } from '@/store/cartStore';
+import { PriceTag } from './PriceTag';
+import { FlashCountdown } from './FlashCountdown';
 import { 
     WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, 
     BundleIcon, VerificationIcon, FintechIcon,
@@ -220,85 +222,54 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                 </Link>
 
                 {/* Price block */}
-                <div className="flex items-baseline gap-2 mb-4 mt-auto">
-                    <span className="font-mono-price text-3xl font-black text-[#FF0036] tracking-tight">
-                        <span className="text-base mr-0.5">¥</span>{product.price.single}
-                    </span>
-                    {product.price.originalPrice && product.price.originalPrice.single > product.price.single && (
-                        <span className="font-mono-price text-sm text-[#7B91B0] line-through opacity-60">
-                            ¥{product.price.originalPrice.single}
-                        </span>
-                    )}
+                <div className="flex items-end justify-between mb-4 mt-auto">
+                    <PriceTag 
+                        price={product.price.single} 
+                        originalPrice={product.price.originalPrice?.single}
+                    />
                     {discount && (
-                        <div className="ml-auto flex flex-col items-end">
-                            <span className="text-[10px] font-bold text-[#FF0036] bg-[#FF0036]/10 px-1.5 py-0.5 rounded border border-[#FF0036]/20">
-                                省¥{(product.price.originalPrice!.single - product.price.single).toFixed(0)}
+                        <div className="flex flex-col items-end">
+                            <span className="text-[10px] font-black text-[#FF0036] bg-[#FF0036]/10 px-1.5 py-0.5 rounded border border-[#FF0036]/20">
+                                {discount}% OFF
                             </span>
                         </div>
                     )}
                 </div>
 
                 {/* Data row */}
-                <div className="grid grid-cols-3 gap-0 border border-[#1E2D45] rounded mb-4 overflow-hidden text-center bg-[#060B18]">
-                    <div className="py-1.5 border-r border-[#1E2D45]">
-                        <p className="text-[9px] text-[#7B91B0] mb-0.5">{product.stockCount >= 1000 ? '充足' : '库存'}</p>
-                        <p className={`text-[11px] font-mono font-bold ${isOutOfStock ? 'text-[#FF2D55]' : 'text-[#F0F4FF]'}`}>
+                <div className="grid grid-cols-3 gap-0 border border-white/5 rounded-lg mb-4 overflow-hidden text-center bg-black/40 backdrop-blur-md">
+                    <div className="py-2 border-r border-white/5">
+                        <p className="text-[8px] text-white/30 uppercase tracking-widest mb-0.5">{product.stockCount >= 1000 ? 'Stock' : 'Qty'}</p>
+                        <p className={`text-[12px] font-black font-mono-price ${isOutOfStock ? 'text-[#FF2D55]' : 'text-white'}`}>
                             {product.stockCount > 999 ? '999+' : product.stockCount}
                         </p>
                     </div>
-                    <div className="py-1.5 border-r border-[#1E2D45]">
-                        <p className="text-[9px] text-[#7B91B0] mb-0.5">销量</p>
-                        <p className="text-[11px] font-mono font-bold text-[#F0F4FF]">{soldCount > 999 ? '999+' : soldCount}</p>
+                    <div className="py-2 border-r border-white/5">
+                        <p className="text-[8px] text-white/30 uppercase tracking-widest mb-0.5">Sold</p>
+                        <p className="text-[12px] font-black font-mono-price text-white">{soldCount > 999 ? '999+' : soldCount}</p>
                     </div>
-                    <div className="py-1.5">
-                        <p className="text-[9px] text-[#7B91B0] mb-0.5">发货</p>
-                        <p className="text-[11px] font-mono font-bold text-[#07C160]">{'<5min'}</p>
+                    <div className="py-2">
+                        <p className="text-[8px] text-white/30 uppercase tracking-widest mb-0.5">Ship</p>
+                        <p className="text-[12px] font-black font-mono-price text-[#07C160]">⚡</p>
                     </div>
                 </div>
 
                 {/* Trust badges */}
                 <div className="flex flex-wrap gap-1 mb-4">
                     {product.warranty && (
-                        <span className="text-[9px] text-[#07C160] border border-[#07C160]/20 bg-[#07C160]/5 px-1.5 py-0.5 rounded">
-                            {product.warranty[lang]}质保
+                        <span className="text-[9px] font-bold text-[#07C160] border border-[#07C160]/20 bg-[#07C160]/5 px-2 py-0.5 rounded-full">
+                            {product.warranty[lang]} {lang === 'zh' ? '质保' : 'Warranty'}
                         </span>
                     )}
-                    <span className="text-[9px] text-[#7B91B0] border border-[#1E2D45] bg-[#1E2D45]/30 px-1.5 py-0.5 rounded">现货秒发</span>
-                    {product.features?.slice(0, 1).map((feature, i) => (
-                        <span key={i} className="text-[9px] text-[#7B91B0] border border-[#1E2D45] bg-[#1E2D45]/30 px-1.5 py-0.5 rounded line-clamp-1">
-                            {feature[lang]}
-                        </span>
-                    ))}
+                    <span className="text-[9px] font-bold text-white/40 border border-white/10 bg-white/5 px-2 py-0.5 rounded-full">
+                        {lang === 'zh' ? '自动发货' : 'Auto-Delivery'}
+                    </span>
                 </div>
 
                 {/* Flash Sale Banner */}
                 {product.popular && !isOutOfStock && (
-                    <div className="mb-4 group/flash relative flex items-center border border-[#FF5000]/40 bg-[#FF5000]/5 rounded-lg overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#FF2D55]/10 to-transparent animate-shimmer" />
-                        <div className="bg-gradient-to-br from-[#FF2D55] via-[#FF5000] to-[#FF8000] text-white px-3 py-1.5 flex items-center justify-center relative z-10">
-                            <Zap className="w-4 h-4 fill-current animate-pulse" />
-                        </div>
-                        <div className="flex-1 px-3 py-1.5 flex items-center justify-between relative z-10">
-                            <div className="flex flex-col">
-                                <span className="text-[9px] font-black text-[#FF5000] uppercase tracking-tighter leading-none mb-0.5">
-                                    {lang === 'zh' ? '秒杀特惠' : 'FLASH SALE'}
-                                </span>
-                                <div className="flex items-center gap-1">
-                                    <div className="h-1 w-16 bg-[#FF5000]/20 rounded-full overflow-hidden">
-                                        <div 
-                                            className="h-full bg-[#FF5000] rounded-full transition-all duration-1000" 
-                                            style={{ width: `${Math.max(15, (product.stockCount / 50) * 100)}%` }} 
-                                        />
-                                    </div>
-                                    <span className="text-[8px] text-[#FF5000]/80 font-bold">
-                                        {lang === 'zh' ? '已抢' : 'SOLD'} {Math.round(85 + Math.random() * 10)}%
-                                    </span>
-                                </div>
-                            </div>
-                            <span className="text-xs font-mono font-black text-[#FF5000] bg-white/10 px-1.5 py-0.5 rounded shadow-sm">
-                                {formatTime(timeLeft)}
-                            </span>
-                        </div>
+                    <div className="mb-4">
+                        <FlashCountdown />
                     </div>
                 )}
 

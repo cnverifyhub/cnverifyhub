@@ -5,7 +5,7 @@ import { ChevronDown } from 'lucide-react';
 import type { FAQItem } from '@/types';
 import { type Lang } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface FAQAccordionProps {
     items: FAQItem[];
@@ -76,18 +76,24 @@ export function FAQAccordion({ items, lang, limit }: FAQAccordionProps) {
                             </span>
                         </button>
 
-                        <div
-                            className={cn(
-                                "overflow-hidden transition-all duration-500 ease-in-out",
-                                isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                        <AnimatePresence initial={false}>
+                            {isOpen && (
+                                <motion.div
+                                    key="content"
+                                    initial={{ height: 0, opacity: 0 }}
+                                    animate={{ height: "auto", opacity: 1 }}
+                                    exit={{ height: 0, opacity: 0 }}
+                                    transition={{ duration: 0.35, ease: [0.04, 0.62, 0.23, 0.98] }}
+                                    className="overflow-hidden"
+                                >
+                                    <div className="px-6 md:px-8 pb-8 text-[#7B91B0] leading-relaxed text-base md:text-lg border-t border-[#1E2D45]/30 pt-6">
+                                        <p className="relative z-10">
+                                            {item.answer[lang]}
+                                        </p>
+                                    </div>
+                                </motion.div>
                             )}
-                        >
-                            <div className="px-6 md:px-8 pb-8 text-[#7B91B0] leading-relaxed text-base md:text-lg border-t border-[#1E2D45]/30 pt-6">
-                                <p className="relative z-10">
-                                    {item.answer[lang]}
-                                </p>
-                            </div>
-                        </div>
+                        </AnimatePresence>
                     </motion.div>
                 );
             })}

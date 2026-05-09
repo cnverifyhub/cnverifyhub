@@ -9,6 +9,18 @@ import { GsapAnimations } from '@/components/ui/GsapAnimations';
 import { SalesTicker } from '@/components/ui/SalesTicker';
 import BaiduPush from '@/components/layout/BaiduPush';
 
+import { SmoothScrollProvider } from '@/components/providers/SmoothScrollProvider';
+
+import { LiveOrderFeed } from '@/components/home/LiveOrderFeed';
+
+import { CustomCursor } from '@/components/ui/CustomCursor';
+
+import LoadingScreen from '@/components/ui/LoadingScreen';
+
+import { MobileActionBar } from '@/components/ui/MobileActionBar';
+import { LuckyDrawWidget } from '@/components/ui/LuckyDrawWidget';
+import { PageTransition } from '@/components/ui/PageTransition';
+
 export function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
     const pathname = usePathname() || '';
     
@@ -28,17 +40,26 @@ export function ClientLayoutWrapper({ children }: { children: React.ReactNode })
 
     // Render the standard website layout
     return (
-        <div className="flex flex-col min-h-screen pt-[66px] md:pt-[70px]">
-            <BaiduPush />
-            <Header />
-            <main className="flex-grow">
-                {children}
-            </main>
-            <CartDrawer lang="zh" />
-            <Footer />
-            <MobileNav />
-            <SalesTicker />
-            <GsapAnimations />
-        </div>
+        <SmoothScrollProvider>
+            <LoadingScreen />
+            <div className="flex flex-col min-h-screen pt-[66px] md:pt-[70px]">
+                <BaiduPush />
+                <Header />
+                <main className="flex-grow pb-[64px] md:pb-0">
+                    <PageTransition>
+                        {children}
+                    </PageTransition>
+                </main>
+                <CartDrawer lang="zh" />
+                <Footer />
+                <MobileNav />
+                <MobileActionBar />
+                <LuckyDrawWidget />
+                <LiveOrderFeed />
+                <SalesTicker />
+                <CustomCursor />
+                <GsapAnimations />
+            </div>
+        </SmoothScrollProvider>
     );
 }

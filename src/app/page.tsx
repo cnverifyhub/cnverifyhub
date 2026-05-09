@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import { Hero } from '@/components/home/Hero';
+import { TrustBadges } from '@/components/home/TrustBadges';
 import { CategoryCards } from '@/components/home/CategoryCards';
 import { WhyChooseUs } from '@/components/home/WhyChooseUs';
 import { CustomerReviews } from '@/components/home/CustomerReviews';
-import { PopularProducts } from '@/components/home/PopularProducts';
+import { HotProducts } from '@/components/sections/HotProducts';
+import { LiveMarketTable } from '@/components/sections/LiveMarketTable';
 import { FAQSection } from '@/components/home/FAQSection';
 import { LuckyWheel } from '@/components/home/LuckyWheel';
 
@@ -73,8 +75,10 @@ export default function Home() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
             />
             <Hero lang={lang} />
+            <TrustBadges />
             <CategoryCards lang={lang} />
-            <PopularProducts lang={lang} />
+            <HotProducts lang={lang} />
+            <LiveMarketTable lang={lang} />
             <WhyChooseUs lang={lang} />
             <CustomerReviews lang={lang} />
             <FAQSection lang={lang} />

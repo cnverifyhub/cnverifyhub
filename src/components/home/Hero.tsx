@@ -56,47 +56,29 @@ function formatPrice(p: number) {
     return `¥${Math.round(p)}`;
 }
 
-/* ── Typewriter effect ───────────────────────── */
-function TypewriterText({ lines }: { lines: string[] }) {
-    const [lineIdx, setLineIdx] = useState(0);
-    const [charIdx, setCharIdx] = useState(0);
-    const [displayed, setDisplayed] = useState('');
-    const [phase, setPhase] = useState<'typing' | 'pause' | 'erasing'>('typing');
+import { TextScramble } from '@/utils/textScramble';
+
+function ScrambleText({ lines }: { lines: string[] }) {
+    const elRef = useRef<HTMLSpanElement>(null);
+    const [index, setIndex] = useState(0);
 
     useEffect(() => {
-        const current = lines[lineIdx];
-        let timeout: ReturnType<typeof setTimeout>;
-
-        if (phase === 'typing') {
-            if (charIdx < current.length) {
-                timeout = setTimeout(() => {
-                    setDisplayed(current.slice(0, charIdx + 1));
-                    setCharIdx(c => c + 1);
-                }, 45);
-            } else {
-                timeout = setTimeout(() => setPhase('pause'), 2200);
-            }
-        } else if (phase === 'pause') {
-            timeout = setTimeout(() => setPhase('erasing'), 400);
-        } else {
-            if (charIdx > 0) {
-                timeout = setTimeout(() => {
-                    setCharIdx(c => c - 1);
-                    setDisplayed(current.slice(0, charIdx - 1));
-                }, 22);
-            } else {
-                setLineIdx(i => (i + 1) % lines.length);
-                setPhase('typing');
-            }
-        }
-        return () => clearTimeout(timeout);
-    }, [charIdx, phase, lineIdx, lines]);
+        if (!elRef.current) return;
+        const fx = new TextScramble(elRef.current);
+        
+        const next = () => {
+            fx.setText(lines[index]).then(() => {
+                setTimeout(() => {
+                    setIndex((prev) => (prev + 1) % lines.length);
+                }, 2000);
+            });
+        };
+        
+        next();
+    }, [index, lines]);
 
     return (
-        <span className="font-mono-price text-[#00E5FF]">
-            {displayed}
-            <span className="animate-[cursorBlink_1s_step-end_infinite] inline-block w-0.5 h-5 bg-[#00E5FF] ml-0.5 align-middle" />
-        </span>
+        <span ref={elRef} className="font-mono text-[#00E5FF] min-w-[120px] inline-block" />
     );
 }
 
@@ -307,7 +289,7 @@ export function Hero({ lang }: { lang: Lang }) {
                         </motion.div>
 
                         {/* H1 */}
-                        <h1 className="heading-syne text-4xl sm:text-5xl xl:text-6xl text-white mb-4 leading-[1.05]">
+                        <h1 className="heading-syne text-white mb-4 leading-[1.05] text-[clamp(32px,8vw,64px)]">
                             {lang === 'zh' ? (
                                 <>
                                     <span className="block overflow-hidden pb-2">{splitText('中国数字资产', 0.1)}</span>
@@ -329,7 +311,7 @@ export function Hero({ lang }: { lang: Lang }) {
                             className="flex items-center gap-2 mb-8 text-lg sm:text-xl"
                         >
                             <span className="text-[#7B91B0] font-dm">{lang === 'zh' ? '专注于' : 'Specializing in'}</span>
-                            <TypewriterText lines={typewriterLines} />
+                            <ScrambleText lines={typewriterLines} />
                         </motion.div>
 
                         {/* Trust badges */}
