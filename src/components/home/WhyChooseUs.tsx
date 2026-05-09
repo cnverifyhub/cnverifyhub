@@ -1,101 +1,126 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Zap, HeartHandshake, Box } from 'lucide-react';
-import type { Lang } from '@/lib/i18n';
+import { Shield, Zap, Clock, Award } from 'lucide-react';
+import { type Lang } from '@/lib/i18n';
+import { motion } from 'framer-motion';
 
-interface WhyChooseUsProps {
-    lang: Lang;
-}
-
-const trustItems = {
+const features = {
     zh: [
         {
-            title: "官方正品保护",
-            desc: "货源经过严格筛选，确保每一份都是正品",
-            icon: <ShieldCheck className="w-10 h-10 text-[#e4393c]" />,
+            icon: Shield,
+            color: '#00E5FF',
+            title: '平台担保交易',
+            sub: '资金安全',
+            desc: '全程托管交易，买家付款后自动触发审核流程，100%正品保障，不满意全额退款。',
         },
         {
-            title: "极速发货",
-            desc: "系统自动处理，平均5分钟内完成发货",
-            icon: <Zap className="w-10 h-10 text-[#ffd700]" />,
+            icon: Zap,
+            color: '#FF2D55',
+            title: '极速自动发货',
+            sub: '平均<5分钟',
+            desc: 'USDT TRC20支付确认后，系统全自动发卡。无需人工干预，全年365天×24小时不间断。',
         },
         {
-            title: "售后无忧",
-            desc: "7天质保期内任何质量问题可申请售后",
-            icon: <HeartHandshake className="w-10 h-10 text-[#e4393c]" />,
+            icon: Clock,
+            color: '#FFB800',
+            title: '72小时质量保障',
+            sub: '售后无忧',
+            desc: '收货后72小时内如有问题，提供免费补发或全额退款。没有繁琐流程，直接联系客服即可。',
         },
         {
-            title: "平台担保交易",
-            desc: "采用区块链担保，支付更安全透明",
-            icon: <Box className="w-10 h-10 text-[#ffd700]" />,
+            icon: Award,
+            color: '#07C160',
+            title: '一手机房货源',
+            sub: '品质源头',
+            desc: '直接与国内账号机房合作，全部账号经过实名认证，无中间商，保证质量最高、价格最低。',
         },
     ],
     en: [
         {
-            title: "Official Protection",
-            desc: "Strictly screened sources to ensure every account is authentic",
-            icon: <ShieldCheck className="w-10 h-10 text-[#e4393c]" />,
+            icon: Shield,
+            color: '#00E5FF',
+            title: 'Full Escrow Protection',
+            sub: 'Secured Funds',
+            desc: 'End-to-end escrow trading. Payment triggers automatic verification. 100% genuine accounts, full refund guaranteed.',
         },
         {
-            title: "Instant Delivery",
-            desc: "Automatic processing, average delivery within 5 minutes",
-            icon: <Zap className="w-10 h-10 text-[#ffd700]" />,
+            icon: Zap,
+            color: '#FF2D55',
+            title: 'Instant Auto-Delivery',
+            sub: 'Avg < 5 minutes',
+            desc: 'USDT payment confirmed → account delivered automatically. No human delays, 365×24 uptime.',
         },
         {
-            title: "Worry-free After-sales",
-            desc: "Any quality issues within 7 days are eligible for support",
-            icon: <HeartHandshake className="w-10 h-10 text-[#e4393c]" />,
+            icon: Clock,
+            color: '#FFB800',
+            title: '72-Hour Warranty',
+            sub: 'Worry-free After-Sale',
+            desc: 'Any issue within 72 hours? Free replacement or full refund. No complex process — just contact support.',
         },
         {
-            title: "Secured Escrow",
-            desc: "Safe and transparent payments via blockchain escrow",
-            icon: <Box className="w-10 h-10 text-[#ffd700]" />,
+            icon: Award,
+            color: '#07C160',
+            title: 'Direct Farm Source',
+            sub: 'Premium Quality',
+            desc: 'Direct partnership with account farms. All real-name verified. No middlemen — best quality at lowest price.',
         },
-    ]
+    ],
 };
 
-export function WhyChooseUs({ lang }: WhyChooseUsProps) {
-    const items = trustItems[lang] || trustItems.zh;
-
+export function WhyChooseUs({ lang }: { lang: Lang }) {
+    const items = features[lang];
     return (
-        <section className="py-16 md:py-24 bg-slate-50 dark:bg-dark-950/50">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                {/* Section Header */}
-                <div className="text-center mb-16">
-                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-slate-900 dark:text-white mb-4 font-['PingFang_SC','System-ui',sans-serif]">
-                        为什么选择我们？
+        <section className="py-20 bg-[#060B18]">
+            <div className="section-container">
+                {/* Header */}
+                <div className="mb-12">
+                    <span className="section-eyebrow"># {lang === 'zh' ? '为什么选择我们' : 'WHY CHOOSE US'}</span>
+                    <h2 className="section-title">
+                        {lang === 'zh' ? '平台核心优势' : 'Platform Advantages'}
                     </h2>
-                    <div className="h-1.5 w-20 bg-gradient-to-r from-[#e4393c] to-[#ffd700] mx-auto rounded-full mb-6"></div>
-                    <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-[1.8]">
-                        我们致力于打造全网最安全、最专业、最透明的数字化商品交易平台。
-                    </p>
                 </div>
 
-                {/* 4-Column Grid (2x2 on Mobile) */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                    {items.map((item, idx) => (
-                        <div 
-                            key={idx} 
-                            className="bg-white dark:bg-dark-900 p-6 md:p-8 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 hover:shadow-lg transition-all duration-300 group"
+                {/* 4-panel horizontal grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                    {items.map((item, i) => (
+                        <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 16 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.08, duration: 0.4 }}
+                            className="group relative bg-[#0D1526] border border-[#1E2D45] hover:border-[#00E5FF]/30 p-6 transition-all duration-250 overflow-hidden"
                         >
-                            <div className="mb-6 transform group-hover:scale-110 transition-transform duration-300">
-                                {item.icon}
+                            {/* Left accent */}
+                            <div
+                                className="absolute left-0 top-0 bottom-0 w-[3px] transition-all duration-300"
+                                style={{ background: item.color, opacity: 0.5 }}
+                            />
+                            <div
+                                className="absolute left-0 top-0 bottom-0 w-[3px] opacity-0 group-hover:opacity-100"
+                                style={{ background: '#00E5FF', boxShadow: '0 0 10px rgba(0,229,255,0.5)' }}
+                            />
+                            {/* Glow hover bg */}
+                            <div
+                                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+                                style={{ background: `radial-gradient(ellipse at 50% 0%, ${item.color}08 0%, transparent 70%)` }}
+                            />
+                            {/* Content */}
+                            <div className="relative z-10">
+                                <div
+                                    className="w-10 h-10 rounded flex items-center justify-center mb-4"
+                                    style={{ background: `${item.color}15`, border: `1px solid ${item.color}30` }}
+                                >
+                                    <item.icon className="w-5 h-5" style={{ color: item.color }} />
+                                </div>
+                                <p className="terminal-label mb-1" style={{ color: item.color }}>{item.sub}</p>
+                                <h3 className="text-sm font-semibold text-[#F0F4FF] mb-3 leading-snug">{item.title}</h3>
+                                <p className="text-xs text-[#7B91B0] leading-relaxed">{item.desc}</p>
                             </div>
-                            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-3">
-                                {item.title}
-                            </h3>
-                            <p className="text-sm text-slate-500 dark:text-slate-400 leading-[1.8]">
-                                {item.desc}
-                            </p>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
-
-                {/* Removed customer counter as requested (until real data is higher) */}
             </div>
         </section>
     );
 }
-
-// Add CSS for pulse-slow if needed, but Tailwind usually covers it

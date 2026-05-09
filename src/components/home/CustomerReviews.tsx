@@ -109,32 +109,27 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
     const marqueeRow2 = [...row2Reviews, ...row2Reviews, ...row2Reviews, ...row2Reviews];
 
     return (
-        <section className="py-20 bg-slate-50 dark:bg-dark-950 border-t border-slate-200 dark:border-slate-800 overflow-hidden">
+        <section className="py-20 bg-[#060B18] border-t border-[#1E2D45] overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-6">
                     <div>
-                        <div className="inline-flex items-center gap-1.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-3 py-1 rounded-full text-xs font-bold mb-3 border border-red-200 dark:border-red-800/50">
-                            <ThumbsUp className="w-3.5 h-3.5" />
-                            {lang === 'zh' ? '真实买家评价' : 'Verified Buyer Reviews'}
-                        </div>
-                        <h2 className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white tracking-tight">
+                        <span className="terminal-label mb-3 block"># {lang === 'zh' ? '买家评价' : 'BUYER REVIEWS'}</span>
+                        <h2 className="heading-syne text-3xl md:text-4xl text-white">
                             {lang === 'zh' ? '已累计服务 50,000+ 单' : 'Over 50,000+ Orders Completed'}
                         </h2>
                     </div>
-
-                    <div className="flex items-center gap-4 bg-white dark:bg-dark-900 p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800">
+                    <div className="flex items-center gap-4 bg-[#0D1526] p-4 border border-[#1E2D45]">
                         <div className="text-center">
-                            <div className="text-2xl font-black text-orange-500">4.92</div>
-                            <div className="text-xs text-slate-500 font-medium">综合评分</div>
+                            <div className="font-mono-price text-2xl font-bold text-[#FFB800]">4.97</div>
+                            <div className="text-[10px] text-[#7B91B0] font-mono uppercase tracking-wider">综合评分</div>
                         </div>
-                        <div className="w-px h-10 bg-slate-200 dark:bg-slate-800"></div>
+                        <div className="w-px h-10 bg-[#1E2D45]"></div>
                         <div className="flex flex-col gap-1">
-                            <div className="flex text-orange-500">
-                                {[...Array(4)].map((_, i) => <Star key={`main-filled-${i}`} className="w-3.5 h-3.5 fill-current" />)}
-                                <Star className="w-3.5 h-3.5 fill-current opacity-70" />
+                            <div className="flex text-[#FFB800]">
+                                {[...Array(5)].map((_, i) => <Star key={`main-filled-${i}`} className="w-3.5 h-3.5 fill-current" />)}
                             </div>
-                            <div className="text-xs text-slate-500 font-medium whitespace-nowrap">
-                                好评率 <span className="font-bold text-slate-900 dark:text-white">98.6%</span>
+                            <div className="text-[10px] text-[#7B91B0] font-mono whitespace-nowrap">
+                                好评率 <span className="font-bold text-[#F0F4FF]">98.6%</span>
                             </div>
                         </div>
                     </div>
@@ -147,27 +142,27 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
                     {marqueeRow1.map((review, index) => (
                         <div
                             key={`review-r1-${index}`}
-                            className="w-[320px] shrink-0 bg-white dark:bg-dark-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow whitespace-normal"
+                            className="w-[300px] shrink-0 bg-[#0D1526] p-5 border border-[#1E2D45] hover:border-[#00E5FF]/30 transition-colors whitespace-normal"
                         >
                             {/* Header: Avatar, Name, Stars */}
                             <div className="flex items-center justify-between mb-4">
                                 <div className="flex items-center gap-3">
                                     <ReviewAvatar src={review.avatar} name={review.user} />
                                     <div className="flex flex-col">
-                                        <span className="text-sm font-bold text-slate-900 dark:text-white">
+                                        <span className="text-xs font-semibold text-[#F0F4FF]">
                                             {review.user}
                                         </span>
                                         <div className="flex mt-0.5">
                                             {[...Array(5)].map((_, i) => (
                                                 <Star
                                                     key={`r1-star-${i}`}
-                                                    className={`w-3 h-3 ${i < review.rating ? 'fill-orange-400 text-orange-400' : 'text-slate-300 dark:text-slate-600'}`}
+                                                    className={`w-3 h-3 ${i < review.rating ? 'fill-[#FFB800] text-[#FFB800]' : 'text-[#1E2D45]'}`}
                                                 />
                                             ))}
                                         </div>
                                     </div>
                                 </div>
-                                <span className="text-xs text-slate-400 font-medium">{review.date}</span>
+                                <span className="text-[10px] text-[#7B91B0] font-mono">{review.date}</span>
                             </div>
 
                             {/* Review Content */}
@@ -243,8 +238,8 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
                 </div>
 
                 {/* Gradient Masks */}
-                <div className="absolute left-0 top-0 bottom-0 w-12 md:w-32 bg-gradient-to-r from-slate-50 dark:from-dark-950 to-transparent pointer-events-none z-10"></div>
-                <div className="absolute right-0 top-0 bottom-0 w-12 md:w-32 bg-gradient-to-l from-slate-50 dark:from-dark-950 to-transparent pointer-events-none z-10"></div>
+                <div className="absolute left-0 top-0 bottom-0 w-16 md:w-28 bg-gradient-to-r from-[#060B18] to-transparent pointer-events-none z-10"></div>
+                <div className="absolute right-0 top-0 bottom-0 w-16 md:w-28 bg-gradient-to-l from-[#060B18] to-transparent pointer-events-none z-10"></div>
             </div>
         </section>
     );

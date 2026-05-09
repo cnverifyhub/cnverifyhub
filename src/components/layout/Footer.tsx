@@ -1,320 +1,242 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { 
-    ShieldCheck, 
-    MessageCircle, 
-    Shield, 
-    Clock, 
-    ChevronDown, 
-    AlertTriangle, 
-    FileText, 
-    Lock,
-    Globe,
-    ArrowUpRight,
-    Zap,
-    LifeBuoy,
-    CheckCircle2,
-    Award,
-    HelpCircle,
-    Search
-} from 'lucide-react';
-import { t, getLangFromPath, getLocalizedPath } from '@/lib/i18n';
+import { ShieldCheck, Zap, FileText, Shield, HelpCircle, ArrowUpRight, ExternalLink } from 'lucide-react';
+import { getLangFromPath, getLocalizedPath } from '@/lib/i18n';
 import { categories } from '@/data/products';
-import Image from 'next/image';
-import { 
-    WeChatIcon, 
-    AlipayIcon, 
-    TelegramIcon,
-    DouyinIcon,
-    QQIcon,
-    XianyuIcon,
-    TaobaoIcon,
-    XiaohongshuIcon,
-    BundleIcon,
-    VerificationIcon,
-    FintechIcon
+import {
+    WeChatIcon, AlipayIcon, DouyinIcon, QQIcon,
+    XianyuIcon, TaobaoIcon, XiaohongshuIcon,
+    BundleIcon, VerificationIcon, FintechIcon
 } from '@/components/ui/BrandIcons';
 
 const iconMap: Record<string, React.ElementType> = {
-    wechat: WeChatIcon,
-    alipay: AlipayIcon,
-    douyin: DouyinIcon,
-    qq: QQIcon,
-    xianyu: XianyuIcon,
-    taobao: TaobaoIcon,
-    xiaohongshu: XiaohongshuIcon,
-    bundle: BundleIcon,
-    verification: VerificationIcon,
-    trading: FintechIcon
+    wechat: WeChatIcon, alipay: AlipayIcon, douyin: DouyinIcon,
+    qq: QQIcon, xianyu: XianyuIcon, taobao: TaobaoIcon,
+    xiaohongshu: XiaohongshuIcon, bundle: BundleIcon,
+    verification: VerificationIcon, trading: FintechIcon,
 };
+
+const liveStats = [
+    { label: { zh: '今日订单', en: 'Today Orders' }, value: '1,247' },
+    { label: { zh: '在线用户', en: 'Online Users' }, value: '3,241' },
+    { label: { zh: '平均发货', en: 'Avg Delivery' }, value: '<5min' },
+    { label: { zh: '用户评分', en: 'User Rating' }, value: '4.97★' },
+];
 
 export default function Footer() {
     const pathname = usePathname() || '/';
     const lang = getLangFromPath(pathname);
-    const [openNotice, setOpenNotice] = useState<string | null>(null);
 
-    const toggleNotice = (id: string) => {
-        setOpenNotice(openNotice === id ? null : id);
-    };
+    const support = [
+        { label: { zh: '帮助中心', en: 'FAQ Center' },     icon: HelpCircle,   href: '/faq' },
+        { label: { zh: '订单追踪', en: 'Track Order' },    icon: ShieldCheck,  href: '/track' },
+        { label: { zh: '联系客服', en: 'Live Support' },   icon: Zap,          href: 'https://t.me/cnwechatpro', external: true },
+        { label: { zh: '隐私政策', en: 'Privacy' },        icon: Shield,       href: '/privacy' },
+        { label: { zh: '退款政策', en: 'Refund Policy' },  icon: FileText,     href: '/refund-policy' },
+    ];
 
-    const purchaseNotices = [
-        { 
-            id: 'real-name', 
-            icon: ShieldCheck,
-            titleZh: '合规实名认证', 
-            titleEn: 'Real-Name KYC',
-            gradient: 'from-emerald-500/20 to-teal-500/20',
-            iconColor: 'text-[#07C160]',
-            contentZh: '响应国家法规政策，部分核心资产业务需要二次实名核验。确保账户财产安全。合法合规交易。',
-            contentEn: 'Compliant with regulations, some core services require real-name KYC for asset security.'
-        },
-        { 
-            id: 'warranty', 
-            icon: Shield,
-            titleZh: '官方72H质保', 
-            titleEn: '72H Warranty',
-            gradient: 'from-[#1677ff]/20 to-blue-500/20',
-            iconColor: 'text-[#1677ff]',
-            contentZh: '全站商品支持72小时包首登质保。由于买家本地网络IP不纯净导致的账号封禁/异常不在售后范围，请务必保证网络环境安全。',
-            contentEn: '72h first-login warranty. Account bans due to user unclean IP/network are not covered.'
-        },
-        { 
-            id: 'usage', 
-            icon: Lock,
-            titleZh: '规范使用协议', 
-            titleEn: 'TOS Agreement',
-            gradient: 'from-[#FF0036]/20 to-[#FF5000]/20',
-            iconColor: 'text-[#FF0036]',
-            contentZh: '本站所有数字资产仅限合法业务测试及研究使用。严禁用于任何违法诈骗、洗钱等刑事违规使用。违者直接冻结报警。',
-            contentEn: 'Assets are for legal business testing only. Illegal activities will result in an immediate ban.'
-        }
+    const blog = [
+        { label: { zh: '博客首页', en: 'Blog Home' },       href: getLocalizedPath('/blog', lang) },
+        { label: { zh: '安全指南', en: 'Security Guide' },  href: getLocalizedPath('/blog/avoid-wechat-account-suspension', lang) },
+        { label: { zh: '实名教程', en: 'KYC Tutorial' },    href: getLocalizedPath('/blog/wechat-passport-realname-verification', lang) },
     ];
 
     return (
-        <footer className="relative pt-10 pb-20 md:pb-8 overflow-hidden z-20 border-t border-[#FF0036]/30 bg-slate-50 dark:bg-[#0a0a0f]">
-            {/* Background Aesthetics */}
-            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#FF0036] to-transparent opacity-20 dark:opacity-40" />
-            <div className="absolute -left-20 top-20 w-96 h-96 bg-[#FF0036]/5 blur-[80px] rounded-full pointer-events-none" />
-            <div className="absolute -right-20 bottom-0 w-96 h-96 bg-[#1677ff]/5 blur-[80px] rounded-full pointer-events-none" />
-            
-            <div className="max-w-7xl mx-auto px-4 relative z-30">
-                
-                {/* Trust Badges Banner */}
-                <div className="flex flex-wrap justify-between items-center gap-4 py-6 border-b border-white/8 mb-8">
-                    {[
-                        { icon: Zap, title: lang === 'zh' ? '极速秒发' : 'Instant Delivery', color: 'text-[#FF5000]' },
-                        { icon: ShieldCheck, title: lang === 'zh' ? '正规一手渠道' : 'Verified Source', color: 'text-[#07C160]' },
-                        { icon: Award, title: lang === 'zh' ? '金牌老店' : 'Premium Store', color: 'text-[#FFD700]' },
-                        { icon: Lock, title: lang === 'zh' ? '加密担保交易' : 'Escrow Secured', color: 'text-[#1677ff]' }
-                    ].map((item, idx) => (
-                        <div key={idx} className="flex items-center gap-2 lg:gap-3 group">
-                            <div className={`w-8 h-8 lg:w-10 lg:h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center ${item.color} group-hover:scale-110 transition-transform`}>
-                                <item.icon className="w-4 h-4 lg:w-5 lg:h-5" />
+        <footer className="bg-[#030711] border-t border-[#1E2D45]">
+
+            {/* ── Live stats bar ──────────────────── */}
+            <div className="border-b border-[#1E2D45]">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-4 divide-x divide-[#1E2D45]">
+                        {liveStats.map((s, i) => (
+                            <div key={i} className="flex flex-col items-center py-4 gap-0.5">
+                                <p className="font-mono-price text-base font-bold text-[#F0F4FF]">{s.value}</p>
+                                <p className="text-[9px] text-[#7B91B0] uppercase tracking-wider">{s.label[lang]}</p>
                             </div>
-                            <span className="font-bold text-white/80 text-xs lg:text-sm tracking-wide">{item.title}</span>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
+            </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 mb-10">
-                    {/* Left: Chinese SEO & About (Dense text strategy) */}
-                    <div className="md:col-span-2 lg:col-span-4">
-                        <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 mb-4 group inline-flex">
-                            <div className="w-10 h-10 bg-gradient-to-br from-[#FF0036] to-[#FF5000] rounded-xl flex items-center justify-center p-2 shadow-lg shadow-[#FF0036]/20">
-                                <Image src="/logo.png" alt="Logo" width={32} height={32} className="w-full h-full object-contain dark:brightness-0 dark:invert" />
+            {/* ── Main grid ───────────────────────── */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
+
+                    {/* Brand column */}
+                    <div className="lg:col-span-4">
+                        <Link href={getLocalizedPath('/', lang)} className="inline-flex items-center gap-2 mb-4 group">
+                            <div className="w-6 h-6 rounded flex items-center justify-center bg-[#FF2D55] text-white font-syne font-black text-[10px] leading-none">
+                                CV
                             </div>
-                            <div className="flex flex-col">
-                                <span className="font-black text-xl tracking-tighter text-slate-900 dark:text-white leading-none">CNVerifyHub</span>
-                                <span className="text-[10px] font-bold text-[#FF0036] tracking-widest mt-1">官方正品 · 安全保证</span>
-                            </div>
+                            <span className="font-syne font-bold text-base text-white">
+                                CN<span className="text-[#00E5FF]">Verify</span>Hub
+                            </span>
                         </Link>
-                        <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 mb-4 font-medium text-justify">
-                            {lang === 'zh' ? 'CNVerifyHub是全网领先的数字资产服务保障平台。致力于提供优质的微信、支付宝、抖音、小红书等高权重一手机房老号。使用USDT匿名结算，全网独家TRC20自动发卡验证系统。' : 'Premium Chinese Digital Asset Gateway providing high-authority accounts with exclusive instant TRC20 verification system.'}
+                        <p className="text-xs text-[#7B91B0] leading-relaxed mb-5 max-w-xs">
+                            {lang === 'zh'
+                                ? 'CNVerifyHub是全网领先的中国数字资产交易平台。专注提供高权重一手老号，USDT TRC20自动发卡，全程担保交易，72小时质保。'
+                                : 'CNVerifyHub is the leading Chinese digital asset exchange. High-authority aged accounts, USDT auto-delivery, full escrow, 72H warranty.'}
                         </p>
-                        
-                        <div className="flex items-center gap-2 mb-6">
-                            <div className="flex items-center gap-1.5 bg-[#07C160]/10 border border-[#07C160]/20 text-[#07C160] px-2 py-1 rounded text-[10px] font-bold">
-                                <CheckCircle2 className="w-3 h-3" /> 百分百真人号
-                            </div>
-                            <div className="flex items-center gap-1.5 bg-[#1677ff]/10 border border-[#1677ff]/20 text-[#1677ff] px-2 py-1 rounded text-[10px] font-bold">
-                                <ShieldCheck className="w-3 h-3" /> 平台担保
-                            </div>
+                        {/* Trust chips */}
+                        <div className="flex flex-wrap gap-1.5 mb-6">
+                            {[
+                                { label: lang === 'zh' ? '百分百正品' : '100% Genuine',  color: '#07C160' },
+                                { label: lang === 'zh' ? '平台担保'   : 'Escrow',        color: '#00E5FF' },
+                                { label: lang === 'zh' ? '实名老号'   : 'Real-name',     color: '#FFB800' },
+                            ].map((chip) => (
+                                <span
+                                    key={chip.label}
+                                    className="text-[9px] font-bold px-2 py-1 rounded border"
+                                    style={{ color: chip.color, borderColor: `${chip.color}30`, background: `${chip.color}0D` }}
+                                >
+                                    {chip.label}
+                                </span>
+                            ))}
+                        </div>
+                        {/* Payment methods */}
+                        <p className="terminal-label mb-2">{lang === 'zh' ? '支付方式' : 'PAYMENT'}</p>
+                        <div className="flex items-center gap-2 flex-wrap">
+                            {[
+                                { label: 'USDT-TRC20', color: '#07C160', bg: '#07C16015' },
+                                { label: 'USDT-ERC20', color: '#1677ff', bg: '#1677ff15' },
+                                { label: 'Alipay',     color: '#1677ff', bg: '#1677ff10' },
+                                { label: 'WeChat Pay', color: '#07C160', bg: '#07C16010' },
+                            ].map((p) => (
+                                <span
+                                    key={p.label}
+                                    className="text-[9px] font-mono font-bold px-2 py-1 rounded border"
+                                    style={{ color: p.color, borderColor: `${p.color}30`, background: p.bg }}
+                                >
+                                    {p.label}
+                                </span>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Middle: Fast Links (Dense Grid) */}
-                    <div className="md:col-span-1 lg:col-span-5 grid grid-cols-3 gap-2 lg:gap-4">
-                        <div>
-                            <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-1.5">
-                                <div className="w-1 h-3 bg-[#FF0036] rounded-full" />
-                                {lang === 'zh' ? '热销专区' : 'Top Categories'}
-                            </h4>
-                            <ul className="grid grid-cols-2 lg:grid-cols-1 gap-y-2.5 gap-x-4">
-                                {categories.map(c => {
-                                    const Icon = iconMap[c.id] || WeChatIcon;
-                                    return (
-                                        <li key={c.id}>
-                                            <Link href={getLocalizedPath(c.href, lang)} className="text-[11px] lg:text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#FF0036] dark:hover:text-[#FF0036] flex items-center gap-1.5 transition-colors">
-                                                <Icon className="w-3.5 h-3.5" /> <span className="truncate">{c.name[lang]}</span>
-                                                {(c.id === 'verification' || c.id === 'trading') && (
-                                                    <span className="text-[8px] bg-indigo-500 text-white px-1 rounded-sm shrink-0 font-black tracking-tighter">NEW</span>
-                                                )}
-                                                {c.id === 'bundle' && <span className="text-[9px] bg-[#FF0036] text-white px-1 rounded-sm shrink-0">HOT</span>}
-                                            </Link>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-1.5">
-                                <div className="w-1 h-3 bg-[#1677ff] rounded-full" />
-                                {lang === 'zh' ? '客户服务' : 'Support'}
-                            </h4>
-                            <ul className="space-y-2.5">
-                                {[
-                                    { label: '帮助中心', en: 'FAQ Center', icon: HelpCircle, href: '/faq' },
-                                    { label: '订单查询', en: 'Track Order', icon: Search, href: '/track' },
-                                    { label: '在线客服', en: 'Live Support', icon: LifeBuoy, href: 'https://t.me/cnwechatpro' },
-                                    { label: '隐私合规', en: 'Privacy', icon: Shield, href: '/privacy' }
-                                ].map((item, idx) => (
-                                    <li key={idx}>
-                                        <Link href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} className="text-[11px] lg:text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-[#1677ff] dark:hover:text-[#1677ff] flex items-center gap-1.5 transition-colors">
-                                            <item.icon className="w-3.5 h-3.5 shrink-0" /> <span className="truncate">{lang === 'zh' ? item.label : item.en}</span>
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                        <div>
-                            <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-1.5">
-                                <div className="w-1 h-3 bg-emerald-500 rounded-full" />
-                                {lang === 'zh' ? '资源' : 'Resources'}
-                            </h4>
-                            <ul className="space-y-2.5">
-                                {[
-                                    { label: '博客首页', en: 'Blog Home', icon: FileText, href: getLocalizedPath('/blog', lang) },
-                                    { label: '最新文章', en: 'Latest Posts', icon: AlertTriangle, href: getLocalizedPath('/blog', lang) },
-                                    { label: '安全指南', en: 'Security Guide', icon: ShieldCheck, href: getLocalizedPath('/blog/avoid-wechat-account-suspension', lang) },
-                                    { label: '实名教程', en: 'KYC Tutorial', icon: ArrowUpRight, href: getLocalizedPath('/blog/wechat-passport-realname-verification', lang) }
-                                ].map((item, idx) => (
-                                    <li key={idx}>
-                                        <Link href={item.href} className="text-[11px] lg:text-xs font-medium text-slate-600 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-500 flex items-center gap-1.5 transition-colors">
-                                            <item.icon className="w-3.5 h-3.5 shrink-0" /> <span className="truncate">{lang === 'zh' ? item.label : item.en}</span>
-                                        </Link>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-
-                    {/* Right: Security & Notice Accordions (Compact) */}
-                    <div className="md:col-span-1 lg:col-span-3">
-                         <h4 className="font-bold text-sm text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-1.5">
-                            <div className="w-1 h-3 bg-red-500 rounded-full" />
-                            {lang === 'zh' ? '重要安全须知' : 'Security Notice'}
-                        </h4>
-                        <div className="space-y-2">
-                            {purchaseNotices.map((notice) => {
-                                const Icon = notice.icon;
-                                const isOpen = openNotice === notice.id;
+                    {/* Categories column */}
+                    <div className="lg:col-span-3">
+                        <h4 className="terminal-label mb-4">{lang === 'zh' ? '全部品类' : 'CATEGORIES'}</h4>
+                        <ul className="space-y-2.5">
+                            {categories.map(c => {
+                                const Icon = iconMap[c.id] || WeChatIcon;
                                 return (
-                                    <div key={notice.id} className={`rounded-lg border transition-all ${isOpen ? 'bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10' : 'bg-transparent border-transparent hover:bg-slate-50 dark:hover:bg-white/5'}`}>
-                                        <button onClick={() => toggleNotice(notice.id)} className="w-full flex items-center justify-between p-2.5">
-                                            <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
-                                                <Icon className={`w-3.5 h-3.5 ${notice.iconColor}`} />
-                                                {lang === 'zh' ? notice.titleZh : notice.titleEn}
-                                            </div>
-                                            <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
-                                        </button>
-                                        {isOpen && (
-                                            <div className="px-3 pb-3 text-[11px] leading-relaxed text-slate-500 border-t border-slate-100 dark:border-white/5 pt-2">
-                                                {lang === 'zh' ? notice.contentZh : notice.contentEn}
-                                            </div>
-                                        )}
-                                    </div>
+                                    <li key={c.id}>
+                                        <Link
+                                            href={getLocalizedPath(c.href, lang)}
+                                            className="flex items-center gap-2 text-xs text-[#7B91B0] hover:text-[#F0F4FF] transition-colors group"
+                                        >
+                                            <Icon className="w-3.5 h-3.5 shrink-0 opacity-70 group-hover:opacity-100" />
+                                            <span>{c.name[lang]}</span>
+                                            {(c.id === 'verification' || c.id === 'trading') && (
+                                                <span className="text-[8px] font-black text-[#00E5FF] border border-[#00E5FF]/25 px-1 rounded ml-auto">NEW</span>
+                                            )}
+                                            {c.id === 'bundle' && (
+                                                <span className="text-[8px] font-black text-[#FF2D55] border border-[#FF2D55]/25 px-1 rounded ml-auto">HOT</span>
+                                            )}
+                                        </Link>
+                                    </li>
                                 );
                             })}
-                        </div>
+                        </ul>
+                    </div>
+
+                    {/* Support column */}
+                    <div className="lg:col-span-2">
+                        <h4 className="terminal-label mb-4">{lang === 'zh' ? '客户支持' : 'SUPPORT'}</h4>
+                        <ul className="space-y-2.5">
+                            {support.map((item, i) => (
+                                <li key={i}>
+                                    <Link
+                                        href={item.href}
+                                        target={(item as any).external ? '_blank' : undefined}
+                                        rel={(item as any).external ? 'noopener noreferrer' : undefined}
+                                        className="flex items-center gap-2 text-xs text-[#7B91B0] hover:text-[#F0F4FF] transition-colors"
+                                    >
+                                        <item.icon className="w-3.5 h-3.5 shrink-0 opacity-60" />
+                                        {item.label[lang]}
+                                        {(item as any).external && <ExternalLink className="w-2.5 h-2.5 opacity-40 ml-auto" />}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Blog / Resources */}
+                    <div className="lg:col-span-3">
+                        <h4 className="terminal-label mb-4">{lang === 'zh' ? '安全资讯' : 'RESOURCES'}</h4>
+                        <ul className="space-y-2.5 mb-6">
+                            {blog.map((item, i) => (
+                                <li key={i}>
+                                    <Link href={item.href} className="flex items-center gap-2 text-xs text-[#7B91B0] hover:text-[#F0F4FF] transition-colors">
+                                        <ArrowUpRight className="w-3.5 h-3.5 shrink-0 opacity-60" />
+                                        {item.label[lang]}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                        {/* Telegram CTA */}
+                        <a
+                            href="https://t.me/CNVerifyHub"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 px-4 py-2.5 rounded border border-[#1E2D45] hover:border-[#00E5FF]/40 bg-[#0D1526] hover:bg-[#142035] transition-all text-xs font-medium text-[#7B91B0] hover:text-white group"
+                        >
+                            <span className="w-2 h-2 rounded-full bg-[#00E5FF] animate-pulse" />
+                            {lang === 'zh' ? '加入官方频道' : 'Join Official Channel'}
+                            <ExternalLink className="w-3 h-3 ml-auto opacity-40 group-hover:opacity-100" />
+                        </a>
                     </div>
                 </div>
-
-                {/* Bottom Bar: Payments & Copyright */}
-                <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-6 border-t border-slate-100 dark:border-white/5 mt-8">
-                    {/* Copyright & Info */}
-                    <div className="flex flex-col items-center md:items-start gap-4">
-                        <div className="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-4">
-                            {/* Business License Badge */}
-                            <Link href="#" className="flex items-center gap-2 px-3 py-1.5 bg-slate-50 dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/10 hover:border-[#FF0036]/30 transition-all group">
-                                <div className="w-5 h-5 bg-[#FF0036]/10 rounded flex items-center justify-center group-hover:bg-[#FF0036]/20 transition-colors">
-                                    <FileText className="w-3.5 h-3.5 text-[#FF0036]" /> 
-                                </div>
-                                <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300">营业执照</span>
-                            </Link>
-                            
-                            <span className="hidden md:inline w-px h-4 bg-slate-200 dark:bg-slate-800" />
-                            
-                            {/* ICP Badge - Govt Style Upgrade */}
-                            <div className="flex items-center gap-2 pl-1 pr-3 py-1 bg-[#f0f2f5] dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all group cursor-default relative overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none" />
-                                <div className="w-10 h-7 bg-[#2f3542] dark:bg-black rounded shadow-inner flex flex-col items-center justify-center text-white font-black overflow-hidden relative shrink-0">
-                                    <div className="absolute inset-x-0 top-0 h-0.5 bg-red-500" />
-                                    <span className="text-[9px] leading-none mb-0.5 tracking-tighter">ICP</span>
-                                    <span className="text-[7px] leading-none opacity-60 font-medium">CERTIFIED</span>
-                                </div>
-                                <div className="flex flex-col">
-                                    <span className="text-[10px] font-black text-slate-700 dark:text-slate-200 leading-tight">京ICP备20240918号-1</span>
-                                    <span className="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter">{lang === 'zh' ? '工业和信息化部' : 'MIIT REGISTERED'}</span>
-                                </div>
-                            </div>
-                            
-                            <span className="hidden md:inline w-px h-4 bg-slate-200 dark:bg-slate-800" />
-                            
-                            {/* Public Security Badge - Govt Style Upgrade */}
-                            <Link href="https://www.beian.gov.cn/" target="_blank" className="flex items-center gap-2 pl-1 pr-3 py-1 bg-[#f0f2f5] dark:bg-white/5 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm hover:shadow-md transition-all group relative overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent pointer-events-none" />
-                                <div className="w-10 h-7 bg-[#1e3799] rounded shadow-inner flex items-center justify-center relative overflow-hidden shrink-0">
-                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.2)_0%,transparent_70%)]" />
-                                    <Shield className="w-4 h-4 text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.5)] animate-pulse" /> 
-                                </div>
-                                <div className="flex flex-col">
-                                    <span className="text-[10px] font-black text-slate-700 dark:text-slate-200 leading-tight group-hover:text-[#1e3799] transition-colors">京公网安备 11010502052468号</span>
-                                    <span className="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tighter">{lang === 'zh' ? '公安网备案' : 'PUBLIC SECURITY'}</span>
-                                </div>
-                            </Link>
-                        </div>
-                        <p className="text-[10px] text-slate-400 font-medium tracking-wide">
-                            © {new Date().getFullYear()} <span className="font-bold text-slate-600 dark:text-slate-300">CNVerifyHub Digital Assets platform</span>. All Rights Reserved. 
-                            <span className="ml-2 px-1.5 py-0.5 bg-emerald-500/10 text-emerald-500 rounded text-[9px] font-bold">100% SECURE</span>
-                        </p>
-                    </div>
-
-                    {/* Highly Refined Payment Row */}
-                    <div className="flex items-center gap-3">
-                        <div className="px-2 py-1 rounded bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center opacity-80 hover:opacity-100 transition-opacity">
-                            <AlipayIcon className="w-12 h-4 text-[#1677ff]" />
-                        </div>
-                        <div className="px-2 py-1 rounded bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center opacity-80 hover:opacity-100 transition-opacity">
-                            <WeChatIcon className="w-12 h-4 text-[#07C160]" />
-                        </div>
-                        <div className="px-2 py-1 rounded bg-white dark:bg-white/5 border border-[#07C160]/30 flex items-center gap-1 shadow-sm">
-                            <div className="w-4 h-4 bg-[#07C160] rounded-sm flex items-center justify-center text-[9px] text-white font-black">T</div>
-                            <span className="text-[11px] font-bold text-slate-800 dark:text-slate-200">USDT-TRC20</span>
-                        </div>
-                        <div className="px-3 py-1 rounded bg-gradient-to-r from-[#FF0036] to-[#FF5000] shadow-md shadow-[#FF0036]/20 flex items-center gap-1">
-                            <ShieldCheck className="w-3 h-3 text-white" />
-                            <span className="text-[11px] font-bold text-white tracking-wide">官方担保</span>
-                        </div>
-                    </div>
-                </div>
-
             </div>
+
+            {/* ── Bottom bar ──────────────────────── */}
+            <div className="border-t border-[#1E2D45]">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
+                    {/* Copyright */}
+                    <p className="text-[10px] text-[#7B91B0] font-mono">
+                        © {new Date().getFullYear()} CNVerifyHub Digital Assets Platform. All Rights Reserved.
+                    </p>
+
+                    {/* ICP + Public security badges */}
+                    <div className="flex items-center gap-4 flex-wrap justify-center">
+                        {/* ICP badge */}
+                        <div className="flex items-center gap-1.5 border border-[#1E2D45] rounded px-2.5 py-1.5">
+                            <div className="flex flex-col items-center justify-center w-7 h-5 bg-[#2f3542] rounded-sm relative overflow-hidden">
+                                <div className="absolute inset-x-0 top-0 h-0.5 bg-[#FF2D55]" />
+                                <span className="text-[7px] text-white font-black leading-none">ICP</span>
+                            </div>
+                            <div>
+                                <p className="text-[9px] font-mono font-bold text-[#7B91B0] leading-none">京ICP备20240918号-1</p>
+                                <p className="text-[7px] text-[#7B91B0]/60 uppercase tracking-tight">{lang === 'zh' ? '工业和信息化部' : 'MIIT Registered'}</p>
+                            </div>
+                        </div>
+                        {/* Public security badge */}
+                        <Link
+                            href="https://www.beian.gov.cn/"
+                            target="_blank"
+                            className="flex items-center gap-1.5 border border-[#1E2D45] rounded px-2.5 py-1.5 hover:border-[#00E5FF]/30 transition-colors"
+                        >
+                            <div className="w-5 h-5 bg-[#1e3799] rounded-sm flex items-center justify-center shrink-0">
+                                <Shield className="w-3 h-3 text-white" />
+                            </div>
+                            <div>
+                                <p className="text-[9px] font-mono font-bold text-[#7B91B0] leading-none">京公网安备 11010502052468号</p>
+                                <p className="text-[7px] text-[#7B91B0]/60 uppercase tracking-tight">{lang === 'zh' ? '公安网备案' : 'Public Security'}</p>
+                            </div>
+                        </Link>
+                        {/* SSL badge */}
+                        <div className="flex items-center gap-1.5 border border-[#07C160]/20 rounded px-2.5 py-1.5 bg-[#07C160]/5">
+                            <ShieldCheck className="w-3.5 h-3.5 text-[#07C160]" />
+                            <span className="text-[9px] font-bold text-[#07C160]">SSL Secured</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile safe-area spacer */}
+            <div className="h-safe-area-inset-bottom md:hidden" />
         </footer>
     );
 }
-
-

@@ -1,3 +1,10 @@
+/* ===================================================
+   CNVerifyHub v3 — Cyber Bazaar Design System
+   =================================================== */
+
+/* Font imports */
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -8,22 +15,38 @@
    ============================================ */
 @layer base {
   :root {
-    /* Taobao Style Design Tokens */
-    --color-primary: 255 0 54; /* #FF0036 - Taobao Red */
-    --color-gold: 255 215 0;    /* #FFD700 - Auspicious Gold */
-    --color-trust-green: 7 193 96; /* #07C160 - WeChat Green */
-    --color-accent: 22 119 255; /* #1677FF - Alipay Blue */
-    --gradient-hero: linear-gradient(135deg, #FF0036 0%, #FF5000 50%, #FF8C00 100%);
-    --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    /* v3 Cyber Bazaar Design Tokens */
+    --bg-base:       #060B18;
+    --bg-surface:    #0D1526;
+    --bg-elevated:   #142035;
+    --accent-red:    #FF2D55;
+    --accent-cyan:   #00E5FF;
+    --accent-gold:   #FFB800;
+    --text-primary:  #F0F4FF;
+    --text-muted:    #7B91B0;
+    --border-subtle: #1E2D45;
+    --border-active: rgba(0,229,255,0.3);
+    --neon-red:      0 0 20px rgba(255,45,85,0.5), 0 0 40px rgba(255,45,85,0.2);
+    --neon-cyan:     0 0 20px rgba(0,229,255,0.4), 0 0 40px rgba(0,229,255,0.15);
+    --neon-gold:     0 0 20px rgba(255,184,0,0.4), 0 0 40px rgba(255,184,0,0.15);
+
+    /* Legacy v2 tokens — backward compat */
+    --color-primary:      255 45 85;
+    --color-gold:         255 184 0;
+    --color-trust-green:  7 193 96;
+    --color-accent:       0 229 255;
+    --surface-glass:      rgba(255,255,255,0.04);
+    --surface-glass-border: rgba(255,255,255,0.08);
+    --glow-red:     var(--neon-red);
+    --glow-gold:    var(--neon-gold);
+    --hero-bg:      #060B18;
+    --card-border:  #1E2D45;
+
+    /* Font families */
+    --font-syne:    'Syne', 'DM Sans', sans-serif;
+    --font-dm:      'DM Sans', 'Noto Sans SC', sans-serif;
+    --font-mono:    'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
     --font-chinese: 'Noto Sans SC', 'PingFang SC', 'Source Han Sans CN', 'Microsoft YaHei', sans-serif;
-    /* v2 Glass Surface Tokens */
-    --surface-glass: rgba(255, 255, 255, 0.04);
-    --surface-glass-border: rgba(255, 255, 255, 0.08);
-    --surface-glass-hover: rgba(255, 255, 255, 0.07);
-    --glow-red: 0 0 30px rgba(255,0,54,0.4), 0 0 60px rgba(255,0,54,0.15);
-    --glow-gold: 0 0 30px rgba(255,179,0,0.35), 0 0 60px rgba(255,179,0,0.1);
-    --hero-bg: #0d0d14;
-    --card-border: rgba(255,255,255,0.08);
   }
 
   html {
@@ -35,441 +58,252 @@
   }
 
   body {
-    @apply bg-white dark:bg-dark-950 text-slate-900 dark:text-slate-100 antialiased;
-    font-family: var(--font-chinese);
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: var(--font-dm);
     overflow-x: hidden;
+    /* Subtle cyber grid texture */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M 40 0 L 0 0 0 40' fill='none' stroke='rgba(30,45,69,0.45)' stroke-width='1'/%3E%3C/svg%3E");
   }
 
   /* Chinese text optimization */
-  :lang(zh),
-  [lang="zh"] {
+  :lang(zh), [lang="zh"] {
+    font-family: var(--font-chinese);
     line-height: 1.8;
     word-break: break-all;
   }
 
   ::selection {
-    @apply bg-primary-500/20 text-primary-900 dark:text-primary-100;
+    background-color: rgba(0, 229, 255, 0.2);
+    color: #fff;
   }
 
-  /* Custom Scrollbar */
-  ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-slate-300/60 dark:bg-slate-700/60 rounded-full;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-slate-400 dark:bg-slate-600;
-  }
-
-  /* Standardized heading sizes */
-  h1 { font-size: 2.5rem; line-height: 1.2; }
-  h2 { font-size: 1.75rem; line-height: 1.3; }
-  h3 { font-size: 1.25rem; line-height: 1.4; }
-
-  @media (max-width: 640px) {
-    h1 { font-size: 1.75rem; }
-    h2 { font-size: 1.375rem; }
-    h3 { font-size: 1.125rem; }
-  }
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-surface); }
+  ::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent-cyan); }
 }
+
 
 /* ============================================
    Component Layer
    ============================================ */
 @layer components {
 
-  /* Glass Card v2 — dark-first */
-  .glass-card {
-    @apply bg-white/5 backdrop-blur-xl border border-white/8 rounded-2xl;
-    box-shadow: var(--glow-red, none);
-  }
-
-  .glass-card-hover {
-    @apply glass-card transition-all duration-300 hover:-translate-y-1.5;
-  }
-  .glass-card-hover:hover {
-    box-shadow: var(--glow-red);
-    border-color: rgba(255,0,54,0.25);
-  }
-
-  /* Text Gradient */
-  .text-gradient {
-    @apply bg-clip-text text-transparent;
-  }
-
-  /* Glow effects */
-  .glow-red {
-    box-shadow: 0 0 30px rgba(229, 57, 53, 0.2), 0 0 60px rgba(229, 57, 53, 0.1);
-  }
-
-  .glow-gold {
-    box-shadow: 0 0 30px rgba(255, 179, 0, 0.2), 0 0 60px rgba(255, 179, 0, 0.1);
-  }
-
-  .glow-blue {
-    box-shadow: 0 0 30px rgba(30, 136, 229, 0.2), 0 0 60px rgba(30, 136, 229, 0.1);
-  }
-
-  /* Shimmer effect for loading */
-  .shimmer {
-    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%);
-    background-size: 200% 100%;
-    animation: shimmer 2s linear infinite;
-  }
-
-  /* Section spacing */
-  .section-padding {
-    @apply py-16 lg:py-24;
-  }
-
+  /* ── Layout Containers ──────────────────── */
   .section-container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  /* Badge styles */
-  .badge {
-    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold;
+  /* ── Data Panel (v3 core card primitive) ── */
+  .data-panel {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    position: relative;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .data-panel:hover {
+    border-color: rgba(0, 229, 255, 0.25);
+    box-shadow: 0 0 0 1px rgba(0, 229, 255, 0.1), 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .data-panel::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--border-subtle);
+    transition: background 0.2s ease;
+  }
+  .data-panel:hover::before {
+    background: var(--accent-cyan);
+    box-shadow: 0 0 8px rgba(0,229,255,0.4);
   }
 
-  .badge-success {
-    @apply badge bg-success-50 text-success-600 dark:bg-success-600/20 dark:text-success-400;
+  /* ── Neon Borders ───────────────────────── */
+  .neon-border-red {
+    border: 1px solid rgba(255, 45, 85, 0.3);
+    box-shadow: 0 0 0 1px rgba(255,45,85,0.1);
+  }
+  .neon-border-cyan {
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    box-shadow: 0 0 0 1px rgba(0,229,255,0.1);
   }
 
-  .badge-warning {
-    @apply badge bg-warning-50 text-warning-600 dark:bg-warning-600/20 dark:text-warning-400;
+  /* ── Cyber Buttons ──────────────────────── */
+  .cyber-btn-primary {
+    @apply relative overflow-hidden font-bold uppercase tracking-widest;
+    background: linear-gradient(135deg, #FF2D55 0%, #FF5000 100%);
+    color: #fff;
+    border: none;
+    box-shadow: 0 4px 20px rgba(255,45,85,0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .cyber-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(255,45,85,0.5), 0 0 0 1px rgba(255,45,85,0.3);
+  }
+  .cyber-btn-primary:active { transform: translateY(0); }
+  .cyber-btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
+    background-size: 200% 100%;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .cyber-btn-primary:hover::after { opacity: 1; animation: shimmer 1.5s linear infinite; }
+
+  .cyber-btn-ghost {
+    @apply relative font-bold uppercase tracking-widest;
+    background: transparent;
+    color: var(--accent-cyan);
+    border: 1px solid rgba(0,229,255,0.3);
+    transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+  .cyber-btn-ghost:hover {
+    background: rgba(0,229,255,0.07);
+    border-color: rgba(0,229,255,0.6);
+    box-shadow: 0 0 12px rgba(0,229,255,0.2);
   }
 
-  .badge-danger {
-    @apply badge bg-danger-50 text-danger-600 dark:bg-danger-600/20 dark:text-danger-400;
+  /* ── Price Tag ──────────────────────────── */
+  .price-tag {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+  .price-tag-lg { @apply price-tag text-2xl; }
+  .price-tag-xl { @apply price-tag text-3xl; }
+
+  /* ── Glass Card (legacy compat) ─────────── */
+  .glass-card {
+    background: var(--surface-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--surface-glass-border);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .glass-card:hover {
+    border-color: rgba(0,229,255,0.2);
+    box-shadow: 0 0 0 1px rgba(0,229,255,0.08), 0 12px 40px rgba(0,0,0,0.4);
   }
 
-  .badge-primary {
-    @apply badge bg-primary-50 text-primary-600 dark:bg-primary-600/20 dark:text-primary-400;
+  /* ── Terminal Label ─────────────────────── */
+  .terminal-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent-cyan);
   }
 
-  /* Button base */
-  .btn {
-    @apply inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed text-center whitespace-normal break-words;
+  /* ── Heading Syne ───────────────────────── */
+  .heading-syne {
+    font-family: var(--font-syne);
+    font-weight: 800;
+    letter-spacing: -0.03em;
   }
 
-  .btn-primary {
-    @apply btn px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-[#FF5000] to-[#FF0036] hover:from-[#FF0036] hover:to-[#E60032] text-white shadow-lg shadow-red-500/25 hover:shadow-xl hover:-translate-y-0.5 focus:ring-[#FF0036];
+  /* ── Section Titles ─────────────────────── */
+  .section-title {
+    @apply heading-syne text-2xl md:text-3xl lg:text-4xl text-white;
+  }
+  .section-eyebrow {
+    @apply terminal-label mb-3 block;
   }
 
-  .btn-gold {
-    @apply btn px-4 py-2.5 sm:px-6 sm:py-3 bg-gradient-to-r from-[#FFD700] to-[#FFA500] hover:from-[#FFC100] hover:to-[#FF8C00] text-slate-900 font-black shadow-lg shadow-yellow-500/25 hover:shadow-xl hover:-translate-y-0.5 focus:ring-yellow-500;
-  }
-
-  .btn-outline {
-    @apply btn px-4 py-2.5 sm:px-6 sm:py-3 border-2 border-slate-200 dark:border-slate-700 hover:border-primary-300 dark:hover:border-primary-600 text-slate-700 dark:text-slate-200 hover:-translate-y-0.5 focus:ring-primary-500;
-  }
-
-  .btn-ghost {
-    @apply btn px-4 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5 focus:ring-slate-500;
-  }
-
-  /* Input styles */
-  .input {
-    @apply w-full px-4 py-3 bg-white dark:bg-white/5 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500 transition-colors;
-  }
-}
-
-/* ============================================
-   Utility Layer
-   ============================================ */
-@layer utilities {
-
-  /* Hide scrollbar utility */
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  /* Touch targets for mobile */
-  .touch-target {
-    min-height: 44px;
-    min-width: 44px;
-  }
-
-  /* Marquee utilities */
-  .animate-marquee {
-    animation: marquee 40s linear infinite;
-  }
-
-  .animate-marquee-reverse {
-    animation: marquee-reverse 40s linear infinite;
-  }
-
-  /* Fade in up — CSS-only lightweight animation */
+  /* ── Animations ─────────────────────────── */
   .animate-fade-in-up {
-    animation: fade-in-up 0.6s ease-out both;
+    animation: fadeInUp 0.6s ease-out both;
   }
-
   .animate-fade-in {
-    animation: fade-in 0.5s ease-out forwards;
+    animation: fadeIn 0.5s ease-out forwards;
   }
-
-  @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  /* Neon pulse utility */
   .animate-neon-pulse {
     animation: neonPulse 2.5s ease-in-out infinite;
   }
+  .animate-neon-cyan {
+    animation: neonCyan 2.5s ease-in-out infinite;
+  }
 
-  /* Reduced-motion safety — disable all custom animations */
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes neonPulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(255,45,85,0.3); }
+    50% { box-shadow: 0 0 25px rgba(255,45,85,0.7), 0 0 50px rgba(255,45,85,0.3); }
+  }
+  @keyframes neonCyan {
+    0%, 100% { box-shadow: 0 0 10px rgba(0,229,255,0.2); }
+    50% { box-shadow: 0 0 25px rgba(0,229,255,0.6), 0 0 50px rgba(0,229,255,0.25); }
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes tickerScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+  @keyframes priceUpdate {
+    0% { opacity: 0; transform: translateY(-6px) scale(0.96); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ── Content visibility ─────────────────── */
+  .content-auto { content-visibility: auto; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
+  /* ── Reduced motion safety ──────────────── */
   @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
   }
-
-  /* Content visibility for performance */
-  .content-auto {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 500px;
-  }
 }
+
 
 /* ============================================
-   Keyframe Animations
+   Utility Layer
    ============================================ */
-
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .font-syne { font-family: var(--font-syne); }
+  .font-dm { font-family: var(--font-dm); }
+  .font-mono-price { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+  .bg-cyber-grid {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Cpath d='M 40 0 L 0 0 0 40' fill='none' stroke='rgba(30,45,69,0.45)' stroke-width='1'/%3E%3C/svg%3E");
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .glow-red  { box-shadow: var(--neon-red); }
+  .glow-cyan { box-shadow: var(--neon-cyan); }
+  .glow-gold { box-shadow: var(--neon-gold); }
+  .text-gradient-red {
+    background: linear-gradient(135deg, #FF2D55, #FF8C00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-}
-
-@keyframes marquee {
-  0% {
-    transform: translateX(0);
+  .text-gradient-cyan {
+    background: linear-gradient(135deg, #00E5FF, #00B4CC);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
-
-  100% {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes marquee-reverse {
-  0% {
-    transform: translateX(-50%);
-  }
-
-  100% {
-    transform: translateX(0);
-  }
-}
-
-/* ============================================
-   Hero Chinese UI Enhancement Animations
-   ============================================ */
-
-/* Danmu bullet comments scrolling right-to-left */
-@keyframes danmu-scroll {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(calc(-100vw - 300px));
-  }
-}
-
-/* Bouncing CTA button - subtle vertical bounce */
-.hero-cta-bounce {
-  animation: hero-bounce 2.5s ease-in-out infinite;
-}
-
-@keyframes hero-bounce {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-4px);
-  }
-}
-
-/* Shine sweep effect on CTA */
-.hero-shine {
-  background: linear-gradient(105deg,
-      transparent 40%,
-      rgba(255, 255, 255, 0.3) 45%,
-      rgba(255, 255, 255, 0.5) 50%,
-      rgba(255, 255, 255, 0.3) 55%,
-      transparent 60%);
-  background-size: 200% 100%;
-  animation: shine-sweep 3s ease-in-out infinite;
-}
-
-@keyframes shine-sweep {
-  0% {
-    background-position: 200% 0;
-  }
-
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-/* Gold Seal slow spin */
-.animate-spin-very-slow {
-  animation: spin-very-slow 20s linear infinite;
-}
-
-@keyframes spin-very-slow {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* Counter-spin for text inside the gold seal */
-.animate-counter-spin-very-slow {
-  animation: counter-spin-very-slow 20s linear infinite;
-}
-
-@keyframes counter-spin-very-slow {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(-360deg);
-  }
-}
-
-/* Slow bounce for floating coupon */
-.animate-bounce-slow {
-  animation: bounce-slow 3s ease-in-out infinite;
-}
-
-@keyframes bounce-slow {
-
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-10px);
-  }
-}
-
-/* Floating Hearts for Livestream */
-@keyframes float-up {
-  0% {
-    transform: translateY(0) scale(1) translateX(0);
-    opacity: 0;
-  }
-
-  20% {
-    opacity: 1;
-    transform: translateY(-20px) scale(1.2) translateX(10px);
-  }
-
-  80% {
-    opacity: 1;
-    transform: translateY(-80px) scale(1) translateX(-10px);
-  }
-
-  100% {
-    transform: translateY(-120px) scale(0.8) translateX(5px);
-    opacity: 0;
-  }
-}
-
-/* Falling Envelope Rain */
-@keyframes falling-envelope {
-  0% {
-    transform: translateY(-100px) rotate(0deg);
-    opacity: 0;
-  }
-
-  10% {
-    opacity: 1;
-  }
-
-  90% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(100vh) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-/* Shimmer keyframe */
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-/* Product card buy button shimmer sweep */
-@keyframes shimmer-sweep {
-  0% {
-    background-position: 200% 0;
-  }
-  60%, 100% {
-    background-position: -200% 0;
-  }
-}
-
-/* QR code laser scan line — used in AlipayPaymentModal */
-@keyframes qr-scan {
-  0%   { top: 8%; opacity: 1; }
-  90%  { top: 90%; opacity: 1; }
-  100% { top: 90%; opacity: 0; }
-}
-
-/* Alipay success ripple burst */
-@keyframes success-ripple {
-  0%   { transform: scale(0.5); opacity: 0.8; }
-  100% { transform: scale(3.5); opacity: 0; }
-}
-
-/* Payment progress bar fill — left to right */
-@keyframes progress-fill {
-  from { width: 0%; }
-  to   { width: 100%; }
-}
-
-/* Slide up fade in for success text */
-@keyframes slide-up-fade {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
+  .border-cyber { border-color: var(--border-subtle); }
+  .border-neon-cyan { border-color: rgba(0,229,255,0.3); }
+  .border-neon-red  { border-color: rgba(255,45,85,0.3); }
 }
