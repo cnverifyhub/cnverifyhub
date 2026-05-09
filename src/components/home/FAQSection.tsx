@@ -4,6 +4,7 @@ import { t, type Lang } from '@/lib/i18n';
 import { MessageCircle } from 'lucide-react';
 import Link from 'next/link';
 import { getLocalizedPath } from '@/lib/i18n';
+import { motion } from 'framer-motion';
 
 export function FAQSection({ lang }: { lang: Lang }) {
     return (

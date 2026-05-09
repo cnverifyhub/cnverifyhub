@@ -5,6 +5,7 @@ import { ChevronDown } from 'lucide-react';
 import type { FAQItem } from '@/types';
 import { type Lang } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
+import { motion } from 'framer-motion';
 
 interface FAQAccordionProps {
     items: FAQItem[];
