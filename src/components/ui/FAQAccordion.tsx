@@ -17,7 +17,7 @@ export function FAQAccordion({ items, lang, limit }: FAQAccordionProps) {
     const displayItems = limit ? items.slice(0, limit) : items;
 
     return (
-        <div className="grid gap-4">
+        <div className="space-y-4">
             {/* Schema.org JSON-LD for FAQ */}
             <script
                 type="application/ld+json"
@@ -41,64 +41,55 @@ export function FAQAccordion({ items, lang, limit }: FAQAccordionProps) {
                 const isOpen = openIndex === index;
 
                 return (
-                    <div
+                    <motion.div
                         key={item.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.05 }}
                         className={cn(
-                            "group relative border transition-all duration-500 overflow-hidden rounded-2xl",
+                            "group border transition-all duration-500 rounded-2xl overflow-hidden mb-4",
                             isOpen 
-                                ? "bg-[#0D1526]/80 border-[#FF0036]/50 shadow-[0_0_30px_rgba(255,0,54,0.1)]" 
-                                : "bg-[#0D1526]/40 border-[#1E2D45] hover:border-[#FF0036]/30"
+                                ? "bg-[#0D1526] border-[#FF0036]/30 shadow-[0_0_30px_rgba(255,0,54,0.05)]" 
+                                : "bg-[#0D1526]/30 border-[#1E2D45] hover:border-[#FF0036]/20"
                         )}
                     >
-                        {/* Interactive state indicator */}
-                        <div className={cn(
-                            "absolute left-0 top-0 bottom-0 w-1 transition-all duration-500",
-                            isOpen ? "bg-[#FF0036] shadow-[0_0_15px_#FF0036]" : "bg-transparent"
-                        )} />
-
                         <button
                             onClick={() => setOpenIndex(isOpen ? null : index)}
-                            className="flex w-full items-center justify-between p-6 md:p-8 text-left focus:outline-none relative z-10"
+                            className="flex w-full items-center justify-between p-6 md:p-8 text-left focus:outline-none"
                             aria-expanded={isOpen}
                         >
                             <span className={cn(
-                                "font-black transition-all duration-300 text-lg md:text-xl tracking-tight leading-snug",
+                                "font-bold pr-8 transition-colors text-lg md:text-xl",
                                 isOpen ? "text-white" : "text-[#7B91B0] group-hover:text-white"
                             )}>
                                 {item.question[lang]}
                             </span>
-                            <div className={cn(
+                            <span className={cn(
                                 "flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 border",
                                 isOpen 
-                                    ? "bg-[#FF0036] border-[#FF0036] text-white shadow-neon-red-sm rotate-180" 
-                                    : "bg-[#060B18] border-[#1E2D45] text-[#7B91B0]"
+                                    ? "bg-[#FF0036] border-[#FF0036] text-white rotate-180 shadow-[0_0_15px_rgba(255,0,54,0.4)]" 
+                                    : "bg-[#1E2D45]/50 border-[#1E2D45] text-[#7B91B0]"
                             )}>
                                 <ChevronDown className="w-5 h-5" />
-                            </div>
+                            </span>
                         </button>
 
                         <div
                             className={cn(
-                                "overflow-hidden transition-all duration-500 ease-in-out relative z-10",
+                                "overflow-hidden transition-all duration-500 ease-in-out",
                                 isOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
                             )}
                         >
-                            <div className="px-6 md:px-8 pb-8 pt-0 text-[#999AAA] leading-relaxed text-sm md:text-base border-t border-[#1E2D45]/50 mt-2">
-                                <div className="pt-6">
+                            <div className="px-6 md:px-8 pb-8 text-[#7B91B0] leading-relaxed text-base md:text-lg border-t border-[#1E2D45]/30 pt-6">
+                                <p className="relative z-10">
                                     {item.answer[lang]}
-                                </div>
+                                </p>
                             </div>
                         </div>
-                        
-                        {/* Animated background flare */}
-                        <div className={cn(
-                            "absolute top-0 right-0 w-64 h-64 bg-[#FF0036]/5 blur-[80px] rounded-full transition-opacity duration-700 pointer-events-none",
-                            isOpen ? "opacity-100" : "opacity-0"
-                        )} />
-                    </div>
+                    </motion.div>
                 );
             })}
         </div>
-
     );
 }

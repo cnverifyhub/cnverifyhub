@@ -74,101 +74,80 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
 
     useEffect(() => {
         // Shuffle base reviews and assign random names, avatars, and dates
-        const shuffled = [...baseReviews].sort(() => Math.random() - 0.5);
-        const mapped = shuffled.map(review => {
-            const randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
-            const randomAvatar = avatarsPool[Math.floor(Math.random() * avatarsPool.length)];
-            const randomColor = colorsPool[Math.floor(Math.random() * colorsPool.length)];
-            const randomDate = generateRandomDate();
-
-            // Generate Organic Rating: 60% 5-star, 30% 4-star, 10% 3-star
-            const rand = Math.random();
-            const organicRating = rand > 0.4 ? 5 : rand > 0.1 ? 4 : 3;
-
-            return {
-                ...review,
-                user: randomName,
-                avatar: `https://api.dicebear.com/7.x/notionists/svg?seed=${randomAvatar}&backgroundColor=${randomColor}`,
-                date: randomDate,
-                rating: organicRating
-            };
-        });
-        setReviews(mapped);
-    }, []);
-
-    // Provide skeleton if not mounted yet to avoid hydration mismatch and pop-in jarring
-    if (reviews.length === 0) {
-        return <div className="py-20 bg-slate-50 dark:bg-dark-950 min-h-[500px]"></div>;
-    }
-
-    // Split reviews into two distinct rows and quadruple them for the marquee looping effect
-    const mid = Math.ceil(reviews.length / 2);
-    const row1Reviews = reviews.slice(0, mid);
-    const row2Reviews = reviews.slice(mid);
-    const marqueeRow1 = [...row1Reviews, ...row1Reviews, ...row1Reviews, ...row1Reviews];
-    const marqueeRow2 = [...row2Reviews, ...row2Reviews, ...row2Reviews, ...row2Reviews];
-
-    return (
+        const shuffled = [...baseReviews].sort(() =    return (
         <section className="py-24 bg-[#060B18] border-t border-[#1E2D45] overflow-hidden relative">
-            {/* Background elements */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#FF0036]/5 blur-[120px] rounded-full pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#00E5FF]/5 blur-[120px] rounded-full pointer-events-none" />
+            {/* Background decorative elements */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#FF0036]/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#FF0036]/5 blur-[120px] rounded-full translate-y-1/2 -translate-x-1/4 pointer-events-none" />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative z-10">
                 <div className="flex flex-col md:flex-row items-end justify-between gap-8">
                     <div className="max-w-2xl">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-12 h-px bg-gradient-to-r from-[#FF0036] to-transparent" />
-                            <span className="text-[10px] font-black text-[#FF0036] uppercase tracking-[0.3em]">买家口碑 · CLIENT REVIEWS</span>
-                        </div>
-                        <h2 className="heading-syne text-4xl md:text-5xl text-white font-black leading-tight">
-                            {lang === 'zh' ? '真实好评，实力见证' : 'Proven Trust from Global Buyers'}
+                        <motion.div 
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            className="flex items-center gap-2 mb-4"
+                        >
+                            <div className="h-px w-8 bg-[#FF0036]" />
+                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FF0036]">
+                                # {lang === 'zh' ? '真实评价' : 'REAL FEEDBACK'}
+                            </span>
+                        </motion.div>
+                        <h2 className="text-4xl md:text-5xl font-black text-white leading-tight mb-6">
+                            {lang === 'zh' ? '全球 50,000+ 用户的信赖之选' : 'Trusted by 50,000+ Users Worldwide'}
                         </h2>
-                        <p className="mt-4 text-[#7B91B0] text-sm md:text-base max-w-lg">
-                            {lang === 'zh' ? '累计完成 50,000+ 笔订单，好评率高达 98.6%。我们用专业的服务和极致的效率，赢得每一位客户的信任。' : 'Over 50,000 successful orders with a 98.6% satisfaction rate. We build trust through professional service and extreme efficiency.'}
+                        <p className="text-[#7B91B0] text-lg max-w-xl leading-relaxed">
+                            {lang === 'zh' 
+                                ? 'CNVerifyHub 致力于提供最高标准的数字资产服务。以下是来自我们活跃社区的真实反馈。' 
+                                : 'CNVerifyHub is committed to delivering the highest standards of digital asset services. Here is what our active community has to say.'}
                         </p>
                     </div>
-                    
-                    {/* Trust Score Block */}
-                    <div className="group relative">
-                        <div className="absolute inset-0 bg-[#FFB800]/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        <div className="relative flex items-center gap-6 bg-[#0D1526]/80 backdrop-blur-xl p-6 border border-[#1E2D45] rounded-2xl shadow-2xl">
-                            <div className="text-center">
-                                <div className="font-mono-price text-4xl font-black text-[#FFB800] drop-shadow-neon-yellow">4.97</div>
-                                <div className="text-[10px] text-[#7B91B0] font-black uppercase tracking-widest mt-1">综合评分</div>
+
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        className="flex items-center gap-6 bg-[#0D1526]/50 backdrop-blur-xl p-6 border border-[#1E2D45] rounded-2xl"
+                    >
+                        <div className="text-center">
+                            <div className="text-4xl font-black text-[#FFB800] mb-1 font-mono tracking-tighter">4.97</div>
+                            <div className="text-[9px] text-[#7B91B0] font-black uppercase tracking-widest">综合评分</div>
+                        </div>
+                        <div className="w-px h-12 bg-[#1E2D45]"></div>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex text-[#FFB800] gap-0.5">
+                                {[...Array(5)].map((_, i) => <Star key={`main-filled-${i}`} className="w-4 h-4 fill-current" />)}
                             </div>
-                            <div className="w-px h-12 bg-[#1E2D45]"></div>
-                            <div className="flex flex-col gap-1.5">
-                                <div className="flex text-[#FFB800]">
-                                    {[...Array(5)].map((_, i) => <Star key={`main-filled-${i}`} className="w-4 h-4 fill-current" />)}
-                                </div>
-                                <div className="text-xs text-[#7B91B0]">
-                                    {lang === 'zh' ? '好评率' : 'Satisfied'} <span className="font-black text-white ml-1">98.6%</span>
-                                </div>
+                            <div className="text-[10px] text-[#7B91B0] font-bold">
+                                好评率 <span className="text-white bg-[#07C160]/20 px-1.5 py-0.5 rounded ml-1">98.6%</span>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
                 </div>
             </div>
 
-            {/* Marquee Row 1 */}
+            {/* Marquee Wrapper - Row 1 */}
             <div className="relative w-full flex overflow-x-hidden group mb-8">
-                <div className="animate-marquee flex gap-6 px-3 whitespace-nowrap group-hover:pause">
+                <div className="animate-marquee flex gap-8 px-4 whitespace-nowrap group-hover:pause">
                     {marqueeRow1.map((review, index) => (
                         <div
                             key={`review-r1-${index}`}
-                            className="w-[340px] shrink-0 bg-[#0D1526]/50 backdrop-blur-sm p-6 border border-[#1E2D45] hover:border-[#FF0036]/30 transition-all duration-500 whitespace-normal rounded-2xl group/card relative overflow-hidden"
+                            className="w-[340px] shrink-0 bg-[#0D1526]/40 backdrop-blur-md p-6 border border-[#1E2D45] hover:border-[#FF0036]/40 transition-all duration-300 rounded-2xl group/card whitespace-normal flex flex-col"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-[#FF0036]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity" />
-                            
-                            <div className="flex items-center justify-between mb-5 relative z-10">
+                            <div className="flex items-start justify-between mb-5">
                                 <div className="flex items-center gap-4">
-                                    <ReviewAvatar src={review.avatar} name={review.user} />
+                                    <div className="relative">
+                                        <ReviewAvatar src={review.avatar} name={review.user} />
+                                        <div className="absolute -bottom-1 -right-1 bg-[#07C160] text-white p-0.5 rounded-full border-2 border-[#0D1526]">
+                                            <CheckCircle2 className="w-2.5 h-2.5" />
+                                        </div>
+                                    </div>
                                     <div className="flex flex-col">
-                                        <span className="text-sm font-black text-white">
+                                        <span className="text-sm font-black text-white mb-0.5">
                                             {review.user}
                                         </span>
-                                        <div className="flex mt-1">
+                                        <div className="flex gap-0.5">
                                             {[...Array(5)].map((_, i) => (
                                                 <Star
                                                     key={`r1-star-${i}`}
@@ -178,48 +157,56 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
                                         </div>
                                     </div>
                                 </div>
-                                <span className="text-[10px] text-[#7B91B0] font-mono font-bold">{review.date}</span>
+                                <span className="text-[10px] text-[#7B91B0] font-mono opacity-60 font-bold">{review.date}</span>
                             </div>
 
-                            <p className="text-sm text-[#D1D5DB] mb-6 line-clamp-3 leading-relaxed relative z-10 italic opacity-90">
+                            <p className="text-sm text-[#F0F4FF]/80 mb-6 flex-1 leading-relaxed italic">
                                 "{lang === 'zh' ? review.text : review.en}"
                             </p>
 
-                            <div className="pt-4 border-t border-[#1E2D45] flex items-center justify-between relative z-10">
-                                <div className="flex flex-col">
-                                    <span className="text-[9px] font-black text-[#7B91B0] uppercase tracking-tighter mb-0.5 opacity-60">ITEM PURCHASED</span>
-                                    <span className="text-[11px] font-bold text-[#F0F4FF] truncate max-w-[140px]">
+                            <div className="pt-4 border-t border-[#1E2D45]/50 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-[#FF0036] animate-pulse" />
+                                    <span className="text-[10px] font-bold text-[#7B91B0] truncate max-w-[150px]">
                                         {review.sku}
                                     </span>
                                 </div>
-                                <div className="flex items-center gap-1.5 px-2 py-1 bg-[#07C160]/10 rounded border border-[#07C160]/30">
-                                    <CheckCircle2 className="w-3 h-3 text-[#07C160]" />
-                                    <span className="text-[10px] font-black text-[#07C160] uppercase tracking-tighter">Verified</span>
+                                <div className="flex items-center gap-1.5 px-2 py-1 bg-[#07C160]/10 rounded-lg">
+                                    <ThumbsUp className="w-3 h-3 text-[#07C160]" />
+                                    <span className="text-[9px] font-black text-[#07C160] uppercase tracking-wider">
+                                        {lang === 'zh' ? '真实成交' : 'VERIFIED'}
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
+                {/* Gradient Masks */}
+                <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#060B18] to-transparent pointer-events-none z-10" />
+                <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#060B18] to-transparent pointer-events-none z-10" />
             </div>
 
-            {/* Marquee Row 2 (Reverse) */}
+            {/* Marquee Wrapper - Row 2 */}
             <div className="relative w-full flex overflow-x-hidden group">
-                <div className="animate-marquee-reverse flex gap-6 px-3 whitespace-nowrap group-hover:pause">
+                <div className="animate-marquee-reverse flex gap-8 px-4 whitespace-nowrap group-hover:pause">
                     {marqueeRow2.map((review, index) => (
                         <div
                             key={`review-r2-${index}`}
-                            className="w-[340px] shrink-0 bg-[#0D1526]/50 backdrop-blur-sm p-6 border border-[#1E2D45] hover:border-[#00E5FF]/30 transition-all duration-500 whitespace-normal rounded-2xl group/card relative overflow-hidden"
+                            className="w-[340px] shrink-0 bg-[#0D1526]/40 backdrop-blur-md p-6 border border-[#1E2D45] hover:border-[#FF0036]/40 transition-all duration-300 rounded-2xl whitespace-normal flex flex-col"
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-[#00E5FF]/5 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity" />
-                            
-                            <div className="flex items-center justify-between mb-5 relative z-10">
+                            <div className="flex items-start justify-between mb-5">
                                 <div className="flex items-center gap-4">
-                                    <ReviewAvatar src={review.avatar} name={review.user} />
+                                    <div className="relative">
+                                        <ReviewAvatar src={review.avatar} name={review.user} />
+                                        <div className="absolute -bottom-1 -right-1 bg-[#07C160] text-white p-0.5 rounded-full border-2 border-[#0D1526]">
+                                            <CheckCircle2 className="w-2.5 h-2.5" />
+                                        </div>
+                                    </div>
                                     <div className="flex flex-col">
-                                        <span className="text-sm font-black text-white">
+                                        <span className="text-sm font-black text-white mb-0.5">
                                             {review.user}
                                         </span>
-                                        <div className="flex mt-1">
+                                        <div className="flex gap-0.5">
                                             {[...Array(5)].map((_, i) => (
                                                 <Star
                                                     key={`r2-star-${i}`}
@@ -229,23 +216,52 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
                                         </div>
                                     </div>
                                 </div>
-                                <span className="text-[10px] text-[#7B91B0] font-mono font-bold">{review.date}</span>
+                                <span className="text-[10px] text-[#7B91B0] font-mono opacity-60 font-bold">{review.date}</span>
                             </div>
 
-                            <p className="text-sm text-[#D1D5DB] mb-6 line-clamp-3 leading-relaxed relative z-10 italic opacity-90">
+                            <p className="text-sm text-[#F0F4FF]/80 mb-6 flex-1 leading-relaxed italic">
                                 "{lang === 'zh' ? review.text : review.en}"
                             </p>
 
-                            <div className="pt-4 border-t border-[#1E2D45] flex items-center justify-between relative z-10">
-                                <div className="flex flex-col">
-                                    <span className="text-[9px] font-black text-[#7B91B0] uppercase tracking-tighter mb-0.5 opacity-60">ITEM PURCHASED</span>
-                                    <span className="text-[11px] font-bold text-[#F0F4FF] truncate max-w-[140px]">
+                            <div className="pt-4 border-t border-[#1E2D45]/50 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-[#FF0036] animate-pulse" />
+                                    <span className="text-[10px] font-bold text-[#7B91B0] truncate max-w-[150px]">
                                         {review.sku}
                                     </span>
                                 </div>
-                                <div className="flex items-center gap-1.5 px-2 py-1 bg-[#07C160]/10 rounded border border-[#07C160]/30">
-                                    <CheckCircle2 className="w-3 h-3 text-[#07C160]" />
-                                    <span className="text-[10px] font-black text-[#07C160] uppercase tracking-tighter">Verified</span>
+                                <div className="flex items-center gap-1.5 px-2 py-1 bg-[#07C160]/10 rounded-lg">
+                                    <ThumbsUp className="w-3 h-3 text-[#07C160]" />
+                                    <span className="text-[9px] font-black text-[#07C160] uppercase tracking-wider">
+                                        {lang === 'zh' ? '真实成交' : 'VERIFIED'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                {/* Gradient Masks */}
+                <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#060B18] to-transparent pointer-events-none z-10" />
+                <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#060B18] to-transparent pointer-events-none z-10" />
+            </div>
+        </section>
+    );
+}m">{review.date}</span>
+                            </div>
+
+                            {/* Review Content */}
+                            <p className="text-sm text-slate-700 dark:text-slate-300 mb-4 line-clamp-3 leading-relaxed">
+                                "{lang === 'zh' ? review.text : review.en}"
+                            </p>
+
+                            {/* SKU / Product Info Footer */}
+                            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                                <span className="text-xs text-slate-500 bg-slate-50 dark:bg-slate-800 px-2 py-1 rounded">
+                                    {lang === 'zh' ? '购买版本：' : 'Variant: '} {review.sku}
+                                </span>
+                                <div className="flex items-center gap-1 text-[10px] text-green-600 dark:text-green-500 font-medium">
+                                    <CheckCircle2 className="w-3 h-3" />
+                                    {lang === 'zh' ? '已核实' : 'Verified'}
                                 </div>
                             </div>
                         </div>
@@ -253,10 +269,9 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
                 </div>
 
                 {/* Gradient Masks */}
-                <div className="absolute left-0 top-0 bottom-0 w-24 md:w-64 bg-gradient-to-r from-[#060B18] to-transparent pointer-events-none z-20"></div>
-                <div className="absolute right-0 top-0 bottom-0 w-24 md:w-64 bg-gradient-to-l from-[#060B18] to-transparent pointer-events-none z-20"></div>
+                <div className="absolute left-0 top-0 bottom-0 w-16 md:w-28 bg-gradient-to-r from-[#060B18] to-transparent pointer-events-none z-10"></div>
+                <div className="absolute right-0 top-0 bottom-0 w-16 md:w-28 bg-gradient-to-l from-[#060B18] to-transparent pointer-events-none z-10"></div>
             </div>
         </section>
-
     );
 }
