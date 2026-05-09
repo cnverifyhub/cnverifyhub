@@ -40,9 +40,9 @@ export function CategoryCards({ lang }: { lang: Lang }) {
                             {label}
                         </span>
                     )}
-                    <h3 className="text-lg md:text-xl font-black text-white uppercase tracking-[0.2em]">{title}</h3>
+                    <h3 className="text-lg md:text-xl font-black text-slate-900 dark:text-white uppercase tracking-[0.2em]">{title}</h3>
                 </div>
-                <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent ml-6" />
+                <div className="h-px flex-1 bg-gradient-to-r from-slate-200 dark:from-white/10 to-transparent ml-6" />
             </div>
 
             {/* Cards */}
@@ -63,7 +63,7 @@ export function CategoryCards({ lang }: { lang: Lang }) {
                         >
                             <Link
                                 href={getLocalizedPath(cat.href, lang)}
-                                className="group relative flex flex-col items-center text-center p-5 rounded-2xl border border-white/8 bg-white/[0.04] backdrop-blur hover:-translate-y-1.5 transition-all duration-300 overflow-hidden h-full"
+                                className="group relative flex flex-col items-center text-center p-5 rounded-2xl border border-slate-200 dark:border-white/8 bg-white dark:bg-white/[0.04] shadow-sm dark:shadow-none hover:-translate-y-1.5 transition-all duration-300 overflow-hidden h-full"
                             >
                                 {/* Hover radial glow */}
                                 <div
@@ -77,22 +77,22 @@ export function CategoryCards({ lang }: { lang: Lang }) {
                                     </span>
                                 )}
                                 {isNew && !isHot && (
-                                    <span className="absolute top-2 right-2 text-[8px] font-black bg-white/10 text-white/70 px-1.5 py-0.5 rounded-full border border-white/15 z-10">NEW</span>
+                                    <span className="absolute top-2 right-2 text-[8px] font-black bg-slate-100 dark:bg-white/10 text-slate-600 dark:text-white/70 px-1.5 py-0.5 rounded-full border border-slate-200 dark:border-white/15 z-10">NEW</span>
                                 )}
                                 {/* Icon */}
                                 <div className="w-14 h-14 mb-3 group-hover:scale-110 transition-transform duration-300 relative z-10">{cfg.icon}</div>
                                 {/* Name */}
                                 <p className={`text-sm font-black mb-0.5 relative z-10 ${cfg.textColor}`}>{cat.name['zh']}</p>
-                                <p className="text-[10px] text-white/40 font-medium mb-3 relative z-10">{cat.name['en']}</p>
+                                <p className="text-[10px] text-slate-500 dark:text-white/40 font-medium mb-3 relative z-10">{cat.name['en']}</p>
                                 {/* Stats block */}
-                                <div className="w-full bg-white/5 rounded-xl p-2.5 mt-auto relative z-10">
-                                    <p className="text-[9px] text-white/40 uppercase tracking-wider mb-0.5">起售价</p>
-                                    <p className="text-base font-black text-white tabular-nums">{formatYuan(lowestPrice)}</p>
-                                    <p className="text-[9px] text-emerald-400 mt-0.5">库存 {stock}+</p>
+                                <div className="w-full bg-slate-50 dark:bg-white/5 rounded-xl p-2.5 mt-auto relative z-10">
+                                    <p className="text-[9px] text-slate-400 dark:text-white/40 uppercase tracking-wider mb-0.5">起售价</p>
+                                    <p className="text-base font-black text-slate-900 dark:text-white tabular-nums">{formatYuan(lowestPrice)}</p>
+                                    <p className="text-[9px] text-emerald-600 dark:text-emerald-400 mt-0.5">库存 {stock}+</p>
                                 </div>
                                 {/* Arrow */}
-                                <div className="absolute bottom-3 right-3 w-6 h-6 rounded-full bg-white/8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                                    <ArrowRight className="w-3.5 h-3.5 text-white" />
+                                <div className="absolute bottom-3 right-3 w-6 h-6 rounded-full bg-slate-100 dark:bg-white/8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 dark:text-white" />
                                 </div>
                             </Link>
                         </motion.div>
@@ -103,17 +103,17 @@ export function CategoryCards({ lang }: { lang: Lang }) {
     );
 
     return (
-        <section id="categories" className="py-20" style={{ background: 'linear-gradient(180deg, #0d0d14 0%, #111118 100%)' }}>
+        <section id="categories" className="py-20 bg-slate-50 dark:bg-transparent" style={{ background: 'linear-gradient(180deg, var(--hero-bg-light, #f8fafc) 0%, var(--hero-bg-dark, #0d0d14) 100%)'.replace('var(--hero-bg-light, #f8fafc)', 'transparent').replace('var(--hero-bg-dark, #0d0d14)', 'transparent') }}>
             <div className="section-container">
                 {/* Section title */}
                 <div className="text-center mb-16">
                     <p className="text-[11px] font-black text-[#FF0036] uppercase tracking-[0.4em] mb-3">
                         🔥 {lang === 'zh' ? '全部分类' : 'ALL CATEGORIES'}
                     </p>
-                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-4 tracking-tight">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
                         {t('home.categories.title', lang)}
                     </h2>
-                    <p className="text-base text-white/50 max-w-2xl mx-auto font-medium">
+                    <p className="text-base text-slate-500 dark:text-white/50 max-w-2xl mx-auto font-medium">
                         {t('home.categories.subtitle', lang)}
                     </p>
                 </div>

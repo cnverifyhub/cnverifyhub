@@ -95,9 +95,9 @@ export default function Footer() {
     ];
 
     return (
-        <footer className="relative pt-10 pb-20 md:pb-8 overflow-hidden z-20 border-t border-[#FF0036]/30" style={{ background: '#0a0a0f' }}>
+        <footer className="relative pt-10 pb-20 md:pb-8 overflow-hidden z-20 border-t border-[#FF0036]/30 bg-slate-50 dark:bg-[#0a0a0f]">
             {/* Background Aesthetics */}
-            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#FF0036] to-transparent opacity-40" />
+            <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#FF0036] to-transparent opacity-20 dark:opacity-40" />
             <div className="absolute -left-20 top-20 w-96 h-96 bg-[#FF0036]/5 blur-[80px] rounded-full pointer-events-none" />
             <div className="absolute -right-20 bottom-0 w-96 h-96 bg-[#1677ff]/5 blur-[80px] rounded-full pointer-events-none" />
             
@@ -125,7 +125,7 @@ export default function Footer() {
                     <div className="md:col-span-2 lg:col-span-4">
                         <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 mb-4 group inline-flex">
                             <div className="w-10 h-10 bg-gradient-to-br from-[#FF0036] to-[#FF5000] rounded-xl flex items-center justify-center p-2 shadow-lg shadow-[#FF0036]/20">
-                                <Image src="/logo.png" alt="Logo" width={32} height={32} className="w-full h-full object-contain brightness-0 invert" />
+                                <Image src="/logo.png" alt="Logo" width={32} height={32} className="w-full h-full object-contain dark:brightness-0 dark:invert" />
                             </div>
                             <div className="flex flex-col">
                                 <span className="font-black text-xl tracking-tighter text-slate-900 dark:text-white leading-none">CNVerifyHub</span>

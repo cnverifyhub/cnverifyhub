@@ -124,11 +124,11 @@ function GoldSeal({ lang }: { lang: Lang }) {
 /* ── Main Hero ──────────────────────────────────────── */
 export function Hero({ lang }: { lang: Lang }) {
     return (
-        <section className="relative overflow-hidden pt-16 sm:pt-24 pb-16 lg:pt-32 lg:pb-28" style={{ background: 'linear-gradient(160deg, #0d0d14 0%, #1a0a0a 40%, #0d0d14 100%)' }}>
-            {/* Radial glow blobs */}
-            <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-[#FF0036]/8 rounded-full blur-[160px] -translate-y-1/3 translate-x-1/3 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#FF5000]/6 rounded-full blur-[140px] translate-y-1/3 -translate-x-1/4 pointer-events-none" />
-            <div className="absolute inset-0 opacity-[0.04] pointer-events-none bg-[url('/images/patterns/gplay.png')]" />
+        <section className="relative overflow-hidden pt-16 sm:pt-24 pb-16 lg:pt-32 lg:pb-28 bg-white dark:bg-[#0d0d14]">
+            {/* Radial glow blobs - only visible in dark mode or subtle in light */}
+            <div className="absolute top-0 right-0 w-[700px] h-[700px] bg-[#FF0036]/5 dark:bg-[#FF0036]/8 rounded-full blur-[160px] -translate-y-1/3 translate-x-1/3 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#FF5000]/5 dark:bg-[#FF5000]/6 rounded-full blur-[140px] translate-y-1/3 -translate-x-1/4 pointer-events-none" />
+            <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.04] pointer-events-none bg-[url('/images/patterns/gplay.png')]" />
 
             <DanmuLayer lang={lang} />
             <FloatingCoupon lang={lang} />
@@ -137,10 +137,10 @@ export function Hero({ lang }: { lang: Lang }) {
                 <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
 
                     {/* Live online badge */}
-                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="flex items-center gap-2 mb-6 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 backdrop-blur">
+                    <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="flex items-center gap-2 mb-6 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-full px-4 py-1.5 backdrop-blur">
                         <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" /><span className="relative inline-flex rounded-full h-2 w-2 bg-red-500" /></span>
-                        <Users className="w-3.5 h-3.5 text-white/50" />
-                        <span className="text-[11px] font-black text-white/70 uppercase tracking-widest">{lang === 'zh' ? '实时在线 3,241人' : '3,241 Online Now'}</span>
+                        <Users className="w-3.5 h-3.5 text-slate-400 dark:text-white/50" />
+                        <span className="text-[11px] font-black text-slate-600 dark:text-white/70 uppercase tracking-widest">{lang === 'zh' ? '实时在线 3,241人' : '3,241 Online Now'}</span>
                     </motion.div>
 
                     {/* Announcement bar */}
@@ -156,7 +156,7 @@ export function Hero({ lang }: { lang: Lang }) {
                     </motion.div>
 
                     {/* H1 */}
-                    <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.6 }} className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tighter text-white mb-6 leading-[1.05]">
+                    <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.6 }} className="text-3xl sm:text-5xl lg:text-7xl font-black tracking-tighter text-slate-900 dark:text-white mb-6 leading-[1.05]">
                         {t('hero.title.line1', lang)}{' '}
                         <br className="hidden sm:block" />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF0036] via-[#FF5000] to-[#FF8C00]">
@@ -165,16 +165,16 @@ export function Hero({ lang }: { lang: Lang }) {
                     </motion.h1>
 
                     {/* Subtitle with brand chips */}
-                    <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="text-sm sm:text-lg text-white/60 mb-3 max-w-2xl leading-relaxed">
+                    <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="text-sm sm:text-lg text-slate-600 dark:text-white/60 mb-3 max-w-2xl leading-relaxed">
                         {t('hero.subtitle', lang)}
                     </motion.p>
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="flex flex-wrap justify-center gap-2 mb-8">
                         {[
-                            { label: lang === 'zh' ? '微信' : 'WeChat', color: 'bg-[#07C160]/15 text-[#07C160] border-[#07C160]/30' },
-                            { label: lang === 'zh' ? '支付宝' : 'Alipay', color: 'bg-[#1677ff]/15 text-[#1677ff] border-[#1677ff]/30' },
-                            { label: lang === 'zh' ? '抖音' : 'Douyin', color: 'bg-white/10 text-white/80 border-white/15' },
-                            { label: lang === 'zh' ? '淘宝/闲鱼' : 'Taobao/Xianyu', color: 'bg-[#FF5000]/15 text-[#FF8C00] border-[#FF5000]/30' },
-                            { label: lang === 'zh' ? '小红书' : 'Xiaohongshu', color: 'bg-rose-500/15 text-rose-400 border-rose-500/30' },
+                            { label: lang === 'zh' ? '微信' : 'WeChat', color: 'bg-[#07C160]/10 dark:bg-[#07C160]/15 text-[#07C160] border-[#07C160]/20 dark:border-[#07C160]/30' },
+                            { label: lang === 'zh' ? '支付宝' : 'Alipay', color: 'bg-[#1677ff]/10 dark:bg-[#1677ff]/15 text-[#1677ff] border-[#1677ff]/20 dark:border-[#1677ff]/30' },
+                            { label: lang === 'zh' ? '抖音' : 'Douyin', color: 'bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-white/80 border-slate-200 dark:border-white/15' },
+                            { label: lang === 'zh' ? '淘宝/闲鱼' : 'Taobao/Xianyu', color: 'bg-[#FF5000]/10 dark:bg-[#FF5000]/15 text-[#FF8C00] border-[#FF5000]/20 dark:border-[#FF5000]/30' },
+                            { label: lang === 'zh' ? '小红书' : 'Xiaohongshu', color: 'bg-rose-500/10 dark:bg-rose-500/15 text-rose-500 dark:text-rose-400 border-rose-500/20 dark:border-rose-500/30' },
                         ].map((c, i) => (
                             <span key={i} className={`text-xs font-bold px-3 py-1 rounded-full border backdrop-blur ${c.color}`}>{c.label}</span>
                         ))}
@@ -188,10 +188,10 @@ export function Hero({ lang }: { lang: Lang }) {
                             <span className="absolute inset-0 hero-shine" />
                         </Link>
                         <div className="flex gap-3">
-                            <a href="https://t.me/CNVerifyHub" target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-4 text-sm font-bold rounded-2xl border border-white/15 text-white/80 hover:bg-white/8 hover:border-white/25 transition-all backdrop-blur">
+                            <a href="https://t.me/CNVerifyHub" target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-4 text-sm font-bold rounded-2xl border border-slate-200 dark:border-white/15 text-slate-700 dark:text-white/80 hover:bg-slate-50 dark:hover:bg-white/8 hover:border-slate-300 dark:hover:border-white/25 transition-all backdrop-blur">
                                 <Send className="w-4 h-4" />{t('hero.cta.channel', lang)}
                             </a>
-                            <a href="https://t.me/cnwechatpro" target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-4 text-sm font-bold rounded-2xl border border-white/15 text-white/80 hover:bg-white/8 hover:border-white/25 transition-all backdrop-blur">
+                            <a href="https://t.me/cnwechatpro" target="_blank" rel="noopener noreferrer" className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-5 py-4 text-sm font-bold rounded-2xl border border-slate-200 dark:border-white/15 text-slate-700 dark:text-white/80 hover:bg-slate-50 dark:hover:bg-white/8 hover:border-slate-300 dark:hover:border-white/25 transition-all backdrop-blur">
                                 <MessageSquare className="w-4 h-4" />{t('hero.cta.personal', lang)}
                             </a>
                         </div>
@@ -231,13 +231,13 @@ export function Hero({ lang }: { lang: Lang }) {
 
                     {/* Social Proof Strip */}
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="w-full flex flex-col items-center gap-2 mb-10">
-                        <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-1">{lang === 'zh' ? '🔴 实时成交' : '🔴 Live Orders'}</p>
+                        <p className="text-[10px] font-black text-slate-400 dark:text-white/30 uppercase tracking-widest mb-1">{lang === 'zh' ? '🔴 实时成交' : '🔴 Live Orders'}</p>
                         <SocialProofStrip lang={lang} />
                     </motion.div>
 
                     {/* Journey Steps */}
                     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="w-full max-w-xl mx-auto mb-10">
-                        <div className="flex items-center justify-between bg-white/5 backdrop-blur border border-white/8 rounded-2xl px-4 py-3">
+                        <div className="flex items-center justify-between bg-slate-50 dark:bg-white/5 backdrop-blur border border-slate-200 dark:border-white/8 rounded-2xl px-4 py-3">
                             {[
                                 { icon: <Star className="w-4 h-4" />, label: lang === 'zh' ? '选择账号' : 'Select', num: '1' },
                                 { icon: <Lock className="w-4 h-4" />, label: lang === 'zh' ? '扫码支付' : 'Pay QR', num: '2' },
@@ -247,7 +247,7 @@ export function Hero({ lang }: { lang: Lang }) {
                                 <div key={i} className="flex items-center gap-1 shrink-0">
                                     <div className="flex items-center gap-1.5">
                                         <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#FF5000] to-[#FF0036] flex items-center justify-center text-white text-[10px] font-black shadow-neon-red-sm">{step.num}</div>
-                                        <p className="text-[10px] font-bold text-white/70 whitespace-nowrap hidden sm:block">{step.label}</p>
+                                        <p className="text-[10px] font-bold text-slate-700 dark:text-white/70 whitespace-nowrap hidden sm:block">{step.label}</p>
                                     </div>
                                     {i < 3 && <div className="w-4 sm:w-10 h-px bg-gradient-to-r from-[#FF0036]/40 to-[#FF5000]/20 mx-1 sm:mx-2" />}
                                 </div>
@@ -256,19 +256,19 @@ export function Hero({ lang }: { lang: Lang }) {
                     </motion.div>
 
                     {/* Stats Row */}
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="w-full grid grid-cols-2 sm:grid-cols-5 gap-0 border-t border-white/8 pt-8">
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="w-full grid grid-cols-2 sm:grid-cols-5 gap-0 border-t border-slate-200 dark:border-white/8 pt-8">
                         {[
                             { end: 50, suffix: 'K+', label: t('hero.stat.orders', lang) },
                             { end: 12, suffix: ',480+', label: t('hero.stat.customers', lang) },
-                            { end: 3, suffix: ',120+', label: lang === 'zh' ? '累计实名成功' : 'Verified KYC', color: 'text-indigo-400' },
+                            { end: 3, suffix: ',120+', label: lang === 'zh' ? '累计实名成功' : 'Verified KYC', color: 'text-indigo-600 dark:text-indigo-400' },
                             { val: '30 min', label: t('hero.stat.delivery', lang) },
                             { val: '24/7', label: t('hero.stat.support', lang) },
                         ].map((s, i) => (
-                            <div key={i} className={`text-center px-2 py-2 ${i > 0 ? 'border-l border-white/8' : ''}`}>
-                                <p className={`text-xl sm:text-2xl font-extrabold ${(s as any).color || 'text-white'}`}>
+                            <div key={i} className={`text-center px-2 py-2 ${i > 0 ? 'border-l border-slate-200 dark:border-white/8' : ''}`}>
+                                <p className={`text-xl sm:text-2xl font-extrabold ${(s as any).color || 'text-slate-900 dark:text-white'}`}>
                                     {(s as any).val ?? <AnimatedCounter end={(s as any).end} suffix={(s as any).suffix} duration={2500} />}
                                 </p>
-                                <p className="text-[10px] text-white/40 mt-1">{s.label}</p>
+                                <p className="text-[10px] text-slate-500 dark:text-white/40 mt-1">{s.label}</p>
                             </div>
                         ))}
                     </motion.div>
