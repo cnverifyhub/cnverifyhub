@@ -12,7 +12,7 @@ const BSCSCAN_API = 'https://api.bscscan.com/api';
 const ETHERSCAN_API = 'https://api.etherscan.io/api';
 
 const WALLET_ADDRESS = process.env.NEXT_PUBLIC_TRC20_WALLET || 'TQofpQffADyHpv25EBZPcQD7scx8AZV5or';
-const WALLET_ADDRESS_2 = process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'TH2mdXf9wkddGSpynCTLJcS4CcHSLHSv4E';
+const WALLET_ADDRESS_2 = process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'TPUxa1UGWLo7iHpx8fWK63YwxqP4FPzHnj';
 
 const BEP20_WALLET = process.env.NEXT_PUBLIC_BEP20_WALLET || '0xb47669d0d17b57be5af515bf57e0294c130359b1';
 const ERC20_WALLET = process.env.NEXT_PUBLIC_ERC20_WALLET || '0xb47669d0d17b57be5af515bf57e0294c130359b1';

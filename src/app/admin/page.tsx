@@ -625,7 +625,7 @@ export default function AdminDashboardPage() {
     // ── Wallet label helper ──
     const getWalletLabel = (wallet: string, network: string) => {
         const w1 = process.env.NEXT_PUBLIC_TRC20_WALLET || 'TQofpQffADyHpv25EBZPcQD7scx8AZV5or';
-        const w2 = process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'TH2mdXf9wkddGSpynCTLJcS4CcHSLHSv4E';
+        const w2 = process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'TPUxa1UGWLo7iHpx8fWK63YwxqP4FPzHnj';
         if (wallet === w1) return 'Main TRC20';
         if (wallet === w2) return 'Backup TRC20';
         if (network?.startsWith('bep20')) return 'BEP20';

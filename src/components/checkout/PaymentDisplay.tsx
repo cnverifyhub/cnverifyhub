@@ -30,7 +30,7 @@ const NETWORKS: { id: PaymentNetwork; label: string; labelZh: string; token: str
 // TRC20 wallets — main + backup
 const TRC20_WALLETS = [
     { address: process.env.NEXT_PUBLIC_TRC20_WALLET || 'TQofpQffADyHpv25EBZPcQD7scx8AZV5or', label: 'Main', labelZh: '主钱包', recommended: true },
-    { address: process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'TH2mdXf9wkddGSpynCTLJcS4CcHSLHSv4E', label: 'Backup', labelZh: '备用' },
+    { address: process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'TPUxa1UGWLo7iHpx8fWK63YwxqP4FPzHnj', label: 'Backup', labelZh: '备用' },
 ];
 
 function getWalletAddress(network: PaymentNetwork, trc20Index: number = 0): string {
