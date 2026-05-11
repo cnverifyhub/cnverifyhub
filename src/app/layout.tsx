@@ -253,7 +253,7 @@ export default function RootLayout({
                 />
             </head>
             <body className={`min-h-screen flex flex-col overflow-x-hidden font-sans`}>
-                <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || 'GTM-PHWJK3GG'} />
+                <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || 'GTM-P3BSVQS6'} />
                 
                 <ClientLayoutWrapper>
                     {children}
