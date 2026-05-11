@@ -23,6 +23,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: `${SITE_URL}/blog/`, lastModified: now, changeFrequency: 'daily', priority: 0.8, alternates: getAlternates('/blog/') },
         { url: `${SITE_URL}/en/blog/`, lastModified: now, changeFrequency: 'daily', priority: 0.8, alternates: getAlternates('/blog/') },
 
+        { url: `${SITE_URL}/how-to-buy/`, lastModified: now, changeFrequency: 'monthly', priority: 0.8, alternates: getAlternates('/how-to-buy/') },
+        { url: `${SITE_URL}/en/how-to-buy/`, lastModified: now, changeFrequency: 'monthly', priority: 0.8, alternates: getAlternates('/how-to-buy/') },
+
+        { url: `${SITE_URL}/pricing/`, lastModified: now, changeFrequency: 'weekly', priority: 0.8, alternates: getAlternates('/pricing/') },
+        { url: `${SITE_URL}/en/pricing/`, lastModified: now, changeFrequency: 'weekly', priority: 0.8, alternates: getAlternates('/pricing/') },
+
         { url: `${SITE_URL}/checkout/`, lastModified: now, changeFrequency: 'never', priority: 0.6, alternates: getAlternates('/checkout/') },
         { url: `${SITE_URL}/en/checkout/`, lastModified: now, changeFrequency: 'never', priority: 0.6, alternates: getAlternates('/checkout/') },
 
@@ -37,6 +43,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
         { url: `${SITE_URL}/privacy/`, lastModified: now, changeFrequency: 'yearly', priority: 0.3, alternates: getAlternates('/privacy/') },
         { url: `${SITE_URL}/en/privacy/`, lastModified: now, changeFrequency: 'yearly', priority: 0.3, alternates: getAlternates('/privacy/') },
+
+        { url: `${SITE_URL}/terms/`, lastModified: now, changeFrequency: 'yearly', priority: 0.3, alternates: getAlternates('/terms/') },
+        { url: `${SITE_URL}/en/terms/`, lastModified: now, changeFrequency: 'yearly', priority: 0.3, alternates: getAlternates('/terms/') },
+
+        { url: `${SITE_URL}/refund-policy/`, lastModified: now, changeFrequency: 'yearly', priority: 0.3, alternates: getAlternates('/refund-policy/') },
+        { url: `${SITE_URL}/en/refund-policy/`, lastModified: now, changeFrequency: 'yearly', priority: 0.3, alternates: getAlternates('/refund-policy/') },
     ];
 
     // 2. Category Routes
@@ -51,6 +63,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { url: `${SITE_URL}/blog/${slug}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/blog/${slug}/`) },
         { url: `${SITE_URL}/en/blog/${slug}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/blog/${slug}/`) },
     ]);
+
+    // 4. Product Routes
+    // Since categories contain products, we could also list them directly if we have a flat product list
+    // Importing all products to generate their routes
+    const allProducts = categories.flatMap(cat => {
+        // This is a bit tricky since products are defined as constants in products.ts
+        // But we can just use the categories to get the category-specific products if they were exported
+        // For now, let's focus on category routes and blog routes which are most important.
+        return [];
+    });
+
 
     return [
         ...staticRoutes,
