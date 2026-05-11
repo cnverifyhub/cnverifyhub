@@ -42,7 +42,7 @@ export function ClientLayoutWrapper({ children }: { children: React.ReactNode })
     return (
         <SmoothScrollProvider>
             <LoadingScreen />
-            <div className="flex flex-col min-h-screen pt-[66px] md:pt-[70px]">
+            <div className="flex flex-col min-h-screen">
                 <BaiduPush />
                 <Header />
                 <main className="flex-grow pb-[64px] md:pb-0">

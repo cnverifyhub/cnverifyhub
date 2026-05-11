@@ -74,13 +74,13 @@ export function TrustBadges() {
     }, { scope: containerRef });
 
     return (
-        <section ref={containerRef} className="py-12 bg-[#060B18]">
+        <section ref={containerRef} className="py-20 bg-[#060B18]">
             <div className="section-container">
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
                     {badges.map((badge, i) => (
                         <div 
                             key={i}
-                            className="trust-badge-card group p-5 rounded-xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all duration-300 relative overflow-hidden"
+                            className="trust-badge-card group p-6 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-[#00E5FF]/[0.02] hover:border-[#00E5FF]/20 transition-all duration-500 relative overflow-hidden"
                         >
                             {/* Accent line */}
                             <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] bg-[#FF0036] scale-y-0 group-hover:scale-y-100 transition-transform duration-300" />

@@ -120,7 +120,7 @@ export default function Header() {
                             : 'bg-[#060B18]'
                     }`}
                 >
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-6">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-8">
                         {/* Logo */}
                         <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 shrink-0 group">
                             <div className="w-7 h-7 rounded flex items-center justify-center bg-[#FF2D55] text-white font-syne font-black text-xs leading-none shadow-neon-red-sm">
@@ -222,7 +222,7 @@ export default function Header() {
                                 className="absolute left-0 right-0 border-b border-[#1E2D45] bg-[#0D1526]/98 backdrop-blur-xl z-40"
                             >
                                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                                    <div className="grid grid-cols-5 gap-3">
+                                    <div className="grid grid-cols-5 gap-4">
                                         {categories.map((cat) => {
                                             const meta = categoryMeta[cat.id];
                                             if (!meta) return null;

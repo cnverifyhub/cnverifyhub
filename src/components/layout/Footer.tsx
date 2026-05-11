@@ -49,9 +49,9 @@ export default function Footer() {
             {/* ── Live stats bar ──────────────────── */}
             <div className="border-b border-[#1E2D45]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-4 divide-x divide-[#1E2D45]">
+                    <div className="grid grid-cols-2 md:grid-cols-4 divide-x-0 md:divide-x divide-[#1E2D45]">
                         {liveStats.map((s, i) => (
-                            <div key={i} className="flex flex-col items-center py-4 gap-0.5">
+                            <div key={i} className={`flex flex-col items-center py-6 gap-0.5 ${i % 2 !== 0 && i < 2 ? 'border-l' : ''} ${i >= 2 ? 'border-t md:border-t-0 md:border-l' : ''} ${i === 2 ? 'md:border-l border-[#1E2D45]' : ''} border-[#1E2D45]`}>
                                 <p className="font-mono-price text-base font-bold text-[#F0F4FF]">{s.value}</p>
                                 <p className="text-[9px] text-[#7B91B0] uppercase tracking-wider">{s.label[lang]}</p>
                             </div>
@@ -61,7 +61,7 @@ export default function Footer() {
             </div>
 
             {/* ── Main grid ───────────────────────── */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
 
                     {/* Brand column */}

@@ -271,7 +271,7 @@ export function Hero({ lang }: { lang: Lang }) {
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.85)_100%)] pointer-events-none" />
             </div>
 
-            <div className="section-container relative z-10 py-16 lg:py-24 w-full">
+            <div className="section-container relative z-10 py-20 lg:py-32 w-full">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
                     {/* ── Left panel (7/12) ─────────────────── */}
@@ -374,10 +374,10 @@ export function Hero({ lang }: { lang: Lang }) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.6 }}
-                            className="grid grid-cols-4 gap-0 border border-[#1E2D45] rounded-lg overflow-hidden"
+                            className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-[#1E2D45] rounded-lg overflow-hidden"
                         >
                             {stats.map((s, i) => (
-                                <div key={i} className={`flex flex-col items-center py-4 px-2 ${i > 0 ? 'border-l border-[#1E2D45]' : ''} bg-[#0D1526]`}>
+                                <div key={i} className={`flex flex-col items-center py-5 px-3 ${i % 2 !== 0 && i < 2 ? 'border-l' : ''} ${i >= 2 ? 'border-t md:border-t-0 md:border-l' : ''} ${i === 2 ? 'md:border-l border-[#1E2D45]' : ''} border-[#1E2D45] bg-[#0D1526]`}>
                                     <div className="text-[#7B91B0] mb-1.5">{s.icon}</div>
                                     <p className="font-mono-price text-base font-bold text-white leading-none mb-1">
                                         {s.isCounter ? (
@@ -420,7 +420,7 @@ export function Hero({ lang }: { lang: Lang }) {
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 }}
-                    className="mt-16 grid grid-cols-4 gap-0 border border-[#1E2D45] rounded-lg overflow-hidden"
+                    className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-0 border border-[#1E2D45] rounded-lg overflow-hidden"
                 >
                     {[
                         { num: '01', label: lang === 'zh' ? '选择品类' : 'Select', sub: lang === 'zh' ? '海量账号类型' : 'Browse categories' },
@@ -428,7 +428,7 @@ export function Hero({ lang }: { lang: Lang }) {
                         { num: '03', label: lang === 'zh' ? '自动发货' : 'Receive', sub: lang === 'zh' ? '平均<5分钟' : 'Avg <5 minutes' },
                         { num: '04', label: lang === 'zh' ? '验证使用' : 'Verify',  sub: lang === 'zh' ? '72小时质保' : '72H warranty' },
                     ].map((step, i) => (
-                        <div key={i} className={`flex items-center gap-3 px-4 py-4 bg-[#0D1526] ${i > 0 ? 'border-l border-[#1E2D45]' : ''}`}>
+                        <div key={i} className={`flex items-center gap-4 px-5 py-5 bg-[#0D1526] ${i % 2 !== 0 && i < 2 ? 'border-l' : ''} ${i >= 2 ? 'border-t md:border-t-0 md:border-l' : ''} ${i === 2 ? 'md:border-l border-[#1E2D45]' : ''} border-[#1E2D45]`}>
                             <span className="font-mono-price text-2xl font-black text-[#1E2D45] leading-none shrink-0">{step.num}</span>
                             <div>
                                 <p className="text-sm font-semibold text-white">{step.label}</p>

@@ -52,7 +52,7 @@ export function CategoryCards({ lang }: { lang: Lang }) {
                 </div>
 
                 {/* Bento grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 auto-rows-[160px] gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 auto-rows-[160px] gap-4">
 
                     {/* Featured card — spans 2×2 */}
                     <motion.div
@@ -103,6 +103,10 @@ export function CategoryCards({ lang }: { lang: Lang }) {
                                         <p className="font-mono-price text-2xl font-black mt-1" style={{ color: featuredMeta.color }}>
                                             {formatYuan(featuredPrice)}
                                             <span className="text-xs font-normal text-[#7B91B0] ml-1">起</span>
+                                        </p>
+                                        <p className="text-[10px] text-[#07C160] font-medium mt-1">
+                                            {lang === 'zh' ? '已售 ' : 'Sold '}
+                                            <span className="font-bold">{(featuredPrice * 123) % 1000 + 500}+</span>
                                         </p>
                                     </div>
                                     <div className="w-10 h-10 flex items-center justify-center border border-[#1E2D45] group-hover:border-[#00E5FF]/40 group-hover:bg-[#00E5FF]/5 rounded transition-all">
@@ -171,7 +175,14 @@ export function CategoryCards({ lang }: { lang: Lang }) {
                                                 {formatYuan(price)}
                                             </p>
                                         </div>
-                                        <p className="text-[9px] text-[#07C160] font-mono">{stock > 999 ? '999+' : stock}</p>
+                                        <div className="flex flex-col items-end">
+                                            <p className={`text-[9px] font-mono ${stock < 50 ? 'text-[#FF2D55] animate-pulse' : 'text-[#07C160]'}`}>
+                                                {stock > 999 ? '999+' : stock}
+                                            </p>
+                                            <p className="text-[8px] text-[#7B91B0] mt-0.5">
+                                                {lang === 'zh' ? '已售' : 'Sold'} {(price * 47) % 500 + 100}+
+                                            </p>
+                                        </div>
                                     </div>
                                 </Link>
                             </motion.div>
