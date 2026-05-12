@@ -41,6 +41,10 @@ const nextConfig = {
             value: [
               '<https://mybzjmhyyxamldklezngu.supabase.co>; rel=preconnect',
               '<https://hm.baidu.com>; rel=dns-prefetch',
+              '</.well-known/api-catalog>; rel="api-catalog"',
+              '</.well-known/api-catalog>; rel="service-desc"',
+              '</llms.txt>; rel="service-doc"',
+              '</sitemap.xml>; rel="describedby"',
             ].join(', ')
           },
         ],

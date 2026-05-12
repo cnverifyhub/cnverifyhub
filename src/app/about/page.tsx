@@ -160,7 +160,7 @@ export default function AboutPage() {
                                 <CheckCircle2 className="w-5 h-5" />
                                 查看全部产品
                             </Link>
-                            <a href="https://t.me/cnwechatpro" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/30 text-white rounded-2xl font-black hover:bg-white/20 transition-all">
+                            <a href="https://t.me/cnverifyhub" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/30 text-white rounded-2xl font-black hover:bg-white/20 transition-all">
                                 <Send className="w-5 h-5" />
                                 Telegram 咨询
                             </a>

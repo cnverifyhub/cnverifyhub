@@ -65,7 +65,7 @@ export default function TermsPage() {
             title: '争议解决',
             content: [
                 '如发生交易争议，双方应首先通过友好协商解决。',
-                '所有投诉和争议请通过 Telegram 客服（@cnwechatpro）或邮箱（cnverifyhub@gmail.com）提交。',
+                '所有投诉和争议请通过 Telegram 客服（@cnverifyhub）或邮箱（cnverifyhub@gmail.com）提交。',
                 '我们承诺在收到投诉后 24 小时内做出初步回复。',
             ]
         },
@@ -120,7 +120,7 @@ export default function TermsPage() {
                     如果您对条款有任何疑问，请随时联系我们的客服团队。
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                    <a href="https://t.me/cnwechatpro" target="_blank" rel="noopener noreferrer" className="btn-primary">
+                    <a href="https://t.me/cnverifyhub" target="_blank" rel="noopener noreferrer" className="btn-primary">
                         Telegram 客服
                     </a>
                     <a href="mailto:cnverifyhub@gmail.com" className="btn-outline">

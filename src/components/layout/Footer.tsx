@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ShieldCheck, Zap, FileText, Shield, HelpCircle, ArrowUpRight, ExternalLink } from 'lucide-react';
+import { ShieldCheck, Zap, FileText, Shield, HelpCircle, ArrowUpRight, ExternalLink, MessageSquare } from 'lucide-react';
 import { getLangFromPath, getLocalizedPath } from '@/lib/i18n';
 import { categories } from '@/data/products';
 import {
@@ -32,7 +32,7 @@ export default function Footer() {
     const support = [
         { label: { zh: '帮助中心', en: 'FAQ Center' },     icon: HelpCircle,   href: '/faq' },
         { label: { zh: '订单追踪', en: 'Track Order' },    icon: ShieldCheck,  href: '/track' },
-        { label: { zh: '联系客服', en: 'Live Support' },   icon: Zap,          href: 'https://t.me/cnwechatpro', external: true },
+        { icon: MessageSquare, label: { zh: '客服', en: 'Support' }, href: 'https://t.me/cnverifyhub', external: true },
         { label: { zh: '隐私政策', en: 'Privacy' },        icon: Shield,       href: '/privacy' },
         { label: { zh: '退款政策', en: 'Refund Policy' },  icon: FileText,     href: '/refund-policy' },
     ];
@@ -178,7 +178,7 @@ export default function Footer() {
                         </ul>
                         {/* Telegram CTA */}
                         <a
-                            href="https://t.me/CNVerifyHub"
+                            href={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME}` : 'https://t.me/cnverifyhub'}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 px-4 py-2.5 rounded border border-[#1E2D45] hover:border-[#00E5FF]/40 bg-[#0D1526] hover:bg-[#142035] transition-all text-xs font-medium text-[#7B91B0] hover:text-white group"

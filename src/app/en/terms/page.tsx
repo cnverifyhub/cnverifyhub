@@ -65,7 +65,7 @@ export default function TermsPageEn() {
             title: 'Dispute Resolution',
             content: [
                 'In case of transaction disputes, both parties should first attempt to resolve through friendly negotiation.',
-                'All complaints and disputes should be submitted via Telegram support (@cnwechatpro) or email (cnverifyhub@gmail.com).',
+                'All complaints and disputes should be submitted via Telegram support (@cnverifyhub) or email (cnverifyhub@gmail.com).',
                 'We commit to providing an initial response within 24 hours of receiving a complaint.',
             ]
         },
@@ -120,7 +120,7 @@ export default function TermsPageEn() {
                     If you have any questions about our terms, please dont hesitate to contact our support team.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                    <a href="https://t.me/cnwechatpro" target="_blank" rel="noopener noreferrer" className="btn-primary">
+                    <a href="https://t.me/cnverifyhub" target="_blank" rel="noopener noreferrer" className="btn-primary">
                         Telegram Support
                     </a>
                     <a href="mailto:cnverifyhub@gmail.com" className="btn-outline">

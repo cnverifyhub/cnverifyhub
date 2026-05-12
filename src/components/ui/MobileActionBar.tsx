@@ -14,7 +14,7 @@ export function MobileActionBar() {
 
     const navItems = [
         { icon: Home, label: lang === 'zh' ? '首页' : 'Home', href: '/' },
-        { icon: MessageSquare, label: lang === 'zh' ? '客服' : 'Support', href: 'https://t.me/cnwechatpro', external: true },
+        { icon: MessageSquare, label: lang === 'zh' ? '客服' : 'Support', href: 'https://t.me/cnverifyhub', external: true },
         { icon: ShoppingCart, label: lang === 'zh' ? '购物车' : 'Cart', href: '/checkout', badge: cartCount },
         { icon: User, label: lang === 'zh' ? '我的' : 'Me', href: '/account' },
     ];

@@ -122,14 +122,14 @@ const organizationJsonLd = {
         {
             '@type': 'ContactPoint',
             contactType: 'customer service',
-            url: 'https://t.me/cnwechatpro',
+            url: 'https://t.me/cnverifyhub',
             email: 'cnverifyhub@gmail.com',
             availableLanguage: ['Chinese', 'English'],
         }
     ],
     sameAs: [
         'https://t.me/CNVerifyHub',
-        'https://t.me/cnwechatpro',
+        'https://t.me/cnverifyhub',
     ],
 };
 

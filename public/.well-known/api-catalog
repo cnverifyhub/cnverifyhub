@@ -1,0 +1,43 @@
+{
+  "version": "1.0",
+  "services": [
+    {
+      "name": "CNVerifyHub Payment Verification",
+      "description": "Verify multi-chain crypto payments (TRC20, BEP20, ERC20).",
+      "endpoints": [
+        {
+          "path": "/api/verify-payment",
+          "method": "POST",
+          "description": "Verify a transaction by hash and expected amount."
+        },
+        {
+          "path": "/api/verify-payment/poll",
+          "method": "POST",
+          "description": "Poll for payment confirmation status."
+        }
+      ]
+    },
+    {
+      "name": "Product Catalog",
+      "description": "Retrieve available products and categories.",
+      "endpoints": [
+        {
+          "path": "/api/products",
+          "method": "GET",
+          "description": "List all active products."
+        }
+      ]
+    },
+    {
+      "name": "Premium Agent Data (x402)",
+      "description": "High-value market statistics and analytics for AI agents. Requires x402 payment.",
+      "endpoints": [
+        {
+          "path": "/api/agent/premium",
+          "method": "GET",
+          "description": "Get real-time market stats ($0.01 on Base Mainnet)."
+        }
+      ]
+    }
+  ]
+}

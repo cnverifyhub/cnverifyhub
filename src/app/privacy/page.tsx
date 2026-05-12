@@ -75,7 +75,7 @@ export default function PrivacyPage() {
                             <p className="opacity-90">{lang === 'zh' ? '联系我们的合规团队获取详细解答' : 'Contact our compliance team for detailed answers'}</p>
                         </div>
                         <a 
-                            href="https://t.me/cnwechatpro" 
+                            href="https://t.me/cnverifyhub" 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className="px-8 py-3 bg-white text-indigo-600 font-black rounded-2xl hover:bg-indigo-50 transition-colors flex items-center gap-2 shrink-0 shadow-lg"
