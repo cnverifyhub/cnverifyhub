@@ -3,6 +3,7 @@
    Based on competitive market research
    ============================================ */
 import type { Product, Category, CategoryId } from '@/types';
+import { products as dbProducts } from './db-products';
 
 /* ---------- Categories ---------- */
 export const categories: Category[] = [
@@ -840,7 +841,7 @@ const tradingProducts: Product[] = [
     },
 ];
 
-export const allProducts: Product[] = [
+const staticProducts: Product[] = [
     ...wechatProducts,
     ...alipayProducts,
     ...douyinProducts,
@@ -852,6 +853,8 @@ export const allProducts: Product[] = [
     ...verificationProducts,
     ...tradingProducts,
 ];
+
+export const allProducts: Product[] = dbProducts && dbProducts.length > 0 ? dbProducts : staticProducts;
 
 export function getProductById(id: string): Product | undefined {
     return allProducts.find(p => p.id === id);

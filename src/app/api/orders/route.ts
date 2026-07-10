@@ -1,10 +1,49 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin as supabase, createAutoUser } from '@/lib/supabase/admin';
 import { checkOrderCreation } from '@/lib/fraud-detection';
+import { sendOrderCreatedEmail, logNotification } from '@/lib/email';
+
+export const dynamic = 'force-dynamic';
 
 // POST — Create a new order
 export async function POST(request: Request) {
     try {
+        // x402 check
+        const hasPaymentSignature = request.headers.has('payment-signature');
+        const wantsX402 = request.headers.get('x-x402-request') === 'true' || request.headers.get('x-payment-required') === 'true';
+        const isAgent = request.headers.get('user-agent')?.toLowerCase().includes('agent') || request.headers.get('user-agent')?.toLowerCase().includes('bot');
+        
+        if ((wantsX402 || isAgent) && !hasPaymentSignature) {
+            const x402Payload = {
+                x402Version: 1,
+                accepts: [
+                    {
+                        scheme: "exact",
+                        network: "eip155:8453",
+                        maxAmountRequired: "5000000", // 5.00 USDC
+                        resource: "/api/orders",
+                        description: "Create order on CNVerifyHub",
+                        payTo: "0x1234567890123456789012345678901234567890",
+                        asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                        maxTimeoutSeconds: 60
+                    }
+                ],
+                error: "PAYMENT-SIGNATURE header is required"
+            };
+            const base64Payload = Buffer.from(JSON.stringify(x402Payload)).toString('base64');
+            
+            return new Response(
+                JSON.stringify({ error: "Payment required via x402 protocol", details: x402Payload }),
+                {
+                    status: 402,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'payment-required': base64Payload
+                    }
+                }
+            );
+        }
+
         const body = await request.json();
         const { order, items } = body;
 
@@ -49,6 +88,8 @@ export async function POST(request: Request) {
         // Generate a UUID upfront to bypass .select() needing RLS READ permissions
         const generatedOrderId = crypto.randomUUID();
 
+        console.log(`[Orders API] Creating order: public_id=${order.id}, email=${order.email}, amount=${order.totalAmount}, txid=${order.txid || 'none'}`);
+
         // 1. Insert the main order
         const { error: orderError } = await supabase
             .from('orders')
@@ -60,13 +101,14 @@ export async function POST(request: Request) {
                 telegram: order.telegram,
                 crypto_type: order.cryptoType || 'USDT',
                 total_amount: order.totalAmount,
-                status: 'pending',
-                payment_wallet: order.paymentWallet || null,
-                payment_network: order.paymentNetwork || null
+                status: order.status || 'pending',
+                txid: order.txid || null, // Save TXID submitted at checkout
+                payment_wallet: order.paymentWallet || order.payment_wallet || body.paymentWallet || null,
+                payment_network: order.paymentNetwork || order.payment_network || body.paymentNetwork || null
             });
 
         if (orderError) {
-            console.error('Supabase Order Error:', orderError);
+            console.error(`[Orders API] ❌ Supabase Order Error for ${order.id}:`, orderError);
             return NextResponse.json({ error: 'Failed to create order in database' }, { status: 500 });
         }
 
@@ -83,8 +125,30 @@ export async function POST(request: Request) {
             .insert(orderItems);
 
         if (itemsError) {
-            console.error('Supabase Items Error:', itemsError);
+            console.error(`[Orders API] ❌ Supabase Items Error for order ${generatedOrderId}:`, itemsError);
             return NextResponse.json({ error: 'Order created but failed to save items' }, { status: 500 });
+        }
+
+        console.log(`[Orders API] ✅ Order saved successfully: uuid=${generatedOrderId} (public_id: ${order.id})`);
+
+        // ── Send Order Created Email (fire-and-forget) ──
+        if (order.email) {
+            sendOrderCreatedEmail({
+                to: order.email,
+                publicId: order.id,
+                totalAmount: order.totalAmount || 0,
+                cryptoType: order.cryptoType || 'USDT',
+                items: (items as any[]).map((i: any) => ({
+                    productId: i.productId,
+                    quantity: i.quantity,
+                    priceAtTime: i.priceAtTime || 0,
+                })),
+            }).then(() => {
+                logNotification({ orderId: generatedOrderId, type: 'order_created', recipientEmail: order.email });
+                console.log(`[Email] ✅ Order created email sent to ${order.email}`);
+            }).catch((err: unknown) => {
+                console.error('[Email] ❌ Failed to send order created email:', err);
+            });
         }
 
         return NextResponse.json({ 
@@ -94,7 +158,7 @@ export async function POST(request: Request) {
             autoAccount: autoGeneratedPassword ? { email: order.email, password: autoGeneratedPassword } : null
         });
     } catch (error) {
-        console.error('API Order Error:', error);
+        console.error('[Orders API] ❌ API Order Error:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }
@@ -102,6 +166,42 @@ export async function POST(request: Request) {
 // GET — Fetch orders (by email or public_id)
 export async function GET(request: Request) {
     try {
+        // x402 check
+        const hasPaymentSignature = request.headers.has('payment-signature');
+        const wantsX402 = request.headers.get('x-x402-request') === 'true' || request.headers.get('x-payment-required') === 'true';
+        const isAgent = request.headers.get('user-agent')?.toLowerCase().includes('agent') || request.headers.get('user-agent')?.toLowerCase().includes('bot');
+        
+        if ((wantsX402 || isAgent) && !hasPaymentSignature) {
+            const x402Payload = {
+                x402Version: 1,
+                accepts: [
+                    {
+                        scheme: "exact",
+                        network: "eip155:8453",
+                        maxAmountRequired: "100000", // 0.10 USDC to fetch status
+                        resource: "/api/orders",
+                        description: "Fetch orders on CNVerifyHub",
+                        payTo: "0x1234567890123456789012345678901234567890",
+                        asset: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+                        maxTimeoutSeconds: 60
+                    }
+                ],
+                error: "PAYMENT-SIGNATURE header is required"
+            };
+            const base64Payload = Buffer.from(JSON.stringify(x402Payload)).toString('base64');
+            
+            return new Response(
+                JSON.stringify({ error: "Payment required via x402 protocol", details: x402Payload }),
+                {
+                    status: 402,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'payment-required': base64Payload
+                    }
+                }
+            );
+        }
+
         const { searchParams } = new URL(request.url);
         const email = searchParams.get('email');
         const publicId = searchParams.get('id');

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin as supabase } from '@/lib/supabase/admin';
 
+export const dynamic = 'force-dynamic';
+
 /* ============================================
    TRC20 Background Polling Verification
    Designed to be called repeatedly by the client

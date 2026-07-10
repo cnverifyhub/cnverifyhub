@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { withX402 } from "@x402/next";
 import { x402Server, evmAddress } from "@/lib/x402-proxy";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Premium API endpoint for AI Agents.
  * This route is protected by x402 protocol.
