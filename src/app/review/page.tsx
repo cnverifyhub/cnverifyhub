@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { Star } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { pushToDataLayer } from '@/lib/gtm';
 
-export default function ReviewPage() {
+function ReviewForm() {
     const searchParams = useSearchParams();
     const orderId = searchParams.get('order_id');
     
@@ -138,5 +138,17 @@ export default function ReviewPage() {
                 </form>
             </div>
         </div>
+    );
+}
+
+export default function ReviewPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#060B18] pt-32 pb-16 px-4 flex items-center justify-center">
+                <div className="text-white text-sm font-bold animate-pulse">Loading Review Form...</div>
+            </div>
+        }>
+            <ReviewForm />
+        </Suspense>
     );
 }
