@@ -4,9 +4,9 @@ import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-export default function BlogDebugPage() {
-    const zhPosts = getAllPosts('zh');
-    const enPosts = getAllPosts('en');
+export default async function BlogDebugPage() {
+    const zhPosts = await getAllPosts('zh');
+    const enPosts = await getAllPosts('en');
 
     const checkPost = (post: BlogPost) => {
         const issues: string[] = [];
@@ -49,7 +49,7 @@ export default function BlogDebugPage() {
                             Chinese Catalog (ZH)
                         </h2>
                         <div className="space-y-4">
-                            {zhPosts.map(post => {
+                            {zhPosts.map((post: BlogPost) => {
                                 const issues = checkPost(post);
                                 return (
                                     <div key={post.slug} className="bg-white dark:bg-dark-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -114,7 +114,7 @@ export default function BlogDebugPage() {
                             English Catalog (EN)
                         </h2>
                         <div className="space-y-4">
-                            {enPosts.map(post => {
+                            {enPosts.map((post: BlogPost) => {
                                 const issues = checkPost(post);
                                 return (
                                     <div key={post.slug} className="bg-white dark:bg-dark-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm">

@@ -9,6 +9,7 @@ import { formatYuan } from '@/lib/utils';
 import { ChevronRight, ShieldCheck, Check, ShoppingBag, Shield, Timer, PartyPopper, Lock, Loader2, AlertCircle } from 'lucide-react';
 import { useCartStore } from '@/store/cartStore';
 import { useOrderStore } from '@/store/orderStore';
+import { pushToDataLayer } from '@/lib/gtm';
 import Image from 'next/image';
 import { supabase } from '@/lib/supabase/client';
 import { 
@@ -82,6 +83,10 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
     const [step, setStep] = useState<1 | 1.5 | 2 | 3>(1);
     const [requirementsData, setRequirementsData] = useState<Record<string, string>>({});
     const [agreedToAntiBan, setAgreedToAntiBan] = useState(false);
+    const [couponCode, setCouponCode] = useState('');
+    const [discount, setDiscount] = useState<{type: string, value: number, is_referral?: boolean}|null>(null);
+    const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+    const [couponError, setCouponError] = useState('');
 
     const [contactInfo, setContactInfo] = useState({ telegram: '', email: '' });
     const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -99,7 +104,9 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
 
     useEffect(() => {
         setMounted(true);
-        setOrderId(`CNW-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`);
+        const generatedId = `CNW-${Math.floor(Math.random() * 1000000).toString().padStart(6, '0')}`;
+        setOrderId(generatedId);
+        pushToDataLayer('begin_checkout', { itemCount: items.length, total: getTotal() });
     }, []);
 
     // Countdown timer for checkout urgency
@@ -145,6 +152,48 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
     };
 
     const totalPrice = getTotal();
+
+    const finalPrice = (() => {
+        let p = totalPrice;
+        if (claimedEnvelope) {
+            p = Math.max(0, p - 15);
+        }
+        if (!discount) return p;
+        if (discount.type === 'percent') {
+            return p * (1 - discount.value / 100);
+        } else if (discount.type === 'fixed') {
+            return Math.max(0, p - discount.value);
+        }
+        return p;
+    })();
+
+    const handleApplyCoupon = async () => {
+        if (!couponCode.trim()) return;
+        setIsValidatingCoupon(true);
+        setCouponError('');
+        try {
+            const res = await fetch('/api/coupons/validate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: couponCode.trim(), totalAmount: totalPrice })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                setDiscount({ type: data.discount_type, value: Number(data.discount_value), is_referral: !!data.is_referral });
+                if (data.is_referral) {
+                    pushToDataLayer('referral_applied', { code: couponCode.trim(), discountValue: data.discount_value });
+                } else {
+                    pushToDataLayer('coupon_used', { code: couponCode.trim(), discountValue: data.discount_value });
+                }
+            } else {
+                setCouponError(data.error || 'Invalid code');
+            }
+        } catch {
+            setCouponError('Network error');
+        } finally {
+            setIsValidatingCoupon(false);
+        }
+    };
 
     const handleNextStep = () => {
         if (step === 1 && contactInfo.telegram && contactInfo.email) {
@@ -210,7 +259,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                     priceAtTime: product ? product.price.single : 0
                 };
             }),
-            totalAmount: totalPrice,
+            totalAmount: finalPrice,
             paymentWallet: verificationData?.paymentWallet || '',
             paymentNetwork: verificationData?.paymentNetwork || ''
         };
@@ -230,6 +279,8 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
 
             if (!response.ok) {
                 console.warn('Failed to save to Supabase, falling back to local storage only');
+            } else {
+                pushToDataLayer('purchase', { orderId: orderData.id, total: finalPrice, items: orderData.items });
             }
         } catch (error) {
             console.error('Order Persistence Error:', error);
@@ -442,14 +493,69 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                                         );
                                     })}
                                 </div>
+                                    {/* Coupon / Referral input */}
+                                    <div className="p-4 bg-slate-50/50 dark:bg-slate-800/20 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                placeholder={lang === 'zh' ? '优惠券或推荐码 (REF-...)' : 'Coupon or Referral code'}
+                                                value={couponCode}
+                                                onChange={(e) => setCouponCode(e.target.value)}
+                                                className="flex-1 px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-dark-900 focus:outline-none focus:ring-1 focus:ring-primary-500 font-medium"
+                                                disabled={discount !== null}
+                                            />
+                                            <button
+                                                onClick={handleApplyCoupon}
+                                                disabled={isValidatingCoupon || discount !== null || !couponCode.trim()}
+                                                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white rounded-xl text-sm font-bold transition-all disabled:opacity-50"
+                                            >
+                                                {isValidatingCoupon ? (
+                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                ) : discount !== null ? (
+                                                    <Check className="w-4 h-4" />
+                                                ) : (
+                                                    lang === 'zh' ? '应用' : 'Apply'
+                                                )}
+                                            </button>
+                                        </div>
+                                        {couponError && (
+                                            <p className="text-xs font-bold text-red-500">{couponError}</p>
+                                        )}
+                                        {discount && (
+                                            <div className="flex items-center justify-between text-xs text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-500/5 px-3 py-2 rounded-lg">
+                                                <span>
+                                                    {discount.is_referral 
+                                                        ? (lang === 'zh' ? '推荐折扣 (5%)' : 'Referral discount (5%)')
+                                                        : (lang === 'zh' ? `优惠券折扣 (${discount.type === 'percent' ? discount.value + '%' : '$' + discount.value})` : `Coupon discount (${discount.type === 'percent' ? discount.value + '%' : '$' + discount.value})`)}
+                                                </span>
+                                                <button 
+                                                    onClick={() => { setDiscount(null); setCouponCode(''); }}
+                                                    className="underline"
+                                                >
+                                                    {lang === 'zh' ? '移除' : 'Remove'}
+                                                </button>
+                                            </div>
+                                        )}
+                                        {claimedEnvelope && (
+                                            <div className="flex items-center justify-between text-xs text-yellow-600 dark:text-yellow-400 font-bold bg-yellow-500/5 px-3 py-2 rounded-lg">
+                                                <span>{lang === 'zh' ? '天降红包优惠 (-15.00 ¥)' : 'Red Packet Discount (-15.00 ¥)'}</span>
+                                            </div>
+                                        )}
+                                    </div>
                                 <div className="p-5 bg-white dark:bg-dark-900 border-t border-slate-200 dark:border-slate-800 shadow-[0_-4px_10px_rgb(0,0,0,0.02)]">
                                     <div className="flex justify-between items-center mb-2 text-slate-600 dark:text-slate-400 font-medium">
                                         <span>{lang === 'zh' ? '共计金额' : 'Subtotal'}</span>
                                         <span>{formatYuan(totalPrice)}</span>
                                     </div>
+                                    {(discount || claimedEnvelope) && (
+                                        <div className="flex justify-between items-center mb-2 text-emerald-600 dark:text-emerald-400 font-medium text-sm">
+                                            <span>{lang === 'zh' ? '折扣优惠' : 'Discount Applied'}</span>
+                                            <span>-{formatYuan(totalPrice - finalPrice)}</span>
+                                        </div>
+                                    )}
                                     <div className="flex justify-between items-center text-xl sm:text-2xl font-black text-red-600 dark:text-red-500">
                                         <span>{lang === 'zh' ? '应付总额' : 'Total'}</span>
-                                        <span>{formatYuan(totalPrice)}</span>
+                                        <span>{formatYuan(finalPrice)}</span>
                                     </div>
                                 </div>
                             </div>

@@ -329,8 +329,8 @@ BEGIN
             NEW.telegram,
             '您的订单已交付 - 邀请您为 CNVerifyHub 评分',
             'Your order has been delivered - Invite to review CNVerifyHub',
-            '亲爱的客户，您的订单已顺利发货并确认完成。为了不断改进我们的服务品质，诚挚邀请您前往 Trustpilot 为我们留下宝贵的评分与使用反馈：https://www.trustpilot.com/evaluate/cnverifyhub.com\n您的每一条反馈都对我们至关重要，非常感谢您的信任与支持！',
-            'Dear Customer, your order has been successfully delivered and completed. To help us improve, we invite you to share your feedback on Trustpilot: https://www.trustpilot.com/evaluate/cnverifyhub.com\nThank you for choosing CNVerifyHub!',
+            '亲爱的客户，您的订单已顺利发货并确认完成。为了不断改进我们的服务品质，诚挚邀请您前往 Trustpilot 为我们留下宝贵的评分与使用反馈：https://cnverifyhub.com/review?order_id=' || NEW.id || '\nThank you for choosing CNVerifyHub!',
+            'Dear Customer, your order has been successfully delivered and completed. To help us improve, we invite you to share your feedback on Trustpilot: https://cnverifyhub.com/review?order_id=' || NEW.id || '\nThank you for choosing CNVerifyHub!',
             'pending',
             NOW()
         );
@@ -348,3 +348,193 @@ CREATE TRIGGER trigger_on_order_completed_trustpilot
 
 -- Notify PostgREST to reload schema cache
 NOTIFY pgrst, 'reload schema';
+-- ============================================
+-- 10. Fraud Tables
+-- ============================================
+CREATE TABLE IF NOT EXISTS fraud_blocklist (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  ip_address VARCHAR(45),
+  fingerprint VARCHAR(255),
+  reason TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS fraud_events (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  ip_address VARCHAR(45),
+  fingerprint VARCHAR(255),
+  event_type VARCHAR(50),
+  details JSONB,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- ============================================
+-- Stock Decrement Trigger
+-- ============================================
+CREATE OR REPLACE FUNCTION decrement_stock_on_order()
+RETURNS TRIGGER AS $
+BEGIN
+  IF NEW.status = 'completed' AND (OLD.status IS NULL OR OLD.status <> 'completed') THEN
+    UPDATE products
+    SET stock_count = stock_count - NEW.quantity
+    WHERE id = NEW.product_id AND stock_count >= NEW.quantity;
+  END IF;
+  RETURN NEW;
+END;
+$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS trigger_decrement_stock_on_order ON orders;
+CREATE TRIGGER trigger_decrement_stock_on_order
+  AFTER UPDATE OF status ON orders
+  FOR EACH ROW
+  WHEN (NEW.status = 'completed')
+  EXECUTE FUNCTION decrement_stock_on_order();
+-- ============================================
+-- 11. Cart Recoveries
+-- ============================================
+CREATE TABLE IF NOT EXISTS cart_recoveries (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT NOT NULL,
+  cart_snapshot JSONB NOT NULL,
+  recovered BOOLEAN DEFAULT false,
+  sent_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- ============================================
+-- 12. Reviews
+-- ============================================
+CREATE TABLE IF NOT EXISTS reviews (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id UUID REFERENCES orders(id),
+  product_id VARCHAR(100) REFERENCES products(id),
+  rating INTEGER CHECK (rating BETWEEN 1 AND 5),
+  review_zh TEXT,
+  review_en TEXT,
+  reviewer_name TEXT,
+  verified BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+CREATE OR REPLACE FUNCTION mark_cart_recovered()
+RETURNS TRIGGER AS $
+BEGIN
+  IF NEW.status = 'completed' AND (OLD.status IS NULL OR OLD.status <> 'completed') THEN
+    UPDATE cart_recoveries
+    SET recovered = true
+    WHERE email = NEW.email AND recovered = false;
+  END IF;
+  RETURN NEW;
+END;
+$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS trigger_mark_cart_recovered ON orders;
+CREATE TRIGGER trigger_mark_cart_recovered
+  AFTER UPDATE OF status ON orders
+  FOR EACH ROW
+  WHEN (NEW.status = 'completed')
+  EXECUTE FUNCTION mark_cart_recovered();
+
+
+
+
+
+-- ==========================================
+-- PHASE 4: SCALE & AUTOMATION
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS inventory (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    product_id VARCHAR(100) REFERENCES products(id),
+    credential_data JSONB NOT NULL,
+    status TEXT DEFAULT 'available' CHECK (status IN ('available','reserved','delivered')),
+    delivered_to_order UUID REFERENCES orders(id),
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS coupons (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    code TEXT UNIQUE NOT NULL,
+    discount_type TEXT CHECK (discount_type IN ('percent','fixed')),
+    discount_value NUMERIC(10,2) NOT NULL,
+    max_uses INTEGER DEFAULT 1,
+    used_count INTEGER DEFAULT 0,
+    expires_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS referrals (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    referrer_user_id UUID,
+    referral_code TEXT UNIQUE NOT NULL,
+    referred_orders INTEGER DEFAULT 0,
+    commission_earned NUMERIC(10,2) DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Trigger: On orders.status = 'paid' -> Reserve inventory
+CREATE OR REPLACE FUNCTION handle_paid_order_inventory()
+RETURNS TRIGGER AS \$\$
+DECLARE
+    inv_id UUID;
+BEGIN
+    IF NEW.status = 'paid' AND (OLD.status IS NULL OR OLD.status <> 'paid') THEN
+        -- Find available inventory
+        SELECT id INTO inv_id FROM inventory 
+        WHERE product_id = NEW.product_id AND status = 'available' 
+        LIMIT 1 FOR UPDATE SKIP LOCKED;
+
+        IF FOUND THEN
+            -- Reserve inventory
+            UPDATE inventory SET status = 'reserved', delivered_to_order = NEW.id WHERE id = inv_id;
+            -- Queue webhook/telegram delivery
+            INSERT INTO _job_queue (task_type, payload) VALUES ('deliver_credentials', jsonb_build_object('order_id', NEW.id, 'inventory_id', inv_id));
+        ELSE
+            -- No inventory -> pending_manual
+            UPDATE orders SET status = 'pending_manual' WHERE id = NEW.id;
+            NEW.status := 'pending_manual';
+            INSERT INTO _job_queue (task_type, payload) VALUES ('notify_admin_no_stock', jsonb_build_object('order_id', NEW.id, 'product_id', NEW.product_id));
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+\$\$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_handle_paid_order_inventory ON orders;
+CREATE TRIGGER trigger_handle_paid_order_inventory
+    BEFORE UPDATE OF status ON orders
+    FOR EACH ROW
+    EXECUTE FUNCTION handle_paid_order_inventory();
+
+
+-- ==========================================
+-- PHASE 5: OPTIMIZE
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS order_emails (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_id UUID REFERENCES orders(id),
+    email_type TEXT NOT NULL CHECK (email_type IN ('t0_welcome', 't1_guide', 't7_review')),
+    sent_at TIMESTAMPTZ,
+    status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'sent', 'failed')),
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Trigger to queue t0_welcome on order completion
+CREATE OR REPLACE FUNCTION queue_t0_welcome_email()
+RETURNS TRIGGER AS \$\$
+BEGIN
+    IF NEW.status = 'paid' AND (OLD.status IS NULL OR OLD.status <> 'paid') THEN
+        INSERT INTO order_emails (order_id, email_type) VALUES (NEW.id, 't0_welcome');
+        INSERT INTO order_emails (order_id, email_type) VALUES (NEW.id, 't1_guide');
+        INSERT INTO order_emails (order_id, email_type) VALUES (NEW.id, 't7_review');
+    END IF;
+    RETURN NEW;
+END;
+\$\$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trigger_queue_t0_welcome_email ON orders;
+CREATE TRIGGER trigger_queue_t0_welcome_email
+    AFTER UPDATE OF status ON orders
+    FOR EACH ROW
+    EXECUTE FUNCTION queue_t0_welcome_email();
+

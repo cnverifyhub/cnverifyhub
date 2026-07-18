@@ -33,6 +33,6 @@ export const metadata: Metadata = {
 };
 
 export default async function BlogPage() {
-    const posts = getAllPosts('zh');
+    const posts = await getAllPosts('zh');
     return <BlogIndexClient posts={posts} lang="zh" />;
 }

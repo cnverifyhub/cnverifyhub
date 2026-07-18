@@ -1,10 +1,10 @@
 import { MetadataRoute } from 'next';
 import { getAllSlugs } from '@/lib/blog';
-import { categories } from '@/data/products';
+import { categories, allProducts } from '@/data/products';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const now = new Date().toISOString();
 
     // Alternate language links helper
@@ -58,26 +58,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ]);
 
     // 3. Dynamic Blog Posts
-    const blogSlugs = getAllSlugs();
+    const blogSlugs = await getAllSlugs();
     const blogRoutes: MetadataRoute.Sitemap = blogSlugs.flatMap(slug => [
         { url: `${SITE_URL}/blog/${slug}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/blog/${slug}/`) },
         { url: `${SITE_URL}/en/blog/${slug}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/blog/${slug}/`) },
     ]);
 
     // 4. Product Routes
-    // Since categories contain products, we could also list them directly if we have a flat product list
-    // Importing all products to generate their routes
-    const allProducts = categories.flatMap(cat => {
-        // This is a bit tricky since products are defined as constants in products.ts
-        // But we can just use the categories to get the category-specific products if they were exported
-        // For now, let's focus on category routes and blog routes which are most important.
-        return [];
-    });
-
+    const productRoutes: MetadataRoute.Sitemap = allProducts
+        .filter(p => p.isPublished !== false)
+        .flatMap(product => [
+            { url: `${SITE_URL}/product/${product.id}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/product/${product.id}/`) },
+            { url: `${SITE_URL}/en/product/${product.id}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/product/${product.id}/`) },
+        ]);
 
     return [
         ...staticRoutes,
         ...categoryRoutes,
         ...blogRoutes,
+        ...productRoutes,
     ];
 }

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { getProductById } from '@/data/products';
+import { pushToDataLayer } from '@/lib/gtm';
 
 export interface CartItem {
     productId: string;
@@ -27,6 +28,7 @@ export const useCartStore = create<CartState>()(
             isOpen: false,
 
             addItem: (productId: string, quantity: number) => {
+                pushToDataLayer('add_to_cart', { productId, quantity });
                 set((state) => {
                     const existingItem = state.items.find((item: CartItem) => item.productId === productId);
                     if (existingItem) {

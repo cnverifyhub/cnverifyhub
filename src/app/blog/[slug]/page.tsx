@@ -4,15 +4,17 @@ import { notFound } from 'next/navigation';
 import { Calendar, Tag, ChevronLeft, ChevronRight, ShieldCheck, Bookmark, Share2, BadgeCheck, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 
+export const revalidate = 3600;
+
 // --- SSG: Pre-render every blog post at build time ---
 export async function generateStaticParams() {
-    const slugs = getAllSlugs();
+    const slugs = await getAllSlugs();
     return slugs.map((slug) => ({ slug }));
 }
 
 // --- Dynamic metadata per post ---
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-    const post = getPostBySlug(params.slug, 'zh');
+    const post = await getPostBySlug(params.slug, 'zh');
     if (!post) return { title: 'Post Not Found | CNVerifyHub' };
 
     const lang = 'zh';
@@ -45,7 +47,7 @@ import Image from 'next/image';
 import { ReadingProgress, ShareButtons, TableOfContents, ScrollProgressBar } from '@/components/blog/BlogClientFeatures';
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-    const post = getPostBySlug(params.slug, 'zh');
+    const post = await getPostBySlug(params.slug, 'zh');
     const lang = 'zh';
 
     if (!post) notFound();
@@ -54,7 +56,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     const postUrl = `${siteUrl}/blog/${post.slug}/`;
 
     // Related Posts
-    const allPosts = getAllPosts('zh');
+    const allPosts = await getAllPosts('zh');
     const relatedPosts = allPosts
         .filter(p => p.category === post.category && p.slug !== post.slug)
         .slice(0, 3);

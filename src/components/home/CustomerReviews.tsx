@@ -62,29 +62,59 @@ const ReviewAvatar = ({ src, name }: { src: string, name: string }) => {
     );
 };
 
+import { supabase } from '@/lib/supabase/client';
+
 export function CustomerReviews({ lang }: { lang: Lang }) {
     const [reviews, setReviews] = useState<any[]>([]);
 
     useEffect(() => {
-        const shuffled = [...baseReviews].sort(() => Math.random() - 0.5);
-        const mapped = shuffled.map(review => {
-            const randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
-            const randomAvatar = avatarsPool[Math.floor(Math.random() * avatarsPool.length)];
-            const randomColor = colorsPool[Math.floor(Math.random() * colorsPool.length)];
-            const randomDate = generateRandomDate();
-            const rand = Math.random();
-            const organicRating = rand > 0.4 ? 5 : rand > 0.1 ? 4 : 3;
+        const fetchReviews = async () => {
+            let fetchedReviews: any[] = [];
+            try {
+                const { data } = await supabase
+                    .from('reviews')
+                    .select('*, products(tier_name_zh, tier_name_en)')
+                    .eq('verified', true)
+                    .order('created_at', { ascending: false })
+                    .limit(20);
+                
+                if (data && data.length > 0) {
+                    fetchedReviews = data.map((r: any) => ({
+                        sku: lang === 'zh' ? (r.products?.tier_name_zh || r.product_id) : (r.products?.tier_name_en || r.product_id),
+                        text: r.review_zh || r.review_en,
+                        en: r.review_en || r.review_zh,
+                        user: r.reviewer_name || 'Anonymous',
+                        rating: r.rating || 5,
+                        avatar: `https://api.dicebear.com/7.x/notionists/svg?seed=${r.reviewer_name}&backgroundColor=fbbf24`,
+                        date: new Date(r.created_at).toISOString().split('T')[0],
+                    }));
+                }
+            } catch (error) {
+                console.error("Failed to fetch reviews", error);
+            }
 
-            return {
-                ...review,
-                user: randomName,
-                avatar: `https://api.dicebear.com/7.x/notionists/svg?seed=${randomAvatar}&backgroundColor=${randomColor}`,
-                date: randomDate,
-                rating: organicRating
-            };
-        });
-        setReviews(mapped);
-    }, []);
+            const shuffledBase = [...baseReviews].sort(() => Math.random() - 0.5);
+            const mappedBase = shuffledBase.map(review => {
+                const randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
+                const randomAvatar = avatarsPool[Math.floor(Math.random() * avatarsPool.length)];
+                const randomColor = colorsPool[Math.floor(Math.random() * colorsPool.length)];
+                const randomDate = generateRandomDate();
+                const rand = Math.random();
+                const organicRating = rand > 0.4 ? 5 : rand > 0.1 ? 4 : 3;
+
+                return {
+                    ...review,
+                    user: randomName,
+                    avatar: `https://api.dicebear.com/7.x/notionists/svg?seed=${randomAvatar}&backgroundColor=${randomColor}`,
+                    date: randomDate,
+                    rating: organicRating
+                };
+            });
+            
+            setReviews([...fetchedReviews, ...mappedBase]);
+        };
+        fetchReviews();
+    }, [lang, supabase]);
 
     if (reviews.length === 0) {
         return <div className="py-24 bg-[#060B18] min-h-[400px]"></div>;

@@ -1,11 +1,27 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { Ratelimit } from '@upstash/ratelimit';
+import { Redis } from '@upstash/redis';
 
-// In-memory store for rate limiting (placeholder logic)
-// For production, use Upstash Redis or similar
-const rateLimitMap = new Map<string, { count: number; timestamp: number }>();
+// Only create ratelimit instance if env vars are present to avoid build errors
+const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-export function middleware(request: NextRequest) {
+let ratelimit: Ratelimit | null = null;
+if (redisUrl && redisToken) {
+    const redis = new Redis({
+        url: redisUrl,
+        token: redisToken,
+    });
+
+    ratelimit = new Ratelimit({
+        redis: redis,
+        limiter: Ratelimit.slidingWindow(100, "1 m"),
+        analytics: true,
+    });
+}
+
+export async function middleware(request: NextRequest) {
     // 1. Markdown Content Negotiation for AI Agents (RFC 8288 / llmstxt.org)
     // Priority: Handle agent-native requests first
     const acceptHeader = request.headers.get('accept') || '';
@@ -54,23 +70,25 @@ Welcome to CNVerifyHub, the global leader in high-trust digital accounts and ver
         }
     }
 
-    // 2. Rate Limiting Placeholder for API Routes
+    // 2. Rate Limiting for API Routes
     if (request.nextUrl.pathname.startsWith('/api/')) {
         const ip = request.ip || '127.0.0.1';
-        const now = Date.now();
-        const windowMs = 60 * 1000; // 1 minute
-        const maxRequests = 100; // 100 requests per minute
-
-        const userRecord = rateLimitMap.get(ip);
         
-        if (!userRecord || (now - userRecord.timestamp > windowMs)) {
-            rateLimitMap.set(ip, { count: 1, timestamp: now });
-        } else {
-            userRecord.count++;
-            if (userRecord.count > maxRequests) {
+        if (ratelimit) {
+            const { success, limit, reset, remaining } = await ratelimit.limit(`ratelimit_${ip}`);
+            
+            if (!success) {
                 return new NextResponse(
                     JSON.stringify({ error: 'Too Many Requests' }),
-                    { status: 429, headers: { 'Content-Type': 'application/json' } }
+                    { 
+                        status: 429, 
+                        headers: { 
+                            'Content-Type': 'application/json',
+                            'X-RateLimit-Limit': limit.toString(),
+                            'X-RateLimit-Remaining': remaining.toString(),
+                            'X-RateLimit-Reset': reset.toString()
+                        } 
+                    }
                 );
             }
         }

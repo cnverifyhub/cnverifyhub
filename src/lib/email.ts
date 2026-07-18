@@ -329,3 +329,163 @@ export async function logNotification({
         console.error('[Email Log] Failed to insert notification log into order_emails:', e);
     }
 }
+
+// ─── Phase 5: T+0 Welcome Email ───
+export async function sendT0WelcomeEmail({
+    to,
+    publicId,
+    amount,
+    accounts = [],
+}: {
+    to: string;
+    publicId: string;
+    amount: number;
+    accounts?: string[];
+}) {
+    const accountsHtml = accounts.length > 0
+        ? accounts.map((acc, i) => `
+            <div style="background:#0f172a;border:1px solid #334155;border-radius:10px;padding:14px 16px;margin-bottom:10px;font-family:monospace;font-size:13px;color:#e2e8f0;word-break:break-all;">
+              <span style="color:#64748b;font-size:11px;display:block;margin-bottom:4px;">账号 ${i + 1} / Account ${i + 1}</span>
+              ${acc}
+            </div>`).join('')
+        : `<div style="background:#1e3a5f;border:1px solid #3b82f6;border-radius:12px;padding:20px;text-align:center;color:#93c5fd;font-size:14px;">
+             账号正在自动分配中，通常在 5-15 分钟内完成。<br/>
+             <small style="color:#60a5fa;">Account is being automatically provisioned. Usually takes 5-15 mins.</small>
+           </div>`;
+
+    const content = `
+        <div style="text-align:center;margin-bottom:28px;">
+          ${statusBadge('发货完成 · Welcome & Delivery', '#7c3aed')}
+        </div>
+        <h2 style="margin:0 0 8px;color:#fff;font-size:20px;font-weight:800;">欢迎使用 CNVerifyHub 🎉</h2>
+        <p style="margin:0 0 24px;color:#94a3b8;font-size:14px;line-height:1.6;">
+          您的订单已支付成功，感谢您的购买！以下是您的账号凭证：<br/>
+          <em style="color:#64748b;font-size:12px;">Your payment succeeded. Thank you! Here are your credentials:</em>
+        </p>
+
+        <div style="background:#0f172a;border-radius:10px;padding:14px 18px;margin-bottom:24px;display:flex;justify-content:space-between;">
+          <span style="color:#64748b;font-size:12px;">订单号 / Order ID</span>
+          <span style="font-family:monospace;color:#a78bfa;font-weight:800;">${publicId}</span>
+        </div>
+
+        <h3 style="margin:0 0 12px;color:#cbd5e1;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">交付详情 / Delivery Details</h3>
+        ${accountsHtml}
+
+        <div style="text-align:center;margin:28px 0;">
+          <a href="${SITE_URL}/client?id=${publicId}" 
+             style="display:inline-block;background:linear-gradient(135deg,#7c3aed,#5b21b6);color:#fff;font-weight:800;font-size:14px;padding:14px 32px;border-radius:10px;text-decoration:none;">
+            管理我的订单 / View Order Details →
+          </a>
+        </div>
+    `;
+
+    return resend.emails.send({
+        from: FROM,
+        to,
+        subject: `🎁 欢迎使用 CNVerifyHub - 订单 ${publicId} 已发货`,
+        html: baseHtml(content),
+    });
+}
+
+// ─── Phase 5: T+1 Safety Guide & Review Request ───
+export async function sendT1GuideEmail({
+    to,
+    publicId,
+}: {
+    to: string;
+    publicId: string;
+}) {
+    const content = `
+        <div style="text-align:center;margin-bottom:28px;">
+          ${statusBadge('账号安全指南 · Safety Guide', '#2563eb')}
+        </div>
+        <h2 style="margin:0 0 8px;color:#fff;font-size:20px;font-weight:800;">您的账号安全使用指南 🛡️</h2>
+        <p style="margin:0 0 24px;color:#94a3b8;font-size:14px;line-height:1.6;">
+          为了防止您的微信/支付宝账号被限制，请遵循以下关键安全策略：<br/>
+          <em style="color:#64748b;font-size:12px;">To prevent limitations on your newly purchased accounts, please follow these guidelines:</em>
+        </p>
+
+        <div style="background:#0f172a;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:24px;">
+          <ul style="margin:0;padding-left:20px;color:#e2e8f0;font-size:13px;line-height:1.8;">
+            <li><strong>不要立刻修改绑定手机号：</strong>建议登录 3-5 天后再尝试修改安全设置。</li>
+            <li><strong>使用干净的IP环境：</strong>避免使用公共代理，保持登录IP稳定。</li>
+            <li><strong>逐步增加活跃度：</strong>前几天不要群发广告或频繁加好友。</li>
+          </ul>
+        </div>
+
+        <h3 style="margin:0 0 8px;color:#cbd5e1;font-size:14px;font-weight:700;">对我们的服务满意吗？</h3>
+        <p style="margin:0 0 20px;color:#94a3b8;font-size:13px;line-height:1.6;">
+          您的反馈对我们至关重要。请花 1 分钟为我们的服务评分，可获得专属客服 VIP 通道服务！
+        </p>
+
+        <div style="text-align:center;margin:28px 0;">
+          <a href="${SITE_URL}/review?order_id=${publicId}" 
+             style="display:inline-block;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;font-weight:800;font-size:14px;padding:14px 32px;border-radius:10px;text-decoration:none;">
+            提交服务评价 / Submit Review →
+          </a>
+        </div>
+    `;
+
+    return resend.emails.send({
+        from: FROM,
+        to,
+        subject: `🛡️ 账号安全使用指南与服务评价 - 订单 ${publicId}`,
+        html: baseHtml(content),
+    });
+}
+
+// ─── Phase 5: T+7 Referral & Cross-Sell ───
+export async function sendT7ReviewEmail({
+    to,
+    referralCode,
+}: {
+    to: string;
+    referralCode: string;
+}) {
+    const content = `
+        <div style="text-align:center;margin-bottom:28px;">
+          ${statusBadge('推荐好友返利 · Share & Earn', '#10b981')}
+        </div>
+        <h2 style="margin:0 0 8px;color:#fff;font-size:20px;font-weight:800;">邀请好友返现，再享5%优惠 💰</h2>
+        <p style="margin:0 0 24px;color:#94a3b8;font-size:14px;line-height:1.6;">
+          将您的专属推荐码分享给好友，好友下单立减 5%，您可赚取 3% 佣金返利！<br/>
+          <em style="color:#64748b;font-size:12px;">Share your referral code. Friends get 5% off, you get 3% commission!</em>
+        </p>
+
+        <div style="background:#064e3b;border:1px solid #059669;border-radius:12px;padding:24px;text-align:center;margin-bottom:24px;">
+          <span style="color:#6ee7b7;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;display:block;margin-bottom:8px;">您的专属推荐码 / Your Referral Code</span>
+          <span style="font-family:monospace;color:#fff;font-size:24px;font-weight:900;letter-spacing:2px;background:rgba(0,0,0,0.2);padding:6px 16px;border-radius:8px;display:inline-block;">${referralCode}</span>
+        </div>
+
+        <h3 style="margin:0 0 12px;color:#cbd5e1;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">热销商品推荐 / Recommended Products</h3>
+        <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;color:#e2e8f0;font-size:13px;">
+          <tr>
+            <td style="padding:10px 0;border-bottom:1px solid #334155;">微信高级实名号 / WeChat Advanced Account</td>
+            <td style="padding:10px 0;border-bottom:1px solid #334155;text-align:right;color:#fbbf24;font-weight:700;">$32.00</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 0;border-bottom:1px solid #334155;">企业微信尊享版 / WeChat Enterprise Pro</td>
+            <td style="padding:10px 0;border-bottom:1px solid #334155;text-align:right;color:#fbbf24;font-weight:700;">$90.00</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 0;border-bottom:1px solid #334155;">实名支付宝 / Verified Alipay</td>
+            <td style="padding:10px 0;border-bottom:1px solid #334155;text-align:right;color:#fbbf24;font-weight:700;">$45.00</td>
+          </tr>
+        </table>
+
+        <div style="text-align:center;margin:28px 0;">
+          <a href="${SITE_URL}/account" 
+             style="display:inline-block;background:linear-gradient(135deg,#10b981,#059669);color:#fff;font-weight:800;font-size:14px;padding:14px 32px;border-radius:10px;text-decoration:none;">
+            进入推广中心 / View Referral Dashboard →
+          </a>
+        </div>
+    `;
+
+    return resend.emails.send({
+        from: FROM,
+        to,
+        subject: `💰 专属推荐返利已送达！分享赚取 3% 佣金 - CNVerifyHub`,
+        html: baseHtml(content),
+    });
+}
+

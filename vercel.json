@@ -34,5 +34,15 @@
         }
       ]
     }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron/process-cart-recovery",
+      "schedule": "*/30 * * * *"
+    },
+    {
+      "path": "/api/cron/email-sequence",
+      "schedule": "0 * * * *"
+    }
   ]
 }
