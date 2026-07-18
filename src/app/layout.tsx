@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import Script from 'next/script';
-import { GoogleTagManager } from '@next/third-parties/google';
+import { GoogleTagManager, GoogleAnalytics } from '@next/third-parties/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
@@ -254,6 +254,7 @@ export default function RootLayout({
             </head>
             <body className={`min-h-screen flex flex-col overflow-x-hidden font-sans`}>
                 <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || 'GTM-P3BSVQS6'} />
+                <GoogleAnalytics gaId="G-YKJ9S5L36F" />
                 
                 <ClientLayoutWrapper>
                     {children}
