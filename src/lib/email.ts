@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_mock_key');
 const FROM = process.env.RESEND_FROM || 'CNVerifyHub <support@cnverifyhub.com>';
 const SITE_URL = 'https://cnverifyhub.com';
 
