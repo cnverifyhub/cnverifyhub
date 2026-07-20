@@ -172,7 +172,7 @@ export default function RootLayout({
         <html lang="zh" className="scroll-smooth" suppressHydrationWarning>
             <head>
                 {/* Preconnect to external domains for China speed */}
-                <link rel="preconnect" href="https://otgewrynnrqmtsyvlzrj.supabase.co" />
+                <link rel="preconnect" href="https://mybzjmhyxamldklezngu.supabase.co" />
                 <link rel="dns-prefetch" href="https://hm.baidu.com" />
                 <link rel="dns-prefetch" href="https://zz.bdstatic.com" />
                 <link rel="dns-prefetch" href="https://api.trongrid.io" />
