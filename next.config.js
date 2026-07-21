@@ -10,7 +10,6 @@ const nextConfig = {
   transpilePackages: ['gsap', 'three', '@react-three/fiber', '@react-three/drei', 'framer-motion'],
   experimental: {
     optimizePackageImports: ['lucide-react'],
-    optimizeServerReact: true,
   },
   images: {
     formats: ['image/avif', 'image/webp'],

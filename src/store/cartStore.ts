@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { getProductById } from '@/data/products';
 import { pushToDataLayer } from '@/lib/gtm';
 
@@ -94,6 +94,7 @@ export const useCartStore = create<CartState>()(
         }),
         {
             name: 'CNVerifyHub-cart',
+            storage: createJSONStorage(() => (typeof window !== 'undefined' ? window.localStorage : ({} as Storage))),
             partialize: (state) => ({ items: state.items })
         }
     )
