@@ -55,6 +55,8 @@ const ICON_COMPONENTS: Record<string, React.ComponentType<{ className?: string }
     'wise-account':         WiseIcon,
 };
 
+import { useTenantConfig } from '@/components/providers/TenantProvider';
+
 interface CheckoutFormProps {
     lang: Lang;
 }
@@ -77,6 +79,7 @@ const CartItemImage = ({ category, productId, badge }: { category: string, produ
 };
 
 export function CheckoutForm({ lang }: CheckoutFormProps) {
+    const tenantConfig = useTenantConfig();
     const router = useRouter();
     const { items, getTotal, clearCart } = useCartStore();
     const { addOrder } = useOrderStore();

@@ -22,9 +22,10 @@ export function HotProducts({ lang }: { lang: Lang }) {
 
         const trackWidth = trackRef.current.scrollWidth;
         const windowWidth = window.innerWidth;
-        const scrollAmount = trackWidth - windowWidth + 100;
+        const scrollAmount = Math.max(trackWidth - windowWidth, 0);
 
-        gsap.to(trackRef.current, {
+        const trackAnimation = gsap.to(trackRef.current, {
+            id: "track-scroll",
             x: -scrollAmount,
             ease: "none",
             scrollTrigger: {
@@ -40,22 +41,25 @@ export function HotProducts({ lang }: { lang: Lang }) {
         // Animate cards on scroll
         const cards = gsap.utils.toArray('.product-card-wrap');
         cards.forEach((card: any) => {
-            gsap.to(card, {
-                scale: 1,
-                filter: "blur(0px)",
-                scrollTrigger: {
-                    trigger: card,
-                    containerAnimation: gsap.getById("track-scroll"), // This is tricky with pinning
-                    start: "left center",
-                    end: "right center",
-                    scrub: true,
+            gsap.fromTo(card,
+                { scale: 0.9, filter: "blur(4px)" },
+                {
+                    scale: 1,
+                    filter: "blur(0px)",
+                    scrollTrigger: {
+                        trigger: card,
+                        containerAnimation: trackAnimation,
+                        start: "left center",
+                        end: "right center",
+                        scrub: true,
+                    }
                 }
-            });
+            );
         });
     }, { scope: sectionRef });
 
     return (
-        <section ref={sectionRef} className="relative overflow-hidden bg-[#030712] py-20 min-h-screen flex items-center">
+        <section ref={sectionRef} id="hot-products-section" className="relative bg-[#030712] py-20 min-h-screen flex items-center" style={{ overflow: 'clip' }}>
             <div className="absolute top-20 left-0 right-0 px-8 z-10">
                 <span className="section-eyebrow"># {lang === 'zh' ? '热销爆款' : 'HOT PRODUCTS'}</span>
                 <h2 className="section-title text-white">

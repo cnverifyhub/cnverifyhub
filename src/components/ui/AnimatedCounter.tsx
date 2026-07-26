@@ -19,11 +19,11 @@ export function AnimatedCounter({ end, duration = 2000, prefix = '', suffix = ''
     }, []);
 
     if (!hasMounted) {
-        return <span className={className}>{prefix}0{suffix}</span>;
+        return <span className={className} suppressHydrationWarning>{prefix}{end}{suffix}</span>;
     }
 
     return (
-        <span className={className}>
+        <span className={className} suppressHydrationWarning>
             <CountUp 
                 end={end} 
                 duration={duration / 1000} 

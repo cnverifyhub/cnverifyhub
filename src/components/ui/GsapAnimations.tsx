@@ -18,18 +18,20 @@ if (typeof window !== 'undefined') {
  */
 export function GsapAnimations() {
     useEffect(() => {
-        // Wait for DOM to be fully painted
+        let ctx: gsap.Context;
         const timer = setTimeout(() => {
-            initAnimations();
+            ctx = gsap.context(() => {
+                initAnimations();
+            });
         }, 100);
 
         return () => {
             clearTimeout(timer);
-            ScrollTrigger.getAll().forEach(t => t.kill());
+            if (ctx) ctx.revert();
         };
     }, []);
 
-    return null; // This is a side-effect-only component
+    return null; // Side-effect-only component
 }
 
 function initAnimations() {
@@ -38,6 +40,8 @@ function initAnimations() {
     // ============================================
     const sections = document.querySelectorAll('section, [class*="section-padding"]');
     sections.forEach((section) => {
+        if (section.id === 'hot-products-section') return;
+
         gsap.fromTo(section,
             { opacity: 0, y: 60 },
             {
@@ -183,33 +187,7 @@ function initAnimations() {
     }
 
     // ============================================
-    // 8. Smooth hover effects for interactive elements
-    // ============================================
-    const interactiveCards = document.querySelectorAll('.glass-card-hover, [class*="hover:-translate"]');
-    interactiveCards.forEach((card) => {
-        const cardEl = card as HTMLElement;
-        cardEl.addEventListener('mouseenter', () => {
-            gsap.to(cardEl, {
-                y: -6,
-                scale: 1.02,
-                boxShadow: '0 20px 40px rgba(0,0,0,0.12)',
-                duration: 0.3,
-                ease: 'power2.out',
-            });
-        });
-        cardEl.addEventListener('mouseleave', () => {
-            gsap.to(cardEl, {
-                y: 0,
-                scale: 1,
-                boxShadow: '0 4px 6px rgba(0,0,0,0.05)',
-                duration: 0.3,
-                ease: 'power2.out',
-            });
-        });
-    });
-
-    // ============================================
-    // 9. Live Ticker smooth scroll
+    // 8. Live Ticker smooth scroll
     // ============================================
     const ticker = document.querySelector('[class*="animate-marquee"]')?.parentElement;
     if (ticker) {

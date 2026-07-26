@@ -1,29 +1,15 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
-
-// Only create ratelimit instance if env vars are present to avoid build errors
-const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
-const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-let ratelimit: Ratelimit | null = null;
-if (redisUrl && redisToken) {
-    const redis = new Redis({
-        url: redisUrl,
-        token: redisToken,
-    });
-
-    ratelimit = new Ratelimit({
-        redis: redis,
-        limiter: Ratelimit.slidingWindow(100, "1 m"),
-        analytics: true,
-    });
-}
+import { getTenantConfig } from '@/lib/tenant-config';
+import { getTenantId } from '@/lib/tenant-context';
+import { checkRateLimit, RateLimitResult } from '@/lib/ratelimit';
 
 export async function middleware(request: NextRequest) {
+    const hostname = request.headers.get('host') || request.nextUrl.hostname;
+    const tenantId = getTenantId(request);
+    const tenantConfig = getTenantConfig(hostname);
+
     // 1. Markdown Content Negotiation for AI Agents (RFC 8288 / llmstxt.org)
-    // Priority: Handle agent-native requests first
     const acceptHeader = request.headers.get('accept') || '';
     if (acceptHeader.includes('text/markdown')) {
         const isHomePage = request.nextUrl.pathname === '/' || 
@@ -31,10 +17,11 @@ export async function middleware(request: NextRequest) {
                           request.nextUrl.pathname === '/zh/';
         
         if (isHomePage) {
+            const telegramHandle = tenantConfig.id === 'cnwepro' ? 't.me/cnwepro_support' : 't.me/cnverifyhub';
             const markdown = `
-# CNVerifyHub - Premium Digital Marketplace
+# ${tenantConfig.name} - ${tenantConfig.psychology.headlines[0]}
 
-Welcome to CNVerifyHub, the global leader in high-trust digital accounts and verification services.
+Welcome to ${tenantConfig.name}, ${tenantConfig.psychology.subheadlines[0]}.
 
 ## Core Services
 - **WeChat Accounts**: Fresh, aged, and merchant-verified accounts.
@@ -47,15 +34,15 @@ Welcome to CNVerifyHub, the global leader in high-trust digital accounts and ver
 - **API Catalog**: /.well-known/api-catalog
 - **Sitemap**: /sitemap.xml
 - **Documentation**: /llms.txt
-- **Contact**: t.me/cnverifyhub
+- **Contact**: ${telegramHandle}
 
 ## Why Choose Us?
 - **Cinema-Grade Quality**: Every account is verified and secured.
-- **Instant Delivery**: Automated fulfillment for standard accounts.
-- **Fraud Protection**: Advanced multi-chain payment verification.
+- **Instant Delivery**: ${tenantConfig.delivery.promiseText}.
+- **Escrow Guarantee**: ${tenantConfig.psychology.ctaText} with full warranty.
 
 ---
-© 2026 CNVerifyHub. All Rights Reserved.
+© 2026 ${tenantConfig.name}. All Rights Reserved.
             `.trim();
 
             return new NextResponse(markdown, {
@@ -64,41 +51,61 @@ Welcome to CNVerifyHub, the global leader in high-trust digital accounts and ver
                     'Content-Type': 'text/markdown; charset=utf-8',
                     'x-markdown-tokens': '240',
                     'Vary': 'Accept',
-                    'X-Content-Type-Options': 'nosniff'
+                    'X-Content-Type-Options': 'nosniff',
+                    'x-tenant-id': tenantId,
                 }
             });
         }
     }
 
-    // 2. Rate Limiting for API Routes
+    // 2. Per-Endpoint Rate Limiting for API Routes
+    let rateLimitResult: RateLimitResult | null = null;
+
     if (request.nextUrl.pathname.startsWith('/api/')) {
-        const ip = request.ip || '127.0.0.1';
-        
-        if (ratelimit) {
-            const { success, limit, reset, remaining } = await ratelimit.limit(`ratelimit_${ip}`);
-            
-            if (!success) {
-                return new NextResponse(
-                    JSON.stringify({ error: 'Too Many Requests' }),
-                    { 
-                        status: 429, 
-                        headers: { 
-                            'Content-Type': 'application/json',
-                            'X-RateLimit-Limit': limit.toString(),
-                            'X-RateLimit-Remaining': remaining.toString(),
-                            'X-RateLimit-Reset': reset.toString()
-                        } 
+        const rawIp = request.ip ||
+            request.headers.get('cf-connecting-ip') ||
+            request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+            request.headers.get('x-real-ip') ||
+            '127.0.0.1';
+
+        rateLimitResult = await checkRateLimit(tenantId, rawIp, request.nextUrl.pathname);
+
+        if (!rateLimitResult.success) {
+            return new NextResponse(
+                JSON.stringify({ error: 'Too Many Requests' }),
+                {
+                    status: 429,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+                        'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+                        'X-RateLimit-Reset': rateLimitResult.reset.toString(),
+                        'x-tenant-id': tenantId,
                     }
-                );
-            }
+                }
+            );
         }
     }
 
-    // Pass the request along
-    const response = NextResponse.next();
+    // 3. Forward request with tenant ID header
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set('x-tenant-id', tenantId);
+
+    const response = NextResponse.next({
+        request: {
+            headers: requestHeaders,
+        },
+    });
     
-    // Add Vary: Accept to all responses to ensure correct caching
+    // Add tenant & rate limiting headers to response
+    response.headers.set('x-tenant-id', tenantId);
     response.headers.set('Vary', 'Accept');
+
+    if (rateLimitResult) {
+        response.headers.set('X-RateLimit-Limit', rateLimitResult.limit.toString());
+        response.headers.set('X-RateLimit-Remaining', rateLimitResult.remaining.toString());
+        response.headers.set('X-RateLimit-Reset', rateLimitResult.reset.toString());
+    }
     
     return response;
 }
@@ -106,7 +113,7 @@ Welcome to CNVerifyHub, the global leader in high-trust digital accounts and ver
 export const config = {
     matcher: [
         /*
-         * Match all request paths except for the ones starting with:
+         * Match all request paths except for:
          * - _next/static (static files)
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)

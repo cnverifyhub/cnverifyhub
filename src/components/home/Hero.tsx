@@ -64,17 +64,24 @@ function ScrambleText({ lines }: { lines: string[] }) {
 
     useEffect(() => {
         if (!elRef.current) return;
+        let isMounted = true;
+        let timerId: NodeJS.Timeout;
         const fx = new TextScramble(elRef.current);
         
-        const next = () => {
-            fx.setText(lines[index]).then(() => {
-                setTimeout(() => {
-                    setIndex((prev) => (prev + 1) % lines.length);
-                }, 2000);
-            });
+        fx.setText(lines[index]).then(() => {
+            if (isMounted) {
+                timerId = setTimeout(() => {
+                    if (isMounted) {
+                        setIndex((prev) => (prev + 1) % lines.length);
+                    }
+                }, 2200);
+            }
+        });
+
+        return () => {
+            isMounted = false;
+            if (timerId) clearTimeout(timerId);
         };
-        
-        next();
     }, [index, lines]);
 
     return (
@@ -221,23 +228,32 @@ function LivePriceFeed({ lang }: { lang: Lang }) {
     );
 }
 
+import { useTenantConfig } from '@/components/providers/TenantProvider';
+
 /* ── Main Hero ──────────────────────────────── */
 export function Hero({ lang }: { lang: Lang }) {
+    const tenantConfig = useTenantConfig();
+    const isCentered = tenantConfig.ui.heroLayout === 'centered';
+    const headlines = tenantConfig.psychology.headlines;
+    const subheadlines = tenantConfig.psychology.subheadlines;
+    const ctaText = tenantConfig.psychology.ctaText;
+    const telegramLink = tenantConfig.id === 'cnwepro' ? 'https://t.me/cnwepro_support' : 'https://t.me/cnverifyhub';
+
     const typewriterLines = lang === 'zh'
         ? ['一手机房老号', '实名认证专场', '量化交易账户', 'USDT安全结算', '72小时质量保障']
         : ['Real-name verified', 'Aged social accounts', 'KYC-compliant assets', 'USDT secure payment', '72H quality guarantee'];
 
-    const trustBadges = [
-        { icon: <ShieldCheck className="w-3.5 h-3.5" />, label: lang === 'zh' ? '担保交易' : 'Escrow', color: '#00E5FF' },
-        { icon: <Zap className="w-3.5 h-3.5" />,         label: lang === 'zh' ? '极速秒发' : 'Instant', color: '#FFB800' },
-        { icon: <Clock className="w-3.5 h-3.5" />,       label: '24/7',                               color: '#07C160' },
-    ];
+    const trustBadges = tenantConfig.psychology.trustBadges.map((b, i) => ({
+        icon: i === 0 ? <ShieldCheck className="w-3.5 h-3.5" /> : i === 1 ? <Zap className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />,
+        label: lang === 'zh' ? b.sublabel : b.label,
+        color: i === 0 ? '#00E5FF' : i === 1 ? '#FFB800' : '#07C160',
+    }));
 
     const stats = [
         { icon: <Package className="w-4 h-4" />,      val: 50,    suffix: 'K+', label: lang === 'zh' ? '累计订单' : 'Orders',   isCounter: true },
         { icon: <Users className="w-4 h-4" />,         val: 12480, suffix: '+',  label: lang === 'zh' ? '活跃用户' : 'Users',    isCounter: true },
         { icon: <TrendingUp className="w-4 h-4" />,    val: null,  suffix: '',   label: lang === 'zh' ? '平均评分' : 'Rating',   isCounter: false, display: '4.97★' },
-        { icon: <Zap className="w-4 h-4" />,           val: null,  suffix: '',   label: lang === 'zh' ? '发货时效' : 'Delivery', isCounter: false, display: '<5min' },
+        { icon: <Zap className="w-4 h-4" />,           val: null,  suffix: '',   label: lang === 'zh' ? '发货时效' : 'Delivery', isCounter: false, display: tenantConfig.delivery.promiseText },
     ];
 
     const splitText = (text: string, delayOffset = 0) => {
@@ -258,24 +274,34 @@ export function Hero({ lang }: { lang: Lang }) {
         ));
     };
 
+    const [showCanvas, setShowCanvas] = useState(false);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined' && window.matchMedia('(pointer: fine)').matches) {
+            setShowCanvas(true);
+        }
+    }, []);
+
     return (
         <section className="relative min-h-[calc(100vh-96px)] flex items-center overflow-hidden bg-[#060B18]">
             {/* Particle Background */}
             <div className="absolute inset-0 z-0">
-                <Suspense fallback={<div className="absolute inset-0 bg-[#060B18]" />}>
-                    <Canvas camera={{ position: [0, 0, 5] }}>
-                        <ParticleBackground />
-                    </Canvas>
-                </Suspense>
+                {showCanvas && (
+                    <Suspense fallback={<div className="absolute inset-0 bg-[#060B18]" />}>
+                        <Canvas camera={{ position: [0, 0, 5] }}>
+                            <ParticleBackground />
+                        </Canvas>
+                    </Suspense>
+                )}
                 {/* Radial dark gradient overlay */}
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.85)_100%)] pointer-events-none" />
             </div>
 
             <div className="section-container relative z-10 py-20 lg:py-32 w-full">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div className={isCentered ? "max-w-4xl mx-auto text-center flex flex-col items-center" : "grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"}>
 
-                    {/* ── Left panel (7/12) ─────────────────── */}
-                    <div className="lg:col-span-7 flex flex-col">
+                    {/* ── Main panel ─────────────────── */}
+                    <div className={isCentered ? "flex flex-col items-center w-full" : "lg:col-span-7 flex flex-col"}>
                         {/* Eyebrow */}
                         <motion.div
                             initial={{ opacity: 0, y: -12 }}
@@ -283,22 +309,24 @@ export function Hero({ lang }: { lang: Lang }) {
                             transition={{ duration: 0.4 }}
                             className="flex items-center gap-3 mb-8"
                         >
-                            <span className="terminal-label"># CNVerifyHub</span>
+                            <span className="terminal-label"># {tenantConfig.name}</span>
                             <span className="h-px flex-1 max-w-[60px] bg-[#1E2D45]" />
                             <span className="text-[10px] font-mono font-medium text-[#07C160]">● ONLINE</span>
                         </motion.div>
 
                         {/* H1 */}
-                        <h1 className="heading-syne text-white mb-4 leading-[1.05] text-[clamp(32px,8vw,64px)]">
-                            {lang === 'zh' ? (
+                        <h1 
+                            aria-label={headlines[0] ? `${headlines[0]} ${headlines[1] || ''}` : tenantConfig.name}
+                            className={`heading-syne text-white mb-4 leading-[1.05] text-[clamp(32px,8vw,64px)] ${isCentered ? 'text-center' : ''}`}
+                        >
+                            {headlines[0] ? (
                                 <>
-                                    <span className="block overflow-hidden pb-2">{splitText('中国数字资产', 0.1)}</span>
-                                    <span className="text-gradient-red block overflow-hidden pb-2">{splitText('正规交易平台', 0.5)}</span>
+                                    <span className="block overflow-hidden pb-2">{splitText(headlines[0], 0.1)}</span>
+                                    {headlines[1] && <span className="text-gradient-red block overflow-hidden pb-2">{splitText(headlines[1], 0.5)}</span>}
                                 </>
                             ) : (
                                 <>
-                                    <span className="block overflow-hidden pb-2">{splitText('Chinese Digital', 0.1)}</span>
-                                    <span className="text-gradient-red block overflow-hidden pb-2">{splitText('Asset Exchange', 0.5)}</span>
+                                    <span className="block overflow-hidden pb-2">{splitText(tenantConfig.name, 0.1)}</span>
                                 </>
                             )}
                         </h1>
@@ -308,9 +336,9 @@ export function Hero({ lang }: { lang: Lang }) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.3 }}
-                            className="flex items-center gap-2 mb-8 text-lg sm:text-xl"
+                            className="flex items-center gap-2 mb-8 text-lg sm:text-xl flex-wrap justify-center"
                         >
-                            <span className="text-[#7B91B0] font-dm">{lang === 'zh' ? '专注于' : 'Specializing in'}</span>
+                            <span className="text-[#7B91B0] font-dm">{subheadlines[0] || (lang === 'zh' ? '专注于' : 'Specializing in')}</span>
                             <ScrambleText lines={typewriterLines} />
                         </motion.div>
 
@@ -319,7 +347,7 @@ export function Hero({ lang }: { lang: Lang }) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.4 }}
-                            className="flex items-center gap-3 mb-10 flex-wrap"
+                            className="flex items-center gap-3 mb-10 flex-wrap justify-center"
                         >
                             {trustBadges.map((b, i) => (
                                 <span
@@ -337,18 +365,18 @@ export function Hero({ lang }: { lang: Lang }) {
                             initial={{ opacity: 0, y: 12 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.45 }}
-                            className="flex flex-col sm:flex-row gap-3 mb-10"
+                            className="flex flex-col sm:flex-row gap-3 mb-10 w-full sm:w-auto justify-center"
                         >
                             <Link
                                 href={getLocalizedPath('/wechat', lang)}
                                 className="cyber-btn-primary flex items-center justify-center gap-2 px-8 py-4 rounded-lg text-sm"
                             >
                                 <Zap className="w-4 h-4" />
-                                {lang === 'zh' ? '立即选购' : 'Shop Now'}
+                                {ctaText}
                                 <span className="ml-1 text-[10px] opacity-70 font-mono">→</span>
                             </Link>
                             <Link
-                                href="https://t.me/CNVerifyHub"
+                                href={telegramLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="cyber-btn-ghost flex items-center justify-center gap-2 px-8 py-4 rounded-lg text-sm"
@@ -363,7 +391,7 @@ export function Hero({ lang }: { lang: Lang }) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.55 }}
-                            className="border border-[#1E2D45] rounded-lg px-4 py-3 bg-[#0D1526] mb-10"
+                            className="border border-[#1E2D45] rounded-lg px-4 py-3 bg-[#0D1526] mb-10 w-full max-w-lg"
                         >
                             <p className="terminal-label mb-2">{lang === 'zh' ? '实时成交' : 'LIVE ORDERS'}</p>
                             <SocialProofStrip lang={lang} />
@@ -374,7 +402,7 @@ export function Hero({ lang }: { lang: Lang }) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.6 }}
-                            className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-[#1E2D45] rounded-lg overflow-hidden"
+                            className="grid grid-cols-2 md:grid-cols-4 gap-0 border border-[#1E2D45] rounded-lg overflow-hidden w-full"
                         >
                             {stats.map((s, i) => (
                                 <div key={i} className={`flex flex-col items-center py-5 px-3 ${i % 2 !== 0 && i < 2 ? 'border-l' : ''} ${i >= 2 ? 'border-t md:border-t-0 md:border-l' : ''} ${i === 2 ? 'md:border-l border-[#1E2D45]' : ''} border-[#1E2D45] bg-[#0D1526]`}>
@@ -390,15 +418,17 @@ export function Hero({ lang }: { lang: Lang }) {
                         </motion.div>
                     </div>
 
-                    {/* ── Right panel (5/12) ─────────────────── */}
-                    <motion.div
-                        initial={{ opacity: 0, x: 24 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
-                        className="lg:col-span-5 h-[540px] hidden lg:block"
-                    >
-                        <LivePriceFeed lang={lang} />
-                    </motion.div>
+                    {/* ── Right panel (5/12 for split layout) ─────────────────── */}
+                    {!isCentered && (
+                        <motion.div
+                            initial={{ opacity: 0, x: 24 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
+                            className="lg:col-span-5 h-[540px] hidden lg:block"
+                        >
+                            <LivePriceFeed lang={lang} />
+                        </motion.div>
+                    )}
 
                 </div>
 

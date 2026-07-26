@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin as supabase, createAutoUser } from '@/lib/supabase/admin';
 import { checkOrderCreation } from '@/lib/fraud-detection';
 import { sendOrderCreatedEmail, logNotification } from '@/lib/email';
+import { getTenantId } from '@/lib/tenant-context';
 
 export const dynamic = 'force-dynamic';
 
@@ -85,16 +86,28 @@ export async function POST(request: Request) {
             }
         }
 
+        const tenantId = getTenantId(request);
+
+        // Server-side payment method gating validation per tenant
+        const paymentMethod = (order.paymentMethod || order.payment_method || order.cryptoType || order.paymentNetwork || body.paymentMethod || '').toLowerCase();
+        if (tenantId === 'cnwepro' && (paymentMethod.includes('alipay') || paymentMethod.includes('wechat'))) {
+            return NextResponse.json(
+                { error: 'Alipay and WeChat Pay are not supported on CNWePro. Please use USDT or Card.' },
+                { status: 400 }
+            );
+        }
+
         // Generate a UUID upfront to bypass .select() needing RLS READ permissions
         const generatedOrderId = crypto.randomUUID();
 
-        console.log(`[Orders API] Creating order: public_id=${order.id}, email=${order.email}, amount=${order.totalAmount}, txid=${order.txid || 'none'}`);
+        console.log(`[Orders API] Creating order: public_id=${order.id}, email=${order.email}, tenant_id=${tenantId}, amount=${order.totalAmount}, txid=${order.txid || 'none'}`);
 
         // 1. Insert the main order
         const { error: orderError } = await supabase
             .from('orders')
             .insert({
                 id: generatedOrderId,
+                tenant_id: tenantId,
                 public_id: order.id,
                 user_id: finalUserId, // Link to auth user (potentially auto-created)
                 email: order.email,
@@ -115,6 +128,7 @@ export async function POST(request: Request) {
         // 2. Insert order items
         const orderItems = items.map((item: any) => ({
             order_id: generatedOrderId,
+            tenant_id: tenantId,
             product_id: item.productId,
             quantity: item.quantity,
             price_at_time: item.priceAtTime || 0
@@ -202,6 +216,7 @@ export async function GET(request: Request) {
             );
         }
 
+        const tenantId = getTenantId(request);
         const { searchParams } = new URL(request.url);
         const email = searchParams.get('email');
         const publicId = searchParams.get('id');
@@ -209,7 +224,8 @@ export async function GET(request: Request) {
 
         let query = supabase
             .from('orders')
-            .select('*, order_items(*)');
+            .select('*, order_items(*)')
+            .eq('tenant_id', tenantId);
 
         if (publicId) {
             query = query.eq('public_id', publicId);

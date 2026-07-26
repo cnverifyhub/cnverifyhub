@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { getTenantId } from '@/lib/tenant-context';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -7,6 +8,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(req: Request) {
     try {
+        const tenantId = getTenantId(req);
         const { code } = await req.json();
         if (!code) {
             return NextResponse.json({ error: 'Coupon code required' }, { status: 400 });
@@ -34,6 +36,7 @@ export async function POST(req: Request) {
         const { data: coupon, error } = await supabase
             .from('coupons')
             .select('*')
+            .eq('tenant_id', tenantId)
             .eq('code', normalizedCode)
             .maybeSingle();
 

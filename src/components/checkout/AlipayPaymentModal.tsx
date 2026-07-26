@@ -9,6 +9,8 @@ import { formatYuan } from '@/lib/utils';
 import { WeChatIcon, AlipayIcon } from '@/components/ui/BrandIcons';
 import { AlipaySuccessAnimation } from './AlipaySuccessAnimation';
 
+import { useTenantConfig } from '@/components/providers/TenantProvider';
+
 interface AlipayPaymentModalProps {
     isOpen: boolean;
     onClose: () => void;
@@ -44,7 +46,9 @@ const METHODS: { id: PaymentMethod; icon: React.ReactNode; label: string; color:
 ];
 
 export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess }: AlipayPaymentModalProps) {
-    const [method, setMethod] = useState<PaymentMethod>('alipay');
+    const tenantConfig = useTenantConfig();
+    const availableMethods = METHODS.filter(m => tenantConfig.id === 'cnverifyhub' || m.id === 'usdt');
+    const [method, setMethod] = useState<PaymentMethod>(tenantConfig.id === 'cnwepro' ? 'usdt' : 'alipay');
     const [txId, setTxId] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
@@ -56,7 +60,13 @@ export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess
     const scanTweenRef = useRef<gsap.core.Tween | null>(null);
 
     const usdtAddress = process.env.NEXT_PUBLIC_TRC20_WALLET || 'TQofpQffADyHpv25EBZPcQD7scx8AZV5or';
-    const activeMethod = METHODS.find(m => m.id === method)!;
+    const activeMethod = availableMethods.find(m => m.id === method) || availableMethods[0];
+
+    useEffect(() => {
+        if (tenantConfig.id === 'cnwepro' && method !== 'usdt') {
+            setMethod('usdt');
+        }
+    }, [tenantConfig.id, method]);
 
     /* ── Countdown timer ── */
     useEffect(() => {
@@ -178,7 +188,7 @@ export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess
                     <div className="px-5 pt-5 pb-8">
                         {/* ── Method Switcher with animated indicator ── */}
                         <div className="relative flex gap-1.5 p-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl mb-6">
-                            {METHODS.map(m => (
+                            {availableMethods.map(m => (
                                 <button
                                     key={m.id}
                                     onClick={() => setMethod(m.id)}

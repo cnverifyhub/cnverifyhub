@@ -1,6 +1,12 @@
 import { MetadataRoute } from 'next';
+import { headers } from 'next/headers';
+import { getTenantConfig } from '@/lib/tenant-config';
 
 export default function robots(): MetadataRoute.Robots {
+    const headersList = headers();
+    const host = headersList.get('host') || headersList.get('x-forwarded-host') || null;
+    const config = getTenantConfig(host);
+
     return {
         rules: [
             {
@@ -14,6 +20,7 @@ export default function robots(): MetadataRoute.Robots {
                 disallow: ['/admin/'],
             }
         ],
-        sitemap: 'https://cnverifyhub.com/sitemap.xml',
+        sitemap: `https://${config.domain}/sitemap.xml`,
     };
 }
+

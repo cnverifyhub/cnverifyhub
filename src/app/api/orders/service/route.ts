@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin as supabase } from '@/lib/supabase/admin';
+import { getTenantId } from '@/lib/tenant-context';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,6 +11,7 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(request: Request) {
     try {
+        const tenantId = getTenantId(request);
         const { searchParams } = new URL(request.url);
         const status = searchParams.get('status');
         const assignedTo = searchParams.get('assignedTo');
@@ -20,7 +22,8 @@ export async function GET(request: Request) {
                 *,
                 product:products(name_en, name_zh),
                 order:orders(public_id, email, telegram)
-            `);
+            `)
+            .eq('tenant_id', tenantId);
 
         if (status) query = query.eq('status', status);
         if (assignedTo) query = query.eq('assigned_to', assignedTo);

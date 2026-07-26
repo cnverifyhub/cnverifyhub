@@ -1,163 +1,109 @@
 import type { Metadata, Viewport } from 'next';
+import { headers } from 'next/headers';
 import Script from 'next/script';
 import { GoogleTagManager, GoogleAnalytics } from '@next/third-parties/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 import { ClientLayoutWrapper } from '@/components/layout/ClientLayoutWrapper';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
+import { getTenantConfigFromHeaders } from '@/lib/tenant-server';
+import { TenantProvider } from '@/components/providers/TenantProvider';
 
+export async function generateMetadata(): Promise<Metadata> {
+    const config = getTenantConfigFromHeaders();
+    const SITE_URL = `https://${config.domain}`;
 
-
-
-
-export const metadata: Metadata = {
-    metadataBase: new URL(SITE_URL),
-    title: {
-        template: '%s | CNVerifyHub - 专业中国数字账号交易平台',
-        default: 'CNVerifyHub - 专业中国数字账号交易平台 | Buy WeChat, Alipay, Douyin Accounts',
-    },
-    description: '专业中国数字账号批发平台。微信号、支付宝账号、抖音号、QQ号现货供应。实名认证号、绑卡号、老号、白号应有尽有。USDT匿名支付，5分钟极速发货，72小时售后质保。Professional Chinese digital account marketplace — WeChat, Alipay, Douyin, QQ accounts with instant USDT delivery.',
-    keywords: [
-        // Chinese keywords (Baidu)
-        '微信号购买', '买微信号', '微信账号出售', '微信号批发', '微信老号购买',
-        '支付宝账号购买', '支付宝实名号', '支付宝企业号',
-        '抖音号购买', '抖音账号出售', '抖音万粉号', '抖音蓝V号',
-        'QQ号购买', 'QQ靓号', 'QQ太阳号',
-        '海外充值', '中国账号购买', 'USDT购买微信号', '加密货币购买中国账号',
-        '数字账号交易平台', '账号批发', '实名微信号出售',
-        // English keywords (Google)
-        'buy wechat account', 'wechat account for sale', 'buy chinese wechat',
-        'buy alipay account', 'verified alipay account',
-        'buy douyin account', 'tiktok china account', 'buy douyin followers',
-        'buy qq account', 'qq number for sale',
-        'chinese social media accounts', 'buy chinese accounts with crypto',
-        'USDT payment chinese accounts', 'instant delivery wechat',
-    ].join(', '),
-    authors: [{ name: 'CNVerifyHub', url: SITE_URL }],
-    creator: 'CNVerifyHub',
-    publisher: 'CNVerifyHub',
-    formatDetection: {
-        telephone: false,
-        email: false,
-    },
-    icons: {
-        icon: [
-            { url: '/favicon.svg', type: 'image/svg+xml' },
-            { url: '/icon.png', type: 'image/png' },
-        ],
-        apple: [
-            { url: '/logo.png' },
-        ],
-    },
-    openGraph: {
-        type: 'website',
-        siteName: 'CNVerifyHub',
-        locale: 'zh_CN',
-        alternateLocale: 'en_US',
-        title: 'CNVerifyHub - 专业中国数字账号交易平台 | Chinese Digital Accounts',
-        description: '微信、支付宝、抖音、QQ账号现货供应。USDT支付，5分钟发货，72小时质保。Buy verified Chinese social media accounts with instant crypto delivery.',
-        url: SITE_URL,
-        images: [
-            {
-                url: `${SITE_URL}/og-image.png`,
-                width: 1200,
-                height: 630,
-                alt: 'CNVerifyHub - 中国数字账号交易平台',
+    return {
+        metadataBase: new URL(SITE_URL),
+        title: {
+            template: `%s | ${config.name} - ${config.psychology.headlines[0]}`,
+            default: `${config.name} - ${config.psychology.headlines[0]} | Buy Verified Accounts`,
+        },
+        description: `${config.name}: ${config.psychology.subheadlines.join(' ')}. ${config.delivery.promiseText} (${config.delivery.promiseSubtext}).`,
+        keywords: [
+            '微信号购买', '买微信号', '微信账号出售', '微信号批发', '微信老号购买',
+            '支付宝账号购买', '支付宝实名号', '支付宝企业号',
+            '抖音号购买', '抖音账号出售', '抖音万粉号', '抖音蓝V号',
+            'QQ号购买', 'QQ靓号', 'QQ太阳号',
+            '海外充值', '中国账号购买', 'USDT购买微信号', '加密货币购买中国账号',
+            '数字账号交易平台', '账号批发', '实名微信号出售',
+            'buy wechat account', 'wechat account for sale', 'buy chinese wechat',
+            'buy alipay account', 'verified alipay account',
+            'buy douyin account', 'tiktok china account', 'buy douyin followers',
+            'buy qq account', 'qq number for sale',
+            'chinese social media accounts', 'buy chinese accounts with crypto',
+            'USDT payment chinese accounts', 'instant delivery wechat',
+        ].join(', '),
+        authors: [{ name: config.name, url: SITE_URL }],
+        creator: config.name,
+        publisher: config.name,
+        formatDetection: {
+            telephone: false,
+            email: false,
+        },
+        icons: {
+            icon: [
+                { url: config.branding.favicon || '/favicon.svg', type: 'image/svg+xml' },
+            ],
+            apple: [
+                { url: config.branding.logo || '/logo.png' },
+            ],
+        },
+        openGraph: {
+            type: 'website',
+            siteName: config.name,
+            locale: 'zh_CN',
+            alternateLocale: 'en_US',
+            title: `${config.name} - ${config.psychology.headlines[0]}`,
+            description: config.psychology.subheadlines[0],
+            url: SITE_URL,
+            images: [
+                {
+                    url: `${SITE_URL}/og-image.png`,
+                    width: 1200,
+                    height: 630,
+                    alt: `${config.name} - ${config.psychology.headlines[0]}`,
+                }
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `${config.name} - ${config.psychology.headlines[0]}`,
+            description: config.psychology.subheadlines[0],
+            images: [`${SITE_URL}/og-image.png`],
+        },
+        alternates: {
+            canonical: SITE_URL,
+            languages: {
+                'zh-CN': SITE_URL,
+                'en': `${SITE_URL}/en`,
             }
-        ],
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title: 'CNVerifyHub - Buy WeChat, Alipay, Douyin & QQ Accounts',
-        description: 'Professional Chinese digital account marketplace. Instant USDT delivery, 72hr warranty. 微信号、支付宝、抖音、QQ账号批发平台。',
-        images: [`${SITE_URL}/og-image.png`],
-    },
-    alternates: {
-        canonical: SITE_URL,
-        languages: {
-            'zh-CN': SITE_URL,
-            'en': `${SITE_URL}/en`,
-        }
-    },
-    robots: {
-        index: true,
-        follow: true,
-        googleBot: {
+        },
+        robots: {
             index: true,
             follow: true,
-            'max-video-preview': -1,
-            'max-image-preview': 'large',
-            'max-snippet': -1,
+            googleBot: {
+                index: true,
+                follow: true,
+                'max-video-preview': -1,
+                'max-image-preview': 'large',
+                'max-snippet': -1,
+            },
         },
-    },
-    verification: {
-        google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || '',
-        // Baidu verification is handled via meta tag below
-    },
-    other: {
-        // Baidu SEO specific meta
-        'baidu-site-verification': process.env.NEXT_PUBLIC_BAIDU_VERIFICATION || '',
-        'applicable-device': 'pc,mobile',
-        'mobile-agent': `format=html5; url=${SITE_URL}`,
-        // Sogou & 360 search
-        'sogou_site_verification': process.env.NEXT_PUBLIC_SOGOU_VERIFICATION || '',
-        // Content language for search engines
-        'content-language': 'zh-CN, en',
-        // Force webkit rendering in 360/QQ/Sogou browsers (critical for Chinese market)
-        'renderer': 'webkit',
-        'force-rendering': 'webkit',
-    },
-};
-
-// JSON-LD Structured Data
-const organizationJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: 'CNVerifyHub',
-    url: SITE_URL,
-    logo: `${SITE_URL}/icon.png`,
-    description: '专业中国数字账号交易平台 - Professional Chinese digital account marketplace',
-    contactPoint: [
-        {
-            '@type': 'ContactPoint',
-            contactType: 'customer service',
-            url: 'https://t.me/cnverifyhub',
-            email: 'cnverifyhub@gmail.com',
-            availableLanguage: ['Chinese', 'English'],
-        }
-    ],
-    sameAs: [
-        'https://t.me/CNVerifyHub',
-        'https://t.me/cnverifyhub',
-    ],
-};
-
-const websiteJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'WebSite',
-    name: 'CNVerifyHub',
-    url: SITE_URL,
-    description: '专业中国数字账号交易平台',
-    inLanguage: ['zh-CN', 'en'],
-    potentialAction: {
-        '@type': 'SearchAction',
-        target: `${SITE_URL}/track/?id={search_term_string}`,
-        'query-input': 'required name=search_term_string',
-    },
-};
-
-const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    itemListElement: [
-        { '@type': 'ListItem', position: 1, name: '首页', item: SITE_URL },
-        { '@type': 'ListItem', position: 2, name: '微信账号', item: `${SITE_URL}/wechat/` },
-        { '@type': 'ListItem', position: 3, name: '支付宝账号', item: `${SITE_URL}/alipay/` },
-        { '@type': 'ListItem', position: 4, name: '抖音账号', item: `${SITE_URL}/douyin/` },
-        { '@type': 'ListItem', position: 5, name: 'QQ账号', item: `${SITE_URL}/qq/` },
-    ],
-};
+        verification: {
+            google: process.env.NEXT_PUBLIC_GOOGLE_VERIFICATION || '',
+        },
+        other: {
+            'baidu-site-verification': process.env.NEXT_PUBLIC_BAIDU_VERIFICATION || '',
+            'applicable-device': 'pc,mobile',
+            'mobile-agent': `format=html5; url=${SITE_URL}`,
+            'sogou_site_verification': process.env.NEXT_PUBLIC_SOGOU_VERIFICATION || '',
+            'content-language': 'zh-CN, en',
+            'renderer': 'webkit',
+            'force-rendering': 'webkit',
+        },
+    };
+}
 
 export const viewport: Viewport = {
     themeColor: '#FF0036',
@@ -168,8 +114,64 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const tenantConfig = getTenantConfigFromHeaders();
+    const SITE_URL = `https://${tenantConfig.domain}`;
+    const telegramUrl = tenantConfig.id === 'cnwepro' ? 'https://t.me/cnwepro_support' : 'https://t.me/cnverifyhub';
+
+    // JSON-LD Structured Data
+    const organizationJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: tenantConfig.name,
+        url: SITE_URL,
+        logo: `${SITE_URL}${tenantConfig.branding.logo}`,
+        description: `${tenantConfig.name} - ${tenantConfig.psychology.subheadlines[0]}`,
+        contactPoint: [
+            {
+                '@type': 'ContactPoint',
+                contactType: 'customer service',
+                url: telegramUrl,
+                availableLanguage: ['Chinese', 'English'],
+            }
+        ],
+        sameAs: [
+            telegramUrl,
+        ],
+    };
+
+    const websiteJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: tenantConfig.name,
+        url: SITE_URL,
+        description: tenantConfig.psychology.headlines[0],
+        inLanguage: ['zh-CN', 'en'],
+        potentialAction: {
+            '@type': 'SearchAction',
+            target: `${SITE_URL}/track/?id={search_term_string}`,
+            'query-input': 'required name=search_term_string',
+        },
+    };
+
+    const breadcrumbJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: '首页', item: SITE_URL },
+            { '@type': 'ListItem', position: 2, name: '微信账号', item: `${SITE_URL}/wechat/` },
+            { '@type': 'ListItem', position: 3, name: '支付宝账号', item: `${SITE_URL}/alipay/` },
+            { '@type': 'ListItem', position: 4, name: '抖音账号', item: `${SITE_URL}/douyin/` },
+            { '@type': 'ListItem', position: 5, name: 'QQ账号', item: `${SITE_URL}/qq/` },
+        ],
+    };
+
+    const headersList = headers();
+    const pathname = headersList.get('x-pathname') || headersList.get('x-invoke-path') || headersList.get('referer') || '';
+    const isEnglish = pathname.includes('/en/') || pathname.endsWith('/en');
+    const lang = isEnglish ? 'en' : 'zh';
+
     return (
-        <html lang="zh" className="scroll-smooth" suppressHydrationWarning>
+        <html lang={lang} className="scroll-smooth" suppressHydrationWarning>
             <head>
                 {/* Preconnect to external domains for China speed */}
                 <link rel="preconnect" href="https://mybzjmhyxamldklezngu.supabase.co" />
@@ -252,13 +254,24 @@ export default function RootLayout({
                     }}
                 />
             </head>
-            <body className={`min-h-screen flex flex-col overflow-x-hidden font-sans`}>
+            <body 
+                className={`min-h-screen flex flex-col overflow-x-hidden font-sans`}
+                style={{
+                    '--color-primary': tenantConfig.branding.primary,
+                    '--color-secondary': tenantConfig.branding.secondary,
+                    '--color-accent': tenantConfig.branding.accent,
+                    '--color-background': tenantConfig.branding.background,
+                    '--color-surface': tenantConfig.branding.surface,
+                } as React.CSSProperties}
+            >
                 <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || 'GTM-P3BSVQS6'} />
                 <GoogleAnalytics gaId="G-YKJ9S5L36F" />
                 
-                <ClientLayoutWrapper>
-                    {children}
-                </ClientLayoutWrapper>
+                <TenantProvider initialConfig={tenantConfig}>
+                    <ClientLayoutWrapper>
+                        {children}
+                    </ClientLayoutWrapper>
+                </TenantProvider>
 
                 <Analytics />
                 <SpeedInsights />
@@ -266,3 +279,4 @@ export default function RootLayout({
         </html>
     );
 }
+

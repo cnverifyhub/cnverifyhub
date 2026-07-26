@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase/client';
+import { getTenantId } from '@/lib/tenant-context';
 
 export async function GET(
     request: Request,
     { params }: { params: { id: string } }
 ) {
+    const tenantId = getTenantId(request);
     const { id } = params;
     const { searchParams } = new URL(request.url);
     const email = searchParams.get('email');
@@ -20,6 +22,7 @@ export async function GET(
                 *,
                 order_items (*)
             `)
+            .eq('tenant_id', tenantId)
             .eq('public_id', id)
             .eq('email', email)
             .single();

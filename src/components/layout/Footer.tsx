@@ -10,6 +10,7 @@ import {
     XianyuIcon, TaobaoIcon, XiaohongshuIcon,
     BundleIcon, VerificationIcon, FintechIcon
 } from '@/components/ui/BrandIcons';
+import { useTenantConfig } from '@/components/providers/TenantProvider';
 
 const iconMap: Record<string, React.ElementType> = {
     wechat: WeChatIcon, alipay: AlipayIcon, douyin: DouyinIcon,
@@ -26,13 +27,16 @@ const liveStats = [
 ];
 
 export default function Footer() {
+    const tenantConfig = useTenantConfig();
     const pathname = usePathname() || '/';
     const lang = getLangFromPath(pathname);
+    const telegramLink = tenantConfig.id === 'cnwepro' ? 'https://t.me/cnwepro_support' : 'https://t.me/cnverifyhub';
+    const badgeText = tenantConfig.id === 'cnwepro' ? 'CW' : 'CV';
 
     const support = [
         { label: { zh: '帮助中心', en: 'FAQ Center' },     icon: HelpCircle,   href: '/faq' },
         { label: { zh: '订单追踪', en: 'Track Order' },    icon: ShieldCheck,  href: '/track' },
-        { icon: MessageSquare, label: { zh: '客服', en: 'Support' }, href: 'https://t.me/cnverifyhub', external: true },
+        { icon: MessageSquare, label: { zh: '客服', en: 'Support' }, href: telegramLink, external: true },
         { label: { zh: '隐私政策', en: 'Privacy' },        icon: Shield,       href: '/privacy' },
         { label: { zh: '退款政策', en: 'Refund Policy' },  icon: FileText,     href: '/refund-policy' },
     ];
@@ -67,17 +71,17 @@ export default function Footer() {
                     {/* Brand column */}
                     <div className="lg:col-span-4">
                         <Link href={getLocalizedPath('/', lang)} className="inline-flex items-center gap-2 mb-4 group">
-                            <div className="w-6 h-6 rounded flex items-center justify-center bg-[#FF2D55] text-white font-syne font-black text-[10px] leading-none">
-                                CV
+                            <div className="w-6 h-6 rounded flex items-center justify-center text-white font-syne font-black text-[10px] leading-none" style={{ backgroundColor: tenantConfig.branding.primary }}>
+                                {badgeText}
                             </div>
                             <span className="font-syne font-bold text-base text-white">
-                                CN<span className="text-[#00E5FF]">Verify</span>Hub
+                                {tenantConfig.name}
                             </span>
                         </Link>
                         <p className="text-xs text-[#7B91B0] leading-relaxed mb-5 max-w-xs">
                             {lang === 'zh'
-                                ? 'CNVerifyHub是全网领先的中国数字资产交易平台。专注提供高权重一手老号，USDT TRC20自动发卡，全程担保交易，72小时质保。'
-                                : 'CNVerifyHub is the leading Chinese digital asset exchange. High-authority aged accounts, USDT auto-delivery, full escrow, 72H warranty.'}
+                                ? `${tenantConfig.name}是全网领先的中国数字资产交易平台。专注提供高权重一手老号，USDT 自动发卡，全程担保交易，72小时质保。`
+                                : `${tenantConfig.name} is the leading Chinese digital asset exchange. High-authority aged accounts, USDT auto-delivery, full escrow, 72H warranty.`}
                         </p>
                         {/* Trust chips */}
                         <div className="flex flex-wrap gap-1.5 mb-6">
@@ -98,87 +102,80 @@ export default function Footer() {
                         {/* Payment methods */}
                         <p className="terminal-label mb-2">{lang === 'zh' ? '支付方式' : 'PAYMENT'}</p>
                         <div className="flex items-center gap-2 flex-wrap">
-                            {[
-                                { label: 'USDT-TRC20', color: '#07C160', bg: '#07C16015' },
-                                { label: 'USDT-ERC20', color: '#1677ff', bg: '#1677ff15' },
-                                { label: 'Alipay',     color: '#1677ff', bg: '#1677ff10' },
-                                { label: 'WeChat Pay', color: '#07C160', bg: '#07C16010' },
-                            ].map((p) => (
-                                <span
-                                    key={p.label}
-                                    className="text-[9px] font-mono font-bold px-2 py-1 rounded border"
-                                    style={{ color: p.color, borderColor: `${p.color}30`, background: p.bg }}
-                                >
-                                    {p.label}
-                                </span>
-                            ))}
+                            <span className="text-[10px] text-emerald-400 border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 rounded font-bold">USDT (TRC20/ERC20)</span>
+                            {tenantConfig.id === 'cnverifyhub' && (
+                                <>
+                                    <span className="text-[10px] text-blue-400 border border-blue-500/30 bg-blue-500/10 px-2 py-1 rounded font-bold">Alipay</span>
+                                    <span className="text-[10px] text-green-400 border border-green-500/30 bg-green-500/10 px-2 py-1 rounded font-bold">WeChat Pay</span>
+                                </>
+                            )}
                         </div>
                     </div>
 
-                    {/* Categories column */}
-                    <div className="lg:col-span-3">
-                        <h4 className="terminal-label mb-4">{lang === 'zh' ? '全部品类' : 'CATEGORIES'}</h4>
+                    {/* Navigation Columns */}
+                    <div className="lg:col-span-2">
+                        <p className="terminal-label mb-4">{lang === 'zh' ? '商品分类' : 'CATEGORIES'}</p>
                         <ul className="space-y-2.5">
-                            {categories.map(c => {
-                                const Icon = iconMap[c.id] || WeChatIcon;
-                                return (
-                                    <li key={c.id}>
-                                        <Link
-                                            href={getLocalizedPath(c.href, lang)}
-                                            className="flex items-center gap-2 text-xs text-[#7B91B0] hover:text-[#F0F4FF] transition-colors group"
-                                        >
-                                            <Icon className="w-3.5 h-3.5 shrink-0 opacity-70 group-hover:opacity-100" />
-                                            <span>{c.name[lang]}</span>
-                                            {(c.id === 'verification' || c.id === 'trading') && (
-                                                <span className="text-[8px] font-black text-[#00E5FF] border border-[#00E5FF]/25 px-1 rounded ml-auto">NEW</span>
-                                            )}
-                                            {c.id === 'bundle' && (
-                                                <span className="text-[8px] font-black text-[#FF2D55] border border-[#FF2D55]/25 px-1 rounded ml-auto">HOT</span>
-                                            )}
-                                        </Link>
-                                    </li>
-                                );
-                            })}
+                            {categories.slice(0, 5).map((cat) => (
+                                <li key={cat.id}>
+                                    <Link href={getLocalizedPath(cat.href, lang)} className="text-xs text-[#7B91B0] hover:text-[#F0F4FF] transition-colors">
+                                        {cat.name[lang]}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 
-                    {/* Support column */}
                     <div className="lg:col-span-2">
-                        <h4 className="terminal-label mb-4">{lang === 'zh' ? '客户支持' : 'SUPPORT'}</h4>
+                        <p className="terminal-label mb-4">{lang === 'zh' ? '更多服务' : 'SERVICES'}</p>
+                        <ul className="space-y-2.5">
+                            {categories.slice(5).map((cat) => (
+                                <li key={cat.id}>
+                                    <Link href={getLocalizedPath(cat.href, lang)} className="text-xs text-[#7B91B0] hover:text-[#F0F4FF] transition-colors">
+                                        {cat.name[lang]}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div className="lg:col-span-2">
+                        <p className="terminal-label mb-4">{lang === 'zh' ? '客户服务' : 'SUPPORT'}</p>
                         <ul className="space-y-2.5">
                             {support.map((item, i) => (
                                 <li key={i}>
-                                    <Link
-                                        href={item.href}
-                                        target={(item as any).external ? '_blank' : undefined}
-                                        rel={(item as any).external ? 'noopener noreferrer' : undefined}
-                                        className="flex items-center gap-2 text-xs text-[#7B91B0] hover:text-[#F0F4FF] transition-colors"
-                                    >
-                                        <item.icon className="w-3.5 h-3.5 shrink-0 opacity-60" />
-                                        {item.label[lang]}
-                                        {(item as any).external && <ExternalLink className="w-2.5 h-2.5 opacity-40 ml-auto" />}
-                                    </Link>
+                                    {item.external ? (
+                                        <a href={item.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-xs text-[#7B91B0] hover:text-[#F0F4FF] transition-colors">
+                                            {item.label[lang]}
+                                            <ExternalLink className="w-3 h-3 opacity-50" />
+                                        </a>
+                                    ) : (
+                                        <Link href={getLocalizedPath(item.href, lang)} className="text-xs text-[#7B91B0] hover:text-[#F0F4FF] transition-colors">
+                                            {item.label[lang]}
+                                        </Link>
+                                    )}
                                 </li>
                             ))}
                         </ul>
                     </div>
 
-                    {/* Blog / Resources */}
-                    <div className="lg:col-span-3">
-                        <h4 className="terminal-label mb-4">{lang === 'zh' ? '安全资讯' : 'RESOURCES'}</h4>
-                        <ul className="space-y-2.5 mb-6">
-                            {blog.map((item, i) => (
-                                <li key={i}>
-                                    <Link href={item.href} className="flex items-center gap-2 text-xs text-[#7B91B0] hover:text-[#F0F4FF] transition-colors">
-                                        <ArrowUpRight className="w-3.5 h-3.5 shrink-0 opacity-60" />
-                                        {item.label[lang]}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
+                    <div className="lg:col-span-2 flex flex-col justify-between">
+                        <div>
+                            <p className="terminal-label mb-4">{lang === 'zh' ? '最新文章' : 'BLOG'}</p>
+                            <ul className="space-y-2.5 mb-6">
+                                {blog.map((item, i) => (
+                                    <li key={i}>
+                                        <Link href={item.href} className="flex items-center gap-2 text-xs text-[#7B91B0] hover:text-[#F0F4FF] transition-colors">
+                                            <ArrowUpRight className="w-3.5 h-3.5 shrink-0 opacity-60" />
+                                            {item.label[lang]}
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                         {/* Telegram CTA */}
                         <a
-                            href={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ? `https://t.me/${process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME}` : 'https://t.me/cnverifyhub'}
+                            href={telegramLink}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 px-4 py-2.5 rounded border border-[#1E2D45] hover:border-[#00E5FF]/40 bg-[#0D1526] hover:bg-[#142035] transition-all text-xs font-medium text-[#7B91B0] hover:text-white group"
@@ -196,7 +193,7 @@ export default function Footer() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
                     {/* Copyright */}
                     <p className="text-[10px] text-[#7B91B0] font-mono">
-                        CNVerifyHub © 2026. {lang === 'zh' ? '专业中国账号交易平台' : 'Professional Chinese Account Platform'}. All Rights Reserved.
+                        {tenantConfig.name} © 2026. {lang === 'zh' ? '专业中国账号交易平台' : 'Professional Chinese Account Platform'}. All Rights Reserved.
                     </p>
 
                     {/* ICP + Public security badges */}

@@ -19,8 +19,9 @@ export function LiveOrderFeed() {
 
     useEffect(() => {
         const interval = setInterval(() => {
+            if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
             setIndex((prev) => (prev + 1) % MOCK_ORDERS.length);
-        }, 3000);
+        }, 4000);
         return () => clearInterval(interval);
     }, []);
 

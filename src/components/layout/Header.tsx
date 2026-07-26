@@ -14,6 +14,8 @@ import {
     BundleIcon, VerificationIcon, FintechIcon
 } from '@/components/ui/BrandIcons';
 
+import { useTenantConfig } from '@/components/providers/TenantProvider';
+
 const categoryMeta: Record<string, { icon: React.ReactNode; color: string; desc: { zh: string; en: string } }> = {
     wechat:       { icon: <WeChatIcon className="w-full h-full" />,       color: '#07C160', desc: { zh: '实名认证老号', en: 'Real-name verified' } },
     alipay:       { icon: <AlipayIcon className="w-full h-full" />,       color: '#1677ff', desc: { zh: '花呗绑卡账户', en: 'Huabei linked' } },
@@ -69,6 +71,7 @@ function MicroBar({ lang }: { lang: 'zh' | 'en' }) {
 }
 
 export default function Header() {
+    const tenantConfig = useTenantConfig();
     const pathname = usePathname() || '/';
     const lang = getLangFromPath(pathname);
     const { items, setIsOpen } = useCartStore();
@@ -106,6 +109,8 @@ export default function Header() {
         { label: lang === 'zh' ? '安全指南' : 'Blog', href: getLocalizedPath('/blog', lang) },
     ];
 
+    const badgeText = tenantConfig.id === 'cnwepro' ? 'CW' : 'CV';
+
     return (
         <>
             <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${isScrolled ? 'shadow-[0_4px_24px_rgba(0,0,0,0.5)]' : ''}`}>
@@ -123,16 +128,16 @@ export default function Header() {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-8">
                         {/* Logo */}
                         <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 shrink-0 group">
-                            <div className="w-7 h-7 rounded flex items-center justify-center bg-[#FF2D55] text-white font-syne font-black text-xs leading-none shadow-neon-red-sm">
-                                CV
+                            <div className="w-7 h-7 rounded flex items-center justify-center text-white font-syne font-black text-xs leading-none shadow-sm" style={{ backgroundColor: tenantConfig.branding.primary }}>
+                                {badgeText}
                             </div>
                             <span className="font-syne font-bold text-lg tracking-tight text-white leading-none">
-                                CN<span className="text-[#00E5FF]">Verify</span>Hub
+                                {tenantConfig.name}
                             </span>
                         </Link>
 
                         {/* Desktop nav links */}
-                        <div className="hidden md:flex items-center gap-1 flex-1">
+                        <div className="hidden xl:flex items-center gap-1 flex-1">
                             {navLinks.map((link) =>
                                 link.hasMega ? (
                                     <div
@@ -192,7 +197,7 @@ export default function Header() {
                         </div>
 
                         {/* Mobile menu button */}
-                        <div className="md:hidden ml-auto flex items-center gap-2">
+                        <div className="xl:hidden ml-auto flex items-center gap-2">
                             {mounted && cartCount > 0 && (
                                 <button onClick={() => setIsOpen(true)} className="relative p-2">
                                     <ShoppingCart className="w-5 h-5 text-[#7B91B0]" />
@@ -268,14 +273,14 @@ export default function Header() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setMobileOpen(false)}
-                            className="fixed inset-0 bg-black/70 z-40 md:hidden"
+                            className="fixed inset-0 bg-black/70 z-40 xl:hidden"
                         />
                         <motion.div
                             initial={{ y: '100%' }}
                             animate={{ y: 0 }}
                             exit={{ y: '100%' }}
                             transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-                            className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-[#0D1526] border-t border-[#1E2D45] rounded-t-2xl pb-safe-area-inset-bottom"
+                            className="fixed bottom-0 left-0 right-0 z-50 xl:hidden bg-[#0D1526] border-t border-[#1E2D45] rounded-t-2xl pb-safe-area-inset-bottom"
                         >
                             {/* Handle bar */}
                             <div className="flex justify-center pt-3 pb-2">

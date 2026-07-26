@@ -1,10 +1,17 @@
 import { MetadataRoute } from 'next';
+import { headers } from 'next/headers';
+import { getTenantConfig } from '@/lib/tenant-config';
 import { getAllSlugs } from '@/lib/blog';
-import { categories, allProducts } from '@/data/products';
-
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
+import { categories as staticCategories, allProducts as staticProducts } from '@/data/products';
+import { supabase } from '@/lib/supabase';
+import { mapDbProductToProduct } from '@/lib/supabase-products';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+    const headersList = headers();
+    const host = headersList.get('host') || headersList.get('x-forwarded-host') || null;
+    const config = getTenantConfig(host);
+    const SITE_URL = `https://${config.domain}`;
+
     const now = new Date().toISOString();
 
     // Alternate language links helper
@@ -51,26 +58,42 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         { url: `${SITE_URL}/en/refund-policy/`, lastModified: now, changeFrequency: 'yearly', priority: 0.3, alternates: getAlternates('/refund-policy/') },
     ];
 
-    // 2. Category Routes
-    const categoryRoutes: MetadataRoute.Sitemap = categories.flatMap(cat => [
+    // 2. Fetch active products from Supabase filtered by tenant_id
+    let productsList = staticProducts.filter(p => p.isPublished !== false);
+    if (supabase) {
+        try {
+            const { data, error } = await supabase
+                .from('products')
+                .select('*')
+                .eq('is_active', true)
+                .eq('is_published', true)
+                .or(`tenant_id.eq.${config.id},tenant_id.is.null`);
+            if (!error && data && data.length > 0) {
+                productsList = data.map(mapDbProductToProduct);
+            }
+        } catch (err) {
+            console.warn('[sitemap] Supabase fetch error, fallback to static products:', err);
+        }
+    }
+
+    // 3. Category Routes
+    const categoryRoutes: MetadataRoute.Sitemap = staticCategories.flatMap(cat => [
         { url: `${SITE_URL}/${cat.id}/`, lastModified: now, changeFrequency: 'daily' as const, priority: 0.9, alternates: getAlternates(`/${cat.id}/`) },
         { url: `${SITE_URL}/en/${cat.id}/`, lastModified: now, changeFrequency: 'daily' as const, priority: 0.9, alternates: getAlternates(`/${cat.id}/`) },
     ]);
 
-    // 3. Dynamic Blog Posts
+    // 4. Dynamic Blog Posts
     const blogSlugs = await getAllSlugs();
     const blogRoutes: MetadataRoute.Sitemap = blogSlugs.flatMap(slug => [
         { url: `${SITE_URL}/blog/${slug}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/blog/${slug}/`) },
         { url: `${SITE_URL}/en/blog/${slug}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/blog/${slug}/`) },
     ]);
 
-    // 4. Product Routes
-    const productRoutes: MetadataRoute.Sitemap = allProducts
-        .filter(p => p.isPublished !== false)
-        .flatMap(product => [
-            { url: `${SITE_URL}/product/${product.id}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/product/${product.id}/`) },
-            { url: `${SITE_URL}/en/product/${product.id}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/product/${product.id}/`) },
-        ]);
+    // 5. Product Routes
+    const productRoutes: MetadataRoute.Sitemap = productsList.flatMap(product => [
+        { url: `${SITE_URL}/product/${product.id}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/product/${product.id}/`) },
+        { url: `${SITE_URL}/en/product/${product.id}/`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.7, alternates: getAlternates(`/product/${product.id}/`) },
+    ]);
 
     return [
         ...staticRoutes,
@@ -79,3 +102,4 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...productRoutes,
     ];
 }
+
