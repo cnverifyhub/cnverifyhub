@@ -35,7 +35,7 @@ const nextConfig = {
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=()' },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://hm.baidu.com https://zz.bdstatic.com https://www.googletagmanager.com https://*.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://images.unsplash.com https://api.dicebear.com https://play-lh.googleusercontent.com https://zz.bdstatic.com https://*.bdstatic.com https://www.google-analytics.com https://*.google-analytics.com https://cdn.simpleicons.org; connect-src 'self' https://otgewrynnrqmtsyvlzrj.supabase.co https://mybzjmhyxamldklezngu.supabase.co https://hm.baidu.com https://zz.bdstatic.com https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data: https://fonts.gstatic.com;"
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://hm.baidu.com https://zz.bdstatic.com https://static.cloudflareinsights.com https://www.googletagmanager.com https://*.googletagmanager.com https://www.google-analytics.com https://*.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://images.unsplash.com https://api.dicebear.com https://play-lh.googleusercontent.com https://zz.bdstatic.com https://*.bdstatic.com https://sp0.baidu.com https://www.google-analytics.com https://*.google-analytics.com https://cdn.simpleicons.org; connect-src 'self' https://otgewrynnrqmtsyvlzrj.supabase.co https://mybzjmhyxamldklezngu.supabase.co https://hm.baidu.com https://zz.bdstatic.com https://sp0.baidu.com https://cloudflareinsights.com https://*.cloudflareinsights.com https://www.google-analytics.com https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data: https://fonts.gstatic.com;"
           },
           // Preconnect to Supabase and Baidu Analytics for faster resolution
           {
@@ -51,23 +51,48 @@ const nextConfig = {
           },
         ],
       },
-      // Long-lived cache for immutable static assets
+      // Cloudflare Edge Cache for static assets (1 year immutable)
       {
         source: '/_next/static/(.*)',
-        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'CDN-Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'Cloudflare-CDN-Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
       },
       {
         source: '/fonts/(.*)',
-        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'CDN-Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'Cloudflare-CDN-Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
       },
       {
         source: '/images/(.*)',
-        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'CDN-Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'Cloudflare-CDN-Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
       },
-      // Cache blog pages for 1 hour (they're SSG so this is fine)
+      // Cloudflare Edge Cache for SSG/Public Pages (HTML)
       {
-        source: '/(blog|en/blog)/(.*)',
-        headers: [{ key: 'Cache-Control', value: 'public, s-maxage=3600, stale-while-revalidate=86400' }],
+        source: '/(blog|en/blog|catalog|en/catalog)/(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, s-maxage=3600, stale-while-revalidate=86400' },
+          { key: 'CDN-Cache-Control', value: 'public, s-maxage=3600, stale-while-revalidate=86400' },
+          { key: 'Cloudflare-CDN-Cache-Control', value: 'public, s-maxage=86400, stale-while-revalidate=604800' },
+        ],
+      },
+      // Ensure API routes and checkout/admin are NEVER cached by Cloudflare Edge
+      {
+        source: '/(api|admin|checkout)/(.*)',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate, proxy-revalidate' },
+          { key: 'CDN-Cache-Control', value: 'no-store' },
+          { key: 'Cloudflare-CDN-Cache-Control', value: 'no-store' },
+        ],
       },
     ];
   },
