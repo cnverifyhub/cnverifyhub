@@ -1,13 +1,15 @@
 import type { Metadata } from 'next';
+import dynamic from 'next/dynamic';
 import { Hero } from '@/components/home/Hero';
 import { TrustBadges } from '@/components/home/TrustBadges';
 import { CategoryCards } from '@/components/home/CategoryCards';
 import { WhyChooseUs } from '@/components/home/WhyChooseUs';
-import { CustomerReviews } from '@/components/home/CustomerReviews';
 import { HotProducts } from '@/components/sections/HotProducts';
 import { LiveMarketTable } from '@/components/sections/LiveMarketTable';
 import { FAQSection } from '@/components/home/FAQSection';
-import { LuckyWheel } from '@/components/home/LuckyWheel';
+
+const CustomerReviews = dynamic(() => import('@/components/home/CustomerReviews').then(mod => mod.CustomerReviews), { ssr: true });
+const LuckyWheel = dynamic(() => import('@/components/home/LuckyWheel').then(mod => mod.LuckyWheel), { ssr: false });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 

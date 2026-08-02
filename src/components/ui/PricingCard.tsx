@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -52,7 +52,7 @@ interface PricingCardProps {
     lang: Lang;
 }
 
-export function PricingCard({ product, lang }: PricingCardProps) {
+export const PricingCard = memo(function PricingCard({ product, lang }: PricingCardProps) {
     const isOutOfStock = product.stockCount === 0;
     const addItem = useCartStore((state) => state.addItem);
     const meta = BRAND_META[product.category] || BRAND_META.default;
@@ -315,10 +315,9 @@ export function PricingCard({ product, lang }: PricingCardProps) {
                 style={{ background: 'linear-gradient(135deg, transparent 0%, rgba(0,229,255,0.02) 100%)' }}
             />
             
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
         </motion.div>
     );
-}
+});
 
 const STOCK_LEVELS = {
     LOW: 10,

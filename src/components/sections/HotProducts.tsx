@@ -38,20 +38,20 @@ export function HotProducts({ lang }: { lang: Lang }) {
             }
         });
 
-        // Animate cards on scroll
+        // Animate cards on scroll with GPU hardware acceleration
         const cards = gsap.utils.toArray('.product-card-wrap');
         cards.forEach((card: any) => {
             gsap.fromTo(card,
-                { scale: 0.9, filter: "blur(4px)" },
+                { scale: 0.95, opacity: 0.8 },
                 {
                     scale: 1,
-                    filter: "blur(0px)",
+                    opacity: 1,
                     scrollTrigger: {
                         trigger: card,
                         containerAnimation: trackAnimation,
                         start: "left center",
                         end: "right center",
-                        scrub: true,
+                        scrub: 0.5,
                     }
                 }
             );
@@ -70,7 +70,7 @@ export function HotProducts({ lang }: { lang: Lang }) {
             <div 
                 ref={trackRef} 
                 className="flex gap-8 px-8 items-center mt-20"
-                style={{ width: 'max-content' }}
+                style={{ width: 'max-content', willChange: 'transform' }}
             >
                 {products.map((product, i) => (
                     <div key={product.id} className="product-card-wrap w-[320px] md:w-[400px] shrink-0">

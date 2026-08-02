@@ -8,38 +8,9 @@ import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { categories, getTotalStock, getLowestPrice } from '@/data/products';
 import type { CategoryId } from '@/types';
 import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Points, PointMaterial } from '@react-three/drei';
+import dynamic from 'next/dynamic';
 
-function ParticleBackground() {
-    const ref = useRef<any>();
-    const [sphere] = useState(() => {
-        const positions = new Float32Array(3000 * 3);
-        for(let i=0; i<3000; i++) {
-            positions[i*3] = (Math.random() - 0.5) * 15;
-            positions[i*3+1] = (Math.random() - 0.5) * 15;
-            positions[i*3+2] = (Math.random() - 0.5) * 15;
-        }
-        return positions;
-    });
-
-    useFrame((state, delta) => {
-        if (ref.current) {
-            ref.current.rotation.y -= delta / 10;
-            ref.current.rotation.x -= delta / 15;
-            ref.current.position.y = (ref.current.position.y + delta * 0.2) % 5;
-        }
-    });
-
-    return (
-        <group rotation={[0, 0, Math.PI / 4]}>
-            <Points ref={ref} positions={sphere} stride={3} frustumCulled={false}>
-                <PointMaterial transparent color="#FF0036" size={0.03} sizeAttenuation={true} depthWrite={false} opacity={0.4} />
-            </Points>
-        </group>
-    );
-}
+const ParticleBackground = dynamic(() => import('./ParticleBackground'), { ssr: false });
 
 /* ── Live price feed panel data ─────────────── */
 const liveFeedCategories = [
@@ -286,13 +257,7 @@ export function Hero({ lang }: { lang: Lang }) {
         <section className="relative min-h-[calc(100vh-96px)] flex items-center overflow-hidden bg-[#060B18]">
             {/* Particle Background */}
             <div className="absolute inset-0 z-0">
-                {showCanvas && (
-                    <Suspense fallback={<div className="absolute inset-0 bg-[#060B18]" />}>
-                        <Canvas camera={{ position: [0, 0, 5] }}>
-                            <ParticleBackground />
-                        </Canvas>
-                    </Suspense>
-                )}
+                <ParticleBackground />
                 {/* Radial dark gradient overlay */}
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.1)_0%,rgba(0,0,0,0.85)_100%)] pointer-events-none" />
             </div>
