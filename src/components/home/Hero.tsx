@@ -8,6 +8,7 @@ import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { categories, getTotalStock, getLowestPrice } from '@/data/products';
 import type { CategoryId } from '@/types';
 import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
+import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
 const ParticleBackground = dynamic(() => import('./ParticleBackground'), { ssr: false });
