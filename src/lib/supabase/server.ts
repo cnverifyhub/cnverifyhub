@@ -5,8 +5,8 @@ export function createSupabaseServerClient() {
     const cookieStore = cookies();
 
     return createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://mybzjmhyxamldklezngu.supabase.co',
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+        process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || 'https://mybzjmhyxamldklezngu.supabase.co',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || '',
         {
             cookies: {
                 get(name: string) {
