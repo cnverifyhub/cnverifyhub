@@ -34,6 +34,7 @@ export interface PricingTier {
 
 export interface Product {
     id: string;
+    sku?: string;
     slug: string; // Unified slug
     name?: { zh: string; en: string }; // New standardized name field
     nameEn?: string; // Shortcut for EN name if needed
@@ -98,6 +99,7 @@ export interface Product {
         linkStatus?: string;
         includes: string[];
     }>;
+    localizedBundleContents?: { zh: string[]; en: string[] };
     whyBundle?: { zh: string; en: string };
     useCases?: string[];
     loginMethod?: {

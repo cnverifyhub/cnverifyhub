@@ -367,23 +367,25 @@ export function Hero({ lang }: { lang: Lang }) {
                             transition={{ delay: 0.45 }}
                             className="flex flex-col sm:flex-row gap-3 mb-10 w-full sm:w-auto justify-center"
                         >
-                            <Link
-                                href={getLocalizedPath('/wechat', lang)}
+                            <a
+                                href={telegramLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="cyber-btn-primary flex items-center justify-center gap-2 px-8 py-4 rounded-lg text-sm"
                             >
                                 <Zap className="w-4 h-4" />
-                                {ctaText}
+                                {lang === 'zh' ? '立即购买 · TG咨询' : 'Buy Now · TG Support'}
                                 <span className="ml-1 text-[10px] opacity-70 font-mono">→</span>
-                            </Link>
-                            <Link
-                                href={telegramLink}
+                            </a>
+                            <a
+                                href={tenantConfig.id === 'cnwepro' ? 'https://t.me/cnwepro' : 'https://t.me/cnverifyhub_group'}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="cyber-btn-ghost flex items-center justify-center gap-2 px-8 py-4 rounded-lg text-sm"
                             >
-                                {lang === 'zh' ? '联系客服' : 'Contact Support'}
+                                {lang === 'zh' ? '加入客户群' : 'Join Community'}
                                 <ChevronRight className="w-4 h-4" />
-                            </Link>
+                            </a>
                         </motion.div>
 
                         {/* Social proof strip */}
