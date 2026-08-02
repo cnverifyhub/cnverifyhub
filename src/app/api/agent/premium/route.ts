@@ -30,27 +30,20 @@ const handler = async (req: NextRequest) => {
   );
 };
 
-let exportGET: any = handler;
-
-try {
-  exportGET = withX402(
-    handler,
-    {
-      accepts: [
-        {
-          scheme: "exact",
-          price: "$0.01",
-          network: "eip155:8453",
-          payTo: evmAddress,
-        },
-      ],
-      description: "Access to CNVerifyHub Premium Market Data",
-      mimeType: "application/json",
-    },
-    x402Server,
-  );
-} catch (e) {
-  console.warn('[x402] Facilitator init bypassed during build:', e);
-}
-
-export const GET = exportGET;
+// Wrap the handler with x402 payment protection
+export const GET = withX402(
+  handler,
+  {
+    accepts: [
+      {
+        scheme: "exact",
+        price: "$0.01",
+        network: "eip155:8453", // Base mainnet
+        payTo: evmAddress,
+      },
+    ],
+    description: "Access to CNVerifyHub Premium Market Data",
+    mimeType: "application/json",
+  },
+  x402Server,
+);

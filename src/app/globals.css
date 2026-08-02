@@ -7,20 +7,6 @@
 @tailwind utilities;
 
 
-/* Lenis Smooth Scroll Base */
-html.lenis,
-html.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overflow: clip;
-}
-
-.lenis.lenis-smooth iframe {
-  pointer-events: none;
-}
-
 /* ============================================
    Base Layer
    ============================================ */

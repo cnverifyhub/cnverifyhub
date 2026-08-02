@@ -67,7 +67,7 @@ export async function checkRateLimit(
 
   if (redisUrl && redisToken && redisUrl.startsWith('http')) {
     try {
-      const { Redis } = await import('@upstash/redis/cloudflare');
+      const { Redis } = await import('@upstash/redis');
       const { Ratelimit } = await import('@upstash/ratelimit');
 
       const redis = new Redis({ url: redisUrl, token: redisToken });

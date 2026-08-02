@@ -8,7 +8,6 @@ import { HotProducts } from '@/components/sections/HotProducts';
 import { LiveMarketTable } from '@/components/sections/LiveMarketTable';
 import { FAQSection } from '@/components/home/FAQSection';
 import { LuckyWheel } from '@/components/home/LuckyWheel';
-import { ShowcaseScroll } from '@/components/sections/ShowcaseScroll';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://CNVerifyHub.com';
 
@@ -79,7 +78,6 @@ export default function Home() {
             <TrustBadges />
             <CategoryCards lang={lang} />
             <HotProducts lang={lang} />
-            <ShowcaseScroll lang={lang} />
             <LiveMarketTable lang={lang} />
             <WhyChooseUs lang={lang} />
             <CustomerReviews lang={lang} />
