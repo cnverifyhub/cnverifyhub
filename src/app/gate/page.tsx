@@ -29,7 +29,7 @@ export default function GatePage() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ password: password || 'bypass' }),
+                body: JSON.stringify({ password }),
             });
 
             const data = await res.json();

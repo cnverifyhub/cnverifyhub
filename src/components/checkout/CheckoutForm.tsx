@@ -93,6 +93,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
 
     const [contactInfo, setContactInfo] = useState({ telegram: '', email: '' });
     const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [mounted, setMounted] = useState(false);
     const [countdown, setCountdown] = useState(15 * 60); // 15 minutes in seconds
     const [showConfetti, setShowConfetti] = useState(false);
@@ -199,6 +200,10 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
     };
 
     const handleNextStep = () => {
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+        setTimeout(() => setIsSubmitting(false), 3000);
+
         if (step === 1 && contactInfo.telegram && contactInfo.email) {
             // Check if any item is a service
             const hasService = items.some(item => {
@@ -220,6 +225,10 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
 
 
     const handlePaymentConfirm = async (txHash: string, verificationData?: any) => {
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+        setTimeout(() => setIsSubmitting(false), 3000);
+
         setIsProcessingPayment(true);
         setProcessingPhase(0);
 
@@ -623,10 +632,16 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
 
                             <button
                                 onClick={handleNextStep}
-                                disabled={!contactInfo.telegram || !contactInfo.email}
-                                className="btn-primary w-full justify-center py-4 text-lg font-black tracking-wider shadow-lg shadow-primary-500/30 hover:shadow-primary-500/50 hover:-translate-y-1 transition-all"
+                                disabled={isSubmitting || !contactInfo.telegram || !contactInfo.email}
+                                className="btn-primary w-full justify-center py-4 text-lg font-black tracking-wider shadow-lg shadow-primary-500/30 hover:shadow-primary-500/50 hover:-translate-y-1 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                {lang === 'zh' ? '下一步：去支付' : 'Proceed to Payment'} <ChevronRight className="w-5 h-5 ml-1" />
+                                {isSubmitting ? (
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                ) : (
+                                    <>
+                                        {lang === 'zh' ? '下一步：去支付' : 'Proceed to Payment'} <ChevronRight className="w-5 h-5 ml-1" />
+                                    </>
+                                )}
                             </button>
 
                             <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-slate-400">
@@ -811,11 +826,17 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                                 </button>
                                 <button 
                                     onClick={handleNextStep}
-                                    disabled={items.filter(i => getProductById(i.productId)?.type === 'service').some(i => !requirementsData[i.productId])}
+                                    disabled={isSubmitting || items.filter(i => getProductById(i.productId)?.type === 'service').some(i => !requirementsData[i.productId])}
                                     className="flex-[2] py-4 px-6 rounded-2xl font-black text-white bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                 >
-                                    {lang === 'zh' ? '确认并付款' : 'Confirm & Pay'}
-                                    <ChevronRight className="w-5 h-5" />
+                                    {isSubmitting ? (
+                                        <Loader2 className="w-5 h-5 animate-spin text-white" />
+                                    ) : (
+                                        <>
+                                            {lang === 'zh' ? '确认并付款' : 'Confirm & Pay'}
+                                            <ChevronRight className="w-5 h-5" />
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </div>

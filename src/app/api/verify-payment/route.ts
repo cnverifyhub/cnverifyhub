@@ -364,7 +364,7 @@ export async function POST(request: Request) {
         }
 
         // ── Fraud Detection on Payment ──
-        const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined;
+        const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;
         const fraudCheck = await checkPaymentVerification({
             txid: txHash,
             fromWallet: result.from,

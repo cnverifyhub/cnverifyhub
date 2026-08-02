@@ -91,9 +91,18 @@ export async function POST(req: Request) {
         if (!process.env.TELEGRAM_BOT_TOKEN) {
             return NextResponse.json({ error: 'TELEGRAM_BOT_TOKEN is missing in server environment' }, { status: 500 });
         }
+
+        const secretHeader = req.headers.get('x-telegram-bot-api-secret-token');
+        const secretEnv = process.env.TELEGRAM_WEBHOOK_SECRET;
+
+        if (!secretEnv || secretHeader !== secretEnv) {
+            return NextResponse.json({ error: 'Unauthorized: Invalid Telegram webhook secret token' }, { status: 401 });
+        }
+
         return await handleWebhook(req);
     } catch (e: any) {
         console.error('Telegram Webhook error:', e);
         return NextResponse.json({ error: e.message }, { status: 500 });
     }
 }
+

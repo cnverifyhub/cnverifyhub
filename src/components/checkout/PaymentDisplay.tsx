@@ -187,65 +187,47 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
         setPollAttempt(0);
         setConfirmations(0);
 
-        if (currentNetworkInfo.autoVerify) {
-            if (selectedNetwork === 'trc20') {
-                // TRC20: Start polling loop
-                isPollingRef.current = true;
-                setPhase('polling');
-                setPollStatus('pending');
-                // First attempt immediately, then every 30s
-                pollVerification(1);
-            } else {
-                // Other networks: single-shot verification (existing behavior)
-                try {
-                    const res = await fetch('/api/verify-payment', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            txHash: txHash.trim(),
-                            expectedAmount: amount,
-                            orderId,
-                            network: selectedNetwork,
-                            walletAddress,
-                            orderDetails
-                        })
-                    });
-
-                    const data = await res.json();
-
-                    if (data.verified) {
-                        setPhase('verified');
-                        setVerificationData(data);
-                        setTimeout(() => {
-                            onConfirm(txHash.trim(), { ...data, paymentWallet: walletAddress, paymentNetwork: selectedNetwork });
-                        }, 2000);
-                    } else {
-                        setPhase('failed');
-                        setErrorMsg(data.error || (lang === 'zh' ? '验证失败，请检查TXID后重试' : 'Verification failed. Please check TXID and try again.'));
-                    }
-                } catch {
-                    setPhase('verified');
-                    const fallbackData = {
-                        verified: true, amount, token: currentNetworkInfo.token,
-                        network: selectedNetwork, manualVerification: true,
-                        from: 'pending-manual-check', to: walletAddress, confirmed: false,
-                    };
-                    setVerificationData(fallbackData);
-                    setTimeout(() => onConfirm(txHash.trim(), { ...fallbackData, paymentWallet: walletAddress, paymentNetwork: selectedNetwork }), 2500);
-                }
-            }
+        if (selectedNetwork === 'trc20') {
+            // TRC20: Start polling loop
+            isPollingRef.current = true;
+            setPhase('polling');
+            setPollStatus('pending');
+            // First attempt immediately, then every 30s
+            pollVerification(1);
         } else {
-            // WeChat / disabled networks: simulate manual confirmation
-            setTimeout(() => {
-                setPhase('verified');
-                const manualData = {
-                    verified: true, amount, token: currentNetworkInfo.token,
-                    network: selectedNetwork, manualVerification: true,
-                    from: 'pending-manual-check', to: walletAddress, confirmed: false,
-                };
-                setVerificationData(manualData);
-                setTimeout(() => onConfirm(txHash.trim(), { ...manualData, paymentWallet: walletAddress, paymentNetwork: selectedNetwork }), 2500);
-            }, 2000);
+            // Other networks: single-shot verification
+            try {
+                const res = await fetch('/api/verify-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        txHash: txHash.trim(),
+                        expectedAmount: amount,
+                        orderId,
+                        network: selectedNetwork,
+                        walletAddress,
+                        orderDetails
+                    })
+                });
+
+                const data = await res.json();
+
+                if (data.verified) {
+                    setPhase('verified');
+                    setVerificationData(data);
+                    setTimeout(() => {
+                        onConfirm(txHash.trim(), { ...data, paymentWallet: walletAddress, paymentNetwork: selectedNetwork });
+                    }, 2000);
+                } else {
+                    setPhase('failed');
+                    setErrorMsg(data.error || (lang === 'zh' ? '验证失败，请检查TXID后重试' : 'Verification failed. Please check TXID and try again.'));
+                    setVerificationData({ verified: false });
+                }
+            } catch (err: any) {
+                setPhase('failed');
+                setErrorMsg(lang === 'zh' ? '验证出错，请重试' : 'Verification error occurred. Please try again.');
+                setVerificationData({ verified: false });
+            }
         }
     };
 

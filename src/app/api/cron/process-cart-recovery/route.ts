@@ -10,6 +10,15 @@ const resend = new Resend(process.env.RESEND_API_KEY || 're_mock_key');
 
 export async function GET(request: Request) {
     try {
+        const authHeader = request.headers.get('authorization');
+        const cronSecret = process.env.CRON_SECRET;
+        if (!cronSecret || !authHeader || authHeader !== `Bearer ${cronSecret}`) {
+            return NextResponse.json(
+                { error: 'Unauthorized: Invalid or missing Cron secret' },
+                { status: 401 }
+            );
+        }
+
         // Fetch cart recoveries that haven't been recovered and haven't been sent an email yet
         // and are older than 1 hour.
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();

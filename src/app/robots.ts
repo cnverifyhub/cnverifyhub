@@ -12,15 +12,28 @@ export default function robots(): MetadataRoute.Robots {
             {
                 userAgent: '*',
                 allow: '/',
-                disallow: ['/admin/', '/api/', '/_next/'],
+                disallow: ['/admin/', '/api/'],
             },
             {
-                userAgent: ['GPTBot', 'Claude-Web', 'Google-Extended', 'CCBot', 'PerplexityBot'],
+                userAgent: ['Baiduspider', 'Baiduspider-render', 'Baiduspider-image', 'Bytespider', 'Sogouspider'],
+                allow: '/',
+                disallow: ['/admin/'],
+            },
+            {
+                userAgent: [
+                    'GPTBot',
+                    'ChatGPT-User',
+                    'Claude-Web',
+                    'ClaudeBot',
+                    'AnthropicAI',
+                    'Google-Extended',
+                    'CCBot',
+                    'PerplexityBot',
+                ],
                 allow: ['/', '/api/agent/premium'],
                 disallow: ['/admin/'],
-            }
+            },
         ],
         sitemap: `https://${config.domain}/sitemap.xml`,
     };
 }
-

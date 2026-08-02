@@ -353,20 +353,47 @@ NOTIFY pgrst, 'reload schema';
 -- ============================================
 CREATE TABLE IF NOT EXISTS fraud_blocklist (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  type VARCHAR(50),
+  value VARCHAR(255),
   ip_address VARCHAR(45),
   fingerprint VARCHAR(255),
   reason TEXT,
+  added_by VARCHAR(100) DEFAULT 'admin',
+  expires_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+ALTER TABLE fraud_blocklist ADD COLUMN IF NOT EXISTS type VARCHAR(50);
+ALTER TABLE fraud_blocklist ADD COLUMN IF NOT EXISTS value VARCHAR(255);
+ALTER TABLE fraud_blocklist ADD COLUMN IF NOT EXISTS added_by VARCHAR(100) DEFAULT 'admin';
+ALTER TABLE fraud_blocklist ADD COLUMN IF NOT EXISTS expires_at TIMESTAMP WITH TIME ZONE;
+CREATE INDEX IF NOT EXISTS idx_fraud_blocklist_type_val ON fraud_blocklist(type, value);
 
 CREATE TABLE IF NOT EXISTS fraud_events (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   ip_address VARCHAR(45),
   fingerprint VARCHAR(255),
   event_type VARCHAR(50),
+  severity VARCHAR(20),
+  email VARCHAR(255),
+  txid VARCHAR(255),
+  wallet_address VARCHAR(255),
+  order_id UUID REFERENCES orders(id) ON DELETE SET NULL,
   details JSONB,
+  metadata JSONB DEFAULT '{}'::jsonb,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+ALTER TABLE fraud_events ADD COLUMN IF NOT EXISTS severity VARCHAR(20);
+ALTER TABLE fraud_events ADD COLUMN IF NOT EXISTS email VARCHAR(255);
+ALTER TABLE fraud_events ADD COLUMN IF NOT EXISTS txid VARCHAR(255);
+ALTER TABLE fraud_events ADD COLUMN IF NOT EXISTS wallet_address VARCHAR(255);
+ALTER TABLE fraud_events ADD COLUMN IF NOT EXISTS order_id UUID REFERENCES orders(id) ON DELETE SET NULL;
+ALTER TABLE fraud_events ADD COLUMN IF NOT EXISTS metadata JSONB DEFAULT '{}'::jsonb;
+CREATE INDEX IF NOT EXISTS idx_fraud_events_ip_event_created ON fraud_events(ip_address, event_type, created_at);
+
+ALTER TABLE fraud_blocklist ENABLE ROW LEVEL SECURITY;
+ALTER TABLE fraud_events ENABLE ROW LEVEL SECURITY;
 
 -- ============================================
 -- Stock Decrement Trigger
@@ -461,6 +488,19 @@ CREATE TABLE IF NOT EXISTS coupons (
     expires_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ DEFAULT now()
 );
+
+CREATE TABLE IF NOT EXISTS coupon_uses (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  coupon_id UUID REFERENCES coupons(id) ON DELETE CASCADE,
+  coupon_code VARCHAR(100) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  order_id UUID REFERENCES orders(id) ON DELETE SET NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  CONSTRAINT unique_coupon_code_email UNIQUE(coupon_code, email)
+);
+
+ALTER TABLE coupon_uses ENABLE ROW LEVEL SECURITY;
+CREATE INDEX IF NOT EXISTS idx_coupon_uses_email_code ON coupon_uses(email, coupon_code);
 
 CREATE TABLE IF NOT EXISTS referrals (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

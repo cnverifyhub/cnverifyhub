@@ -54,6 +54,7 @@ export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess
     const [showSuccess, setShowSuccess] = useState(false);
     const [copied, setCopied] = useState(false);
     const [timeLeft, setTimeLeft] = useState(15 * 60);
+    const [errorMsg, setErrorMsg] = useState('');
 
     const scanLineRef = useRef<HTMLDivElement>(null);
     const qrWrapperRef = useRef<HTMLDivElement>(null);
@@ -84,6 +85,7 @@ export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess
             document.body.style.overflow = 'unset';
             setShowSuccess(false);
             setTxId('');
+            setErrorMsg('');
         }
     }, [isOpen]);
 
@@ -126,11 +128,33 @@ export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess
     };
 
     const handleSubmit = async () => {
-        if (txId.length < 6) return;
+        if (txId.trim().length < 6) return;
         setIsSubmitting(true);
-        await new Promise(r => setTimeout(r, 2000));
-        setIsSubmitting(false);
-        setShowSuccess(true);
+        setErrorMsg('');
+
+        try {
+            const res = await fetch('/api/verify-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    orderId,
+                    txHash: txId.trim(),
+                    paymentMethod: method,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (data.verified || data.status === 'paid') {
+                setShowSuccess(true);
+            } else {
+                setErrorMsg(data.error || '验证失败，请检查单号或TXID后重试');
+            }
+        } catch (err: any) {
+            setErrorMsg('网络请求失败，请稍后重试');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (!isOpen) return null;
@@ -370,6 +394,12 @@ export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess
                                 </>
                             )}
                         </motion.button>
+
+                        {errorMsg && (
+                            <p className="mt-3 text-xs font-bold text-red-500 text-center animate-fade-in">
+                                {errorMsg}
+                            </p>
+                        )}
 
                         {/* ── Trust badges ── */}
                         <div className="mt-6 flex items-center justify-around">

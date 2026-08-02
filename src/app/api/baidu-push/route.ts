@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { submitBaiduUrls } from '@/lib/indexing';
 
 export async function POST(request: Request) {
     try {
@@ -6,30 +7,18 @@ export async function POST(request: Request) {
         const { urls } = body;
 
         if (!urls || !Array.isArray(urls)) {
-            return NextResponse.json({ error: 'Invalid urls' }, { status: 400 });
+            return NextResponse.json({ error: 'Invalid urls parameter' }, { status: 400 });
         }
 
-        const baiduToken = process.env.BAIDU_PUSH_TOKEN;
-        const siteDomain = 'cnverifyhub.com';
+        const host = request.headers.get('host') || request.headers.get('x-forwarded-host');
+        const result = await submitBaiduUrls(urls, host);
 
-        if (!baiduToken) {
-            return NextResponse.json({ error: 'Baidu token not configured' }, { status: 500 });
+        if (!result.success) {
+            return NextResponse.json({ error: result.error }, { status: 500 });
         }
 
-        const baiduApi = `http://data.zz.baidu.com/urls?site=${siteDomain}&token=${baiduToken}`;
-
-        const response = await fetch(baiduApi, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain',
-            },
-            body: urls.join('\n'),
-        });
-
-        const data = await response.json();
-
-        return NextResponse.json({ success: true, baiduResponse: data });
+        return NextResponse.json({ success: true, baiduResponse: result.data });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json({ error: error.message || String(error) }, { status: 500 });
     }
 }

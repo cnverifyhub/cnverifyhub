@@ -44,12 +44,12 @@ export async function POST(
     }
 
     // 2. Verify payment status
-    const validPaymentStatuses = ['paid', 'completed', 'stripe_pending', 'verified'];
-    if (!validPaymentStatuses.includes(order.status)) {
+    const VALID_STATUSES_FOR_DELIVERY = ['paid'];
+    if (!VALID_STATUSES_FOR_DELIVERY.includes(order.status)) {
       console.warn(`[Auto-Delivery] Payment not confirmed for order ${orderId}, status: ${order.status}`);
       return NextResponse.json(
         { error: 'Order payment is not confirmed', status: order.status },
-        { status: 400 }
+        { status: 402 }
       );
     }
 

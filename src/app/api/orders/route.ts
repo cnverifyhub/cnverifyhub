@@ -50,7 +50,7 @@ export async function POST(request: Request) {
 
         // ── Fraud Detection Check ──
         const totalQuantity = (items as any[]).reduce((sum: number, i: any) => sum + (i.quantity || 0), 0);
-        const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined;
+        const ip = request.headers.get('cf-connecting-ip') || request.headers.get('x-real-ip') || request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || undefined;
 
         const fraudResult = await checkOrderCreation({
             email: order.email || '',
@@ -114,7 +114,8 @@ export async function POST(request: Request) {
                 telegram: order.telegram,
                 crypto_type: order.cryptoType || 'USDT',
                 total_amount: order.totalAmount,
-                status: order.status || 'pending',
+                status: 'pending',
+                payment_verified: false,
                 txid: order.txid || null, // Save TXID submitted at checkout
                 payment_wallet: order.paymentWallet || order.payment_wallet || body.paymentWallet || null,
                 payment_network: order.paymentNetwork || order.payment_network || body.paymentNetwork || null
@@ -141,6 +142,37 @@ export async function POST(request: Request) {
         if (itemsError) {
             console.error(`[Orders API] ❌ Supabase Items Error for order ${generatedOrderId}:`, itemsError);
             return NextResponse.json({ error: 'Order created but failed to save items' }, { status: 500 });
+        }
+
+        // Process coupon redemption if couponCode was provided
+        const couponCode = (body.couponCode || order.couponCode || '').trim();
+        if (couponCode && order.email && !couponCode.toUpperCase().startsWith('REF-')) {
+            try {
+                const normCode = couponCode.toUpperCase();
+                const { data: couponData } = await supabase
+                    .from('coupons')
+                    .select('*')
+                    .eq('code', normCode)
+                    .maybeSingle();
+
+                if (couponData) {
+                    await supabase
+                        .from('coupons')
+                        .update({ used_count: (couponData.used_count || 0) + 1 })
+                        .eq('id', couponData.id);
+
+                    await supabase
+                        .from('coupon_uses')
+                        .insert({
+                            coupon_id: couponData.id,
+                            coupon_code: normCode,
+                            email: order.email.toLowerCase().trim(),
+                            order_id: generatedOrderId
+                        });
+                }
+            } catch (couponErr) {
+                console.warn('[Orders API] Failed to record coupon usage:', couponErr);
+            }
         }
 
         console.log(`[Orders API] ✅ Order saved successfully: uuid=${generatedOrderId} (public_id: ${order.id})`);

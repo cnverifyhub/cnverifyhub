@@ -70,7 +70,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         image: post.featuredImage ? `${siteUrl}${post.featuredImage}` : `${siteUrl}/logo.png`,
         datePublished: post.publishDate,
         dateModified: post.modifiedDate || post.publishDate,
-        author: { '@type': 'Organization', name: 'CNVerifyHub Team', url: siteUrl },
+        author: { '@type': 'Person', name: post.author || 'CNVerifyHub Editorial', url: siteUrl },
         publisher: { '@type': 'Organization', name: 'CNVerifyHub', url: siteUrl, logo: { '@type': 'ImageObject', url: `${siteUrl}/logo.png` } },
         mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
         inLanguage: 'zh-CN',
@@ -87,11 +87,28 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         ],
     };
 
+    // JSON-LD: FAQPage Schema
+    const faqSchema = post.faqSchema && post.faqSchema.length > 0 ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: post.faqSchema.map(item => ({
+            '@type': 'Question',
+            name: item.question,
+            acceptedAnswer: {
+                '@type': 'Answer',
+                text: item.answer,
+            },
+        })),
+    } : null;
+
     return (
         <>
             <ReadingProgress />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+            {faqSchema && (
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+            )}
 
             <main className="pt-24 pb-20">
                 <article className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

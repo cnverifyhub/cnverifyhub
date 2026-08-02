@@ -62,10 +62,11 @@ Welcome to ${tenantConfig.name}, ${tenantConfig.psychology.subheadlines[0]}.
     let rateLimitResult: RateLimitResult | null = null;
 
     if (request.nextUrl.pathname.startsWith('/api/')) {
-        const rawIp = request.ip ||
+        const rawIp =
             request.headers.get('cf-connecting-ip') ||
-            request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
             request.headers.get('x-real-ip') ||
+            request.ip ||
+            request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
             '127.0.0.1';
 
         rateLimitResult = await checkRateLimit(tenantId, rawIp, request.nextUrl.pathname);

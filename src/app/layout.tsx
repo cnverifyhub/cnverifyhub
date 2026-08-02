@@ -59,7 +59,7 @@ export async function generateMetadata(): Promise<Metadata> {
             url: SITE_URL,
             images: [
                 {
-                    url: `${SITE_URL}/og-image.png`,
+                    url: `${SITE_URL}/api/og`,
                     width: 1200,
                     height: 630,
                     alt: `${config.name} - ${config.psychology.headlines[0]}`,
@@ -70,7 +70,7 @@ export async function generateMetadata(): Promise<Metadata> {
             card: 'summary_large_image',
             title: `${config.name} - ${config.psychology.headlines[0]}`,
             description: config.psychology.subheadlines[0],
-            images: [`${SITE_URL}/og-image.png`],
+            images: [`${SITE_URL}/api/og`],
         },
         alternates: {
             canonical: SITE_URL,
@@ -176,7 +176,6 @@ export default function RootLayout({
                 {/* Preconnect to external domains for China speed */}
                 <link rel="preconnect" href="https://mybzjmhyxamldklezngu.supabase.co" />
                 <link rel="dns-prefetch" href="https://hm.baidu.com" />
-                <link rel="dns-prefetch" href="https://zz.bdstatic.com" />
                 <link rel="dns-prefetch" href="https://api.trongrid.io" />
 
                 {/* Fonts loaded via CDN to prevent Next.js build-time fetch crashing on ECONNRESET */}
@@ -234,25 +233,6 @@ export default function RootLayout({
                         }}
                     />
                 )}
-
-                {/* Baidu auto-push for faster indexing */}
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-              (function(){
-                var bp = document.createElement('script');
-                var curProtocol = window.location.protocol.split(':')[0];
-                if (curProtocol === 'https') {
-                  bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
-                } else {
-                  bp.src = 'http://push.zhanzhang.baidu.com/push.js';
-                }
-                var s = document.getElementsByTagName("script")[0];
-                s.parentNode.insertBefore(bp, s);
-              })();
-            `,
-                    }}
-                />
             </head>
             <body 
                 className={`min-h-screen flex flex-col overflow-x-hidden font-sans`}

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -7,7 +8,33 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const rawBody = await request.text();
+    const signature = request.headers.get('x-signature');
+    const secret = process.env.WEBHOOK_SECRET;
+
+    if (!secret || !signature) {
+      return NextResponse.json(
+        { error: 'Missing signature or webhook secret configuration' },
+        { status: 401 }
+      );
+    }
+
+    const expectedSignature = crypto
+      .createHmac('sha256', secret)
+      .update(rawBody)
+      .digest('hex');
+
+    const sigBuffer = Buffer.from(signature);
+    const expectedBuffer = Buffer.from(expectedSignature);
+
+    if (sigBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(sigBuffer, expectedBuffer)) {
+      return NextResponse.json(
+        { error: 'Invalid webhook signature' },
+        { status: 401 }
+      );
+    }
+
+    const body = JSON.parse(rawBody);
     const { orderId, txHash, amount, paymentMethod } = body;
 
     if (!orderId) {
@@ -40,3 +67,4 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: err.message || 'Payment webhook error' }, { status: 500 });
   }
 }
+
