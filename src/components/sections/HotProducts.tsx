@@ -15,7 +15,7 @@ export function HotProducts({ lang }: { lang: Lang }) {
     const sectionRef = useRef<HTMLDivElement>(null);
     const trackRef = useRef<HTMLDivElement>(null);
 
-    const products = allProducts.filter(p => p.popular).slice(0, 8);
+    const products = allProducts;
 
     useGSAP(() => {
         if (!sectionRef.current || !trackRef.current) return;
