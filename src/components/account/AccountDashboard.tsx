@@ -22,12 +22,12 @@ const tierConfig: Record<VIPTier, { color: string, icon: any, zh: string, en: st
     diamond: { color: 'from-cyan-300 to-blue-500', icon: Diamond, zh: '黑钻至尊', en: 'Diamond', minSpend: 1000 },
 };
 
-const statusConfig: Record<string, { color: string, icon: any, zh: string, en: string }> = {
-    pending: { color: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400', icon: Clock, zh: '待付款', en: 'Pending' },
-    paid: { color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400', icon: CheckCircle2, zh: '已付款', en: 'Paid' },
-    processing: { color: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400', icon: Truck, zh: '处理中', en: 'Processing' },
-    completed: { color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle2, zh: '已完成', en: 'Completed' },
-    cancelled: { color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400', icon: AlertCircle, zh: '已取消', en: 'Cancelled' },
+const statusConfig: Record<string, { color: string, pulseColor: string, icon: any, zh: string, en: string }> = {
+    pending: { color: 'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20', pulseColor: 'bg-yellow-500', icon: Clock, zh: '待付款', en: 'Pending' },
+    paid: { color: 'bg-blue-500/10 text-blue-400 border border-blue-500/20', pulseColor: 'bg-blue-400', icon: CheckCircle2, zh: '已付款', en: 'Paid' },
+    processing: { color: 'bg-purple-500/10 text-purple-400 border border-purple-500/20', pulseColor: 'bg-purple-400', icon: Truck, zh: '处理中', en: 'Processing' },
+    completed: { color: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20', pulseColor: 'bg-emerald-400', icon: CheckCircle2, zh: '已完成', en: 'Completed' },
+    cancelled: { color: 'bg-red-500/10 text-red-400 border border-red-500/20', pulseColor: 'bg-red-400', icon: AlertCircle, zh: '已取消', en: 'Cancelled' },
 };
 
 function calculateTier(spent: number): VIPTier {
@@ -44,6 +44,28 @@ function getNextTierTarget(spent: number): number {
     return 100;
 }
 
+function AccountDashboardSkeleton() {
+    return (
+        <div className="max-w-4xl mx-auto px-4 pt-24 pb-8 md:pt-8 space-y-8 animate-pulse">
+            <div className="flex items-center justify-between">
+                <div className="h-8 w-40 bg-slate-800 rounded-xl" />
+                <div className="h-6 w-32 bg-slate-800 rounded-lg" />
+            </div>
+            <div className="h-64 w-full bg-slate-800 rounded-3xl" />
+            <div className="grid grid-cols-3 gap-3">
+                <div className="h-20 bg-slate-800 rounded-2xl" />
+                <div className="h-20 bg-slate-800 rounded-2xl" />
+                <div className="h-20 bg-slate-800 rounded-2xl" />
+            </div>
+            <div className="space-y-3">
+                <div className="h-20 bg-slate-800 rounded-2xl" />
+                <div className="h-20 bg-slate-800 rounded-2xl" />
+                <div className="h-20 bg-slate-800 rounded-2xl" />
+            </div>
+        </div>
+    );
+}
+
 export function AccountDashboard({ lang }: AccountDashboardProps) {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
@@ -53,7 +75,6 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
     const [refreshing, setRefreshing] = useState(false);
     const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
 
-    // Fetch user session and data
     const fetchData = async (showRefresh = false) => {
         if (showRefresh) setRefreshing(true);
 
@@ -67,7 +88,6 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
 
             setUser(session.user);
 
-            // Fetch profile
             const { data: profileData } = await supabase
                 .from('profiles')
                 .select('*')
@@ -78,7 +98,6 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
                 setProfile(profileData);
             }
 
-            // Fetch orders — try user_id first, then email fallback
             const { data: userOrders } = await supabase
                 .from('orders')
                 .select('*, order_items(*)')
@@ -100,7 +119,6 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
     useEffect(() => {
         fetchData();
 
-        // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_OUT') {
                 router.push('/auth/login');
@@ -110,7 +128,6 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
         return () => subscription.unsubscribe();
     }, []);
 
-    // Auto-refresh orders every 30 seconds
     useEffect(() => {
         const interval = setInterval(() => fetchData(), 30000);
         return () => clearInterval(interval);
@@ -123,14 +140,7 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-[80vh] flex items-center justify-center">
-                <div className="flex flex-col items-center gap-4">
-                    <Loader2 className="w-10 h-10 text-red-500 animate-spin" />
-                    <p className="text-slate-500 font-medium">{lang === 'zh' ? '加载中...' : 'Loading...'}</p>
-                </div>
-            </div>
-        );
+        return <AccountDashboardSkeleton />;
     }
 
     if (!user) return null;
@@ -292,7 +302,8 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1 flex-wrap">
                                             <span className="font-mono font-bold text-sm text-slate-900 dark:text-white">{order.public_id}</span>
-                                            <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${status.color}`}>
+                                            <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full ${status.color}`}>
+                                                <span className={`w-1.5 h-1.5 rounded-full ${status.pulseColor} animate-pulse`} />
                                                 <StatusIcon className="w-3 h-3" />
                                                 {lang === 'zh' ? status.zh : status.en}
                                             </span>

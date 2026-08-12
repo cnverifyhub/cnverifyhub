@@ -4,18 +4,24 @@ import React from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 const badgeVariants = cva(
-    'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-colors',
+    'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap transition-colors font-mono tracking-tight',
     {
         variants: {
             variant: {
-                default: 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200',
-                primary: 'bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:text-primary-400',
-                success: 'bg-success-50 text-success-600 dark:bg-success-500/10 dark:text-success-400',
-                warning: 'bg-warning-50 text-warning-700 dark:bg-warning-500/10 dark:text-warning-400',
-                danger: 'bg-danger-50 text-danger-600 dark:bg-danger-500/10 dark:text-danger-400',
-                accent: 'bg-accent-50 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400',
-                gold: 'bg-gold-50 text-gold-700 dark:bg-gold-500/10 dark:text-gold-400',
-                outline: 'border border-slate-200 text-slate-800 dark:border-slate-800 dark:text-slate-200',
+                default: 'bg-slate-800 text-slate-200 border border-slate-700',
+                primary: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30',
+                success: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30',
+                warning: 'bg-amber-500/10 text-amber-400 border border-amber-500/30',
+                danger: 'bg-rose-500/10 text-rose-400 border border-rose-500/30',
+                accent: 'bg-purple-500/10 text-purple-400 border border-purple-500/30',
+                gold: 'bg-amber-400/10 text-amber-300 border border-amber-400/30',
+                outline: 'border border-slate-700 text-slate-300',
+            },
+            verifyState: {
+                pending: 'bg-amber-500/10 text-amber-400 border border-amber-500/30',
+                processing: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 animate-pulse',
+                verified: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30',
+                failed: 'bg-rose-500/10 text-rose-400 border border-rose-500/30',
             },
         },
         defaultVariants: {
@@ -26,23 +32,31 @@ const badgeVariants = cva(
 
 export interface BadgeProps
     extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {
+        VariantProps<typeof badgeVariants> {
     dot?: boolean;
 }
 
-export function Badge({ className, variant, dot, children, ...props }: BadgeProps) {
+export function Badge({ className, variant, verifyState, dot = false, children, ...props }: BadgeProps) {
+    const activeState = verifyState || variant;
+
     return (
-        <div className={badgeVariants({ variant, className })} {...props}>
+        <div className={badgeVariants({ variant: verifyState ? undefined : variant, verifyState, className })} {...props}>
             {dot && (
                 <span
-                    className={`w-1.5 h-1.5 rounded-full ${variant === 'success' ? 'bg-success-500' :
-                            variant === 'danger' ? 'bg-danger-500' :
-                                variant === 'warning' ? 'bg-warning-500' :
-                                    'bg-current'
-                        }`}
+                    className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                        activeState === 'verified' || activeState === 'success'
+                            ? 'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]'
+                            : activeState === 'failed' || activeState === 'danger'
+                            ? 'bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.6)]'
+                            : activeState === 'pending' || activeState === 'warning'
+                            ? 'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]'
+                            : activeState === 'processing' || activeState === 'primary'
+                            ? 'bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.6)] animate-ping'
+                            : 'bg-current'
+                    }`}
                 />
             )}
-            {children}
+            <span className="font-mono tabular-nums">{children}</span>
         </div>
     );
 }

@@ -8,12 +8,16 @@ interface QRCodeDisplayProps {
     address: string;
     amount?: string;
     lang: Lang;
+    isScanning?: boolean;
 }
 
-export function QRCodeDisplay({ address, amount, lang }: QRCodeDisplayProps) {
+export function QRCodeDisplay({ address, amount, lang, isScanning = false }: QRCodeDisplayProps) {
     return (
         <div className="flex flex-col items-center bg-white dark:bg-dark-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm max-w-sm mx-auto">
-            <div className="bg-white p-4 rounded-xl shadow-inner border border-slate-100 mb-6">
+            <div className="relative bg-white p-4 rounded-xl shadow-inner border border-slate-100 mb-6 overflow-hidden">
+                {isScanning && (
+                    <div className="absolute inset-x-0 h-1 z-20 pointer-events-none bg-gradient-to-r from-transparent via-[#00E5FF] to-transparent shadow-[0_0_12px_3px_rgba(0,229,255,0.8)] animate-[scan_2s_easeInOut_infinite]" style={{ top: '10%' }} />
+                )}
                 <QRCodeSVG
                     value={address}
                     size={200}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { QRCodeDisplay } from '@/components/ui/QRCodeDisplay';
 import { CountdownTimer } from '@/components/ui/CountdownTimer';
 import { CopyButton } from '@/components/ui/CopyButton';
@@ -17,11 +18,12 @@ interface PaymentDisplayProps {
 
 type VerifyPhase = 'idle' | 'checking' | 'polling' | 'verified' | 'failed';
 
-type PaymentNetwork = 'trc20' | 'bep20_usdt' | 'bep20_btc' | 'erc20_btc' | 'wechat';
+type PaymentNetwork = 'trc20' | 'bep20_usdt' | 'bep20_btc' | 'erc20_btc' | 'solana' | 'wechat';
 
 const NETWORKS: { id: PaymentNetwork; label: string; labelZh: string; token: string; icon: string; enabled: boolean; autoVerify: boolean }[] = [
     { id: 'trc20', label: 'USDT TRC20', labelZh: 'USDT TRC20', token: 'USDT', icon: '🟢', enabled: true, autoVerify: true },
     { id: 'bep20_usdt', label: 'USDT BEP20', labelZh: 'USDT BEP20', token: 'USDT', icon: '🟡', enabled: true, autoVerify: true },
+    { id: 'solana', label: 'Solana', labelZh: 'Solana (SOL/USDT)', token: 'SOL/USDT', icon: '💜', enabled: true, autoVerify: true },
     { id: 'bep20_btc', label: 'BTC BEP20', labelZh: 'BTC BEP20', token: 'BTC', icon: '🟠', enabled: true, autoVerify: true },
     { id: 'erc20_btc', label: 'BTC ERC20', labelZh: 'BTC ERC20', token: 'BTC', icon: '🔵', enabled: true, autoVerify: true },
     { id: 'wechat', label: 'WeChat Pay', labelZh: '微信支付', token: 'CNY', icon: '💚', enabled: false, autoVerify: false },
@@ -29,7 +31,7 @@ const NETWORKS: { id: PaymentNetwork; label: string; labelZh: string; token: str
 
 // TRC20 wallets — main + backup
 const TRC20_WALLETS = [
-    { address: process.env.NEXT_PUBLIC_TRC20_WALLET || 'TQofpQffADyHpv25EBZPcQD7scx8AZV5or', label: 'Main', labelZh: '主钱包', recommended: true },
+    { address: process.env.NEXT_PUBLIC_TRC20_WALLET || 'TPdyaSUty1yFnjU2kGM7Uc9yBY7yz9KRvY', label: 'Main', labelZh: '主钱包', recommended: true },
     { address: process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'TPUxa1UGWLo7iHpx8fWK63YwxqP4FPzHnj', label: 'Backup', labelZh: '备用' },
 ];
 
@@ -39,9 +41,11 @@ function getWalletAddress(network: PaymentNetwork, trc20Index: number = 0): stri
             return TRC20_WALLETS[trc20Index]?.address || TRC20_WALLETS[0].address;
         case 'bep20_usdt':
         case 'bep20_btc':
-            return process.env.NEXT_PUBLIC_BEP20_WALLET || '0xb47669d0d17b57be5af515bf57e0294c130359b1';
+            return process.env.NEXT_PUBLIC_BEP20_WALLET || '0x95EEa6cA1CCCB2f281E9d9F9BBbD19315B971fe3';
         case 'erc20_btc':
-            return process.env.NEXT_PUBLIC_ERC20_WALLET || '0xb47669d0d17b57be5af515bf57e0294c130359b1';
+            return process.env.NEXT_PUBLIC_ERC20_WALLET || '0x95EEa6cA1CCCB2f281E9d9F9BBbD19315B971fe3';
+        case 'solana':
+            return process.env.NEXT_PUBLIC_SOLANA_WALLET || '2bPuP5T4NXp3u7p52RT7BgJdJpwRquvmf2mCh329sHHM';
         default:
             return '';
     }
@@ -56,6 +60,8 @@ function getExplorerUrl(network: PaymentNetwork, txHash: string): string {
             return `https://bscscan.com/tx/${txHash}`;
         case 'erc20_btc':
             return `https://etherscan.io/tx/${txHash}`;
+        case 'solana':
+            return `https://solscan.io/tx/${txHash}`;
         default:
             return '#';
     }
@@ -231,6 +237,15 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
         }
     };
 
+    // Calculate current step for multi-stage tracker (1: Awaiting Transfer, 2: Node Confirmations, 3: Verified)
+    const currentStepIndex = phase === 'verified' ? 3 : (phase === 'checking' || phase === 'polling') ? 2 : 1;
+
+    const trackerSteps = [
+        { id: 1, nameZh: '等待转账', nameEn: 'Awaiting Transfer' },
+        { id: 2, nameZh: '节点确认', nameEn: 'Node Confirmations' },
+        { id: 3, nameZh: '已验证', nameEn: 'Verified' },
+    ];
+
     return (
         <div className="space-y-6 animate-fade-in">
             <div className="flex justify-between items-center mb-4 border-b border-slate-200 dark:border-slate-800 pb-4">
@@ -241,7 +256,42 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
                 <CountdownTimer initialMinutes={15} lang={lang} />
             </div>
 
-            {/* Network Selector Tabs */}
+            {/* Multi-Stage Step Tracker (Awaiting Transfer -> Node Confirmations -> Verified) */}
+            <div className="bg-slate-50 dark:bg-slate-800/40 rounded-xl p-4 border border-slate-200 dark:border-slate-800">
+                <div className="flex items-center justify-between relative">
+                    {/* Background Progress Bar */}
+                    <div className="absolute top-1/2 left-4 right-4 h-0.5 bg-slate-200 dark:bg-slate-700 -translate-y-1/2 -z-0" />
+                    <div
+                        className="absolute top-1/2 left-4 h-0.5 bg-primary-500 -translate-y-1/2 transition-all duration-500 -z-0"
+                        style={{ width: `${((currentStepIndex - 1) / (trackerSteps.length - 1)) * 100}%` }}
+                    />
+
+                    {trackerSteps.map((s) => {
+                        const isDone = currentStepIndex > s.id;
+                        const isCurrent = currentStepIndex === s.id;
+                        return (
+                            <div key={s.id} className="relative z-10 flex flex-col items-center">
+                                <div
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs transition-all duration-300 ${
+                                        isDone || isCurrent
+                                            ? 'bg-primary-500 text-white shadow-md shadow-primary-500/20'
+                                            : 'bg-slate-200 dark:bg-slate-700 text-slate-500'
+                                    } ${isCurrent && (phase === 'polling' || phase === 'checking') ? 'ring-4 ring-primary-500/20 animate-pulse' : ''}`}
+                                >
+                                    {isDone ? <Check className="w-4 h-4" /> : s.id}
+                                </div>
+                                <span className={`text-[11px] font-bold mt-1.5 transition-colors ${
+                                    isDone || isCurrent ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400'
+                                }`}>
+                                    {lang === 'zh' ? s.nameZh : s.nameEn}
+                                </span>
+                            </div>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Network Selector Tabs with Framer Motion layoutId */}
             <div className="space-y-3">
                 <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                     {lang === 'zh' ? '选择支付网络' : 'Select Payment Network'}
@@ -253,14 +303,21 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
                             onClick={() => { setSelectedNetwork(net.id); setPhase('idle'); setTxHash(''); setErrorMsg(''); setSelectedTrc20Wallet(0); }}
                             className={`relative flex items-center justify-center gap-2 px-3 py-3 rounded-xl border-2 transition-all text-sm font-bold
                                 ${selectedNetwork === net.id
-                                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 shadow-md shadow-primary-500/10'
+                                    ? 'border-primary-500 text-primary-700 dark:text-primary-300'
                                     : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/50'
                                 }`}
                         >
-                            <span className="text-base">{net.icon}</span>
-                            <span className="truncate">{lang === 'zh' ? net.labelZh : net.label}</span>
+                            {selectedNetwork === net.id && (
+                                <motion.div
+                                    layoutId="payment-network-pill"
+                                    className="absolute inset-0 bg-primary-50 dark:bg-primary-900/20 rounded-lg shadow-md shadow-primary-500/10 -z-0"
+                                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                                />
+                            )}
+                            <span className="relative z-10 text-base">{net.icon}</span>
+                            <span className="relative z-10 truncate">{lang === 'zh' ? net.labelZh : net.label}</span>
                             {net.id === 'trc20' && (
-                                <span className="absolute -top-1.5 -right-1.5 text-[8px] font-black bg-emerald-500 text-white px-1.5 py-0.5 rounded-full shadow-sm">
+                                <span className="absolute -top-1.5 -right-1.5 z-20 text-[8px] font-black bg-emerald-500 text-white px-1.5 py-0.5 rounded-full shadow-sm">
                                     {lang === 'zh' ? '推荐' : 'REC'}
                                 </span>
                             )}
@@ -316,7 +373,7 @@ export function PaymentDisplay({ amount, orderId, lang, orderDetails, onConfirm 
             {/* QR Code & Wallet Address */}
             {currentNetworkInfo.enabled && (
                 <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-100 dark:border-slate-800">
-                    <QRCodeDisplay address={walletAddress} amount={amount.toFixed(2)} lang={lang} />
+                    <QRCodeDisplay address={walletAddress} amount={amount.toFixed(2)} lang={lang} isScanning={phase === 'checking' || phase === 'polling'} />
                 </div>
             )}
 

@@ -88,9 +88,11 @@ Welcome to ${tenantConfig.name}, ${tenantConfig.psychology.subheadlines[0]}.
         }
     }
 
-    // 3. Forward request with tenant ID header
+    // 3. Forward request with tenant ID and pathname headers
     const requestHeaders = new Headers(request.headers);
     requestHeaders.set('x-tenant-id', tenantId);
+    requestHeaders.set('x-pathname', request.nextUrl.pathname);
+    requestHeaders.set('x-url', request.url);
 
     const response = NextResponse.next({
         request: {
@@ -98,8 +100,9 @@ Welcome to ${tenantConfig.name}, ${tenantConfig.psychology.subheadlines[0]}.
         },
     });
     
-    // Add tenant & rate limiting headers to response
+    // Add tenant, pathname & rate limiting headers to response
     response.headers.set('x-tenant-id', tenantId);
+    response.headers.set('x-pathname', request.nextUrl.pathname);
     response.headers.set('Vary', 'Accept');
 
     if (rateLimitResult) {

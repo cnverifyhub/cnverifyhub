@@ -14,11 +14,12 @@ const TRON_GRID_API = 'https://api.trongrid.io';
 const BSCSCAN_API = 'https://api.bscscan.com/api';
 const ETHERSCAN_API = 'https://api.etherscan.io/api';
 
-const WALLET_ADDRESS = process.env.NEXT_PUBLIC_TRC20_WALLET || 'TQofpQffADyHpv25EBZPcQD7scx8AZV5or';
+const WALLET_ADDRESS = process.env.NEXT_PUBLIC_TRC20_WALLET || 'TPdyaSUty1yFnjU2kGM7Uc9yBY7yz9KRvY';
 const WALLET_ADDRESS_2 = process.env.NEXT_PUBLIC_TRC20_WALLET_2 || 'TPUxa1UGWLo7iHpx8fWK63YwxqP4FPzHnj';
 
-const BEP20_WALLET = process.env.NEXT_PUBLIC_BEP20_WALLET || '0xb47669d0d17b57be5af515bf57e0294c130359b1';
-const ERC20_WALLET = process.env.NEXT_PUBLIC_ERC20_WALLET || '0xb47669d0d17b57be5af515bf57e0294c130359b1';
+const BEP20_WALLET = process.env.NEXT_PUBLIC_BEP20_WALLET || '0x95EEa6cA1CCCB2f281E9d9F9BBbD19315B971fe3';
+const ERC20_WALLET = process.env.NEXT_PUBLIC_ERC20_WALLET || '0x95EEa6cA1CCCB2f281E9d9F9BBbD19315B971fe3';
+const SOLANA_WALLET = process.env.NEXT_PUBLIC_SOLANA_WALLET || '2bPuP5T4NXp3u7p52RT7BgJdJpwRquvmf2mCh329sHHM';
 
 const USDT_CONTRACT = 'TR7NHqjuS2PV2Q9vwJwgK7xH9vx96fQ9s1'; // USDT TRC20 Mainnet
 
@@ -32,6 +33,7 @@ const ALLOWED_WALLETS = [
     WALLET_ADDRESS_2.toLowerCase(),
     BEP20_WALLET.toLowerCase(),
     ERC20_WALLET.toLowerCase(),
+    SOLANA_WALLET.toLowerCase(),
     TON_WALLET.toLowerCase()
 ];
 

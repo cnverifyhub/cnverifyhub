@@ -86,7 +86,7 @@ export default function Header() {
 
     useEffect(() => {
         setMounted(true);
-        const onScroll = () => setIsScrolled(window.scrollY > 60);
+        const onScroll = () => setIsScrolled(window.scrollY > 40);
         window.addEventListener('scroll', onScroll, { passive: true });
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
@@ -111,6 +111,23 @@ export default function Header() {
 
     const badgeText = tenantConfig.id === 'cnwepro' ? 'CW' : 'CV';
 
+    // Framer motion variants for mobile drawer staggered children
+    const drawerVariants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.05,
+                delayChildren: 0.05,
+            },
+        },
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 15 },
+        show: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 350, damping: 25 } },
+    };
+
     return (
         <>
             <header className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${isScrolled ? 'shadow-[0_4px_24px_rgba(0,0,0,0.5)]' : ''}`}>
@@ -125,7 +142,7 @@ export default function Header() {
                             : 'bg-[#060B18]'
                     }`}
                 >
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-8">
+                    <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-8 transition-all duration-300 ${isScrolled ? 'h-[56px]' : 'h-[72px]'}`}>
                         {/* Logo */}
                         <Link href={getLocalizedPath('/', lang)} className="flex items-center gap-2 shrink-0 group">
                             <div className="w-7 h-7 rounded flex items-center justify-center text-white font-syne font-black text-xs leading-none shadow-sm" style={{ backgroundColor: tenantConfig.branding.primary }}>
@@ -138,8 +155,9 @@ export default function Header() {
 
                         {/* Desktop nav links */}
                         <div className="hidden xl:flex items-center gap-1 flex-1">
-                            {navLinks.map((link) =>
-                                link.hasMega ? (
+                            {navLinks.map((link) => {
+                                const isActive = pathname === link.href;
+                                return link.hasMega ? (
                                     <div
                                         key={link.label}
                                         ref={megaRef}
@@ -158,11 +176,18 @@ export default function Header() {
                                         href={link.href}
                                         className="relative px-3 py-2 text-sm font-medium text-[#7B91B0] hover:text-white transition-colors group/nav"
                                     >
-                                        <span>{link.label}</span>
-                                        <div className={`absolute bottom-1 left-3 right-3 h-0.5 bg-[#FF0036] rounded-full transition-transform duration-300 origin-center ${pathname === link.href ? 'scale-x-100' : 'scale-x-0 group-hover/nav:scale-x-100'}`} />
+                                        <span className={`relative z-10 ${isActive ? 'text-white font-semibold' : ''}`}>{link.label}</span>
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="header-active-pill"
+                                                className="absolute inset-0 bg-white/10 rounded-lg -z-0"
+                                                transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                                            />
+                                        )}
+                                        <div className={`absolute bottom-1 left-3 right-3 h-0.5 bg-[#FF0036] rounded-full transition-transform duration-300 origin-center ${isActive ? 'scale-x-100' : 'scale-x-0 group-hover/nav:scale-x-100'}`} />
                                     </Link>
-                                )
-                            )}
+                                );
+                            })}
                         </div>
 
                         {/* Right actions */}
@@ -295,20 +320,26 @@ export default function Header() {
                                     {lang === 'zh' ? 'EN' : '中文'}
                                 </Link>
                             </div>
-                            {/* Nav links */}
-                            <nav className="px-5 py-4 space-y-1 max-h-[60vh] overflow-y-auto">
+                            {/* Nav links with staggered spring animations */}
+                            <motion.nav
+                                variants={drawerVariants}
+                                initial="hidden"
+                                animate="show"
+                                className="px-5 py-4 space-y-1 max-h-[60vh] overflow-y-auto"
+                            >
                                 {navLinks.map((link) => (
-                                    <Link
-                                        key={link.label}
-                                        href={link.href}
-                                        className="flex items-center justify-between px-3 py-3 rounded-lg text-sm font-medium text-[#7B91B0] hover:text-white hover:bg-white/5 transition-colors"
-                                        onClick={() => setMobileOpen(false)}
-                                    >
-                                        {link.label}
-                                        <ChevronDown className="-rotate-90 w-4 h-4 opacity-40" />
-                                    </Link>
+                                    <motion.div key={link.label} variants={itemVariants}>
+                                        <Link
+                                            href={link.href}
+                                            className="flex items-center justify-between px-3 py-3 rounded-lg text-sm font-medium text-[#7B91B0] hover:text-white hover:bg-white/5 transition-colors"
+                                            onClick={() => setMobileOpen(false)}
+                                        >
+                                            {link.label}
+                                            <ChevronDown className="-rotate-90 w-4 h-4 opacity-40" />
+                                        </Link>
+                                    </motion.div>
                                 ))}
-                                <div className="pt-2 border-t border-[#1E2D45]">
+                                <motion.div variants={itemVariants} className="pt-2 border-t border-[#1E2D45]">
                                     <p className="text-[10px] text-[#7B91B0] font-mono uppercase tracking-widest mb-2 px-3">
                                         {lang === 'zh' ? '全部分类' : 'Categories'}
                                     </p>
@@ -329,8 +360,8 @@ export default function Header() {
                                             );
                                         })}
                                     </div>
-                                </div>
-                            </nav>
+                                </motion.div>
+                            </motion.nav>
                             {/* Bottom CTA */}
                             <div className="px-5 pb-6 pt-4 border-t border-[#1E2D45]">
                                 <Link

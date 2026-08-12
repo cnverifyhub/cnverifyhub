@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { AlipayPaymentModal } from './AlipayPaymentModal';
 import { getProductById } from '@/data/products';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
@@ -92,6 +93,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
     const [couponError, setCouponError] = useState('');
 
     const [contactInfo, setContactInfo] = useState({ telegram: '', email: '' });
+    const [shakeInputs, setShakeInputs] = useState(false);
     const [isProcessingPayment, setIsProcessingPayment] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mounted, setMounted] = useState(false);
@@ -191,9 +193,13 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                 }
             } else {
                 setCouponError(data.error || 'Invalid code');
+                setShakeInputs(true);
+                setTimeout(() => setShakeInputs(false), 500);
             }
         } catch {
             setCouponError('Network error');
+            setShakeInputs(true);
+            setTimeout(() => setShakeInputs(false), 500);
         } finally {
             setIsValidatingCoupon(false);
         }
@@ -201,10 +207,15 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
 
     const handleNextStep = () => {
         if (isSubmitting) return;
+        if (!contactInfo.telegram || !contactInfo.email) {
+            setShakeInputs(true);
+            setTimeout(() => setShakeInputs(false), 500);
+            return;
+        }
         setIsSubmitting(true);
         setTimeout(() => setIsSubmitting(false), 3000);
 
-        if (step === 1 && contactInfo.telegram && contactInfo.email) {
+        if (step === 1) {
             // Check if any item is a service
             const hasService = items.some(item => {
                 const p = getProductById(item.productId);
@@ -437,8 +448,14 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                             {s.label}
                         </span>
                         {i < arr.length - 1 && (
-                            <div className={`absolute top-5 left-[50%] w-[100%] h-[2px] -z-0 transition-colors ${step > s.num ? 'bg-primary-500' : 'bg-slate-200 dark:bg-slate-800'
-                                }`}></div>
+                            <div className="absolute top-5 left-[50%] w-[100%] h-[2px] bg-slate-200 dark:bg-slate-800 -z-0 overflow-hidden">
+                                <motion.div
+                                    className="h-full bg-primary-500"
+                                    initial={{ width: '0%' }}
+                                    animate={{ width: step > s.num ? '100%' : '0%' }}
+                                    transition={{ duration: 0.4, ease: 'easeInOut' }}
+                                />
+                            </div>
                         )}
                     </div>
                 ))}
@@ -593,7 +610,11 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                                 {lang === 'zh' ? '联系方式' : 'Contact Info'}
                             </h3>
 
-                            <div className="bg-white dark:bg-slate-800/30 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-sm">
+                            <motion.div
+                                animate={shakeInputs ? { x: [-10, 10, -8, 8, -4, 4, 0] } : {}}
+                                transition={{ duration: 0.4 }}
+                                className="bg-white dark:bg-slate-800/30 p-5 sm:p-6 rounded-2xl border border-slate-200 dark:border-slate-700/50 shadow-sm"
+                            >
                                 <p className="text-xs text-slate-500 mb-5">{lang === 'zh' ? '发货账号及密码将通过此方式发送，请务必准确填写您的有效联系方式。' : 'Used for receiving account credentials and support. Please enter accurately.'}</p>
 
                                 <div className="space-y-4">
@@ -628,7 +649,7 @@ export function CheckoutForm({ lang }: CheckoutFormProps) {
                                         />
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
 
                             <button
                                 onClick={handleNextStep}

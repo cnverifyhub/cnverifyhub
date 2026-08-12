@@ -8,6 +8,7 @@ import { AnimatedCounter } from '@/components/ui/AnimatedCounter';
 import { categories, getTotalStock, getLowestPrice } from '@/data/products';
 import type { CategoryId } from '@/types';
 import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon } from '@/components/ui/BrandIcons';
+import { PaymentWalletsGrid } from '@/components/ui/PaymentWalletsGrid';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
@@ -337,20 +338,22 @@ export function Hero({ lang }: { lang: Lang }) {
                                 href={telegramLink}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="cyber-btn-primary flex items-center justify-center gap-2 px-8 py-4 rounded-lg text-sm"
+                                className="group relative cyber-btn-primary flex items-center justify-center gap-2 px-8 py-4 rounded-lg text-sm overflow-hidden transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-[0_0_25px_rgba(255,0,54,0.4)]"
                             >
-                                <Zap className="w-4 h-4" />
-                                {lang === 'zh' ? '立即购买 · TG咨询' : 'Buy Now · TG Support'}
-                                <span className="ml-1 text-[10px] opacity-70 font-mono">→</span>
+                                {/* Shimmer Reflection Overlay */}
+                                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                                <Zap className="w-4 h-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12" />
+                                <span className="relative z-10 font-bold">{lang === 'zh' ? '立即购买 · TG咨询' : 'Buy Now · TG Support'}</span>
+                                <span className="relative z-10 ml-1 text-[10px] opacity-70 font-mono transition-transform duration-300 group-hover:translate-x-1">→</span>
                             </a>
                             <a
                                 href={tenantConfig.id === 'cnwepro' ? 'https://t.me/cnwepro' : 'https://t.me/cnverifyhub_group'}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="cyber-btn-ghost flex items-center justify-center gap-2 px-8 py-4 rounded-lg text-sm"
+                                className="cyber-btn-ghost flex items-center justify-center gap-2 px-8 py-4 rounded-lg text-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#00E5FF]/50 hover:text-white"
                             >
                                 {lang === 'zh' ? '加入客户群' : 'Join Community'}
-                                <ChevronRight className="w-4 h-4" />
+                                <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-0.5" />
                             </a>
                         </motion.div>
 
@@ -359,11 +362,14 @@ export function Hero({ lang }: { lang: Lang }) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.55 }}
-                            className="border border-[#1E2D45] rounded-lg px-4 py-3 bg-[#0D1526] mb-10 w-full max-w-lg"
+                            className="border border-[#1E2D45] rounded-lg px-4 py-3 bg-[#0D1526] mb-6 w-full max-w-lg"
                         >
                             <p className="terminal-label mb-2">{lang === 'zh' ? '实时成交' : 'LIVE ORDERS'}</p>
                             <SocialProofStrip lang={lang} />
                         </motion.div>
+
+                        {/* Official Payment Wallets Quick Copy Grid */}
+                        <PaymentWalletsGrid lang={lang} />
 
                         {/* Stats row */}
                         <motion.div

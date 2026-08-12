@@ -61,15 +61,21 @@ export function OrderTimeline({ order, lang }: OrderTimelineProps) {
                         return (
                             <div key={idx} className="flex flex-col items-center flex-1">
                                 <div 
-                                    className={`w-10 h-10 rounded-full flex items-center justify-center border-4 border-white dark:border-slate-900 shadow-sm transition-all duration-500 ${
+                                    className={`relative w-10 h-10 rounded-full flex items-center justify-center border-4 border-white dark:border-slate-900 shadow-sm transition-all duration-500 ${
                                         isCompleted ? 'text-white' : 
-                                        isActive ? 'text-white animate-pulse' : 
+                                        isActive ? 'text-white' : 
                                         'bg-slate-200 dark:bg-slate-800 text-slate-400'
                                     }`}
                                     style={{ 
                                         backgroundColor: isCompleted ? wechatGreen : isActive ? taobaoRed : undefined 
                                     }}
                                 >
+                                    {isActive && (
+                                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                        </span>
+                                    )}
                                     {isCompleted ? <Check className="w-5 h-5" strokeWidth={3} /> : <Icon className="w-5 h-5" />}
                                 </div>
                                 <div className={`mt-3 font-black text-sm tracking-tight ${isActive ? 'text-[#FF0036]' : isCompleted ? 'text-[#07C160]' : 'text-slate-400'}`}>
@@ -95,13 +101,19 @@ export function OrderTimeline({ order, lang }: OrderTimelineProps) {
                                 <div 
                                     className={`absolute -left-[31px] w-6 h-6 rounded-full border-4 border-white dark:border-slate-900 flex items-center justify-center z-10 transition-all duration-500 ${
                                         isCompleted ? 'text-white' : 
-                                        isActive ? 'text-white animate-pulse' : 
+                                        isActive ? 'text-white' : 
                                         'bg-slate-200 dark:bg-slate-800 text-slate-400'
                                     }`}
                                     style={{ 
                                         backgroundColor: isCompleted ? wechatGreen : isActive ? taobaoRed : undefined 
                                     }}
                                 >
+                                    {isActive && (
+                                        <span className="absolute -top-0.5 -right-0.5 flex h-2 w-2">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                        </span>
+                                    )}
                                     {isCompleted ? <Check className="w-3 h-3" strokeWidth={3} /> : <Icon className="w-3 h-3" />}
                                 </div>
                                 <div className="flex justify-between items-start">

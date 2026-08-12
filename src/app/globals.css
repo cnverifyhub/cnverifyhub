@@ -23,6 +23,8 @@
     --text-muted:    #7B91B0;
     --border-subtle: #1E2D45;
     --border-active: rgba(0,229,255,0.3);
+    --border-cyber-focus: rgba(0, 229, 255, 0.5);
+    --shadow-elev-md: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 229, 255, 0.1);
     --neon-red:      0 0 20px rgba(255,45,85,0.5), 0 0 40px rgba(255,45,85,0.2);
     --neon-cyan:     0 0 20px rgba(0,229,255,0.4), 0 0 40px rgba(0,229,255,0.15);
     --neon-gold:     0 0 20px rgba(255,184,0,0.4), 0 0 40px rgba(255,184,0,0.15);
@@ -46,15 +48,6 @@
 
     /* Legacy v2 tokens — backward compat */
     --color-primary:      255 45 85;
-    --color-gold:         255 184 0;
-    --color-trust-green:  7 193 96;
-    --color-accent:       0 229 255;
-    --surface-glass:      rgba(255,255,255,0.04);
-    --surface-glass-border: rgba(255,255,255,0.08);
-    --glow-red:     var(--neon-red);
-    --glow-gold:    var(--neon-gold);
-    --hero-bg:      #060B18;
-    --card-border:  #1E2D45;
 
     /* Font families */
     --font-syne:    'Syne', 'DM Sans', sans-serif;
@@ -164,44 +157,6 @@
     box-shadow: 0 0 0 1px rgba(0,229,255,0.1);
   }
 
-  /* ── Cyber Buttons ──────────────────────── */
-  .cyber-btn-primary {
-    @apply relative overflow-hidden font-bold uppercase tracking-widest;
-    background: linear-gradient(135deg, #FF2D55 0%, #FF5000 100%);
-    color: #fff;
-    border: none;
-    box-shadow: 0 4px 20px rgba(255,45,85,0.35);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
-  }
-  .cyber-btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(255,45,85,0.5), 0 0 0 1px rgba(255,45,85,0.3);
-  }
-  .cyber-btn-primary:active { transform: translateY(0); }
-  .cyber-btn-primary::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.12) 50%, transparent 100%);
-    background-size: 200% 100%;
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-  .cyber-btn-primary:hover::after { opacity: 1; animation: shimmer 1.5s linear infinite; }
-
-  .cyber-btn-ghost {
-    @apply relative font-bold uppercase tracking-widest;
-    background: transparent;
-    color: var(--accent-cyan);
-    border: 1px solid rgba(0,229,255,0.3);
-    transition: background 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-  }
-  .cyber-btn-ghost:hover {
-    background: rgba(0,229,255,0.07);
-    border-color: rgba(0,229,255,0.6);
-    box-shadow: 0 0 12px rgba(0,229,255,0.2);
-  }
-
   /* ── Price Tag ──────────────────────────── */
   .price-tag {
     font-family: var(--font-mono);
@@ -212,12 +167,12 @@
   .price-tag-lg { @apply price-tag text-2xl; }
   .price-tag-xl { @apply price-tag text-3xl; }
 
-  /* ── Glass Card (legacy compat) ─────────── */
+  /* ── Glass Card ─────────── */
   .glass-card {
-    background: var(--surface-glass);
+    background: rgba(255,255,255,0.04);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--surface-glass-border);
+    border: 1px solid rgba(255,255,255,0.08);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
   .glass-card:hover {
@@ -358,4 +313,6 @@
   .border-cyber { border-color: var(--border-subtle); }
   .border-neon-cyan { border-color: rgba(0,229,255,0.3); }
   .border-neon-red  { border-color: rgba(255,45,85,0.3); }
+  .border-cyber-border-focus { border-color: var(--border-cyber-focus); }
+  .shadow-elev-md { box-shadow: var(--shadow-elev-md); }
 }

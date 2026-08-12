@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Home, ShoppingBag, Search, MessageCircle, User } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { t, getLangFromPath, getLocalizedPath } from '@/lib/i18n';
 import { supabase } from '@/lib/supabase/client';
 
@@ -43,12 +44,16 @@ export default function MobileNav() {
                             <Link
                                 key={tab.href}
                                 href={getLocalizedPath(tab.href, lang)}
-                                className="relative flex flex-col items-center justify-center w-full h-full group"
+                                className="relative flex flex-col items-center justify-center w-full h-full group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
                                 style={{ minHeight: '48px', minWidth: '48px' }}
                             >
-                                {/* Active pill background */}
+                                {/* Active pill background layout animation */}
                                 {isActive && (
-                                    <span className="absolute inset-x-2 top-1  bottom-1 bg-red-50 dark:bg-red-950/30 rounded-xl transition-all" />
+                                    <motion.span
+                                        layoutId="mobile-nav-active-pill"
+                                        className="absolute inset-x-2 top-1 bottom-1 bg-red-50 dark:bg-red-950/30 rounded-xl"
+                                        transition={{ type: 'spring', stiffness: 500, damping: 35 }}
+                                    />
                                 )}
 
                                 <div className="relative z-10 flex flex-col items-center">

@@ -48,10 +48,12 @@ export default function Footer() {
     ];
 
     return (
-        <footer className="bg-[#030711] border-t border-[#1E2D45]">
+        <footer className="relative bg-[#030711] border-t-0">
+            {/* Multi-color gradient top border */}
+            <div className="h-0.5 w-full bg-gradient-to-r from-[#FF0036] via-[#00E5FF] to-[#07C160]" />
 
             {/* ── Live stats bar ──────────────────── */}
-            <div className="border-b border-[#1E2D45]">
+            <div className="border-b border-[#1E2D45]/60 bg-[#060B18]/50 backdrop-blur-md">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-2 md:grid-cols-4 divide-x-0 md:divide-x divide-[#1E2D45]">
                         {liveStats.map((s, i) => (
@@ -173,60 +175,42 @@ export default function Footer() {
                                 ))}
                             </ul>
                         </div>
-                        {/* Telegram CTA */}
+                        {/* Telegram CTA with enhanced hover effects */}
                         <a
                             href={telegramLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 px-4 py-2.5 rounded border border-[#1E2D45] hover:border-[#00E5FF]/40 bg-[#0D1526] hover:bg-[#142035] transition-all text-xs font-medium text-[#7B91B0] hover:text-white group"
+                            className="group relative flex items-center gap-2 px-4 py-2.5 rounded-lg border border-[#1E2D45] hover:border-[#00E5FF]/60 bg-[#0D1526]/80 hover:bg-[#00E5FF]/10 backdrop-blur-md transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(0,229,255,0.2)] text-xs font-medium text-[#7B91B0] hover:text-white"
                         >
                             <span className="w-2 h-2 rounded-full bg-[#00E5FF] animate-pulse" />
-                            {lang === 'zh' ? '加入官方频道' : 'Join Official Channel'}
-                            <ExternalLink className="w-3 h-3 ml-auto opacity-40 group-hover:opacity-100" />
+                            <span className="font-semibold">{lang === 'zh' ? '加入官方频道' : 'Join Official Channel'}</span>
+                            <ExternalLink className="w-3.5 h-3.5 ml-auto opacity-40 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                         </a>
                     </div>
                 </div>
             </div>
 
-            {/* ── Bottom bar ──────────────────────── */}
-            <div className="border-t border-[#1E2D45]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
+            {/* ── Glassmorphic Metallic Security Badges Bottom Bar ──────────────────────── */}
+            <div className="border-t border-[#1E2D45]/60 bg-[#060B18]/70 backdrop-blur-lg">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
                     {/* Copyright */}
                     <p className="text-[10px] text-[#7B91B0] font-mono">
                         {tenantConfig.name} © 2026. {lang === 'zh' ? '专业中国账号交易平台' : 'Professional Chinese Account Platform'}. All Rights Reserved.
                     </p>
 
-                    {/* ICP + Public security badges */}
-                    <div className="flex items-center gap-4 flex-wrap justify-center">
-                        {/* ICP badge */}
-                        <div className="flex items-center gap-1.5 border border-[#1E2D45] rounded px-2.5 py-1.5">
-                            <div className="flex flex-col items-center justify-center w-7 h-5 bg-[#2f3542] rounded-sm relative overflow-hidden">
-                                <div className="absolute inset-x-0 top-0 h-0.5 bg-[#FF2D55]" />
-                                <span className="text-[7px] text-white font-black leading-none">ICP</span>
-                            </div>
-                            <div>
-                                <p className="text-[9px] font-mono font-bold text-[#7B91B0] leading-none">京ICP备20240918号-1</p>
-                                <p className="text-[7px] text-[#7B91B0]/60 uppercase tracking-tight">{lang === 'zh' ? '工业和信息化部' : 'MIIT Registered'}</p>
-                            </div>
+                    {/* Metallic Glassmorphism Badges (SSL 256-bit, TRC20 Fast Settlement, Escrow Guarantee) */}
+                    <div className="flex items-center gap-3 flex-wrap justify-center">
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-700/50 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)] text-[10px] font-bold text-emerald-400">
+                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>SSL 256-Bit Encrypted</span>
                         </div>
-                        {/* Public security badge */}
-                        <Link
-                            href="https://www.beian.gov.cn/"
-                            target="_blank"
-                            className="flex items-center gap-1.5 border border-[#1E2D45] rounded px-2.5 py-1.5 hover:border-[#00E5FF]/30 transition-colors"
-                        >
-                            <div className="w-5 h-5 bg-[#1e3799] rounded-sm flex items-center justify-center shrink-0">
-                                <Shield className="w-3 h-3 text-white" />
-                            </div>
-                            <div>
-                                <p className="text-[9px] font-mono font-bold text-[#7B91B0] leading-none">京公网安备 11010502052468号</p>
-                                <p className="text-[7px] text-[#7B91B0]/60 uppercase tracking-tight">{lang === 'zh' ? '公安网备案' : 'Public Security'}</p>
-                            </div>
-                        </Link>
-                        {/* SSL badge */}
-                        <div className="flex items-center gap-1.5 border border-[#07C160]/20 rounded px-2.5 py-1.5 bg-[#07C160]/5">
-                            <ShieldCheck className="w-3.5 h-3.5 text-[#07C160]" />
-                            <span className="text-[9px] font-bold text-[#07C160]">SSL Secured</span>
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-700/50 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)] text-[10px] font-bold text-cyan-400">
+                            <Zap className="w-3.5 h-3.5 text-cyan-400" />
+                            <span>TRC20 Instant Settlement</span>
+                        </div>
+                        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-700/50 bg-gradient-to-b from-white/10 to-transparent backdrop-blur-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)] text-[10px] font-bold text-amber-400">
+                            <Shield className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Escrow Guarantee</span>
                         </div>
                     </div>
                 </div>

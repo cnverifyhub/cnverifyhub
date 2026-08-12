@@ -55,12 +55,13 @@ export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess
     const [copied, setCopied] = useState(false);
     const [timeLeft, setTimeLeft] = useState(15 * 60);
     const [errorMsg, setErrorMsg] = useState('');
+    const [shakeInput, setShakeInput] = useState(false);
 
     const scanLineRef = useRef<HTMLDivElement>(null);
     const qrWrapperRef = useRef<HTMLDivElement>(null);
     const scanTweenRef = useRef<gsap.core.Tween | null>(null);
 
-    const usdtAddress = process.env.NEXT_PUBLIC_TRC20_WALLET || 'TQofpQffADyHpv25EBZPcQD7scx8AZV5or';
+    const usdtAddress = process.env.NEXT_PUBLIC_TRC20_WALLET || 'TPdyaSUty1yFnjU2kGM7Uc9yBY7yz9KRvY';
     const activeMethod = availableMethods.find(m => m.id === method) || availableMethods[0];
 
     useEffect(() => {
@@ -128,7 +129,11 @@ export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess
     };
 
     const handleSubmit = async () => {
-        if (txId.trim().length < 6) return;
+        if (txId.trim().length < 6) {
+            setShakeInput(true);
+            setTimeout(() => setShakeInput(false), 500);
+            return;
+        }
         setIsSubmitting(true);
         setErrorMsg('');
 
@@ -149,9 +154,13 @@ export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess
                 setShowSuccess(true);
             } else {
                 setErrorMsg(data.error || '验证失败，请检查单号或TXID后重试');
+                setShakeInput(true);
+                setTimeout(() => setShakeInput(false), 500);
             }
         } catch (err: any) {
             setErrorMsg('网络请求失败，请稍后重试');
+            setShakeInput(true);
+            setTimeout(() => setShakeInput(false), 500);
         } finally {
             setIsSubmitting(false);
         }
@@ -345,7 +354,11 @@ export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess
                         )}
 
                         {/* ── TXID input ── */}
-                        <div className="mb-5">
+                        <motion.div
+                            animate={shakeInput ? { x: [-10, 10, -8, 8, -4, 4, 0] } : {}}
+                            transition={{ duration: 0.4 }}
+                            className="mb-5"
+                        >
                             <p className="text-[10px] font-black text-slate-400 mb-2 uppercase tracking-widest pl-1">
                                 {method === 'usdt' ? '转账 TXID（区块链哈希）' : '转账后6位单号确认'}
                             </p>
@@ -358,7 +371,7 @@ export function AlipayPaymentModal({ isOpen, onClose, amount, orderId, onSuccess
                                 className="w-full px-5 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 focus:outline-none focus:border-[color:var(--focus-color)] focus:ring-4 focus:ring-[color:var(--focus-color)]/10 font-bold tracking-wider text-sm text-center transition-all"
                                 style={{ '--focus-color': activeMethod.color } as React.CSSProperties}
                             />
-                        </div>
+                        </motion.div>
 
                         {/* ── Submit button ── */}
                         <motion.button

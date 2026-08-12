@@ -13,10 +13,42 @@ const config: Config = {
             colors: {
                 // v3 Cyber Bazaar palette
                 cyber: {
-                    base:     '#060B18',
-                    surface:  '#0D1526',
-                    elevated: '#142035',
-                    border:   '#1E2D45',
+                    base: '#060B18',
+                    subtle: '#0B132B',
+                    surface: '#111C38',
+                    elevated: '#18274C',
+                    border: 'rgba(255,255,255,0.08)',
+                    'border-focus': 'rgba(15,98,254,0.5)',
+                },
+                primary: {
+                    50: '#EFF6FF',
+                    100: '#DBEAFE',
+                    200: '#BFDBFE',
+                    300: '#93C5FD',
+                    400: '#60A5FA',
+                    500: '#3B82F6',
+                    600: '#0F62FE',
+                    700: '#1D4ED8',
+                    800: '#1E40AF',
+                    900: '#1E3A8A',
+                    950: '#172554',
+                },
+                brand: {
+                    red: '#FF0036',
+                    'red-dark': '#C0001A',
+                    'red-glow': 'rgba(255,0,54,0.35)',
+                },
+                crypto: {
+                    usdt: '#26A17B',
+                    gold: '#F59E0B',
+                    'gold-light': '#FBBF24',
+                    cyan: '#00E5FF',
+                },
+                verify: {
+                    pending: '#F59E0B',
+                    processing: '#6366F1',
+                    verified: '#10B981',
+                    failed: '#EF4444',
                 },
                 neon: {
                     red:  '#FF2D55',
@@ -41,12 +73,6 @@ const config: Config = {
                     live: 'var(--color-live)',
                 },
                 // Legacy — kept for backward compat
-                primary: {
-                    50: '#FFF1F0', 100: '#FFE0DD', 200: '#FFC7C2',
-                    300: '#FFA099', 400: '#FF6B6B', 500: '#FF2D55',
-                    600: '#E0193E', 700: '#B50F2E', 800: '#8B0820',
-                    900: '#600514', 950: '#3A0208',
-                },
                 gold: {
                     50: '#FFFBEB', 100: '#FFF3C4', 200: '#FFE68A',
                     300: '#FFD54F', 400: '#FFCA28', 500: '#FFB800',

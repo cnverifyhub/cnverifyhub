@@ -12,23 +12,35 @@ import { LuckyWheel } from '@/components/home/LuckyWheel';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnverifyhub.com';
 
 export const metadata: Metadata = {
-    title: 'CNVerifyHub - Buy Chinese Digital Accounts | WeChat, Alipay, Douyin, QQ',
+    title: {
+        absolute: 'CNVerifyHub — Buy Verified WeChat, Alipay & Douyin Accounts | USDT',
+    },
     description: 'Professional Chinese digital account marketplace. Buy verified WeChat, Alipay, Douyin & QQ accounts with instant USDT crypto delivery. 5-minute auto-delivery, 72-hour warranty. Bulk pricing available.',
     keywords: 'buy wechat account, buy alipay account, buy douyin account, buy qq account, chinese social media accounts, buy chinese accounts with crypto, USDT payment, instant delivery, verified accounts, wechat for sale, tiktok china account',
     alternates: {
         canonical: `${SITE_URL}/en/`,
-        languages: { 'en': `${SITE_URL}/en/`, 'zh-CN': SITE_URL },
+        languages: { 'en': `${SITE_URL}/en/`, 'zh-CN': `${SITE_URL}/` },
     },
     openGraph: {
-        title: 'CNVerifyHub - Buy WeChat, Alipay, Douyin & QQ Accounts',
-        description: 'Professional Chinese digital account marketplace. Instant USDT delivery, 72hr warranty. Bulk pricing from $18.',
+        title: 'CNVerifyHub — Buy Verified WeChat, Alipay & Douyin Accounts',
+        description: 'Professional Chinese digital account marketplace. Instant USDT crypto delivery, 72hr warranty. Bulk pricing from $18.',
         url: `${SITE_URL}/en/`,
         locale: 'en_US',
+        images: [
+            {
+                url: `${SITE_URL}/og-image.png`,
+                width: 1200,
+                height: 630,
+                alt: 'CNVerifyHub - Chinese Digital Accounts Marketplace',
+            }
+        ],
+        type: 'website',
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'CNVerifyHub - Buy Chinese Digital Accounts with USDT',
+        title: 'CNVerifyHub — Buy Chinese Digital Accounts with USDT',
         description: 'Verified WeChat, Alipay, Douyin & QQ accounts. Instant crypto delivery.',
+        images: [`${SITE_URL}/og-image.png`],
     },
 };
 

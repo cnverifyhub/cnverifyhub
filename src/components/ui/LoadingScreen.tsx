@@ -5,15 +5,25 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TextScramble } from '@/utils/textScramble';
 
 export default function LoadingScreen() {
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = useState(false);
     const [scrambled, setScrambled] = useState(false);
     const textRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (sessionStorage.getItem('hasVisited')) {
-            setIsVisible(false);
+        // Skip splash if already visited in this session
+        if (typeof window !== 'undefined' && sessionStorage.getItem('hasVisited')) {
             return;
         }
+
+        setIsVisible(true);
+
+        // Hard safety fallback: never block screen for more than 1200ms
+        const safetyTimer = setTimeout(() => {
+            setIsVisible(false);
+            if (typeof window !== 'undefined') {
+                sessionStorage.setItem('hasVisited', 'true');
+            }
+        }, 1200);
 
         const runSequence = async () => {
             if (textRef.current) {
@@ -24,12 +34,18 @@ export default function LoadingScreen() {
             
             setTimeout(() => {
                 setIsVisible(false);
-                sessionStorage.setItem('hasVisited', 'true');
-            }, 1200);
+                if (typeof window !== 'undefined') {
+                    sessionStorage.setItem('hasVisited', 'true');
+                }
+            }, 800);
         };
 
         runSequence();
+
+        return () => clearTimeout(safetyTimer);
     }, []);
+
+    if (!isVisible) return null;
 
     return (
         <AnimatePresence>
@@ -37,9 +53,9 @@ export default function LoadingScreen() {
                 <motion.div
                     initial={{ opacity: 1 }}
                     exit={{ y: '-100%', transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] } }}
-                    className="fixed inset-0 z-[100] bg-[#060608] flex flex-col items-center justify-center"
+                    className="fixed inset-0 z-[100] bg-[#060608] flex flex-col items-center justify-center pointer-events-none"
                 >
-                    <div className="relative flex flex-col items-center">
+                    <div className="relative flex flex-col items-center pointer-events-auto">
                         <motion.div
                             initial={{ scale: 0.8, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
@@ -62,7 +78,7 @@ export default function LoadingScreen() {
                         <motion.div
                             initial={{ scaleX: 0 }}
                             animate={{ scaleX: 1 }}
-                            transition={{ duration: 1, delay: 1.4, ease: "easeInOut" }}
+                            transition={{ duration: 1, delay: 0.4, ease: "easeInOut" }}
                             className="absolute -bottom-12 left-0 right-0 h-0.5 bg-gradient-to-r from-[#FF0036] to-transparent origin-left"
                         />
                     </div>

@@ -25,6 +25,7 @@ export function AnimatedCounter({ end, duration = 2000, prefix = '', suffix = ''
     return (
         <span className={className} suppressHydrationWarning>
             <CountUp 
+                start={Math.max(1, Math.floor(end * 0.8))}
                 end={end} 
                 duration={duration / 1000} 
                 prefix={prefix} 

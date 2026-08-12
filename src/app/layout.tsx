@@ -167,7 +167,7 @@ export default function RootLayout({
 
     const headersList = headers();
     const pathname = headersList.get('x-pathname') || headersList.get('x-invoke-path') || headersList.get('referer') || '';
-    const isEnglish = pathname.includes('/en/') || pathname.endsWith('/en');
+    const isEnglish = pathname === '/en' || pathname.startsWith('/en/') || pathname.endsWith('/en');
     const lang = isEnglish ? 'en' : 'zh';
 
     return (

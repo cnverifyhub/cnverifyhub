@@ -45,7 +45,7 @@ export function MobileStickyBuyBar({ productId, lang, price, isOutOfStock }: Mob
 
                 <Link
                     href={isOutOfStock ? '#' : getLocalizedPath(`/checkout?product=${productId}`, lang)}
-                    className={`flex items-center justify-center gap-1.5 py-2.5 px-6 rounded-full text-base font-bold transition-all ${isOutOfStock
+                    className={`flex items-center justify-center gap-1.5 py-2.5 px-6 rounded-full text-base font-bold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 ${isOutOfStock
                         ? 'bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 cursor-not-allowed'
                         : 'bg-gradient-to-r from-red-600 to-orange-500 text-white shadow-lg shadow-red-500/25 active:scale-95'
                         }`}

@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const headersList = headers();
     const host = headersList.get('host') || headersList.get('x-forwarded-host') || null;
     const config = getTenantConfig(host);
-    const SITE_URL = `https://${config.domain}`;
+    const SITE_URL = `https://${config.domain}`.toLowerCase();
 
     const now = new Date().toISOString();
 
@@ -22,7 +22,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
     });
 
-    // 1. Static Routes
+    // 1. Static Routes (Exclude checkout/track to protect crawl budget)
     const staticRoutes: MetadataRoute.Sitemap = [
         { url: `${SITE_URL}/`, lastModified: now, changeFrequency: 'daily', priority: 1.0, alternates: getAlternates('/') },
         { url: `${SITE_URL}/en/`, lastModified: now, changeFrequency: 'daily', priority: 1.0, alternates: getAlternates('/') },
@@ -35,12 +35,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
         { url: `${SITE_URL}/pricing/`, lastModified: now, changeFrequency: 'weekly', priority: 0.8, alternates: getAlternates('/pricing/') },
         { url: `${SITE_URL}/en/pricing/`, lastModified: now, changeFrequency: 'weekly', priority: 0.8, alternates: getAlternates('/pricing/') },
-
-        { url: `${SITE_URL}/checkout/`, lastModified: now, changeFrequency: 'never', priority: 0.6, alternates: getAlternates('/checkout/') },
-        { url: `${SITE_URL}/en/checkout/`, lastModified: now, changeFrequency: 'never', priority: 0.6, alternates: getAlternates('/checkout/') },
-
-        { url: `${SITE_URL}/track/`, lastModified: now, changeFrequency: 'weekly', priority: 0.5, alternates: getAlternates('/track/') },
-        { url: `${SITE_URL}/en/track/`, lastModified: now, changeFrequency: 'weekly', priority: 0.5, alternates: getAlternates('/track/') },
 
         { url: `${SITE_URL}/faq/`, lastModified: now, changeFrequency: 'monthly', priority: 0.6, alternates: getAlternates('/faq/') },
         { url: `${SITE_URL}/en/faq/`, lastModified: now, changeFrequency: 'monthly', priority: 0.6, alternates: getAlternates('/faq/') },
