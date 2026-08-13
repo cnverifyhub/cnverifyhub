@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { headers } from 'next/headers';
 import Script from 'next/script';
-import { GoogleTagManager, GoogleAnalytics } from '@next/third-parties/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
@@ -244,8 +243,33 @@ export default function RootLayout({
                     '--color-surface': tenantConfig.branding.surface,
                 } as React.CSSProperties}
             >
-                <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID || 'GTM-P3BSVQS6'} />
-                <GoogleAnalytics gaId="G-YKJ9S5L36F" />
+                <Script
+                    id="gtm-script"
+                    strategy="afterInteractive"
+                    dangerouslySetInnerHTML={{
+                        __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${process.env.NEXT_PUBLIC_GTM_ID || 'GTM-P3BSVQS6'}');`,
+                    }}
+                />
+                <Script
+                    src="https://www.googletagmanager.com/gtag/js?id=G-YKJ9S5L36F"
+                    strategy="afterInteractive"
+                />
+                <Script
+                    id="google-analytics"
+                    strategy="afterInteractive"
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                          window.dataLayer = window.dataLayer || [];
+                          function gtag(){dataLayer.push(arguments);}
+                          gtag('js', new Date());
+                          gtag('config', 'G-YKJ9S5L36F');
+                        `,
+                    }}
+                />
                 
                 <TenantProvider initialConfig={tenantConfig}>
                     <ClientLayoutWrapper>

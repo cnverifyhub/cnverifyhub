@@ -10,8 +10,17 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error('Critical Layout Error:', error);
+    console.error('Critical Global Error:', error);
   }, [error]);
+
+  const handleReset = () => {
+    try {
+      if (typeof window !== 'undefined') {
+        sessionStorage.clear();
+      }
+    } catch (_) {}
+    reset();
+  };
 
   return (
     <html lang="zh">
@@ -22,13 +31,18 @@ export default function GlobalError({
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
             </svg>
           </div>
-          <h2 className="text-xl font-bold mb-2">Critical System Failure</h2>
+          <h2 className="text-xl font-bold mb-2">Platform Recovery</h2>
           <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
-            The application experienced a top-level runtime crash.
+            The page encountered a temporary initialization state. Click below to reload.
           </p>
+          {error?.message && (
+            <p className="text-xs font-mono text-red-400/80 mb-4 bg-black/40 p-2 rounded border border-red-950 truncate max-w-full">
+              {error.message}
+            </p>
+          )}
           <button
-            onClick={() => reset()}
-            className="w-full py-3 px-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-medium transition duration-200"
+            onClick={handleReset}
+            className="w-full py-3 px-4 rounded-xl bg-[#FF0036] hover:bg-[#FF0036]/90 text-white font-bold transition duration-200 shadow-lg shadow-[#FF0036]/20"
           >
             Reload Platform
           </button>

@@ -1,51 +1,60 @@
 'use client';
 
-import { ReactLenis, useLenis } from 'lenis/react';
-import { useEffect, useRef } from 'react';
+import { ReactLenis } from 'lenis/react';
+import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
+  const [isMounted, setIsMounted] = useState(false);
   const lenisRef = useRef<any>(null);
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    const lenis = lenisRef.current?.lenis;
-    if (!lenis) return;
-
-    // Sync Lenis scroll with GSAP ScrollTrigger
-    const updateScrollTrigger = () => ScrollTrigger.update();
-    lenis.on('scroll', updateScrollTrigger);
-
-    gsap.ticker.lagSmoothing(0);
-
-    ScrollTrigger.scrollerProxy(document.body, {
-      scrollTop(value?: number) {
-        if (arguments.length && value !== undefined) {
-          lenis.scrollTo(value, { immediate: true });
-        }
-        return lenis.scroll;
-      },
-      getBoundingClientRect() {
-        return { top: 0, left: 0, width: window.innerWidth, height: window.innerHeight };
-      },
-      pinType: 'transform',
-    });
-    ScrollTrigger.refresh();
-
-    return () => {
-      lenis.off('scroll', updateScrollTrigger);
-    };
+    setIsMounted(true);
   }, []);
 
+  useEffect(() => {
+    if (!isMounted) return;
+
+    try {
+      if (typeof window !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+      }
+
+      const lenis = lenisRef.current?.lenis;
+      if (!lenis) return;
+
+      const updateScrollTrigger = () => {
+        try {
+          ScrollTrigger.update();
+        } catch (_) {}
+      };
+
+      lenis.on('scroll', updateScrollTrigger);
+      gsap.ticker.lagSmoothing(0);
+
+      return () => {
+        try {
+          lenis.off('scroll', updateScrollTrigger);
+        } catch (_) {}
+      };
+    } catch (err) {
+      console.warn('[Lenis] Smooth scroll initialization warning:', err);
+    }
+  }, [isMounted]);
+
+  // Render children normally before mount to prevent hydration mismatch or crash
+  if (!isMounted) {
+    return <>{children}</>;
+  }
+
   return (
-    <ReactLenis 
+    <ReactLenis
       ref={lenisRef}
-      root 
-      options={{ 
-        lerp: 0.08, 
-        duration: 1.2, 
+      root
+      options={{
+        lerp: 0.08,
+        duration: 1.2,
         smoothWheel: true,
         wheelMultiplier: 1,
         touchMultiplier: 1.5,
@@ -56,4 +65,3 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     </ReactLenis>
   );
 }
-
