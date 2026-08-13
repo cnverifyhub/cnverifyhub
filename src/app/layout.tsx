@@ -182,11 +182,6 @@ export default function RootLayout({
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
                 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700;800&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
 
-                {/* Canonical & hreflang for Baidu */}
-                <link rel="alternate" hrefLang="zh-CN" href={SITE_URL} />
-                <link rel="alternate" hrefLang="en" href={`${SITE_URL}/en`} />
-                <link rel="alternate" hrefLang="x-default" href={SITE_URL} />
-
                 {/* JSON-LD Structured Data */}
                 <script
                     type="application/ld+json"
