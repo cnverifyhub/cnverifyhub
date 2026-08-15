@@ -10,6 +10,7 @@ import type { Product } from '@/types';
 import { t, type Lang, getLocalizedPath } from '@/lib/i18n';
 import { formatYuan } from '@/lib/utils';
 import { useCartStore } from '@/store/cartStore';
+import { getTenantConfig } from '@/lib/tenant-config';
 import { PriceTag } from './PriceTag';
 import { FlashCountdown } from './FlashCountdown';
 import { 
@@ -56,6 +57,8 @@ export const PricingCard = memo(function PricingCard({ product, lang }: PricingC
     const isOutOfStock = product.stockCount === 0;
     const addItem = useCartStore((state) => state.addItem);
     const meta = BRAND_META[product.category] || BRAND_META.default;
+    const tenantConfig = getTenantConfig();
+    const bulkTiers = tenantConfig.psychology.bulkPricingEnabled ? tenantConfig.pricing.bulkTiers : [];
 
     const [timeLeft, setTimeLeft] = useState(() => {
         const idSum = product.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -255,7 +258,7 @@ export const PricingCard = memo(function PricingCard({ product, lang }: PricingC
                 </div>
 
                 {/* Trust badges */}
-                <div className="flex flex-wrap gap-1 mb-4">
+                <div className="flex flex-wrap gap-1 mb-3">
                     {product.warranty && (
                         <span className="text-[9px] font-bold text-[#07C160] border border-[#07C160]/20 bg-[#07C160]/5 px-2 py-0.5 rounded-full">
                             {product.warranty[lang]} {lang === 'zh' ? '质保' : 'Warranty'}
@@ -265,6 +268,18 @@ export const PricingCard = memo(function PricingCard({ product, lang }: PricingC
                         {lang === 'zh' ? '自动发货' : 'Auto-Delivery'}
                     </span>
                 </div>
+
+                {/* Bulk Tier Discount Badge */}
+                {bulkTiers.length > 0 && (
+                    <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-[#00E5FF]/5 border border-[#00E5FF]/20 text-[#00E5FF] text-[10px] font-medium mb-3">
+                        <span className="font-bold text-[9px] uppercase tracking-wider bg-[#00E5FF]/10 px-1 py-0.2 rounded">
+                            {lang === 'zh' ? '批量阶梯' : 'BULK'}
+                        </span>
+                        <span className="truncate">
+                            {lang === 'zh' ? '5+件立减5% · 10+件9折 · 50+件8折' : '5+ units: 5% off · 10+: 10% · 50+: 20%'}
+                        </span>
+                    </div>
+                )}
 
                 {/* Flash Sale Banner */}
                 {product.popular && !isOutOfStock && (

@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 import { submitBaiduUrls } from '@/lib/indexing';
 
 export async function POST(request: Request) {

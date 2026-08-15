@@ -180,6 +180,7 @@ CREATE TABLE IF NOT EXISTS posts (
   read_time VARCHAR(20) NOT NULL,
   image VARCHAR(255) NOT NULL,
   category VARCHAR(50) NOT NULL,
+  tenant_id VARCHAR(50) DEFAULT 'cnverifyhub',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -440,6 +441,8 @@ CREATE TABLE IF NOT EXISTS reviews (
   review_en TEXT,
   reviewer_name TEXT,
   verified BOOLEAN DEFAULT false,
+  country_code VARCHAR(10) DEFAULT 'CN',
+  tenant_id VARCHAR(50) DEFAULT 'cnverifyhub',
   created_at TIMESTAMPTZ DEFAULT now()
 );
 CREATE OR REPLACE FUNCTION mark_cart_recovered()
@@ -511,6 +514,25 @@ CREATE TABLE IF NOT EXISTS referrals (
     created_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- Job Queue for Background Workers & Auto-Delivery Pipeline
+CREATE TABLE IF NOT EXISTS _job_queue (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    tenant_id VARCHAR(50) DEFAULT 'cnverifyhub',
+    task_type VARCHAR(100) NOT NULL,
+    payload JSONB NOT NULL DEFAULT '{}'::jsonb,
+    status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
+    attempts INT DEFAULT 0,
+    max_attempts INT DEFAULT 5,
+    error_message TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    processed_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_job_queue_tenant_status ON _job_queue(tenant_id, status);
+CREATE INDEX IF NOT EXISTS idx_job_queue_created_at ON _job_queue(created_at);
+ALTER TABLE _job_queue ENABLE ROW LEVEL SECURITY;
+
 -- Trigger: On orders.status = 'paid' -> Reserve inventory
 CREATE OR REPLACE FUNCTION handle_paid_order_inventory()
 RETURNS TRIGGER AS \$\$
@@ -577,4 +599,67 @@ CREATE TRIGGER trigger_queue_t0_welcome_email
     AFTER UPDATE OF status ON orders
     FOR EACH ROW
     EXECUTE FUNCTION queue_t0_welcome_email();
+
+
+-- ==========================================
+-- PHASE 6: LEAD CAPTURE & CART ABANDONMENT
+-- ==========================================
+
+-- Newsletter Subscribers Table
+CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  tenant_id VARCHAR(50) DEFAULT 'cnverifyhub',
+  email VARCHAR(255) NOT NULL,
+  status VARCHAR(50) DEFAULT 'active',
+  source VARCHAR(100) DEFAULT 'footer',
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT unique_newsletter_tenant_email UNIQUE(tenant_id, email)
+);
+
+CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_tenant_email ON newsletter_subscribers(tenant_id, email);
+CREATE INDEX IF NOT EXISTS idx_newsletter_subscribers_status ON newsletter_subscribers(status);
+ALTER TABLE newsletter_subscribers ENABLE ROW LEVEL SECURITY;
+
+-- Cart Abandonment Table
+CREATE TABLE IF NOT EXISTS cart_abandonment (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  session_id TEXT,
+  cart_items JSONB NOT NULL DEFAULT '[]'::jsonb,
+  email TEXT,
+  telegram TEXT,
+  tenant_id VARCHAR(50) NOT NULL DEFAULT 'cnverifyhub',
+  reminder_count INT DEFAULT 0,
+  last_reminder_sent_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
+  last_seen_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
+  recovered_at TIMESTAMPTZ,
+  email_sent_at TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_cart_abandonment_tenant_id ON cart_abandonment(tenant_id);
+ALTER TABLE cart_abandonment ENABLE ROW LEVEL SECURITY;
+
+-- Seed RECOVER5 5% Discount Coupon
+INSERT INTO coupons (code, discount_type, discount_value, max_uses, used_count, expires_at, tenant_id)
+VALUES ('RECOVER5', 'percent', 5.00, 10000, 0, NOW() + INTERVAL '1 year', 'cnverifyhub')
+ON CONFLICT (code) DO UPDATE SET
+  discount_type = EXCLUDED.discount_type,
+  discount_value = EXCLUDED.discount_value,
+  tenant_id = EXCLUDED.tenant_id;
+
+-- Seed Initial Verified Reviews with Country Codes
+INSERT INTO reviews (product_id, rating, review_zh, review_en, reviewer_name, verified, country_code, tenant_id)
+VALUES
+  ('wechat-enterprise', 5, '企业号实名过审很快，对接客服技术指导非常专业，当天就上线开通微信支付。', 'Enterprise account real-name approval was very fast. Technical support was professional, opened WeChat Pay same day.', '陈总 (海外电商)', true, 'CN', 'cnverifyhub'),
+  ('alipay-aged', 5, '老号权重极高，带历史账单，跑了两个月零风控，发货秒发，强烈推荐！', 'Aged account has top trust score with billing history. Ran 2 months with zero bans. Instant delivery, highly recommended!', 'Alex_SG', true, 'SG', 'cnverifyhub'),
+  ('douyin-live', 5, '买来做跨境直播带货的，千粉真人纯白号，当晚开播就进自然流，非常给力。', 'Bought for cross-border livestream dropshipping. 1k real followers clean account. Got organic traffic immediately.', 'Kevin H.', true, 'HK', 'cnverifyhub'),
+  ('qq-aged-svip', 5, '纯手工老号，密保换绑顺畅，带SVIP年费，工作室跑业务首选。', 'Handmade aged account, smooth security question binding, comes with annual SVIP, top choice for studios.', 'GamingStudio_TW', true, 'TW', 'cnverifyhub'),
+  ('wechat-personal-aged', 5, '匿名USDT支付秒到账，防封教程写的很详细，小白也能轻松上号。', 'Anonymous USDT payment confirmed instantly, anti-ban tutorial is comprehensive, easy for beginners.', 'Marcus W.', true, 'US', 'cnverifyhub'),
+  ('alipay-personal-v2', 5, '马来西亚做代购找了很久才找到这么稳的渠道，转账收款丝滑无卡顿。', 'Malaysia personal shopper here. Hard to find such reliable channels. Transfers and payouts are super smooth.', 'Lim_KL', true, 'MY', 'cnverifyhub')
+ON CONFLICT DO NOTHING;
+
+-- Reload PostgREST schema cache
+NOTIFY pgrst, 'reload schema';
+
 

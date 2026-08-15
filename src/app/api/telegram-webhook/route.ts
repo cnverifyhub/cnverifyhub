@@ -1,5 +1,7 @@
 import { Bot, webhookCallback } from 'grammy';
 import { NextResponse } from 'next/server';
+
+export const dynamic = 'force-dynamic';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;

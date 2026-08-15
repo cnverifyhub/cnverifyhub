@@ -7,6 +7,7 @@ import { CustomerReviews } from '@/components/home/CustomerReviews';
 import { HotProducts } from '@/components/sections/HotProducts';
 import { LiveMarketTable } from '@/components/sections/LiveMarketTable';
 import { FAQSection } from '@/components/home/FAQSection';
+import { NewsletterCapture } from '@/components/home/NewsletterCapture';
 import { LuckyWheel } from '@/components/home/LuckyWheel';
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://cnverifyhub.com';
@@ -100,6 +101,7 @@ export default function HomeEn() {
             <LiveMarketTable lang={lang} />
             <WhyChooseUs lang={lang} />
             <CustomerReviews lang={lang} />
+            <NewsletterCapture lang={lang} />
             <FAQSection lang={lang} />
             <LuckyWheel lang={lang} />
         </div>

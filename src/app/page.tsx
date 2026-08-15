@@ -8,6 +8,8 @@ import { HotProducts } from '@/components/sections/HotProducts';
 import { LiveMarketTable } from '@/components/sections/LiveMarketTable';
 import { FAQSection } from '@/components/home/FAQSection';
 
+import { NewsletterCapture } from '@/components/home/NewsletterCapture';
+
 const CustomerReviews = dynamic(() => import('@/components/home/CustomerReviews').then(mod => mod.CustomerReviews), { ssr: true });
 const LuckyWheel = dynamic(() => import('@/components/home/LuckyWheel').then(mod => mod.LuckyWheel), { ssr: false });
 
@@ -83,6 +85,7 @@ export default function Home() {
             <LiveMarketTable lang={lang} />
             <WhyChooseUs lang={lang} />
             <CustomerReviews lang={lang} />
+            <NewsletterCapture lang={lang} />
             <FAQSection lang={lang} />
             <LuckyWheel lang={lang} />
         </div>

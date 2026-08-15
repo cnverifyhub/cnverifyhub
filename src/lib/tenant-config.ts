@@ -129,13 +129,13 @@ export const tenantConfigs: Record<'cnwepro' | 'cnverifyhub', TenantConfig> = {
     },
     psychology: {
       headlines: [
-        'Chinese Digital Asset Exchange',
-        '正规交易平台 · 极速秒发 · 担保交易',
-        '<5min Delivery · 4.97★ Rating · 50K+ Users'
+        '专业中国大陆数字资产与实名认证服务平台',
+        '100% 实名真号 · 极速自动发货 · 平台担保交易',
+        'Premier Chinese Verified Accounts & Digital Services · Instant Delivery'
       ],
       subheadlines: [
-        'Instant verified accounts with automatic delivery',
-        '一手机房直供，100%实名认证，全年365天×24小时不间断'
+        '一手机房纯手工实名账号，高权重防封耐用，支持企业与个人定制，全天候极速交付与售后质保',
+        'High-trust, fully verified Chinese accounts for global enterprises & individuals. Automated fulfillment with buyer protection.'
       ],
       trustBadges: [
         { icon: 'flash', label: '<5min Delivery', sublabel: '极速自动发货' },
@@ -146,14 +146,19 @@ export const tenantConfigs: Record<'cnwepro' | 'cnverifyhub', TenantConfig> = {
       ctaText: 'Shop Now',
       urgencyEnabled: true,
       flashSalesEnabled: true,
-      bulkPricingEnabled: false
+      bulkPricingEnabled: true
     },
     pricing: {
       marginMultiplier: 1.15,
       showDiscountPercent: true,
       showOriginalPrice: true,
       currencySymbol: '¥',
-      bulkTiers: []
+      bulkTiers: [
+        { min: 5, discount: 0.05, label: '5+ 件: 95折 (5% OFF)' },
+        { min: 10, discount: 0.10, label: '10+ 件: 9折 (10% OFF)' },
+        { min: 50, discount: 0.20, label: '50+ 件: 8折 (20% OFF)' },
+        { min: 200, discount: 0.30, label: '200+ 件: 7折 (30% OFF)' }
+      ]
     },
     delivery: {
       promiseText: '< 5 Minutes',

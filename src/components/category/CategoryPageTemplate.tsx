@@ -1,10 +1,13 @@
+import React from 'react';
 import { getProductsByCategory, getCategoryById } from '@/data/products';
 import NextImage from 'next/image';
 import { PricingCard } from '@/components/ui/PricingCard';
 import { FAQAccordion } from '@/components/ui/FAQAccordion';
+import { CategoryContentBlock, type CategoryContentSection } from '@/components/category/CategoryContentBlock';
+import { categoryFaqMap, getCategoryFaqs } from '@/data/category-faqs';
 import { faqData } from '@/data/faq';
 import { t, type Lang } from '@/lib/i18n';
-import type { CategoryId } from '@/types';
+import type { CategoryId, FAQItem } from '@/types';
 import { Shield, ShieldCheck, CheckCircle2, Zap, Clock, Info, MessageCircle, Wallet, Music, Tv2, ShoppingBag, Store, Heart, Camera, Package, Landmark } from 'lucide-react';
 import { MobileStickyBuyBar } from '@/components/layout/MobileStickyBuyBar';
 import { WeChatIcon, AlipayIcon, DouyinIcon, QQIcon, XianyuIcon, TaobaoIcon, XiaohongshuIcon, VerificationIcon, FintechIcon } from '@/components/ui/BrandIcons';
@@ -59,7 +62,57 @@ export function CategoryPageTemplate({ categoryId, lang }: CategoryPageTemplateP
 
     if (!category) return null;
 
+    const isZh = lang === 'zh';
     const WatermarkIcon = watermarkMap[category.id] || MessageCircle;
+    const rawFaqs = getCategoryFaqs(category.id, lang);
+
+    // Format category-specific FAQs for FAQAccordion
+    const categoryFaqData = categoryFaqMap[category.id] || categoryFaqMap.wechat;
+    const formattedFaqItems: FAQItem[] = (categoryFaqData.zh || []).map((zhFaq, idx) => ({
+        id: `faq-${category.id}-${idx}`,
+        category: category.id,
+        question: {
+            zh: zhFaq.question,
+            en: categoryFaqData.en[idx]?.question || zhFaq.question,
+        },
+        answer: {
+            zh: zhFaq.answer,
+            en: categoryFaqData.en[idx]?.answer || zhFaq.answer,
+        },
+    }));
+
+    // Generate descriptive guide sections based on category
+    const guideSections: CategoryContentSection[] = [
+        {
+            title: isZh ? '账号交付与安全防封 SOP' : 'Account Delivery & Anti-Ban Warming SOP',
+            content: isZh
+                ? '所有账号交付均包含完整初始凭据与解密密钥。新设备登录后建议在纯净固定的网络环境下静置 24-48 小时，进行自然基础操作，切勿立即进行频繁批量操作或大额转账。'
+                : 'All account deliveries include full initial credentials and security keys. After first login, keep the session on a clean residential IP for 24-48 hours before conducting high-frequency operations.',
+            listItems: isZh
+                ? [
+                    '使用干净的静态独享住宅代理，避免公共免费 VPN',
+                    '登录后前 3 天保持正常浏览与低频交互',
+                    '稳定 3-5 天后前往安全中心换绑手机与设置 2FA',
+                ]
+                : [
+                    'Use clean static residential proxies; avoid shared datacenter VPNs',
+                    'Maintain regular, low-frequency browsing for the first 3 days',
+                    'Safely update phone bindings and enable 2FA after 3-5 days of stability',
+                ],
+            callout: {
+                type: 'success',
+                text: isZh
+                    ? '🛡️ 72小时全额换号质保：若在质保期内遭遇非人为违规引起的登录异常或封禁，平台免费更换全新账号。'
+                    : '🛡️ 72-Hour Full Warranty: If you encounter login issues not caused by user violation, we provide a free replacement.',
+            },
+        },
+        {
+            title: isZh ? 'USDT 担保交易与秒级发卡机制' : 'USDT Escrow & Instant Automated Dispatch',
+            content: isZh
+                ? 'CNVerifyHub 采用智能链上监听与自动化卡密解密系统。当 TRC20/BEP20 网络确认区块后，系统在 5 分钟内自动派发账号明细，并在控制台与预留邮箱同步生成凭证档案。'
+                : 'CNVerifyHub utilizes real-time blockchain transaction listeners and automated credential decryption. Upon block confirmation, your credentials are automatically dispatched in < 5 minutes.',
+        },
+    ];
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-dark-950 pb-24">
@@ -128,7 +181,7 @@ export function CategoryPageTemplate({ categoryId, lang }: CategoryPageTemplateP
             </section>
 
             {/* Pricing Grid */}
-            <section className="section-container mt-12 mb-20">
+            <section className="section-container mt-12 mb-16">
                 <div className="flex items-center gap-2 mb-8">
                     <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${category.gradient} flex items-center justify-center text-white font-bold`}>
                         {products.length}
@@ -145,8 +198,22 @@ export function CategoryPageTemplate({ categoryId, lang }: CategoryPageTemplateP
                 </div>
             </section>
 
+            {/* Category Content & SEO Guide Block */}
+            <CategoryContentBlock
+                categoryId={category.id}
+                lang={lang}
+                h2Title={isZh ? `${category.name.zh} 购买与使用指南` : `${category.name.en} Buying & Account Guide`}
+                leadParagraph={
+                    isZh
+                        ? `CNVerifyHub 为全球用户提供专业、高权重的 ${category.name.zh} 现货直供。平台采用 USDT 担保交易体系与全自动发货引擎，5 分钟内完成卡密派发，并享受全套 72 小时无忧售后保障。`
+                        : `CNVerifyHub provides verified, aged, and KYC-compliant ${category.name.en} accounts with instant crypto delivery. Backed by an escrow system and a 72-hour warranty.`
+                }
+                sections={guideSections}
+                faqItems={rawFaqs}
+            />
+
             {/* Info Notice */}
-            <section className="section-container mb-24">
+            <section className="section-container my-16">
                 <div className="bg-primary-50 dark:bg-primary-900/10 border border-primary-100 dark:border-primary-900/30 rounded-2xl p-6 md:p-8 flex gap-4 md:items-center flex-col md:flex-row">
                     <div className="w-12 h-12 rounded-full bg-primary-100 dark:bg-primary-500/20 flex items-center justify-center text-primary-600 dark:text-primary-400 shrink-0">
                         <Info className="w-6 h-6" />
@@ -164,14 +231,14 @@ export function CategoryPageTemplate({ categoryId, lang }: CategoryPageTemplateP
                 </div>
             </section>
 
-            {/* Category FAQ */}
+            {/* Category-Specific FAQ */}
             <section className="section-container max-w-4xl">
                 <div className="text-center mb-12">
                     <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-4">
-                        {lang === 'zh' ? '购买及使用解答' : 'Purchase & Usage FAQ'}
+                        {lang === 'zh' ? `${category.name.zh} 常见问题解答` : `${category.name.en} Frequently Asked Questions`}
                     </h2>
                 </div>
-                <FAQAccordion items={faqData.filter(i => i.category === 'account' || i.category === 'purchase')} lang={lang} />
+                <FAQAccordion items={formattedFaqItems} lang={lang} />
             </section>
 
             {/* Quick Buy Mobile Bar (selects first product by default) */}
