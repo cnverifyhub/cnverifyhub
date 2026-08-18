@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     description: '专业中国大陆数字账号批发平台，现货供应高权重微信实名老号、支付宝企业户、抖音万粉号及QQ高级靓号。USDT匿名担保交易，5分钟极速发货，72小时售后无忧。Buy verified WeChat, Alipay, Douyin & QQ accounts with instant crypto delivery.',
     alternates: {
         canonical: SITE_URL,
-        languages: { 'zh-CN': SITE_URL, 'en': `${SITE_URL}/en` },
+        languages: { 'zh-CN': SITE_URL, 'en': `${SITE_URL}/en`, 'x-default': SITE_URL },
     },
     openGraph: {
         title: 'CNVerifyHub - 微信号·支付宝·抖音·QQ账号批发平台',

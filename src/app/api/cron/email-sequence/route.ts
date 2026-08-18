@@ -6,6 +6,11 @@ import { sendT0WelcomeEmail, sendT1GuideEmail, sendT7ReviewEmail } from '@/lib/e
 
 export async function GET(req: Request) {
     try {
+        const authHeader = req.headers.get('authorization');
+        if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+            return NextResponse.json({ error: 'Unauthorized cron trigger' }, { status: 401 });
+        }
+
         // Find emails that need to be sent using admin client (bypasses RLS)
         const { data: emails, error } = await supabaseAdmin
             .from('order_emails')

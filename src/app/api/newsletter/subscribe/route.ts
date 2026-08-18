@@ -12,7 +12,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const resendApiKey = process.env.RESEND_API_KEY;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
-const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const EMAIL_REGEX = /^[a-zA-Z0-9_%+-]+(?:\.[a-zA-Z0-9_%+-]+)*@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
 
 export async function POST(request: Request) {
   try {
@@ -20,11 +20,18 @@ export async function POST(request: Request) {
                request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
                '127.0.0.1';
 
-    const body = await request.json().catch(() => ({}));
+    const rawBody = await request.json().catch(() => null);
+    const body = (rawBody && typeof rawBody === 'object' && !Array.isArray(rawBody)) ? rawBody : {};
     const { email, lang = 'zh', tenant_id = 'cnverifyhub' } = body;
 
     // 1. Email format validation
-    if (!email || typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())) {
+    if (
+      !email ||
+      typeof email !== 'string' ||
+      email.trim().length === 0 ||
+      email.trim().length > 254 ||
+      !EMAIL_REGEX.test(email.trim())
+    ) {
       return NextResponse.json(
         { error: lang === 'zh' ? '请输入有效的电子邮箱地址' : 'Please provide a valid email address' },
         { status: 400 }

@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
         const { data: orders, error } = await supabase
             .from('orders')
             .select('created_at, total_amount, status')
+            .eq('tenant_id', 'cnverifyhub')
             .gte('created_at', sevenDaysAgo.toISOString())
             .eq('status', 'completed');
 

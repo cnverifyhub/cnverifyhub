@@ -101,6 +101,7 @@ export function AccountDashboard({ lang }: AccountDashboardProps) {
             const { data: userOrders } = await supabase
                 .from('orders')
                 .select('*, order_items(*)')
+                .eq('tenant_id', 'cnverifyhub')
                 .or(`user_id.eq.${session.user.id},email.eq.${session.user.email}`)
                 .order('created_at', { ascending: false })
                 .limit(50);

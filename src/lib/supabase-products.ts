@@ -75,6 +75,7 @@ export async function getAllProducts() {
   const { data, error } = await supabase
     .from('products')
     .select('*')
+    .or('tenant_id.eq.cnverifyhub,tenant_id.is.null')
     .order('category', { ascending: true })
     .order('sort_order', { ascending: true });
   
@@ -93,6 +94,7 @@ export async function getPublicProducts() {
   const { data, error } = await supabase
     .from('products')
     .select('*')
+    .or('tenant_id.eq.cnverifyhub,tenant_id.is.null')
     .eq('is_active', true)
     .eq('is_published', true)
     .order('category', { ascending: true })
@@ -114,6 +116,7 @@ export async function getPublicProductById(id: string) {
     .from('products')
     .select('*')
     .eq('id', id)
+    .or('tenant_id.eq.cnverifyhub,tenant_id.is.null')
     .eq('is_active', true)
     .eq('is_published', true)
     .single();
@@ -135,6 +138,7 @@ export async function getPublicPopularProducts() {
   const { data, error } = await supabase
     .from('products')
     .select('*')
+    .or('tenant_id.eq.cnverifyhub,tenant_id.is.null')
     .eq('is_active', true)
     .eq('is_published', true)
     .eq('popular', true)
@@ -161,6 +165,7 @@ export async function getPublicProductsByCategory(category: string): Promise<Pro
     const { data, error } = await supabase
       .from('products')
       .select('*, is_published')
+      .or('tenant_id.eq.cnverifyhub,tenant_id.is.null')
       .ilike('category', category)
       .eq('is_active', true)
       .eq('is_published', true)

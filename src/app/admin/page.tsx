@@ -167,7 +167,8 @@ export default function AdminDashboardPage() {
         try {
             const { count, error } = await supabase
                 .from('cart_recoveries')
-                .select('*', { count: 'exact', head: true });
+                .select('*', { count: 'exact', head: true })
+                .or('tenant_id.eq.cnverifyhub,tenant_id.is.null');
             if (!error && count !== null) {
                 setCartRecoveriesCount(count);
             }

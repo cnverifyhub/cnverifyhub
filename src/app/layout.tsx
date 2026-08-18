@@ -76,6 +76,7 @@ export async function generateMetadata(): Promise<Metadata> {
             languages: {
                 'zh-CN': SITE_URL,
                 'en': `${SITE_URL}/en`,
+                'x-default': SITE_URL,
             }
         },
         robots: {

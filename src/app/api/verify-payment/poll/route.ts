@@ -114,6 +114,7 @@ async function triggerDelivery(orderId: string) {
             .from('orders')
             .select('id')
             .eq('public_id', orderId)
+            .eq('tenant_id', 'cnverifyhub')
             .single();
 
         if (updatedOrder) {
@@ -142,7 +143,8 @@ async function markOrderPaid(orderId: string, verificationData: any) {
                 timestamp: verificationData.timestamp,
             },
         })
-        .eq('public_id', orderId);
+        .eq('public_id', orderId)
+        .eq('tenant_id', 'cnverifyhub');
 
     if (updateError) {
         console.error('[Poll] Supabase update error:', updateError);
@@ -182,6 +184,7 @@ export async function POST(request: Request) {
             .from('orders')
             .select('tx_verified, status')
             .eq('public_id', orderId)
+            .eq('tenant_id', 'cnverifyhub')
             .single();
 
         if (existingOrder?.tx_verified) {

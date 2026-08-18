@@ -33,6 +33,7 @@ function ReviewForm() {
                 .from('orders')
                 .select('status, product_id')
                 .eq('id', orderId)
+                .eq('tenant_id', 'cnverifyhub')
                 .single();
 
             if (orderError || !order) {
@@ -57,6 +58,7 @@ function ReviewForm() {
                     review_en: reviewText,
                     reviewer_name: name || 'Anonymous',
                     verified: true, // Auto-verifying since they have valid order_id
+                    tenant_id: 'cnverifyhub'
                 });
 
             if (insertError) throw insertError;

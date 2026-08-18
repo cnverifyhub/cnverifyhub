@@ -33,6 +33,7 @@ export async function GET(request: Request) {
         const { data: abandonedCarts, error } = await supabase
             .from('cart_recoveries')
             .select('*')
+            .or('tenant_id.eq.cnverifyhub,tenant_id.is.null')
             .eq('recovered', false)
             .lt('created_at', oneHourAgo)
             .or(`reminder_count.is.null,reminder_count.lt.3`)
@@ -45,6 +46,7 @@ export async function GET(request: Request) {
             const { data: fallbackCarts, error: fallbackError } = await supabase
                 .from('cart_recoveries')
                 .select('*')
+                .or('tenant_id.eq.cnverifyhub,tenant_id.is.null')
                 .eq('recovered', false)
                 .is('sent_at', null)
                 .lt('created_at', oneHourAgo)

@@ -46,3 +46,8 @@ indexing_request_list.md
 process_logo.js
 process_logo.py
 ~/
+
+vercel_import.env
+*.env
+*.env.*
+!.env.example

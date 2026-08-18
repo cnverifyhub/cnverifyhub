@@ -12,6 +12,15 @@ export const dynamic = 'force-dynamic';
 export async function GET(request: Request) {
     try {
         const tenantId = getTenantId(request);
+        const authHeader = request.headers.get('authorization') || '';
+        const token = authHeader.replace(/^Bearer\s+/i, '');
+        const adminPass = process.env.ADMIN_PASSWORD || '';
+        const gateSecret = process.env.GATE_SECRET || '';
+
+        if (process.env.NODE_ENV === 'production' && token !== adminPass && token !== gateSecret) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
         const { searchParams } = new URL(request.url);
         const status = searchParams.get('status');
         const assignedTo = searchParams.get('assignedTo');

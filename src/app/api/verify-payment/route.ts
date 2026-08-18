@@ -393,7 +393,8 @@ export async function POST(request: Request) {
                         timestamp: result.timestamp
                     }
                 })
-                .eq('public_id', orderId);
+                .eq('public_id', orderId)
+                .eq('tenant_id', 'cnverifyhub');
 
             if (updateError) {
                 console.error('Supabase Update Error:', updateError);
@@ -403,6 +404,7 @@ export async function POST(request: Request) {
                     .from('orders')
                     .select('id, email')
                     .eq('public_id', orderId)
+                    .eq('tenant_id', 'cnverifyhub')
                     .single();
 
                 // ── Send Payment Verified Email ──

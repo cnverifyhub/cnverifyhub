@@ -61,6 +61,7 @@ export function CustomerReviews({ lang }: { lang: Lang }) {
                 const { data } = await supabase
                     .from('reviews')
                     .select('*, products(tier_name_zh, tier_name_en)')
+                    .or('tenant_id.eq.cnverifyhub,tenant_id.is.null')
                     .eq('verified', true)
                     .order('created_at', { ascending: false })
                     .limit(20);

@@ -10,6 +10,14 @@ import { supabaseAdmin as supabase } from '@/lib/supabase/admin';
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     try {
+        const authHeader = request.headers.get('authorization') || '';
+        const token = authHeader.replace(/^Bearer\s+/i, '');
+        const adminPass = process.env.ADMIN_PASSWORD || '';
+        const gateSecret = process.env.GATE_SECRET || '';
+
+        if (process.env.NODE_ENV === 'production' && token !== adminPass && token !== gateSecret) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
         const { data, error } = await supabase
             .from('service_orders')
             .select(`

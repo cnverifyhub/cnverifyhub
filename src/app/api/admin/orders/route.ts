@@ -16,6 +16,7 @@ export async function GET(request: NextRequest) {
         const { data: orders, error: ordersError } = await supabase
             .from('orders')
             .select('*')
+            .eq('tenant_id', 'cnverifyhub')
             .order('created_at', { ascending: false });
 
         if (ordersError) {
@@ -114,7 +115,8 @@ export async function POST(request: NextRequest) {
                     telegram,
                     status,
                     total_amount: totalAmount || 0,
-                    payment_network: 'manual'
+                    payment_network: 'manual',
+                    tenant_id: 'cnverifyhub'
                 })
                 .select()
                 .single();
@@ -149,6 +151,7 @@ export async function POST(request: NextRequest) {
             .from('orders')
             .select('id')
             .eq('public_id', orderPublicId)
+            .eq('tenant_id', 'cnverifyhub')
             .single();
 
         if (orderError || !order) {
@@ -225,7 +228,8 @@ export async function PATCH(request: NextRequest) {
         const { error: updateError } = await supabase
             .from('orders')
             .update(updateFields)
-            .eq('public_id', orderPublicId);
+            .eq('public_id', orderPublicId)
+            .eq('tenant_id', 'cnverifyhub');
 
         if (updateError) throw updateError;
 
@@ -256,6 +260,7 @@ export async function PUT(request: NextRequest) {
             .from('orders')
             .select('*')
             .eq('public_id', orderPublicId)
+            .eq('tenant_id', 'cnverifyhub')
             .single();
 
         if (fetchError || !order) {

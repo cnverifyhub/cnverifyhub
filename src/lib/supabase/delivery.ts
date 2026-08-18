@@ -59,7 +59,8 @@ export async function autoAssignAccountsToOrder(orderId: string, publicOrderId: 
                         product_id: item.product_id,
                         customer_email: (await supabase.from('orders').select('email').eq('id', orderId).single()).data?.email,
                         customer_telegram: (await supabase.from('orders').select('telegram').eq('id', orderId).single()).data?.telegram,
-                        status: 'pending'
+                        status: 'pending',
+                        tenant_id: 'cnverifyhub'
                     });
 
                 if (serviceError) {

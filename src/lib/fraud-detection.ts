@@ -92,6 +92,7 @@ async function checkOrderVelocity(email?: string, ip?: string): Promise<FraudEve
             const { count: emailCount24h } = await supabase
                 .from('orders')
                 .select('*', { count: 'exact', head: true })
+                .eq('tenant_id', 'cnverifyhub')
                 .eq('email', email)
                 .gte('created_at', since24h);
 

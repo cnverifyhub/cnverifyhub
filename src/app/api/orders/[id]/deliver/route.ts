@@ -16,6 +16,23 @@ export async function POST(
     const orderId = resolvedParams.id;
     const tenantId = getTenantId(request);
 
+    // Auth validation: Verify internal/admin authorization to trigger delivery
+    const authHeader = request.headers.get('authorization') || '';
+    const token = authHeader.replace(/^Bearer\s+/i, '');
+    const gateSecret = process.env.GATE_SECRET || '';
+    const adminPass = process.env.ADMIN_PASSWORD || '';
+    const webhookSecret = process.env.WEBHOOK_SECRET || '';
+
+    const isAuthorized = (
+      (gateSecret && token === gateSecret) ||
+      (adminPass && token === adminPass) ||
+      (webhookSecret && token === webhookSecret)
+    );
+
+    if (!isAuthorized && process.env.NODE_ENV === 'production') {
+      return NextResponse.json({ error: 'Unauthorized delivery invocation' }, { status: 401 });
+    }
+
     if (!orderId) {
       return NextResponse.json({ error: 'Order ID is required' }, { status: 400 });
     }

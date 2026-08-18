@@ -22,6 +22,7 @@ export async function POST(req: Request) {
                 .from('referrals')
                 .select('*')
                 .eq('referral_code', normalizedCode)
+                .or('tenant_id.eq.cnverifyhub,tenant_id.is.null')
                 .maybeSingle();
             if (refError || !ref) {
                 return NextResponse.json({ error: 'Invalid referral code' }, { status: 404 });
@@ -39,6 +40,7 @@ export async function POST(req: Request) {
             .from('coupons')
             .select('*')
             .eq('code', normalizedCode)
+            .or('tenant_id.eq.cnverifyhub,tenant_id.is.null')
             .maybeSingle();
 
         if (error || !coupon) {
@@ -59,6 +61,7 @@ export async function POST(req: Request) {
                 .select('id')
                 .eq('coupon_code', normalizedCode)
                 .eq('email', email.toLowerCase().trim())
+                .or('tenant_id.eq.cnverifyhub,tenant_id.is.null')
                 .maybeSingle();
 
             if (existingUse) {
@@ -78,7 +81,8 @@ export async function POST(req: Request) {
                     coupon_id: coupon.id,
                     coupon_code: normalizedCode,
                     email: email.toLowerCase().trim(),
-                    order_id: orderId || null
+                    order_id: orderId || null,
+                    tenant_id: 'cnverifyhub'
                 });
         }
 

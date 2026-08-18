@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Star, ChevronLeft, ChevronRight, Quote, ShieldCheck } from 'lucide-react';
 import type { Testimonial } from '@/types';
 import { type Lang } from '@/lib/i18n';
+import { LocalInitialAvatar } from '@/components/ui/LocalInitialAvatar';
 
 interface TestimonialCarouselProps {
     testimonials: Testimonial[];
@@ -81,9 +82,7 @@ export function TestimonialCarousel({ testimonials, lang }: TestimonialCarouselP
                         {current.avatar ? (
                             <img src={current.avatar} alt={current.name} className="w-12 h-12 rounded-full object-cover" />
                         ) : (
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500 to-accent-600 flex items-center justify-center text-white font-bold text-lg">
-                                {current.name.charAt(0)}
-                            </div>
+                            <LocalInitialAvatar name={current.name} size="md" />
                         )}
                         <div>
                             <div className="flex items-center gap-2 mb-1">

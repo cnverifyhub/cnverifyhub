@@ -23,6 +23,7 @@ export async function POST(request: Request) {
                 email,
                 cart_snapshot: cart,
                 recovered: false,
+                tenant_id: 'cnverifyhub'
             });
 
         if (error) throw error;

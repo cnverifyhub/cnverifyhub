@@ -20,7 +20,8 @@ export default function AdminInventoryPage() {
                 return {
                     product_id: productId,
                     credential_data: data,
-                    status: 'available'
+                    status: 'available',
+                    tenant_id: 'cnverifyhub'
                 };
             });
 

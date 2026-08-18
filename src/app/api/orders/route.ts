@@ -167,7 +167,8 @@ export async function POST(request: Request) {
                             coupon_id: couponData.id,
                             coupon_code: normCode,
                             email: order.email.toLowerCase().trim(),
-                            order_id: generatedOrderId
+                            order_id: generatedOrderId,
+                            tenant_id: tenantId
                         });
                 }
             } catch (couponErr) {

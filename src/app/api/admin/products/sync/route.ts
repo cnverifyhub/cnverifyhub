@@ -90,7 +90,8 @@ export async function POST(request: NextRequest) {
                 og_image: prod.ogImage || null,
                 
                 metadata: metadata,
-                is_active: true
+                is_active: true,
+                tenant_id: 'cnverifyhub'
             };
 
             const { error } = await supabase

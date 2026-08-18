@@ -42,6 +42,7 @@ async function runTests() {
   console.log('[Test 4.2] 6th auth request rate limited:', overflowRes.success === false && overflowRes.remaining === 0 ? 'PASS' : 'FAIL');
 
   console.log('=== All Smoke Tests Completed ===');
+  process.exit(0);
 }
 
 runTests().catch(err => {

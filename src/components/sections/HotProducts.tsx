@@ -9,7 +9,9 @@ import { allProducts } from '@/data/products';
 import { PricingCard } from '@/components/ui/PricingCard';
 import { type Lang } from '@/lib/i18n';
 
-gsap.registerPlugin(ScrollTrigger);
+if (typeof window !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+}
 
 export function HotProducts({ lang }: { lang: Lang }) {
     const sectionRef = useRef<HTMLDivElement>(null);

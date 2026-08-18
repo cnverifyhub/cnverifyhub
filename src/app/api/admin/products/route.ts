@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
         const { data, error } = await supabase
             .from('products')
             .select('*')
+            .or('tenant_id.eq.cnverifyhub,tenant_id.is.null')
             .order('category', { ascending: true });
 
         if (error) throw error;

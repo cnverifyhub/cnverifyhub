@@ -33,8 +33,10 @@ CREATE TABLE IF NOT EXISTS public.newsletter_subscribers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   tenant_id VARCHAR(50) DEFAULT 'cnverifyhub',
   email VARCHAR(255) NOT NULL,
+  discount_code VARCHAR(50),
   status VARCHAR(50) DEFAULT 'active',
   source VARCHAR(100) DEFAULT 'footer',
+  subscribed_at TIMESTAMPTZ DEFAULT NOW(),
   created_at TIMESTAMPTZ DEFAULT NOW(),
   CONSTRAINT unique_newsletter_tenant_email UNIQUE(tenant_id, email)
 );
@@ -56,6 +58,14 @@ BEGIN
 END $$;
 
 -- 3. Schema Alterations with Safe Idempotency
+-- Add discount_code and subscribed_at to newsletter_subscribers
+ALTER TABLE public.newsletter_subscribers ADD COLUMN IF NOT EXISTS discount_code VARCHAR(50);
+ALTER TABLE public.newsletter_subscribers ADD COLUMN IF NOT EXISTS subscribed_at TIMESTAMPTZ DEFAULT NOW();
+
+-- Add order_id and delivered_to_order to inventory
+ALTER TABLE public.inventory ADD COLUMN IF NOT EXISTS order_id UUID;
+ALTER TABLE public.inventory ADD COLUMN IF NOT EXISTS delivered_to_order UUID;
+
 -- Add country_code to reviews
 ALTER TABLE public.reviews ADD COLUMN IF NOT EXISTS country_code VARCHAR(10) DEFAULT 'CN';
 CREATE INDEX IF NOT EXISTS idx_reviews_country_code ON public.reviews(country_code);

@@ -34,6 +34,7 @@ export async function GET(request: NextRequest) {
         const { data: orders, error: ordersError } = await supabase
             .from('orders')
             .select('user_id, total_amount, status')
+            .eq('tenant_id', 'cnverifyhub')
             .in('status', ['paid', 'completed'])
             .not('user_id', 'is', null);
 

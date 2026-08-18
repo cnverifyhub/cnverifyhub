@@ -90,6 +90,12 @@ runSuite('1. Zero-Dicebear & Offline Avatar Component Verification', () => {
   }
   assert(!foundExternalAvatar, 'Entire project (src, content, public, scripts, supabase) is 100% free of external avatar APIs');
 
+  // Verify TestimonialCarousel.tsx uses LocalInitialAvatar
+  const testimonialCarouselPath = path.join(rootDir, 'src', 'components', 'ui', 'TestimonialCarousel.tsx');
+  const testimonialCarouselContent = fs.readFileSync(testimonialCarouselPath, 'utf8');
+  assert(testimonialCarouselContent.includes("import { LocalInitialAvatar } from '@/components/ui/LocalInitialAvatar'"), 'TestimonialCarousel.tsx imports LocalInitialAvatar');
+  assert(testimonialCarouselContent.includes('<LocalInitialAvatar name={current.name} size="md" />'), 'TestimonialCarousel.tsx renders LocalInitialAvatar when avatar is absent');
+
   // 1.3 Offline deterministic logic tests for LocalInitialAvatar algorithm
   function hashString(str: string): number {
     let hash = 0;
@@ -172,6 +178,10 @@ runSuite('2. SQL Migration Syntax & Invariants Verification', () => {
   // Invariant 2: IF NOT EXISTS guards
   assert(mig1Content.includes('CREATE TABLE IF NOT EXISTS public._job_queue'), 'Migration 1 uses CREATE TABLE IF NOT EXISTS for _job_queue');
   assert(mig1Content.includes('CREATE TABLE IF NOT EXISTS public.newsletter_subscribers'), 'Migration 1 uses CREATE TABLE IF NOT EXISTS for newsletter_subscribers');
+  assert(mig1Content.includes('ALTER TABLE public.newsletter_subscribers ADD COLUMN IF NOT EXISTS discount_code'), 'Migration 1 uses ADD COLUMN IF NOT EXISTS for newsletter_subscribers.discount_code');
+  assert(mig1Content.includes('ALTER TABLE public.newsletter_subscribers ADD COLUMN IF NOT EXISTS subscribed_at'), 'Migration 1 uses ADD COLUMN IF NOT EXISTS for newsletter_subscribers.subscribed_at');
+  assert(mig1Content.includes('ALTER TABLE public.inventory ADD COLUMN IF NOT EXISTS order_id UUID'), 'Migration 1 uses ADD COLUMN IF NOT EXISTS for inventory.order_id');
+  assert(mig1Content.includes('ALTER TABLE public.inventory ADD COLUMN IF NOT EXISTS delivered_to_order UUID'), 'Migration 1 uses ADD COLUMN IF NOT EXISTS for inventory.delivered_to_order');
   assert(mig1Content.includes('ALTER TABLE public.reviews ADD COLUMN IF NOT EXISTS country_code'), 'Migration 1 uses ADD COLUMN IF NOT EXISTS for reviews.country_code');
   assert(mig1Content.includes('ALTER TABLE public.cart_abandonment ADD COLUMN IF NOT EXISTS reminder_count'), 'Migration 1 uses ADD COLUMN IF NOT EXISTS for cart_abandonment.reminder_count');
   assert(mig1Content.includes('ALTER TABLE public.cart_abandonment ADD COLUMN IF NOT EXISTS last_reminder_sent_at'), 'Migration 1 uses ADD COLUMN IF NOT EXISTS for cart_abandonment.last_reminder_sent_at');
@@ -213,6 +223,7 @@ runSuite('2. SQL Migration Syntax & Invariants Verification', () => {
 // 3. JSON-LD Schema Validation
 // -----------------------------------------------------------------------------
 runSuite('3. JSON-LD Schema Structure & Validation', () => {
+  const rootDir = path.resolve(__dirname, '../..');
   // 3.1 FAQPage JSON-LD generation for all categories
   const categories = Object.keys(categoryFaqMap);
   assert(categories.length >= 7, `categoryFaqMap contains ${categories.length} categories (expected >= 7)`);
@@ -313,6 +324,17 @@ runSuite('3. JSON-LD Schema Structure & Validation', () => {
     assert(parsedArticle.mainEntityOfPage && parsedArticle.mainEntityOfPage['@id'] === postUrl, `Article (${article.lang}) mainEntityOfPage matches postUrl`);
     assert(parsedArticle.inLanguage === article.lang, `Article (${article.lang}) inLanguage valid`);
   }
+
+  // 3.3 FAQPage JSON-LD schema parity between zh and en blog slug pages
+  const zhBlogSlugPath = path.join(rootDir, 'src', 'app', 'blog', '[slug]', 'page.tsx');
+  const enBlogSlugPath = path.join(rootDir, 'src', 'app', 'en', 'blog', '[slug]', 'page.tsx');
+  const zhBlogSlugContent = fs.readFileSync(zhBlogSlugPath, 'utf8');
+  const enBlogSlugContent = fs.readFileSync(enBlogSlugPath, 'utf8');
+
+  assert(zhBlogSlugContent.includes("@type': 'FAQPage'") || zhBlogSlugContent.includes('@type\': \'FAQPage\'') || zhBlogSlugContent.includes('"@type": "FAQPage"'), 'ZH blog [slug]/page.tsx defines FAQPage schema');
+  assert(zhBlogSlugContent.includes('{faqSchema && ('), 'ZH blog [slug]/page.tsx renders FAQPage JSON-LD script');
+  assert(enBlogSlugContent.includes("@type': 'FAQPage'") || enBlogSlugContent.includes('@type\': \'FAQPage\'') || enBlogSlugContent.includes('"@type": "FAQPage"'), 'EN blog [slug]/page.tsx defines FAQPage schema');
+  assert(enBlogSlugContent.includes('{faqSchema && ('), 'EN blog [slug]/page.tsx renders FAQPage JSON-LD script');
 });
 
 // -----------------------------------------------------------------------------
